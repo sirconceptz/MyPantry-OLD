@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+        <group>
+                <item
+                    android:title="@string/ProductDetailsActivity_filter"
+                    android:icon="@drawable/ic_search"
+                    android:enabled="false"
+                    android:checkable="false"/>
+        </group>
+        <group>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_name"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_expiration_date"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_production_date"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_product_type"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_volume"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_weight"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_taste"/>
+                <item
+                    android:icon="@drawable/ic_check_box_false"
+                    android:title="@string/ProductDetailsActivity_product_features" />
+        </group>
+        <group>
+                <item
+                    android:icon="@drawable/ic_clear"
+                    android:title="@string/MyPantryActivity_clear_filters" />
+        </group>
+</menu>

@@ -54,6 +54,5 @@
                 android:text="@string/MainActivity_close_app_button" />
 
         </LinearLayout>
-
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

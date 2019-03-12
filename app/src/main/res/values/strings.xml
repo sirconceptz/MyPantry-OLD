@@ -19,4 +19,166 @@
     <string name="MainActivity_new_product_button">New product</string>
     <string name="MainActivity_app_settings">Application settings</string>
     <string name="MainActivity_close_app_button">Close application</string>
+    <!--MyPantryActivity-->
+    <string name="MyPantryActivity_empty_pantry">Oops! Your pantry is empty!</string>
+    <string name="MyPantryActivity_not_found">Not found products</string>
+    <string name="MyPantryActivity_clear">Clear</string>
+    <string name="MyPantryActivity_since">since</string>
+    <string name="MyPantryActivity_for">for</string>
+    <string name="MyPantryActivity_set">Set</string>
+    <string name="MyPantryActivity_cancel">Cancel</string>
+    <string name="MyPantryActivity_clear_filters">Clear filters</string>
+    <!--ScanProductActivity-->
+    <string name="ScanProductActivity_scan_qr_code">Scan QR code of the product</string>
+    <string name="ScanProductActivity_product_not_found">Product was not found.</string>
+    <!--NewProductActivity-->
+    <string name="NewProductActivity_required">(Required)</string>
+    <string name="NewProductActivity_not_required">(Not required)</string>
+    <string name="NewProductActivity_add_a_product">Add a product</string>
+    <string name="NewProductActivity_product_added_successful">The product has been added to the product database.</string>
+    <string name="NewProductActivity_products_added_successful">The products has been added to the product database.</string>
+    <string name="NewProductActivity_product_type">Product type</string>
+    <string name="NewProductActivity_product_features">Product features</string>
+    <!--ProductDetailsActivity-->
+    <string name="ProductDetailsActivity_name">Name</string>
+    <string name="ProductDetailsActivity_quantity">Quantity</string>
+    <string name="ProductDetailsActivity_expiration_date">Expiration date</string>
+    <string name="ProductDetailsActivity_production_date">Production date</string>
+    <string name="ProductDetailsActivity_composition">Composition</string>
+    <string name="ProductDetailsActivity_has_sugar">Has a sugar?</string>
+    <string name="ProductDetailsActivity_has_salt">Has a salt?</string>
+    <string name="ProductDetailsActivity_taste">Taste</string>
+    <string name="ProductDetailsActivity_sweet">Sweet</string>
+    <string name="ProductDetailsActivity_sour">Sour</string>
+    <string name="ProductDetailsActivity_sweet_and_sour">Sweet and Sour</string>
+    <string name="ProductDetailsActivity_bitter">Bitter</string>
+    <string name="ProductDetailsActivity_salty">Salty</string>
+    <string name="ProductDetailsActivity_weight">Weight</string>
+    <string name="ProductDetailsActivity_weight_unit">g</string>
+    <string name="ProductDetailsActivity_volume">Volume</string>
+    <string name="ProductDetailsActivity_volume_unit">ml</string>
+    <string name="ProductDetailsActivity_healing_properties">Healing properties</string>
+    <string name="ProductDetailsActivity_dosage">Dosage</string>
+    <string name="ProductDetailsActivity_product_type">Product type</string>
+    <string-array name="ProductDetailsActivity_type_of_product_array">
+        <item>Choose</item>
+        <item>Store products</item>
+        <item>Ready meals</item>
+        <item>Vegetables</item>
+        <item>Fruits</item>
+        <item>Herbs</item>
+        <item>Liqueurs</item>
+        <item>Wines</item>
+        <item>Mushrooms</item>
+        <item>Vinegars</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_choose_array">
+        <item>Choose</item>
+    </string-array>
+    <string name="ProductDetailsActivity_product_features">Product features</string>
+    <string-array name="ProductDetailsActivity_store_products_array">
+        <item>Choose</item>
+        <item>Store products</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_ready_meals_array">
+        <item>Choose</item>
+        <item>Ready meals</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_vegetables_array">
+        <item>Choose</item>
+        <item>Preserved</item>
+        <item>Salads</item>
+        <item>Marinate</item>
+        <item>Ketchups</item>
+        <item>Fresh</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_fruits_array">
+        <item>Choose</item>
+        <item>Jam</item>
+        <item>Juice</item>
+        <item>Syrup</item>
+        <item>Mousse</item>
+        <item>Compote</item>
+        <item>Jelly</item>
+        <item>Marmalades</item>
+        <item>Fresh</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_herbs_array">
+        <item>Choose</item>
+        <item>Dried</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_liqueurs_array">
+        <item>Choose</item>
+        <item>Liqueurs</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_wines_type_array">
+        <item>Choose</item>
+        <item>Dry</item>
+        <item>Semi-dry</item>
+        <item>Semi-sweet</item>
+        <item>Sweet</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_mushrooms_array">
+        <item>Choose</item>
+        <item>Marinate</item>
+        <item>Salt</item>
+        <item>Dried</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_vinegars_array">
+        <item>Choose</item>
+        <item>Apple</item>
+        <item>Herb</item>
+        <item>Fruit</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_other_products_array">
+        <item>Choose</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_taste_array">
+        <item>Choose</item>
+        <item>Sweet</item>
+        <item>Sour</item>
+        <item>Sweet and Sour</item>
+        <item>Bitter</item>
+        <item>Salty</item>
+    </string-array>
+    <string name="ProductDetailsActivity_not_selected">Not selected</string>
+    <string name="ProductDetailsActivity_delete_product">Delete product</string>
+    <string name="ProductDetailsActivity_filter">Filter</string>
+    <string name="ProductDetailsActivity_yes">Yes</string>
+    <string name="ProductDetailsActivity_no">No</string>
+    <string name="ProductDetailsActivity_product_has_been_removed">The product has been removed.</string>
+    <!--PrintQRCodesActivity-->
+    <string name="PrintQRCodesActivity_print_qr_codes">Print QR codes</string>
+    <string name="PrintQRCodesActivity_skip">Skip</string>
+    <!--AppSettingsActivity-->
+    <string name="AppSettingsActivity_notifications_send_by">Send notifications about expirations date of product</string>
+    <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notification?</string>
+    <string name="AppSettingsActivity_notifications_push">via push notications</string>
+    <string name="AppSettingsActivity_notifications_email">via email</string>
+    <string name="AppSettingsActivity_give_email_adress">Give your email address to receive a notification.</string>
+    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">How many days before the expiration date of product send a notification?</string>
+    <string name="AppSettingsActivity_save_settings">Save settings</string>
+    <string name="AppSettingsActivity_clear_database">Clear database</string>
+    <string name="AppSettingsActivity_settings_saved_successful">Settings are saved successful.</string>
+    <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
+    <!--Notifications-->
+    <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
+    <string name="Notifications_statement">%PRODUCT_NAME% is overdue. You have less than %DAYS% days to make it before this date.</string>
+    <!--Errors-->
+    <string name="Errors_error">Error</string>
+    <string name="Errors_something_wrong">Something is wrong</string>
+    <string name="Errors_wrong_data">Wrong data</string>
+    <string name="Errors_permission_is_needed_to_save_the_file">Permission is required to create a file</string>
+    <string name="Errors_category_not_selected">Category was not selected</string>
+    <string name="Errors_set_correct_quantity">Give the correct quantity</string>
+    <string name="Errors_product_name_is_required">Name of product is required</string>
+    <string name="Errors_expiration_date_is_required">Expiration date is required</string>
+    <!--AdMobSettings-->
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-4025776034769422/4404129112</string>
 </resources>

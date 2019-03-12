@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="50dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".NewProductActivity"
+    tools:showIn="@layout/activity_new_product">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="20dp"
+                android:text="@string/ProductDetailsActivity_name"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/NameValue"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="15dp"
+                android:hint="@string/NewProductActivity_required"
+                android:ems="10"
+                android:textSize="16dp"
+                android:inputType="textPersonName"
+                tools:layout_editor_absoluteY="15dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="70dp"
+                android:text="@string/NewProductActivity_product_type"
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/ProductTypeSpinner"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="60dp"
+                android:layout_marginEnd="15dp"
+                android:textSize="16dp"
+                android:entries="@array/ProductDetailsActivity_type_of_product_array"
+                android:prompt="@string/NewProductActivity_product_type"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="68dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="120dp"
+                android:text="@string/NewProductActivity_product_features"
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/ProductFeaturesSpinner"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="110dp"
+                android:layout_marginEnd="15dp"
+                android:textSize="16dp"
+                android:prompt="@string/NewProductActivity_product_features"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="68dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="170dp"
+                android:text="@string/ProductDetailsActivity_expiration_date"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/ExpirationDate"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="160dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16dp"
+                android:focusable="false"
+                android:hint="@string/NewProductActivity_required"
+                android:inputType="date" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="220dp"
+                android:text="@string/ProductDetailsActivity_production_date"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/ProductionDate"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="210dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:focusable="false"
+                android:hint="@string/NewProductActivity_required"
+                android:inputType="date" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="270dp"
+                android:text="@string/ProductDetailsActivity_quantity"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/Quantity"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="260dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:hint="@string/NewProductActivity_not_required"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="320dp"
+                android:text="@string/ProductDetailsActivity_composition"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/Composition"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="310dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:hint="@string/NewProductActivity_not_required"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="370dp"
+                android:text="@string/ProductDetailsActivity_healing_properties"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/HealingProperties"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="360dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:hint="@string/NewProductActivity_not_required"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="420dp"
+                android:text="@string/ProductDetailsActivity_dosage"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/Dosage"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="410dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:hint="@string/NewProductActivity_not_required"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/VolumeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="470dp"
+                android:text="@string/ProductDetailsActivity_volume"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/Volume"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="460dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:hint="@string/NewProductActivity_not_required"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/WeightLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="520dp"
+                android:text="@string/ProductDetailsActivity_weight"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/Weight"
+                android:layout_width="150dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="510dp"
+                android:layout_marginEnd="15dp"
+                android:ems="10"
+                android:textSize="16sp"
+                android:hint="@string/NewProductActivity_not_required"
+                android:inputType="number" />
+
+            <CheckBox
+                android:id="@+id/HasSugar"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="570dp"
+                android:text="@string/ProductDetailsActivity_has_sugar" />
+
+            <CheckBox
+                android:id="@+id/HasSalt"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="610dp"
+                android:text="@string/ProductDetailsActivity_has_salt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="660dp"
+                android:text="@string/ProductDetailsActivity_taste" />
+
+            <RadioGroup
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="690dp">
+
+                <RadioButton
+                    android:id="@+id/IsSweet"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/ProductDetailsActivity_sweet" />
+
+                <RadioButton
+                    android:id="@+id/IsSour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/ProductDetailsActivity_sour" />
+
+                <RadioButton
+                    android:id="@+id/IsSweetAndSour"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/ProductDetailsActivity_sweet_and_sour" />
+
+                <RadioButton
+                    android:id="@+id/IsBitter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/ProductDetailsActivity_bitter" />
+
+                <RadioButton
+                    android:id="@+id/IsSalty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/ProductDetailsActivity_salty" />
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/AddProduct"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="870dp"
+                android:layout_marginEnd="45dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/NewProductActivity_add_a_product" />
+
+        </RelativeLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".AppSettingsActivity"
+    tools:showIn="@layout/activity_app_settings">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+           android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification" />
+
+            <EditText
+                android:id="@+id/DaysToNotification"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:maxLength="2"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="number" />
+
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="70dp"
+                android:text="@string/AppSettingsActivity_notifications_send_by" />
+
+            <CheckBox
+                android:id="@+id/EmailNotificationsCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="180dp"
+                android:layout_marginTop="115dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/AppSettingsActivity_notifications_email" />
+
+            <CheckBox
+                android:id="@+id/PushNotificationsCheckbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="180dp"
+                android:layout_marginTop="150dp"
+                android:layout_marginEnd="30dp"
+                android:text="@string/AppSettingsActivity_notifications_push" />
+
+           <TextView
+               android:layout_width="200dp"
+               android:layout_height="wrap_content"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentTop="true"
+               android:layout_marginStart="20dp"
+               android:layout_marginTop="275dp"
+               android:text="@string/AppSettingsActivity_hour_of_notification" />
+
+           <NumberPicker
+               android:id="@+id/HourOfNotification"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentTop="true"
+               android:layout_alignParentEnd="true"
+               android:layout_marginStart="0dp"
+               android:layout_marginTop="200dp"
+               android:layout_marginEnd="20dp"
+               android:gravity="center"/>
+
+           <EditText
+               android:id="@+id/EmailAddress"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:layout_alignParentTop="true"
+               android:layout_alignParentEnd="true"
+               android:layout_marginStart="20dp"
+               android:layout_marginTop="400dp"
+               android:layout_marginEnd="20dp"
+               android:ems="10"
+               android:hint="@string/AppSettingsActivity_give_email_adress"
+               android:gravity="center"
+               android:autofillHints="email"
+               android:inputType="textEmailAddress" />
+           <Button
+                android:id="@+id/SaveSettingsButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="45dp"
+                android:layout_marginTop="450dp"
+                android:layout_marginEnd="45dp"
+                android:text="@string/AppSettingsActivity_save_settings" />
+
+           <Button
+               android:id="@+id/ClearDatabaseButton"
+               android:layout_width="300dp"
+               android:layout_height="wrap_content"
+               android:layout_toStartOf="@id/SaveSettingsButton"
+               android:layout_alignParentStart="true"
+               android:layout_alignParentEnd="true"
+               android:layout_marginStart="45dp"
+               android:layout_marginTop="600dp"
+               android:layout_marginEnd="45dp"
+               android:text="@string/AppSettingsActivity_clear_database"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               tools:layout_editor_absoluteY="317dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>
