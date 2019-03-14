@@ -85,6 +85,17 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ProductDetailsActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_product_details"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <intent-filter>
+                <action android:name="package.OtherActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
