@@ -54,6 +54,7 @@
                 android:text="@string/MainActivity_close_app_button" />
 
         </LinearLayout>
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/AdBanner"
             android:layout_width="wrap_content"
