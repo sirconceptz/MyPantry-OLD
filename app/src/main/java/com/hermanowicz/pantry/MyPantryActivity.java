@@ -28,6 +28,10 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -54,10 +58,11 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     private NavigationView   navigationView;
     private ListViewAdapter  listViewAdapter;
     private String           fltrName, fltrExpirationDateSince, fltrExpirationDateFor,
-            fltrProductionDateSince, fltrProductionDateFor, fltrTypeOfProduct,
-            fltrProductFeatures, fltrTaste, type_of_dialog;
+                             fltrProductionDateSince, fltrProductionDateFor, fltrTypeOfProduct,
+                             fltrProductFeatures, fltrTaste, type_of_dialog;
     private int              fltrWeightSince = -1, fltrWeightFor = -1, fltrVolumeSince = -1,
-            fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
+                             fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
+    public  AdRequest        adRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,12 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         emptyPantryStatement      = findViewById(R.id.EmptyPantryStatement);
         Toolbar  toolbar          = findViewById(R.id.Toolbar);
         ListView listViewProducts = findViewById(R.id.ListViewProducts);
+        AdView   adView           = findViewById(R.id.AdBanner);
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
+
+        adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         listViewProducts.setAdapter(listViewAdapter);
         listViewAdapter.notifyDataSetChanged();
@@ -417,6 +428,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
             }
             selectQuery = selectQuery + "taste='" + fltrTaste + "'";
         }
+        selectQuery = selectQuery + " ORDER BY expiration_date ASC";
         return selectQuery;
     }
 
@@ -637,7 +649,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
             calendar.add(Calendar.DAY_OF_MONTH, AppSettingsActivity.getDaysBeforeNotificationFromSettings(context));
             Date dayOfNotification = calendar.getTime();
             if (dayOfNotification.after(expirationDateDt))
-                view.setBackgroundColor(getResources().getColor(R.color.background_expired_products));
+            view.setBackgroundColor(getResources().getColor(R.color.background_expired_products));
 
             return view;
         }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_my_pantry_shortcut">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hermanowicz.pantry.MyPantryActivity"
+            android:targetPackage="com.hermanowicz.pantry"/>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_search">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hermanowicz.pantry.ScanProductActivity"
+            android:targetPackage="com.hermanowicz.pantry"/>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_new_product_shortcut">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hermanowicz.pantry.NewProductActivity"
+            android:targetPackage="com.hermanowicz.pantry"/>
+    </shortcut>
+</shortcuts>

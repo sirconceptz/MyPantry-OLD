@@ -13,8 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
 /**
  * <h1>BootDeviceReceiver</h1>
  * A receiver for boot device. This class is needed to renew a notifications on the device.
@@ -29,11 +27,6 @@ public class BootDeviceReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
 
-        DatabaseManager db           = new DatabaseManager(context);
-        List<Product> productsFromDB = db.getProductsFromDB("SELECT * FROM 'products' DESC");
-        for(int counter=0; counter <= productsFromDB.size(); counter++){
-            Product selectedProduct = productsFromDB.get(counter);
-            Notification.createNotification(context, selectedProduct);
-        }
+        Notification.createNotificationsForAllProducts(context);
     }
 }

@@ -65,6 +65,15 @@ class Notification {
         }
     }
 
+    static void createNotificationsForAllProducts(@NonNull Context context){
+        DatabaseManager db           = new DatabaseManager(context);
+        List<Product> productsFromDB = db.getProductsFromDB("SELECT * FROM 'products' DESC");
+        for(int counter=0; counter < productsFromDB.size(); counter++){
+            Product selectedProduct = productsFromDB.get(counter);
+            Notification.createNotification(context, selectedProduct);
+        }
+    }
+
     static void cancelNotification(@NonNull Context context, @NonNull Product product){
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
@@ -75,8 +84,10 @@ class Notification {
         alarmManager.cancel(pendingIntent);
     }
 
-    static void cancelAllNotifications(@NonNull Context context, @NonNull List<Product> productsList){
-        AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
+    static void cancelAllNotifications(@NonNull Context context){
+        DatabaseManager db           = new DatabaseManager(context);
+        List<Product> productsList   = db.getProductsFromDB("SELECT * FROM 'products' DESC");
+        AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         for(int counter = 0; counter < productsList.size(); counter++){
             PendingIntent pendingIntent = PendingIntent.getBroadcast(

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<paths>
+    <files-path
+        name="files"
+        path="." />
+    <external-path
+        name="external_path"
+        path="." />
+    <external-files-path
+        name="external_files_path"
+        path="." />
+</paths>

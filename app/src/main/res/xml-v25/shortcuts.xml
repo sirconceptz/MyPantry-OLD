@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_my_pantry_shortcut"
+        android:shortcutDisabledMessage="@string/title_activity_my_pantry"
+        android:shortcutId="my_pantry"
+        android:shortcutLongLabel="@string/title_activity_my_pantry"
+        android:shortcutShortLabel="@string/title_activity_my_pantry">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hermanowicz.pantry.MyPantryActivity"
+            android:targetPackage="com.hermanowicz.pantry"/>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:shortcutDisabledMessage="@string/title_activity_scan_the_product"
+        android:shortcutId="scan_the_product"
+        android:shortcutLongLabel="@string/title_activity_scan_the_product"
+        android:shortcutShortLabel="@string/title_activity_scan_the_product">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hermanowicz.pantry.ScanProductActivity"
+            android:targetPackage="com.hermanowicz.pantry"/>
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_new_product_shortcut"
+        android:shortcutDisabledMessage="@string/title_activity_new_product"
+        android:shortcutId="new_product"
+        android:shortcutLongLabel="@string/title_activity_new_product"
+        android:shortcutShortLabel="@string/title_activity_new_product">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.hermanowicz.pantry.NewProductActivity"
+            android:targetPackage="com.hermanowicz.pantry"/>
+    </shortcut>
+</shortcuts>

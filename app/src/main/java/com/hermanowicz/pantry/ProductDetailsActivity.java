@@ -56,9 +56,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
             hashCode = 0;
         }
 
-        context           = getApplicationContext();
-        db                = new DatabaseManager(context);
-        selectedProduct   = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
+                 context           = getApplicationContext();
+                 db                = new DatabaseManager(context);
+                 selectedProduct   = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
         Toolbar  toolbar           = findViewById(R.id.Toolbar);
         TextView typeOfProduct     = findViewById(R.id.ProductTypeValue);
         TextView productFeatures   = findViewById(R.id.ProductFeaturesValue);
@@ -107,7 +107,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 try {
                     ArrayList<Product> productArrayList = new ArrayList<>();
                     productArrayList.add(selectedProduct);
-                    //TODO: Create intent to print qr codes
+                    startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productArrayList));
+                    finish();
                 }
                 catch (Exception e){
                     Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
@@ -124,8 +125,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
                     startActivity(myPantryActivityIntent);
                     finish();
+                    }
                 }
-            }
         });
     }
 

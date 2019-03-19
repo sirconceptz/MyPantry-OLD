@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2019.                                                       ~
+  ~ Mateusz Hermanowicz                                                       ~
+  ~ My Pantry                                                                 ~
+  ~ https://www.mypantry.eu                                                   ~
+  ~ Released under Apache License Version 2.0                                 ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<full-backup-content xmlns:tools="http://schemas.android.com/tools">
+    <include
+        domain="database"
+        path="/data/data/com.hermanowicz.pantry/databases/database.db"
+        tools:ignore="FullBackupContent" />
+</full-backup-content>

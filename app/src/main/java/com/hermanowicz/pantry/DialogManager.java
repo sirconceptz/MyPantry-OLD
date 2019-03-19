@@ -50,16 +50,16 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
     private Context                            context;
     private EditText                           editTextName, editTextExpirationDateSince, editTextExpirationDateFor,
-            editTextProductionDateSince, editTextProductionDateFor, editTextVolumeSince,
-            editTextVolumeFor, editTextWeightSince, editTextWeightFor;
+                                               editTextProductionDateSince, editTextProductionDateFor, editTextVolumeSince,
+                                               editTextVolumeFor, editTextWeightSince, editTextWeightFor;
     private Spinner                            spinnerTypeOfProduct, spinnerProductFeatures, spinnerTaste;
     private CheckBox                           checkBoxHasSugar, checkBoxHasSalt;
     private String[]                           productFeaturesArray, productTypesArray, filterTypeOfProductArray;
     private ArrayAdapter<CharSequence>         productFeaturesAdapter;
     private String                             filterName, filterExpirationDateSince, filterExpirationDateFor,
-            filterProductionDateSince, filterProductionDateFor, filterTypeOfProduct,
-            filterProductFeatures, filterTaste, dialogType, selectedProductType,
-            expirationDateSinceConverted = "", expirationDateForConverted = "";
+                                               filterProductionDateSince, filterProductionDateFor, filterTypeOfProduct,
+                                               filterProductFeatures, filterTaste, dialogType, selectedProductType,
+                                               expirationDateSinceConverted = "", expirationDateForConverted = "";
     private int                                filterWeightSince, filterWeightFor, filterVolumeSince, filterVolumeFor, filterHasSugar, filterHasSalt;
     private DialogListener                     dialogListener;
     private DateFormat                         DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -68,7 +68,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
     private boolean                            isTypeOfProductTouched, isProductFeaturesTouched;
     private Calendar                           calendar;
     private DatePickerDialog.OnDateSetListener productionDateSinceListener, productionDateForListener,
-            expirationDateSinceListener, expirationDateForListener;
+                                               expirationDateSinceListener, expirationDateForListener;
 
     /**
      * Setter for dialog type.
@@ -147,7 +147,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 public void onClick(View view) {
                     editTextName.setText("");
                     filterName = null;
-                }});
+                    }});
 
             builder.setView(view)
                     .setTitle(dialogType)
@@ -280,8 +280,8 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                 e.printStackTrace();
                             }
                             try{
-                                filterExpirationDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateForConverted));
-                                dateExpirationFor = DATE_FORMAT.parse(expirationDateForConverted);
+                                    filterExpirationDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateForConverted));
+                                    dateExpirationFor = DATE_FORMAT.parse(expirationDateForConverted);
                             }
                             catch (ParseException e) {
                                 if(expirationDateForConverted.length() < 1) {
@@ -511,8 +511,8 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                             filterTypeOfProduct = null;
                         else
                             filterTypeOfProduct = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
+                        }
                     }
-                }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
                 }
@@ -790,10 +790,10 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
             checkBoxHasSugar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(checkBoxHasSugar.isChecked())
-                        filterHasSugar = 1;
-                    else
-                        filterHasSugar = 0;
+                if(checkBoxHasSugar.isChecked())
+                    filterHasSugar = 1;
+                else
+                    filterHasSugar = 0;
                 }}
             );
 

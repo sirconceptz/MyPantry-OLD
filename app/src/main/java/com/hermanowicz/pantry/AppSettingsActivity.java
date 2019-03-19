@@ -119,12 +119,12 @@ public class AppSettingsActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(isValidEmail(emailAddress.getText().toString())){
-                    notificationsByEmail.setEnabled(true);
-                }
-                else{
-                    notificationsByEmail.setEnabled(false);
-                }
+            if(isValidEmail(emailAddress.getText().toString())){
+                notificationsByEmail.setEnabled(true);
+            }
+            else{
+                notificationsByEmail.setEnabled(false);
+            }
             }
         });
 
@@ -146,6 +146,11 @@ public class AppSettingsActivity extends AppCompatActivity {
                     preferenceEditor.putString(Const.PREFERENCES_EMAIL_ADDRESS, "");
                 }
 
+                if(isNotificationSettingsChanged()){
+                    Notification.cancelAllNotifications(context);
+                    Notification.createNotificationsForAllProducts(context);
+                }
+
                 if(preferenceEditor.commit()) {
                     Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_settings_saved_successful), Toast.LENGTH_LONG).show();
                 }
@@ -156,11 +161,26 @@ public class AppSettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 List<Product> productsList = db.getProductsFromDB("SELECT * FROM 'products'");
-                Notification.cancelAllNotifications(context, productsList);
+                Notification.cancelAllNotifications(context);
                 db.reCreateDB();
                 Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private boolean isNotificationSettingsChanged(){
+        boolean isNotificationSettingsChanged = false;
+        int actualHourOfNotifications     = getHourOfNotifications(context);
+        int newHourOfNotifications        = hourOfNotification.getValue();
+        int actualDaysBeforeNotifications = getDaysBeforeNotificationFromSettings(context);
+        int newDaysBeforeNotifications    = Integer.parseInt(daysBeforeExpirationDate.getText().toString());
+
+        if(actualHourOfNotifications != newHourOfNotifications)
+            isNotificationSettingsChanged = true;
+        if(actualDaysBeforeNotifications != newDaysBeforeNotifications)
+            isNotificationSettingsChanged = true;
+
+        return isNotificationSettingsChanged;
     }
 
     private boolean isValidEmail(@NonNull String email) {

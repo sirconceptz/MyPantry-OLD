@@ -30,6 +30,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:fullBackupContent="@xml/backup_descriptor"
         tools:targetApi="n">
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <meta-data
@@ -44,6 +45,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts"/>
         </activity>
         <activity
             android:name=".MyPantryActivity"
@@ -51,11 +55,11 @@
             android:label="@string/title_activity_my_pantry"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity">
-            <intent-filter>
-                <action android:name="package.OtherActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        <intent-filter>
+            <action android:name="package.OtherActivity" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+       </activity>
         <activity
             android:name=".NewProductActivity"
             android:screenOrientation="portrait"
@@ -79,6 +83,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".ScanProductActivity">
+            <intent-filter>
+                <action android:name="package.OtherActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".PrintQRCodesActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_print_qrcodes"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="package.OtherActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -128,5 +143,14 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 </manifest>

@@ -14,6 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 /**
  * <h1>MainActivity</h1>
  * Main activity - main window of the application. First window after launching this application.
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
         Button newProductButton  = findViewById(R.id.NewProductButton);
         Button appSettingsButton = findViewById(R.id.AppSettingsButton);
         Button closeAppButton    = findViewById(R.id.CloseAppButton);
+        AdView adView            = findViewById(R.id.AdBanner);
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         myPantryButton.setOnClickListener(new View.OnClickListener() {
             @Override
