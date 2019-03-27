@@ -32,7 +32,7 @@
                 android:text="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification" />
 
             <EditText
-                android:id="@+id/DaysToNotification"
+                android:id="@+id/edittext_daysToNotification"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -54,7 +54,7 @@
                 android:text="@string/AppSettingsActivity_notifications_send_by" />
 
             <CheckBox
-                android:id="@+id/EmailNotificationsCheckbox"
+                android:id="@+id/checkbox_emailNotifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -66,7 +66,7 @@
                 android:text="@string/AppSettingsActivity_notifications_email" />
 
             <CheckBox
-                android:id="@+id/PushNotificationsCheckbox"
+                android:id="@+id/checkbox_pushNotifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -87,7 +87,7 @@
                android:text="@string/AppSettingsActivity_hour_of_notification" />
 
            <NumberPicker
-               android:id="@+id/HourOfNotification"
+               android:id="@+id/numberpicker_hourOfNotification"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:layout_alignParentTop="true"
@@ -98,7 +98,7 @@
                android:gravity="center"/>
 
            <EditText
-               android:id="@+id/EmailAddress"
+               android:id="@+id/edittext_emailAddress"
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                android:layout_alignParentTop="true"
@@ -112,7 +112,7 @@
                android:autofillHints="email"
                android:inputType="textEmailAddress" />
            <Button
-                android:id="@+id/SaveSettingsButton"
+                android:id="@+id/button_saveSettings"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -123,10 +123,10 @@
                 android:text="@string/AppSettingsActivity_save_settings" />
 
            <Button
-               android:id="@+id/ClearDatabaseButton"
+               android:id="@+id/button_clearDatabase"
                android:layout_width="300dp"
                android:layout_height="wrap_content"
-               android:layout_toStartOf="@id/SaveSettingsButton"
+               android:layout_toStartOf="@id/button_saveSettings"
                android:layout_alignParentStart="true"
                android:layout_alignParentEnd="true"
                android:layout_marginStart="45dp"

@@ -13,7 +13,7 @@
     android:padding="16dp">
 
     <Spinner
-        android:id="@+id/taste"
+        android:id="@+id/edittext_taste"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -21,11 +21,11 @@
         android:entries="@array/ProductDetailsActivity_taste_array" />
 
     <Button
-        android:id="@+id/btn_clear"
+        android:id="@+id/button_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/taste"
+        android:layout_below="@id/edittext_taste"
         android:text="@string/MyPantryActivity_clear"/>
 
 </RelativeLayout>

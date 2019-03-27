@@ -37,7 +37,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/NameValue"
+                android:id="@+id/edittext_name"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -61,7 +61,7 @@
                 android:textSize="14sp" />
 
             <Spinner
-                android:id="@+id/ProductTypeSpinner"
+                android:id="@+id/spinner_productType"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -85,7 +85,7 @@
                 android:textSize="14sp" />
 
             <Spinner
-                android:id="@+id/ProductFeaturesSpinner"
+                android:id="@+id/spinner_productFeatures"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -108,7 +108,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/ExpirationDate"
+                android:id="@+id/edittext_expirationDate"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -132,7 +132,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/ProductionDate"
+                android:id="@+id/edittext_productionDate"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -156,7 +156,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/Quantity"
+                android:id="@+id/edittext_quantity"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -179,7 +179,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/Composition"
+                android:id="@+id/edittext_composition"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -202,7 +202,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/HealingProperties"
+                android:id="@+id/edittext_healingProperties"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -225,7 +225,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/Dosage"
+                android:id="@+id/edittext_dosage"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -238,7 +238,7 @@
                 android:inputType="textPersonName" />
 
             <TextView
-                android:id="@+id/VolumeLabel"
+                android:id="@+id/text_volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -249,7 +249,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/Volume"
+                android:id="@+id/edittext_volume"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -262,7 +262,7 @@
                 android:inputType="number" />
 
             <TextView
-                android:id="@+id/WeightLabel"
+                android:id="@+id/text_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -273,7 +273,7 @@
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/Weight"
+                android:id="@+id/edittext_weight"
                 android:layout_width="150dp"
                 android:layout_height="40dp"
                 android:layout_alignParentTop="true"
@@ -286,7 +286,7 @@
                 android:inputType="number" />
 
             <CheckBox
-                android:id="@+id/HasSugar"
+                android:id="@+id/checkbox_hasSugar"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -296,7 +296,7 @@
                 android:text="@string/ProductDetailsActivity_has_sugar" />
 
             <CheckBox
-                android:id="@+id/HasSalt"
+                android:id="@+id/checkbox_hasSugar"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -323,35 +323,35 @@
                 android:layout_marginTop="690dp">
 
                 <RadioButton
-                    android:id="@+id/IsSweet"
+                    android:id="@+id/radiobtn_isSweet"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/ProductDetailsActivity_sweet" />
 
                 <RadioButton
-                    android:id="@+id/IsSour"
+                    android:id="@+id/radiobtn_isSour"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/ProductDetailsActivity_sour" />
 
                 <RadioButton
-                    android:id="@+id/IsSweetAndSour"
+                    android:id="@+id/radiobtn_isSweetAndSour"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/ProductDetailsActivity_sweet_and_sour" />
 
                 <RadioButton
-                    android:id="@+id/IsBitter"
+                    android:id="@+id/radiobtn_isBitter"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/ProductDetailsActivity_bitter" />
 
                 <RadioButton
-                    android:id="@+id/IsSalty"
+                    android:id="@+id/radiobtn_isSalty"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -359,7 +359,7 @@
             </RadioGroup>
 
             <Button
-                android:id="@+id/AddProduct"
+                android:id="@+id/button_addProduct"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"

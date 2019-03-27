@@ -37,7 +37,8 @@ import java.util.List;
  */
 public class ScanProductActivity extends AppCompatActivity {
 
-    private Context          context;
+    private Context  context;
+    static final int VIBRATE_DURATION = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +79,7 @@ public class ScanProductActivity extends AppCompatActivity {
         productDetailsIntent.putExtra("hash_code", decodedQRCodeAsList.get(1));
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null) {
-            vibrator.vibrate(Const.VIBRATE_DURATION);
+            vibrator.vibrate(VIBRATE_DURATION);
         }
         return productDetailsIntent;
     }

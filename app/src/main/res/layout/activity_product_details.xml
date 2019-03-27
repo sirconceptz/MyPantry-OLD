@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/Toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -34,7 +34,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductTypeValue"
+        android:id="@+id/text_productTypeValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -50,7 +50,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductFeaturesValue"
+        android:id="@+id/text_productFeaturesValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -68,7 +68,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductProductionDateValue"
+        android:id="@+id/text_productProductionDateValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -84,7 +84,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductExpirationDateValue"
+        android:id="@+id/text_productExpirationDateValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -100,7 +100,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductVolumeValue"
+        android:id="@+id/text_productVolumeValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -116,7 +116,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductWeightValue"
+        android:id="@+id/text_productWeightValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -132,7 +132,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductTasteValue"
+        android:id="@+id/text_productTasteValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -148,7 +148,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductHasSugarValue"
+        android:id="@+id/text_productHasSugarValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -164,7 +164,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductHasSaltValue"
+        android:id="@+id/text_productHasSaltValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -180,7 +180,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductCompositionValue"
+        android:id="@+id/text_productCompositionValue"
         android:layout_width="215dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -196,7 +196,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductHealingPropertiesValue"
+        android:id="@+id/text_productHealingPropertiesValue"
         android:layout_width="215dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -212,7 +212,7 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/ProductDosageValue"
+        android:id="@+id/text_productDosageValue"
         android:layout_width="215dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="145dp"
@@ -220,7 +220,7 @@
         android:textSize="14sp" />
 
     <Button
-        android:id="@+id/PrintQRCode"
+        android:id="@+id/button_printQRCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="550dp"
@@ -228,7 +228,7 @@
         android:text="@string/PrintQRCodesActivity_print_qr_codes" />
 
     <Button
-        android:id="@+id/DeleteProductButton"
+        android:id="@+id/button_DeleteProduct"
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

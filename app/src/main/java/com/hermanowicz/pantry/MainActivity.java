@@ -29,17 +29,18 @@ import com.google.android.gms.ads.MobileAds;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private AdView adView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button myPantryButton    = findViewById(R.id.MyPantryButton);
-        Button scanProductButton = findViewById(R.id.ScanProductButton);
-        Button newProductButton  = findViewById(R.id.NewProductButton);
-        Button appSettingsButton = findViewById(R.id.AppSettingsButton);
-        Button closeAppButton    = findViewById(R.id.CloseAppButton);
-        AdView adView            = findViewById(R.id.AdBanner);
+        Button myPantryButton    = findViewById(R.id.button_myPantry);
+        Button scanProductButton = findViewById(R.id.button_scanProduct);
+        Button newProductButton  = findViewById(R.id.button_newProduct);
+        Button appSettingsButton = findViewById(R.id.button_appSettings);
+        adView                   = findViewById(R.id.adBanner);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
 
@@ -81,13 +82,26 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
-        closeAppButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                android.os.Process.killProcess(android.os.Process.myPid());
-                System.exit(1);
-            }
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        adView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        adView.pause();
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+
+        super.onDestroy();
     }
 }

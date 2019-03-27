@@ -13,25 +13,25 @@
     android:padding="16dp">
 
     <CheckBox
-        android:id="@+id/has_sugar"
+        android:id="@+id/checkbox_hasSugar"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="@string/ProductDetailsActivity_has_sugar" />
 
     <CheckBox
-        android:id="@+id/has_salt"
+        android:id="@+id/checkbox_hasSalt"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/has_sugar"
+        android:layout_below="@+id/checkbox_hasSugar"
         android:text="@string/ProductDetailsActivity_has_salt" />
 
     <Button
-        android:id="@+id/btn_clear"
+        android:id="@+id/button_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/has_salt"
+        android:layout_below="@id/checkbox_hasSalt"
         android:text="@string/MyPantryActivity_clear"/>
 
 </RelativeLayout>

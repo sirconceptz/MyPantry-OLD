@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/Toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -36,7 +36,7 @@
         android:layout_above="@+id/layout">
 
         <com.google.android.gms.ads.AdView
-            android:id="@+id/AdBanner"
+            android:id="@+id/adBanner"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"

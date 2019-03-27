@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -49,6 +48,12 @@ public class AppSettingsActivity extends AppCompatActivity {
     private NumberPicker      hourOfNotification;
     private CheckBox          notificationsByEmail, notificationsByPush;
 
+    static final String PREFERENCES_EMAIL_ADDRESS         = "EMAIL_ADDRESS";
+    static final String PREFERENCES_EMAIL_NOTIFICATIONS   = "EMAIL_NOTIFICATIONS?";
+    static final String PREFERENCES_PUSH_NOTIFICATIONS    = "PUSH_NOTIFICATIONS?";
+    static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
+    static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +61,14 @@ public class AppSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_app_settings);
 
         context                  = getApplicationContext();
-        daysBeforeExpirationDate = findViewById(R.id.DaysToNotification);
-        notificationsByEmail     = findViewById(R.id.EmailNotificationsCheckbox);
-        notificationsByPush      = findViewById(R.id.PushNotificationsCheckbox);
-        hourOfNotification       = findViewById(R.id.HourOfNotification);
-        emailAddress             = findViewById(R.id.EmailAddress);
-        Toolbar toolbar          = findViewById(R.id.Toolbar);
-        Button saveSettings      = findViewById(R.id.SaveSettingsButton);
-        Button clearDatabase     = findViewById(R.id.ClearDatabaseButton);
+        Toolbar toolbar          = findViewById(R.id.toolbar);
+        daysBeforeExpirationDate = findViewById(R.id.edittext_daysToNotification);
+        notificationsByEmail     = findViewById(R.id.checkbox_emailNotifications);
+        notificationsByPush      = findViewById(R.id.checkbox_pushNotifications);
+        hourOfNotification       = findViewById(R.id.numberpicker_hourOfNotification);
+        emailAddress             = findViewById(R.id.edittext_emailAddress);
+        Button saveSettings      = findViewById(R.id.button_saveSettings);
+        Button clearDatabase     = findViewById(R.id.button_clearDatabase);
         db                       = new DatabaseManager(context);
         myPreferences            = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -73,33 +78,11 @@ public class AppSettingsActivity extends AppCompatActivity {
         hourOfNotification.setMaxValue(24);
         hourOfNotification.setWrapSelectorWheel(false);
 
-        try {
-            emailAddress.setText(myPreferences.getString(Const.PREFERENCES_EMAIL_ADDRESS, ""));
-        } catch (NullPointerException e) {
-            emailAddress.setText("");
-        }
-
-        try {
-            daysBeforeExpirationDate.setText(Integer.toString(getDaysBeforeNotificationFromSettings(context)));
-        } catch (NullPointerException e) {
-            daysBeforeExpirationDate.setText(Const.NOTIFICATION_DEFAULT_DAYS);
-        }
-        try {
-            notificationsByEmail.setChecked(myPreferences.getBoolean(Const.PREFERENCES_EMAIL_NOTIFICATIONS, false));
-        } catch (NullPointerException e) {
-            notificationsByEmail.setChecked(false);
-        }
-        try {
-            notificationsByPush.setChecked(myPreferences.getBoolean(Const.PREFERENCES_PUSH_NOTIFICATIONS, true));
-
-        } catch (NullPointerException e) {
-            notificationsByPush.setChecked(true);
-        }
-        try {
-            hourOfNotification.setValue(myPreferences.getInt(Const.PREFERENCES_HOUR_OF_NOTIFICATIONS, Const.NOTIFICATION_DEFAULT_HOUR));
-        } catch (NullPointerException e) {
-            hourOfNotification.setValue(Const.NOTIFICATION_DEFAULT_HOUR);
-        }
+        emailAddress.setText(myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
+        notificationsByEmail.setChecked(myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false));
+        notificationsByPush.setChecked(myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS, true));
+        hourOfNotification.setValue(myPreferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_HOUR));
+        daysBeforeExpirationDate.setText(getDaysBeforeNotificationFromSettings(context));
 
         if(isValidEmail(emailAddress.getText().toString())){
             notificationsByEmail.setEnabled(true);
@@ -133,17 +116,17 @@ public class AppSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SharedPreferences.Editor preferenceEditor = myPreferences.edit();
 
-                preferenceEditor.putInt(Const.PREFERENCES_DAYS_TO_NOTIFICATIONS, Integer.parseInt(daysBeforeExpirationDate.getText().toString()));
-                preferenceEditor.putBoolean(Const.PREFERENCES_PUSH_NOTIFICATIONS, notificationsByPush.isChecked());
-                preferenceEditor.putInt(Const.PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotification.getValue());
+                preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, Integer.parseInt(daysBeforeExpirationDate.getText().toString()));
+                preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, notificationsByPush.isChecked());
+                preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotification.getValue());
                 if(isValidEmail(emailAddress.getText().toString())) {
-                    preferenceEditor.putBoolean(Const.PREFERENCES_EMAIL_NOTIFICATIONS, notificationsByEmail.isChecked());
-                    preferenceEditor.putString(Const.PREFERENCES_EMAIL_ADDRESS, emailAddress.getText().toString());
+                    preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, notificationsByEmail.isChecked());
+                    preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, emailAddress.getText().toString());
                 }
                 else
                 {
-                    preferenceEditor.putBoolean(Const.PREFERENCES_EMAIL_NOTIFICATIONS, false);
-                    preferenceEditor.putString(Const.PREFERENCES_EMAIL_ADDRESS, "");
+                    preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
+                    preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, "");
                 }
 
                 if(isNotificationSettingsChanged()){
@@ -160,7 +143,6 @@ public class AppSettingsActivity extends AppCompatActivity {
         clearDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<Product> productsList = db.getProductsFromDB("SELECT * FROM 'products'");
                 Notification.cancelAllNotifications(context);
                 db.reCreateDB();
                 Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
@@ -191,27 +173,27 @@ public class AppSettingsActivity extends AppCompatActivity {
     public static int getDaysBeforeNotificationFromSettings(@NonNull Context context) {
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return myPreferences.getInt(
-                Const.PREFERENCES_DAYS_TO_NOTIFICATIONS, Const.NOTIFICATION_DEFAULT_DAYS);
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS);
     }
 
     public static int getHourOfNotifications(@NonNull Context context){
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return myPreferences.getInt(Const.PREFERENCES_HOUR_OF_NOTIFICATIONS, 12);
+        return myPreferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_HOUR);
     }
 
     public static String getEmailForNotifications(@NonNull Context context){
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return myPreferences.getString(Const.PREFERENCES_EMAIL_ADDRESS, "");
+        return myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, "");
     }
 
     public static boolean isPushNotificationAllowed(Context context){
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return myPreferences.getBoolean(Const.PREFERENCES_PUSH_NOTIFICATIONS, true);
+        return myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS, true);
     }
 
     public static boolean isEmailNotificationAllowed(Context context){
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return myPreferences.getBoolean(Const.PREFERENCES_EMAIL_NOTIFICATIONS, false);
+        return myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
     }
 
     @Override

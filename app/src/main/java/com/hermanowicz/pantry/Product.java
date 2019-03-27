@@ -24,8 +24,8 @@ public class Product {
     private String  typeOfProduct;          //required
     private String  productFeatures;        //required
     private String  expirationDate;         //required
-    private String  productionDate;         //optional, only for homemade products
-    private String  composition;            //optional
+    private String  productionDate;         //optional
+    private String  composition;            //optional, only for homemade products
     private String  healingProperties;      //optional, only for tincture
     private String  dosage;                 //optional, only for tincture
     private int     volume;                 //optional

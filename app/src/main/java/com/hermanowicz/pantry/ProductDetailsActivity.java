@@ -46,7 +46,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_product_details);
 
         Intent myPantryActivityIntent = getIntent();
-        int productID = myPantryActivityIntent.getIntExtra("product_id", 1) - 1;
+        int productID = myPantryActivityIntent.getIntExtra("product_id", 1);
 
         int hashCode;
         try {
@@ -56,24 +56,24 @@ public class ProductDetailsActivity extends AppCompatActivity {
             hashCode = 0;
         }
 
-                 context           = getApplicationContext();
-                 db                = new DatabaseManager(context);
-                 selectedProduct   = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
-        Toolbar  toolbar           = findViewById(R.id.Toolbar);
-        TextView typeOfProduct     = findViewById(R.id.ProductTypeValue);
-        TextView productFeatures   = findViewById(R.id.ProductFeaturesValue);
-        TextView expirationDate    = findViewById(R.id.ProductExpirationDateValue);
-        TextView productionDate    = findViewById(R.id.ProductProductionDateValue);
-        TextView composition       = findViewById(R.id.ProductCompositionValue);
-        TextView healingProperties = findViewById(R.id.ProductHealingPropertiesValue);
-        TextView dosage            = findViewById(R.id.ProductDosageValue);
-        TextView volume            = findViewById(R.id.ProductVolumeValue);
-        TextView weight            = findViewById(R.id.ProductWeightValue);
-        TextView hasSugar          = findViewById(R.id.ProductHasSugarValue);
-        TextView hasSalt           = findViewById(R.id.ProductHasSaltValue);
-        TextView taste             = findViewById(R.id.ProductTasteValue);
-        Button   printQRCode       = findViewById(R.id.PrintQRCode);
-        Button   deleteButton      = findViewById(R.id.DeleteProductButton);
+        context                    = getApplicationContext();
+        db                         = new DatabaseManager(context);
+        selectedProduct            = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
+        Toolbar  toolbar           = findViewById(R.id.toolbar);
+        TextView typeOfProduct     = findViewById(R.id.text_productTypeValue);
+        TextView productFeatures   = findViewById(R.id.text_productFeaturesValue);
+        TextView expirationDate    = findViewById(R.id.text_productExpirationDateValue);
+        TextView productionDate    = findViewById(R.id.text_productProductionDateValue);
+        TextView composition       = findViewById(R.id.text_productCompositionValue);
+        TextView healingProperties = findViewById(R.id.text_productHealingPropertiesValue);
+        TextView dosage            = findViewById(R.id.text_productDosageValue);
+        TextView volume            = findViewById(R.id.text_productVolumeValue);
+        TextView weight            = findViewById(R.id.text_productWeightValue);
+        TextView hasSugar          = findViewById(R.id.text_productHasSugarValue);
+        TextView hasSalt           = findViewById(R.id.text_productHasSaltValue);
+        TextView taste             = findViewById(R.id.text_productTasteValue);
+        Button   printQRCode       = findViewById(R.id.button_printQRCode);
+        Button   deleteButton      = findViewById(R.id.button_DeleteProduct);
 
         setSupportActionBar(toolbar);
 

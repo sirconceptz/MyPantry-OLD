@@ -48,14 +48,19 @@ public class NotificationService extends IntentService {
     private int               daysToNotification;
     public  JsonObjectRequest request_json;
 
+    static final String DAYS_TAG         = "%DAYS%";
+    static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
+    static final String URL_API          = "https://www.mypantry.eu/api";
+    static final String API_MAIL_FILE    = "mail.php";
+
     public NotificationService(){
         super("NotificationService");
     }
 
     private String createStatement(){
         String statement = getApplicationContext().getResources().getString(R.string.Notifications_statement);
-        statement = statement.replace(Const.DAYS_TAG, String.valueOf(daysToNotification));
-        statement = statement.replace(Const.PRODUCT_NAME_TAG, productName);
+        statement = statement.replace(DAYS_TAG, String.valueOf(daysToNotification));
+        statement = statement.replace(PRODUCT_NAME_TAG, productName);
         return statement;
     }
 
@@ -66,7 +71,7 @@ public class NotificationService extends IntentService {
         productName                     = intent.getStringExtra("PRODUCT_NAME");
         int               productID     = intent.getIntExtra("PRODUCT_ID", 0);
         daysToNotification              = myPreferences.getInt(
-                Const.PREFERENCES_DAYS_TO_NOTIFICATIONS, Const.NOTIFICATION_DEFAULT_DAYS);
+                AppSettingsActivity.PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
 
         if(AppSettingsActivity.isPushNotificationAllowed(context)) {
             String channelId = "my_channel_" + productID;
@@ -95,7 +100,6 @@ public class NotificationService extends IntentService {
             builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.ic_launcher_round));
             builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-            builder.setVibrate(new long[] { Const.VIBRATE_DURATION });
             builder.setLights(getResources().getColor(R.color.colorPrimary), 500, 1000);
             builder.setAutoCancel(true);
             Intent notifyIntent = new Intent(context, MyPantryActivity.class);
@@ -113,7 +117,7 @@ public class NotificationService extends IntentService {
             params.put("to_email_address", AppSettingsActivity.getEmailForNotifications(context));
             params.put("subject", getApplicationContext().getResources().getString(R.string.Notifications_title));
             params.put("message", createStatement());
-            String url = Const.URL_API + Const.API_MAIL_FILE;
+            String url = URL_API + API_MAIL_FILE;
 
             request_json = new JsonObjectRequest(url, new JSONObject(params),
                     new Response.Listener<JSONObject>() {

@@ -156,6 +156,8 @@
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Print QR codes</string>
     <string name="PrintQRCodesActivity_skip">Skip</string>
+    <string name="PrintQRCodesActivity_send_pdf_via_email">Send a PDF file by e-mail</string>
+    <string name="PrintQRCodesActivity_email_with_pdf_subject">[My Pantry] PDF with QR codes for printing</string>
     <!--AppSettingsActivity-->
     <string name="AppSettingsActivity_notifications_send_by">Send notifications about expirations date of product</string>
     <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notification?</string>

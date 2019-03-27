@@ -17,15 +17,13 @@
     tools:context=".MyPantryActivity"
     tools:showIn="@layout/activity_my_pantry">
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/ListViewProducts">
-
-    </ListView>
+<android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/RecyclerViewProducts" />
 
     <TextView
-        android:id="@+id/EmptyPantryStatement"
+        android:id="@+id/text_emptyPantryStatement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"

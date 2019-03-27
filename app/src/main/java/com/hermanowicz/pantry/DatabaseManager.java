@@ -31,8 +31,8 @@ import java.util.List;
  */
 public class DatabaseManager extends SQLiteOpenHelper {
     private static final int    DB_VERSION                 = 1;
-    private static final String DB_NAME                    = Const.DB_FILE_NAME;
-    private static final String DB_PRODUCTS_TABLE          = Const.DB_TABLE_NAME;
+    private static final String DB_NAME                    = "database.db";
+    private static final String DB_PRODUCTS_TABLE          = "products";
 
     private static final String KEY_ID                     = "_id";
     private static final String ID_OPTIONS                 = "INTEGER PRIMARY KEY AUTOINCREMENT";

@@ -158,6 +158,8 @@
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Drukuj kody QR</string>
     <string name="PrintQRCodesActivity_skip">Pomiń</string>
+    <string name="PrintQRCodesActivity_send_pdf_via_email">Wyślij plik PDF jako email</string>
+    <string name="PrintQRCodesActivity_email_with_pdf_subject">[Moja Spiżarnia] PDF z kodami QR do wydrukowania</string>
     <!--AppSettingsActivity-->
     <string name="AppSettingsActivity_notifications_send_by">Wyślij powiadomienia o utracie terminu przydatności produktu</string>
     <string name="AppSettingsActivity_hour_of_notification">O której godzinie chcesz otrzymać powiadomienie?</string>
@@ -170,7 +172,7 @@
     <string name="AppSettingsActivity_settings_saved_successful">Ustawienia zostały pomyślnie zapisane.</string>
     <string name="AppSettingsActivity_database_is_clear">Baza danych została wyczyszczona.</string>
     <!--Notifications-->
-    <string name="Notifications_title">[Moja spiżarnia] Produkt wkrótce się przeterminuje.</string>
+    <string name="Notifications_title">[Moja Spiżarnia] Produkt wkrótce się przeterminuje.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% wkrótce się przeterminuje. Zostało Ci mniej niż %DAYS% dni, aby zdążyć przed tą datą.</string>    <!--Errors-->
     <!--Errors-->
     <string name="Errors_error">Błąd</string>

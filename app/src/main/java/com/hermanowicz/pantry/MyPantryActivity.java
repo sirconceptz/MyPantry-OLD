@@ -8,7 +8,7 @@
 
 package com.hermanowicz.pantry;
 
-import android.annotation.SuppressLint;
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,24 +18,18 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,43 +45,59 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
 
     private Context          context;
     private DatabaseManager  db;
-    private SimpleDateFormat simpleDateFormat;
+    private ProductDB        productDB;
     private List<Product>    productsFromDB;
     private TextView         emptyPantryStatement;
     private DrawerLayout     drawerLayout;
     private NavigationView   navigationView;
-    private ListViewAdapter  listViewAdapter;
+    private ProductsAdapter adapterProductsRecyclerView;
     private String           fltrName, fltrExpirationDateSince, fltrExpirationDateFor,
                              fltrProductionDateSince, fltrProductionDateFor, fltrTypeOfProduct,
                              fltrProductFeatures, fltrTaste, type_of_dialog;
     private int              fltrWeightSince = -1, fltrWeightFor = -1, fltrVolumeSince = -1,
                              fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
     public  AdRequest        adRequest;
+    private AdView           adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_pantry_drawer_layout);
 
-        context                   = getApplicationContext();
-        db                        = new DatabaseManager(context);
-        simpleDateFormat          = new SimpleDateFormat("yyyy-MM-dd");
-        productsFromDB            = db.getProductsFromDB(buildPantryQuery());
-        listViewAdapter           = new ListViewAdapter();
-        drawerLayout              = findViewById(R.id.my_pantry_drawer_layout);
-        navigationView            = findViewById(R.id.nav_view);
-        emptyPantryStatement      = findViewById(R.id.EmptyPantryStatement);
-        Toolbar  toolbar          = findViewById(R.id.Toolbar);
-        ListView listViewProducts = findViewById(R.id.ListViewProducts);
-        AdView   adView           = findViewById(R.id.AdBanner);
+        context                           = getApplicationContext();
+        db                                = new DatabaseManager(context);
+        productsFromDB                    = db.getProductsFromDB(buildPantryQuery());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        RecyclerView recyclerViewProducts = findViewById(R.id.RecyclerViewProducts);
+        drawerLayout                      = findViewById(R.id.my_pantry_drawer_layout);
+        navigationView                    = findViewById(R.id.nav_view);
+        emptyPantryStatement              = findViewById(R.id.text_emptyPantryStatement);
+        Toolbar  toolbar                  = findViewById(R.id.toolbar);
+        adView                            = findViewById(R.id.adBanner);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
 
         adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        listViewProducts.setAdapter(listViewAdapter);
-        listViewAdapter.notifyDataSetChanged();
+        productDB = Room.databaseBuilder(context,ProductDB.class, "Article").allowMainThreadQueries().build();
+
+        adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, new ProductsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Product product) {
+                Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
+                int productID = product.getID()-1;
+                productDetailsActivityIntent.putExtra("product_id", productID);
+                Product  selectedProduct = productsFromDB.get(productID);
+                productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(selectedProduct.getHashCode()));
+                startActivity(productDetailsActivityIntent);
+                finish();
+            }
+        });
+        recyclerViewProducts.setAdapter(adapterProductsRecyclerView);
+        adapterProductsRecyclerView.notifyDataSetChanged();
+        recyclerViewProducts.setLayoutManager(new LinearLayoutManager(context));
+        recyclerViewProducts.setHasFixedSize(true);
 
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -98,19 +108,6 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         if(productsFromDB.size()==0){
             emptyPantryStatement.setText(getResources().getString(R.string.MyPantryActivity_empty_pantry));
         }
-
-        listViewProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-                int productID = position + 1;
-                productDetailsActivityIntent.putExtra("product_id", productID);
-                Product  selectedProduct = productsFromDB.get(position);
-                productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(selectedProduct.getHashCode()));
-                startActivity(productDetailsActivityIntent);
-                finish();
-            }
-        });
 
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -208,7 +205,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         else{
             emptyPantryStatement.setText("");
         }
-        listViewAdapter.notifyDataSetChanged();
+        adapterProductsRecyclerView.notifyDataSetChanged();
     }
 
     public void clearFilters() {
@@ -585,76 +582,6 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         refreshListView();
     }
 
-    /**
-     * <h1>ListViewAdapter</h1>
-     *
-     *
-     * @author  Mateusz Hermanowicz
-     * @version 1.0
-     * @since   1.0
-     */
-    class ListViewAdapter extends BaseAdapter {
-
-        /**
-         *
-         *
-         * @return size of list with products selected from database
-         */
-        @Override
-        public int getCount() {
-            return productsFromDB.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        /**
-         *
-         * @return
-         */
-        @SuppressLint("ViewHolder")
-        @Override
-        public View getView(int position, View view, ViewGroup viewGroup) {
-            view = getLayoutInflater().inflate(R.layout.list_view_products, null);
-
-            TextView nameTv            = view.findViewById(R.id.ProductNameValue);
-            TextView volumeTv          = view.findViewById(R.id.ProductVolume);
-            TextView weightTv          = view.findViewById(R.id.ProductWeight);
-            TextView expirationDateTv  = view.findViewById(R.id.ProductExpirationDate);
-
-            Product  selectedProduct      = productsFromDB.get(position);
-            Calendar calendar             = Calendar.getInstance();
-            Date     expirationDateDt     = calendar.getTime();
-            String   volumeString         = getResources().getString(R.string.ProductDetailsActivity_volume) + ": " +  selectedProduct.getVolume() + getResources().getString(R.string.ProductDetailsActivity_volume_unit);
-            String   weightString         = getResources().getString(R.string.ProductDetailsActivity_weight) + ": " +  selectedProduct.getWeight() + getResources().getString(R.string.ProductDetailsActivity_weight_unit);
-            String   expirationDateString = convertDate(selectedProduct.getExpirationDate());
-
-            nameTv.setText(selectedProduct.getName());
-            volumeTv.setText(volumeString);
-            weightTv.setText(weightString);
-            expirationDateTv.setText(expirationDateString);
-
-            try {
-                expirationDateDt = simpleDateFormat.parse(selectedProduct.getExpirationDate());
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            calendar.add(Calendar.DAY_OF_MONTH, AppSettingsActivity.getDaysBeforeNotificationFromSettings(context));
-            Date dayOfNotification = calendar.getTime();
-            if (dayOfNotification.after(expirationDateDt))
-            view.setBackgroundColor(getResources().getColor(R.color.background_expired_products));
-
-            return view;
-        }
-    }
-
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
@@ -663,5 +590,26 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
             finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        adView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        adView.pause();
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+
+        super.onDestroy();
     }
 }

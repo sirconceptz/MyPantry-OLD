@@ -158,6 +158,8 @@
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">QR-Codes drucken</string>
     <string name="PrintQRCodesActivity_skip">überspringen</string>
+    <string name="PrintQRCodesActivity_send_pdf_via_email">Senden Sie eine PDF-Datei per E-Mail</string>
+    <string name="PrintQRCodesActivity_email_with_pdf_subject">[Meine Speisekammer] PDF mit QR-Codes zum Ausdruckent</string>
     <!--AppSettingsActivity-->
     <string name="AppSettingsActivity_notifications_send_by">Benachrichtigungen über den Verlust des Verfallsdatums des Produkts senden</string>
     <string name="AppSettingsActivity_hour_of_notification">Wann möchten Sie benachrichtigt werden?</string>

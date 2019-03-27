@@ -28,6 +28,9 @@ import java.util.List;
  */
 class Notification {
 
+    static final int    NOTIFICATION_DEFAULT_HOUR = 12;
+    static final int    NOTIFICATION_DEFAULT_DAYS = 3;
+
     private static Calendar createCalendar(@NonNull Context context, @NonNull String expirationDate){
         String[] dateArray = expirationDate.split("-");
         Calendar calendar = Calendar.getInstance();

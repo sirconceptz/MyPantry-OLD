@@ -65,7 +65,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private Spinner                            productTypeSpinner, productFeaturesSpinner;
     private EditText                           name, expirationDate, productionDate, quantity, composition,
                                                healingProperties, dosage, volume, weight;
-    private TextView                           volumeLabel, weightLabel;
     private CheckBox                           hasSugar, hasSalt;
     private RadioButton                        isSweet, isSour, isSweetAndSour, isBitter, isSalty;
     private String                             selectedProductType, taste, productionDateValue,
@@ -77,7 +76,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private Calendar                           calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
     private ArrayAdapter<CharSequence>         productFeaturesAdapter;
-    public  AdRequest                          adRequest;
+    private AdView                             adView;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -85,37 +84,37 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
 
-        context                 = NewProductActivity.this;
-        db                      = new DatabaseManager(context);
-        name                    = findViewById(R.id.NameValue);
-        productTypeSpinner      = findViewById(R.id.ProductTypeSpinner);
-        productFeaturesSpinner  = findViewById(R.id.ProductFeaturesSpinner);
-        expirationDate          = findViewById(R.id.ExpirationDate);
-        productionDate          = findViewById(R.id.ProductionDate);
-        quantity                = findViewById(R.id.Quantity);
-        composition             = findViewById(R.id.Composition);
-        healingProperties       = findViewById(R.id.HealingProperties);
-        dosage                  = findViewById(R.id.Dosage);
-        volume                  = findViewById(R.id.Volume);
-        weight                  = findViewById(R.id.Weight);
-        hasSugar                = findViewById(R.id.HasSugar);
-        hasSalt                 = findViewById(R.id.HasSalt);
-        isSweet                 = findViewById(R.id.IsSweet);
-        isSour                  = findViewById(R.id.IsSour);
-        isSweetAndSour          = findViewById(R.id.IsSweetAndSour);
-        isBitter                = findViewById(R.id.IsBitter);
-        isSalty                 = findViewById(R.id.IsSalty);
-        volumeLabel             = findViewById(R.id.VolumeLabel);
-        weightLabel             = findViewById(R.id.WeightLabel);
-        Toolbar toolbar         = findViewById(R.id.Toolbar);
-        Button  addProduct      = findViewById(R.id.AddProduct);
-        AdView  adView          = findViewById(R.id.AdBanner);
+        context                = NewProductActivity.this;
+        db                     = new DatabaseManager(context);
+        Toolbar toolbar        = findViewById(R.id.toolbar);
+        name                   = findViewById(R.id.edittext_name);
+        productTypeSpinner     = findViewById(R.id.spinner_productType);
+        productFeaturesSpinner = findViewById(R.id.spinner_productFeatures);
+        expirationDate         = findViewById(R.id.edittext_expirationDate);
+        productionDate         = findViewById(R.id.edittext_productionDate);
+        quantity               = findViewById(R.id.edittext_quantity);
+        composition            = findViewById(R.id.edittext_composition);
+        healingProperties      = findViewById(R.id.edittext_healingProperties);
+        dosage                 = findViewById(R.id.edittext_dosage);
+        volume                 = findViewById(R.id.edittext_volume);
+        weight                 = findViewById(R.id.edittext_weight);
+        hasSugar               = findViewById(R.id.checkbox_hasSugar);
+        hasSalt                = findViewById(R.id.checkbox_hasSugar);
+        isSweet                = findViewById(R.id.radiobtn_isSweet);
+        isSour                 = findViewById(R.id.radiobtn_isSour);
+        isSweetAndSour         = findViewById(R.id.radiobtn_isSweetAndSour);
+        isBitter               = findViewById(R.id.radiobtn_isBitter);
+        isSalty                = findViewById(R.id.radiobtn_isSalty);
+        TextView volumeLabel   = findViewById(R.id.text_volume);
+        TextView weightLabel   = findViewById(R.id.text_weight);
+        Button  addProduct     = findViewById(R.id.button_addProduct);
+        adView                 = findViewById(R.id.adBanner);
 
         setSupportActionBar(toolbar);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
 
-        adRequest = new AdRequest.Builder().build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
         quantity.setText("1");
@@ -412,5 +411,26 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        adView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        adView.pause();
+
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+
+        super.onDestroy();
     }
 }

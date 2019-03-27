@@ -66,20 +66,26 @@ public class PrintQRCodesActivity extends AppCompatActivity {
     private ArrayList<String> textToQRCode, namesOfProducts, expirationDates;
     private ArrayList<Bitmap> qrCodesBitmapArrayList;
 
+    static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
+    static final int    QR_CODE_WIDTH = 100;
+    static final int    QR_CODE_HEIGHT = 100;
+    static final int    APP_PERMISSIONS_EXTERNAL_STORAGE = 23;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_qrcodes);
 
-                  context                = getApplicationContext();
-        Toolbar   toolbar                = findViewById(R.id.Toolbar);
-        ImageView qrCodeImage            = findViewById(R.id.QRCodeImage);
-        Button    printQRCodes           = findViewById(R.id.PrintQRCodes);
-        Button    skipPrinting           = findViewById(R.id.Skip);
-                  textToQRCode           = getIntent().getStringArrayListExtra("text_to_qr_code");
-                  namesOfProducts        = getIntent().getStringArrayListExtra("names_of_products");
-                  expirationDates        = getIntent().getStringArrayListExtra("expiration_dates");
-                  qrCodesBitmapArrayList = new ArrayList<>();
+        context                  = getApplicationContext();
+        Toolbar   toolbar        = findViewById(R.id.toolbar);
+        ImageView qrCodeImage    = findViewById(R.id.image_qrCode);
+        Button    printQRCodes   = findViewById(R.id.button_printQRCodes);
+        Button    sendPDFByEmail = findViewById(R.id.button_sendByEmail);
+        Button    skipPrinting   = findViewById(R.id.button_skip);
+        textToQRCode             = getIntent().getStringArrayListExtra("text_to_qr_code");
+        namesOfProducts          = getIntent().getStringArrayListExtra("names_of_products");
+        expirationDates          = getIntent().getStringArrayListExtra("expiration_dates");
+        qrCodesBitmapArrayList   = new ArrayList<>();
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.PrintQRCodesActivity_print_qr_codes));
@@ -90,38 +96,19 @@ public class PrintQRCodesActivity extends AppCompatActivity {
             Toast.makeText(context, getResources().getString(R.string.Errors_error) + "WriterException" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-    printQRCodes.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            try {
-                for (int counter =  0; counter < textToQRCode.size(); counter++){
-                    qrCodesBitmapArrayList.add(generateQRCode(textToQRCode.get(counter)));
-                }
-                if (ContextCompat.checkSelfPermission(context,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(PrintQRCodesActivity.this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                        Toast.makeText(context, getResources().getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
-
-                        ActivityCompat.requestPermissions(PrintQRCodesActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                Const.APP_PERMISSIONS_EXTERNAL_STORAGE);
-                    } else {
-                        ActivityCompat.requestPermissions(PrintQRCodesActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                Const.APP_PERMISSIONS_EXTERNAL_STORAGE);
-                    }
-                } else {
-                    createPDF(qrCodesBitmapArrayList, namesOfProducts, expirationDates);
-                }
-
-            } catch (WriterException e) {
-                e.printStackTrace();
+        printQRCodes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermissionsAndCreatePDF();
             }
-        }
-    });
+        });
+
+        sendPDFByEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermissionsAndCreatePDF();
+            }
+        });
 
         skipPrinting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,14 +117,45 @@ public class PrintQRCodesActivity extends AppCompatActivity {
                 startActivity(newProductActivityIntent);
                 finish();
             }
-        });
+    });
+
+    }
+
+    private void checkPermissionsAndCreatePDF(){
+        try {
+            for (int counter =  0; counter < textToQRCode.size(); counter++){
+                qrCodesBitmapArrayList.add(generateQRCode(textToQRCode.get(counter)));
+            }
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(PrintQRCodesActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                    Toast.makeText(context, getResources().getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
+
+                    ActivityCompat.requestPermissions(PrintQRCodesActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            APP_PERMISSIONS_EXTERNAL_STORAGE);
+                } else {
+                    ActivityCompat.requestPermissions(PrintQRCodesActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            APP_PERMISSIONS_EXTERNAL_STORAGE);
+                }
+            } else {
+                createPDF(qrCodesBitmapArrayList, namesOfProducts, expirationDates);
+            }
+
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 
     private Bitmap generateQRCode(@NonNull String textToQRCode)
             throws WriterException {
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(textToQRCode, BarcodeFormat.QR_CODE, Const.QR_CODE_WIDTH, Const.QR_CODE_HEIGHT);
+        BitMatrix bitMatrix = qrCodeWriter.encode(textToQRCode, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT);
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
         return bitmap;
@@ -192,7 +210,7 @@ public class PrintQRCodesActivity extends AppCompatActivity {
         }
         pdfDocument.finishPage(page);
         try {
-            FileOutputStream pdfOutputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + Const.PDF_FILENAME, false);
+            FileOutputStream pdfOutputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + PDF_FILENAME, false);
             pdfDocument.writeTo(pdfOutputStream);
             pdfOutputStream.close();
             } catch (FileNotFoundException e) {
@@ -207,12 +225,13 @@ public class PrintQRCodesActivity extends AppCompatActivity {
     }
 
     private void openPDF(){
-        File pdfFile = new File(Environment.getExternalStorageDirectory(), Const.PDF_FILENAME);
+        File pdfFile = new File(Environment.getExternalStorageDirectory(), PDF_FILENAME);
         Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
-        Intent pdfDocumentIntent = new Intent(Intent.ACTION_VIEW);
+        Intent pdfDocumentIntent = new Intent(Intent.ACTION_SENDTO);
         pdfDocumentIntent.setDataAndType(pdfUri, "application/pdf");
-        pdfDocumentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        pdfDocumentIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        pdfDocumentIntent.putExtra(Intent.EXTRA_STREAM, pdfUri);
+        pdfDocumentIntent.setData(Uri.parse("mailto:" + AppSettingsActivity.getEmailForNotifications(context)));
+        pdfDocumentIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(pdfDocumentIntent);
     }
 
@@ -276,7 +295,7 @@ public class PrintQRCodesActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Const.APP_PERMISSIONS_EXTERNAL_STORAGE: {
+            case APP_PERMISSIONS_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     createPDF(qrCodesBitmapArrayList, namesOfProducts, expirationDates);

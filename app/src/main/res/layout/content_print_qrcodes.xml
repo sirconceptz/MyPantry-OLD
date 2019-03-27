@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/Toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -40,7 +40,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/QRCodeImage"
+            android:id="@+id/image_qrCode"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
@@ -49,7 +49,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/PrintQRCodes"
+        android:id="@+id/button_printQRCodes"
         android:layout_width="300dp"
         android:gravity="center"
         android:layout_height="wrap_content"
@@ -62,7 +62,20 @@
         android:text="@string/PrintQRCodesActivity_print_qr_codes"/>
 
     <Button
-        android:id="@+id/Skip"
+        android:id="@+id/button_sendByEmail"
+        android:layout_width="300dp"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="550dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/PrintQRCodesActivity_send_pdf_via_email"/>
+
+    <Button
+        android:id="@+id/button_skip"
         android:layout_width="300dp"
         android:gravity="center"
         android:layout_height="wrap_content"

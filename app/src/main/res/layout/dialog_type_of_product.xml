@@ -13,26 +13,26 @@
     android:padding="16dp">
 
     <Spinner
-        android:id="@+id/type_of_product"
+        android:id="@+id/spinner_typeOfProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:entries="@array/ProductDetailsActivity_type_of_product_array" />
 
     <Spinner
-        android:id="@+id/product_features"
+        android:id="@+id/spinner_productFeatures"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/type_of_product"
+        android:layout_below="@+id/spinner_typeOfProduct"
         android:entries="@array/ProductDetailsActivity_store_products_array" />
 
     <Button
-        android:id="@+id/btn_clear"
+        android:id="@+id/button_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/product_features"
+        android:layout_below="@id/spinner_productFeatures"
         android:text="@string/MyPantryActivity_clear"/>
 
 </RelativeLayout>

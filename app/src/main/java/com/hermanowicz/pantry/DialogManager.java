@@ -136,7 +136,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_name))) {
             View view    = layoutInflater.inflate(R.layout.dialog_name, null);
             editTextName = view.findViewById(R.id.name);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             if(filterName != null && !filterName.equals("")){
                 editTextName.setText(filterName);
@@ -172,9 +172,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_expiration_date))) {
             View view                   = layoutInflater.inflate(R.layout.dialog_expiration_date, null);
-            editTextExpirationDateSince = view.findViewById(R.id.expiration_date_since);
-            editTextExpirationDateFor   = view.findViewById(R.id.expiration_date_for);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            editTextExpirationDateSince = view.findViewById(R.id.edittext_expirationDateSince);
+            editTextExpirationDateFor   = view.findViewById(R.id.edittext_expirationDateFor);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             if(filterExpirationDateSince != null){
                 editTextExpirationDateSince.setText(filterExpirationDateSince);
@@ -314,9 +314,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_production_date))) {
             View view                   = layoutInflater.inflate(R.layout.dialog_production_date, null);
-            editTextProductionDateSince = view.findViewById(R.id.production_date_since);
-            editTextProductionDateFor   = view.findViewById(R.id.production_date_for);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            editTextProductionDateSince = view.findViewById(R.id.edittext_productionDateSince);
+            editTextProductionDateFor   = view.findViewById(R.id.edittext_productionDateFor);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             if(filterProductionDateSince != null){
                 editTextProductionDateSince.setText(filterProductionDateSince);
@@ -458,9 +458,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_product_type))) {
             View view              = layoutInflater.inflate(R.layout.dialog_type_of_product, null);
-            spinnerTypeOfProduct   = view.findViewById(R.id.type_of_product);
-            spinnerProductFeatures = view.findViewById(R.id.product_features);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            spinnerTypeOfProduct   = view.findViewById(R.id.spinner_typeOfProduct);
+            spinnerProductFeatures = view.findViewById(R.id.spinner_productFeatures);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             filterTypeOfProductArray = getResources().getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
 
@@ -563,9 +563,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_volume))) {
             View view           = layoutInflater.inflate(R.layout.dialog_volume, null);
-            editTextVolumeSince = view.findViewById(R.id.volume_since);
-            editTextVolumeFor   = view.findViewById(R.id.volume_for);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            editTextVolumeSince = view.findViewById(R.id.edittext_volumeSince);
+            editTextVolumeFor   = view.findViewById(R.id.edittext_volumeFor);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             if (filterVolumeSince >= 0){
                 editTextVolumeSince.setText(String.valueOf(filterVolumeSince));
@@ -635,9 +635,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_weight))) {
             View view           = layoutInflater.inflate(R.layout.dialog_weight, null);
-            editTextWeightSince = view.findViewById(R.id.weight_since);
-            editTextWeightFor   = view.findViewById(R.id.weight_for);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            editTextWeightSince = view.findViewById(R.id.edittext_weightSince);
+            editTextWeightFor   = view.findViewById(R.id.edittext_weightFor);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             if (filterWeightSince >= 0){
                 editTextWeightSince.setText(String.valueOf(filterWeightSince));
@@ -707,8 +707,8 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_taste))) {
             View view    = layoutInflater.inflate(R.layout.dialog_taste, null);
-            spinnerTaste = view.findViewById(R.id.taste);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            spinnerTaste = view.findViewById(R.id.edittext_taste);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             String[] tasteArray = getResources().getStringArray(R.array.ProductDetailsActivity_taste_array);
 
@@ -766,9 +766,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         }
         else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_product_features))) {
             View view = layoutInflater.inflate(R.layout.dialog_product_features, null);
-            checkBoxHasSugar = view.findViewById(R.id.has_sugar);
-            checkBoxHasSalt  = view.findViewById(R.id.has_salt);
-            Button btnClear = view.findViewById(R.id.btn_clear);
+            checkBoxHasSugar = view.findViewById(R.id.checkbox_hasSugar);
+            checkBoxHasSalt  = view.findViewById(R.id.checkbox_hasSalt);
+            Button btnClear = view.findViewById(R.id.button_clear);
 
             if(filterHasSugar > 0){
                 checkBoxHasSugar.setChecked(true);
