@@ -13,10 +13,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
+
+import com.hermanowicz.pantry.receivers.NotificationBroadcastReceiver;
 
 import java.util.Calendar;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * <h1>Notification</h1>
@@ -26,10 +29,10 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
-class Notification {
+public class Notification {
 
-    static final int    NOTIFICATION_DEFAULT_HOUR = 12;
-    static final int    NOTIFICATION_DEFAULT_DAYS = 3;
+    public static final int NOTIFICATION_DEFAULT_HOUR = 12;
+    public static final int NOTIFICATION_DEFAULT_DAYS = 3;
 
     private static Calendar createCalendar(@NonNull Context context, @NonNull String expirationDate){
         String[] dateArray = expirationDate.split("-");
@@ -68,8 +71,8 @@ class Notification {
         }
     }
 
-    static void createNotificationsForAllProducts(@NonNull Context context){
-        DatabaseManager db           = new DatabaseManager(context);
+    public static void createNotificationsForAllProducts(@NonNull Context context){
+        DatabaseManager db = new DatabaseManager(context);
         List<Product> productsFromDB = db.getProductsFromDB("SELECT * FROM 'products' DESC");
         for(int counter=0; counter < productsFromDB.size(); counter++){
             Product selectedProduct = productsFromDB.get(counter);

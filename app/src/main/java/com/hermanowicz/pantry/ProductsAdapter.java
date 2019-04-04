@@ -10,11 +10,11 @@ package com.hermanowicz.pantry;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.hermanowicz.pantry.MyPantryActivity.convertDate;
 
@@ -72,19 +75,20 @@ public class ProductsAdapter extends
     @Override
     public void onBindViewHolder(ProductsAdapter.ViewHolder viewHolder, int position) {
 
-        TextView nameTv            = viewHolder.nameTv;
-        TextView volumeTv          = viewHolder.volumeTv;
-        TextView weightTv          = viewHolder.weightTv;
-        TextView expirationDateTv  = viewHolder.expirationDateTv;
+        TextView nameTv = viewHolder.nameTv;
+        TextView volumeTv = viewHolder.volumeTv;
+        TextView weightTv = viewHolder.weightTv;
+        TextView expirationDateTv = viewHolder.expirationDateTv;
 
+        Context context = nameTv.getContext();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Resources resources            = nameTv.getContext().getResources();
-        final Product  selectedProduct = productList.get(position);
-        Calendar calendar              = Calendar.getInstance();
-        Date     expirationDateDt      = calendar.getTime();
-        String   volumeString          = resources.getString(R.string.ProductDetailsActivity_volume) + ": " +  selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit);
-        String   weightString          = resources.getString(R.string.ProductDetailsActivity_weight) + ": " +  selectedProduct.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit);
-        String   expirationDateString  = convertDate(selectedProduct.getExpirationDate());
+        Resources resources = context.getResources();
+        final Product selectedProduct = productList.get(position);
+        Calendar calendar = Calendar.getInstance();
+        Date expirationDateDt = calendar.getTime();
+        String volumeString = resources.getString(R.string.ProductDetailsActivity_volume) + ": " +  selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit);
+        String weightString = resources.getString(R.string.ProductDetailsActivity_weight) + ": " +  selectedProduct.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit);
+        String expirationDateString = convertDate(selectedProduct.getExpirationDate());
 
         nameTv.setText(selectedProduct.getName());
         volumeTv.setText(volumeString);
@@ -106,6 +110,9 @@ public class ProductsAdapter extends
                 listener.onItemClick(selectedProduct);
             }
         });
+
+        Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
+        viewHolder.itemView.setAnimation(animation);
     }
 
     @Override

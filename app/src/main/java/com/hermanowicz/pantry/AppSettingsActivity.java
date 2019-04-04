@@ -14,9 +14,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -28,7 +25,14 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.hermanowicz.pantry.presenters.AppSettingsActivityPresenter;
+import com.hermanowicz.pantry.views.AppSettingsActivityView;
+
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * <h1>AppSettingsActivity</h1>
@@ -39,7 +43,7 @@ import java.util.regex.Pattern;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity {
+public class AppSettingsActivity extends AppCompatActivity implements AppSettingsActivityView {
 
     private Context           context;
     private DatabaseManager   db;
@@ -47,12 +51,14 @@ public class AppSettingsActivity extends AppCompatActivity {
     private EditText          daysBeforeExpirationDate, emailAddress;
     private NumberPicker      hourOfNotification;
     private CheckBox          notificationsByEmail, notificationsByPush;
+    private Button            saveSettings, clearDatabase;
+    private AppSettingsActivityPresenter presenter;
 
-    static final String PREFERENCES_EMAIL_ADDRESS         = "EMAIL_ADDRESS";
-    static final String PREFERENCES_EMAIL_NOTIFICATIONS   = "EMAIL_NOTIFICATIONS?";
-    static final String PREFERENCES_PUSH_NOTIFICATIONS    = "PUSH_NOTIFICATIONS?";
-    static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
-    static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
+    public static final String PREFERENCES_EMAIL_ADDRESS         = "EMAIL_ADDRESS";
+    public static final String PREFERENCES_EMAIL_NOTIFICATIONS   = "EMAIL_NOTIFICATIONS?";
+    public static final String PREFERENCES_PUSH_NOTIFICATIONS    = "PUSH_NOTIFICATIONS?";
+    public static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
+    public static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -60,36 +66,10 @@ public class AppSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_settings);
 
-        context                  = getApplicationContext();
-        Toolbar toolbar          = findViewById(R.id.toolbar);
-        daysBeforeExpirationDate = findViewById(R.id.edittext_daysToNotification);
-        notificationsByEmail     = findViewById(R.id.checkbox_emailNotifications);
-        notificationsByPush      = findViewById(R.id.checkbox_pushNotifications);
-        hourOfNotification       = findViewById(R.id.numberpicker_hourOfNotification);
-        emailAddress             = findViewById(R.id.edittext_emailAddress);
-        Button saveSettings      = findViewById(R.id.button_saveSettings);
-        Button clearDatabase     = findViewById(R.id.button_clearDatabase);
-        db                       = new DatabaseManager(context);
-        myPreferences            = PreferenceManager.getDefaultSharedPreferences(context);
+        init();
+        updateSettings();
 
-        setSupportActionBar(toolbar);
-
-        hourOfNotification.setMinValue(1);
-        hourOfNotification.setMaxValue(24);
-        hourOfNotification.setWrapSelectorWheel(false);
-
-        emailAddress.setText(myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
-        notificationsByEmail.setChecked(myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false));
-        notificationsByPush.setChecked(myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS, true));
-        hourOfNotification.setValue(myPreferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_HOUR));
-        daysBeforeExpirationDate.setText(getDaysBeforeNotificationFromSettings(context));
-
-        if(isValidEmail(emailAddress.getText().toString())){
-            notificationsByEmail.setEnabled(true);
-        }
-        else{
-            notificationsByEmail.setEnabled(false);
-        }
+        presenter = new AppSettingsActivityPresenter(this, null);
 
         emailAddress.addTextChangedListener(new TextWatcher() {
             @Override
@@ -102,12 +82,7 @@ public class AppSettingsActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-            if(isValidEmail(emailAddress.getText().toString())){
-                notificationsByEmail.setEnabled(true);
-            }
-            else{
-                notificationsByEmail.setEnabled(false);
-            }
+
             }
         });
 
@@ -119,15 +94,8 @@ public class AppSettingsActivity extends AppCompatActivity {
                 preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, Integer.parseInt(daysBeforeExpirationDate.getText().toString()));
                 preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, notificationsByPush.isChecked());
                 preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotification.getValue());
-                if(isValidEmail(emailAddress.getText().toString())) {
-                    preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, notificationsByEmail.isChecked());
-                    preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, emailAddress.getText().toString());
-                }
-                else
-                {
-                    preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
-                    preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, "");
-                }
+
+                setEmailSettings();
 
                 if(isNotificationSettingsChanged()){
                     Notification.cancelAllNotifications(context);
@@ -148,6 +116,19 @@ public class AppSettingsActivity extends AppCompatActivity {
                 Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void setEmailSettings(){
+        SharedPreferences.Editor preferenceEditor = myPreferences.edit();
+        if(isValidEmail(emailAddress.getText().toString())) {
+            preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, notificationsByEmail.isChecked());
+            preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, emailAddress.getText().toString());
+        }
+        else
+        {
+            preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
+            preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, "");
+        }
     }
 
     private boolean isNotificationSettingsChanged(){
@@ -196,6 +177,43 @@ public class AppSettingsActivity extends AppCompatActivity {
         return myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
     }
 
+    private void updateSettings(){
+        emailAddress.setText(myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
+        notificationsByEmail.setChecked(myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false));
+        notificationsByPush.setChecked(myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS, true));
+        hourOfNotification.setValue(myPreferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_HOUR));
+        daysBeforeExpirationDate.setText(String.valueOf(getDaysBeforeNotificationFromSettings(context)));
+
+        if(isValidEmail(emailAddress.getText().toString())){
+            notificationsByEmail.setEnabled(true);
+        }
+        else{
+            notificationsByEmail.setEnabled(false);
+        }
+    }
+
+    private void init(){
+        context                  = getApplicationContext();
+        db                       = new DatabaseManager(context);
+        myPreferences            = PreferenceManager.getDefaultSharedPreferences(context);
+
+        Toolbar toolbar          = findViewById(R.id.toolbar);
+        daysBeforeExpirationDate = findViewById(R.id.edittext_daysToNotification);
+        notificationsByEmail     = findViewById(R.id.checkbox_emailNotifications);
+        notificationsByPush      = findViewById(R.id.checkbox_pushNotifications);
+        hourOfNotification       = findViewById(R.id.numberpicker_hourOfNotification);
+        emailAddress             = findViewById(R.id.edittext_emailAddress);
+        saveSettings             = findViewById(R.id.button_saveSettings);
+        clearDatabase            = findViewById(R.id.button_clearDatabase);
+
+
+        setSupportActionBar(toolbar);
+
+        hourOfNotification.setMinValue(1);
+        hourOfNotification.setMaxValue(24);
+        hourOfNotification.setWrapSelectorWheel(false);
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
@@ -204,5 +222,30 @@ public class AppSettingsActivity extends AppCompatActivity {
             finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void setDaysBeforeExpirationDate(String daysBeforeExpirationDate) {
+
+    }
+
+    @Override
+    public void setEmailNotificationCheckbox(boolean emailNotificationCheckbox) {
+
+    }
+
+    @Override
+    public void setPushNotificationCheckbox(boolean pushNotificationCheckbox) {
+
+    }
+
+    @Override
+    public void setEmailAddress(String emailAddress) {
+
+    }
+
+    @Override
+    public void setHourOfNotifications(int hourOfNotifications) {
+
     }
 }

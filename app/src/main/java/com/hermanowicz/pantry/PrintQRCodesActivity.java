@@ -12,6 +12,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -20,12 +21,6 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.multidex.BuildConfig;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +31,8 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.hermanowicz.pantry.presenters.PrintQRCodesActivityPresenter;
+import com.hermanowicz.pantry.views.PrintQRCodesActivityView;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.json.JSONException;
@@ -49,7 +46,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import static androidx.core.content.FileProvider.getUriForFile;
 
 /**
  * <h1>PrintQRCodesActivity</h1>
@@ -60,40 +63,46 @@ import static android.support.v4.content.FileProvider.getUriForFile;
  * @version 1.0
  * @since   1.0
  */
-public class PrintQRCodesActivity extends AppCompatActivity {
+public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesActivityView {
 
-    private Context           context;
+    private Context context;
+    private Resources resources;
     private ArrayList<String> textToQRCode, namesOfProducts, expirationDates;
     private ArrayList<Bitmap> qrCodesBitmapArrayList;
+    private PrintQRCodesActivityPresenter presenter;
 
     static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
-    static final int    QR_CODE_WIDTH = 100;
-    static final int    QR_CODE_HEIGHT = 100;
-    static final int    APP_PERMISSIONS_EXTERNAL_STORAGE = 23;
+    static final int QR_CODE_WIDTH = 100;
+    static final int QR_CODE_HEIGHT = 100;
+    static final int APP_PERMISSIONS_EXTERNAL_STORAGE = 23;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_qrcodes);
 
-        context                  = getApplicationContext();
-        Toolbar   toolbar        = findViewById(R.id.toolbar);
-        ImageView qrCodeImage    = findViewById(R.id.image_qrCode);
-        Button    printQRCodes   = findViewById(R.id.button_printQRCodes);
-        Button    sendPDFByEmail = findViewById(R.id.button_sendByEmail);
-        Button    skipPrinting   = findViewById(R.id.button_skip);
-        textToQRCode             = getIntent().getStringArrayListExtra("text_to_qr_code");
-        namesOfProducts          = getIntent().getStringArrayListExtra("names_of_products");
-        expirationDates          = getIntent().getStringArrayListExtra("expiration_dates");
-        qrCodesBitmapArrayList   = new ArrayList<>();
+        context = PrintQRCodesActivity.this;
+        resources = context.getResources();
+        textToQRCode = getIntent().getStringArrayListExtra("text_to_qr_code");
+        namesOfProducts = getIntent().getStringArrayListExtra("names_of_products");
+        expirationDates = getIntent().getStringArrayListExtra("expiration_dates");
+        qrCodesBitmapArrayList = new ArrayList<>();
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        ImageView qrCodeImage = findViewById(R.id.image_qrCode);
+        Button printQRCodes = findViewById(R.id.button_printQRCodes);
+        Button sendPDFByEmail = findViewById(R.id.button_sendByEmail);
+        Button skipPrinting = findViewById(R.id.button_skip);
+
+        presenter = new PrintQRCodesActivityPresenter(this, null);
 
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.PrintQRCodesActivity_print_qr_codes));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(resources.getString(R.string.PrintQRCodesActivity_print_qr_codes));
 
         try {
             qrCodeImage.setImageBitmap(generateQRCode(textToQRCode.get(0)));
         } catch (WriterException e) {
-            Toast.makeText(context, getResources().getString(R.string.Errors_error) + "WriterException" + e.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, resources.getString(R.string.Errors_error) + "WriterException" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         printQRCodes.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +141,7 @@ public class PrintQRCodesActivity extends AppCompatActivity {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(PrintQRCodesActivity.this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-                    Toast.makeText(context, getResources().getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, resources.getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
 
                     ActivityCompat.requestPermissions(PrintQRCodesActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
@@ -215,10 +224,10 @@ public class PrintQRCodesActivity extends AppCompatActivity {
             pdfOutputStream.close();
             } catch (FileNotFoundException e) {
             e.printStackTrace();
-            Toast.makeText(context,getResources().getString(R.string.Errors_error) + "FileNotFoundException", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,resources.getString(R.string.Errors_error) + "FileNotFoundException", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(context,getResources().getString(R.string.Errors_error) + "IOException", Toast.LENGTH_LONG).show();
+            Toast.makeText(context,resources.getString(R.string.Errors_error) + "IOException", Toast.LENGTH_LONG).show();
         }
         pdfDocument.close();
         openPDF();
@@ -300,7 +309,7 @@ public class PrintQRCodesActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     createPDF(qrCodesBitmapArrayList, namesOfProducts, expirationDates);
                 } else {
-                    Toast.makeText(context, getResources().getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, resources.getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
                 }
             }
         }

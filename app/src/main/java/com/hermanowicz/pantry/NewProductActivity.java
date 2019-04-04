@@ -12,12 +12,10 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -38,12 +36,18 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.hermanowicz.pantry.presenters.NewProductActivityPresenter;
+import com.hermanowicz.pantry.views.NewProductActivityView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * <h1>NewProductActivity</h1>
@@ -58,9 +62,10 @@ import java.util.Objects;
  * @version 1.0
  * @since   1.0
  */
-public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener {
+public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductActivityView {
 
     private Context                            context;
+    private Resources                          resources;
     private DatabaseManager                    db;
     private Spinner                            productTypeSpinner, productFeaturesSpinner;
     private EditText                           name, expirationDate, productionDate, quantity, composition,
@@ -76,54 +81,28 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private Calendar                           calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
     private ArrayAdapter<CharSequence>         productFeaturesAdapter;
+    private TextView                           volumeLabel, weightLabel;
+    private Button                             addProduct;
     private AdView                             adView;
+    private NewProductActivityPresenter presenter;
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "CutPasteId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
 
-        context                = NewProductActivity.this;
-        db                     = new DatabaseManager(context);
-        Toolbar toolbar        = findViewById(R.id.toolbar);
-        name                   = findViewById(R.id.edittext_name);
-        productTypeSpinner     = findViewById(R.id.spinner_productType);
-        productFeaturesSpinner = findViewById(R.id.spinner_productFeatures);
-        expirationDate         = findViewById(R.id.edittext_expirationDate);
-        productionDate         = findViewById(R.id.edittext_productionDate);
-        quantity               = findViewById(R.id.edittext_quantity);
-        composition            = findViewById(R.id.edittext_composition);
-        healingProperties      = findViewById(R.id.edittext_healingProperties);
-        dosage                 = findViewById(R.id.edittext_dosage);
-        volume                 = findViewById(R.id.edittext_volume);
-        weight                 = findViewById(R.id.edittext_weight);
-        hasSugar               = findViewById(R.id.checkbox_hasSugar);
-        hasSalt                = findViewById(R.id.checkbox_hasSugar);
-        isSweet                = findViewById(R.id.radiobtn_isSweet);
-        isSour                 = findViewById(R.id.radiobtn_isSour);
-        isSweetAndSour         = findViewById(R.id.radiobtn_isSweetAndSour);
-        isBitter               = findViewById(R.id.radiobtn_isBitter);
-        isSalty                = findViewById(R.id.radiobtn_isSalty);
-        TextView volumeLabel   = findViewById(R.id.text_volume);
-        TextView weightLabel   = findViewById(R.id.text_weight);
-        Button  addProduct     = findViewById(R.id.button_addProduct);
-        adView                 = findViewById(R.id.adBanner);
+        init();
 
-        setSupportActionBar(toolbar);
-
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        presenter = new NewProductActivityPresenter(this, null);
 
         quantity.setText("1");
         volume.setText("0");
         weight.setText("0");
 
-        volumeLabel.setText(getResources().getString(R.string.ProductDetailsActivity_volume) + " (" + getResources().getString(R.string.ProductDetailsActivity_volume_unit) + ")");
+        volumeLabel.setText(resources.getString(R.string.ProductDetailsActivity_volume) + " (" + resources.getString(R.string.ProductDetailsActivity_volume_unit) + ")");
 
-        weightLabel.setText(getResources().getString(R.string.ProductDetailsActivity_weight) + " (" + getResources().getString(R.string.ProductDetailsActivity_weight_unit) + ")");
+        weightLabel.setText(resources.getString(R.string.ProductDetailsActivity_weight) + " (" + resources.getString(R.string.ProductDetailsActivity_weight_unit) + ")");
 
         name             .setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         composition      .setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -221,7 +200,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     if(isTypeOfProductTouched) {
                         selectedProductType = String.valueOf(productTypeSpinner.getSelectedItem());
-                        productTypesArray = getResources().getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+                        productTypesArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
                         if (selectedProductType.equals(productTypesArray[0]))
                             productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
                         else if (selectedProductType.equals(productTypesArray[1]))
@@ -264,26 +243,26 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 parseWeightProduct();
 
                 if (howManyProductsToAdd < 1){
-                    quantity.setError(getResources().getString(R.string.Errors_set_correct_quantity));
-                    Toast.makeText(context, getResources().getString(R.string.Errors_set_correct_quantity), Toast.LENGTH_LONG).show();
+                    quantity.setError(resources.getString(R.string.Errors_set_correct_quantity));
+                    Toast.makeText(context, resources.getString(R.string.Errors_set_correct_quantity), Toast.LENGTH_LONG).show();
                 }
                 else{
                     if(TextUtils.isEmpty(name.getText())) {
-                        name.setError(getResources().getString(R.string.Errors_product_name_is_required));
-                        Toast.makeText(context, getResources().getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG);
+                        name.setError(resources.getString(R.string.Errors_product_name_is_required));
+                        Toast.makeText(context, resources.getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG);
                     }
                     else {
                         if(productTypeSpinner.getSelectedItemId() > 0) {
                             if(TextUtils.isEmpty(expirationDate.getText())) {
-                                expirationDate.setError(getResources().getString(R.string.Errors_expiration_date_is_required));
-                                Toast.makeText(context, getResources().getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG);
+                                expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
+                                Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG);
                             }
                             else {
                                 setTaste();
                                 if (productFeaturesSpinner.getSelectedItemId() > 0)
                                     productFeatures = String.valueOf(productFeaturesSpinner.getSelectedItem());
                                 else
-                                    productFeatures = getResources().getString(R.string.ProductDetailsActivity_not_selected);
+                                    productFeatures = resources.getString(R.string.ProductDetailsActivity_not_selected);
 
                                 List <Product> productList = new ArrayList<Product>() {};
                                 for (int counter = 1; counter <= howManyProductsToAdd; counter++) {
@@ -311,12 +290,12 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                                     finish();
                                 }
                                 else{
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
                         else{
-                            Toast.makeText(context, getResources().getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
+                            Toast.makeText(context, resources.getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -361,18 +340,18 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         }
         if (isProductsAdded) {
             if (howManyProductsToAdd > 1) {
-                Toast.makeText(context, getResources().getString(R.string.NewProductActivity_products_added_successful), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, resources.getString(R.string.NewProductActivity_products_added_successful), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(context, getResources().getString(R.string.NewProductActivity_product_added_successful), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, resources.getString(R.string.NewProductActivity_product_added_successful), Toast.LENGTH_LONG).show();
             }
         }
         return isProductsAdded;
     }
 
     private void setTaste(){
-        String[] filterTasteArray = getResources().getStringArray(R.array.ProductDetailsActivity_taste_array);
+        String[] filterTasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
         if(!isSweet.isChecked() && !isSour.isChecked() && !isSweetAndSour.isChecked() && !isBitter.isChecked() && !isSalty.isChecked()) {
-            taste = getResources().getString(R.string.ProductDetailsActivity_not_selected);
+            taste = resources.getString(R.string.ProductDetailsActivity_not_selected);
         }
         else if(isSweet.isChecked()){
             taste = filterTasteArray[1];
@@ -401,6 +380,43 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void onDateSet(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
+    }
+
+    @SuppressLint("CutPasteId")
+    private void init(){
+        context                = NewProductActivity.this;
+        resources              = context.getResources();
+        db                     = new DatabaseManager(context);
+        Toolbar toolbar        = findViewById(R.id.toolbar);
+        name                   = findViewById(R.id.edittext_name);
+        productTypeSpinner     = findViewById(R.id.spinner_productType);
+        productFeaturesSpinner = findViewById(R.id.spinner_productFeatures);
+        expirationDate         = findViewById(R.id.edittext_expirationDate);
+        productionDate         = findViewById(R.id.edittext_productionDate);
+        quantity               = findViewById(R.id.edittext_quantity);
+        composition            = findViewById(R.id.edittext_composition);
+        healingProperties      = findViewById(R.id.edittext_healingProperties);
+        dosage                 = findViewById(R.id.edittext_dosage);
+        volume                 = findViewById(R.id.edittext_volume);
+        weight                 = findViewById(R.id.edittext_weight);
+        hasSugar               = findViewById(R.id.checkbox_hasSugar);
+        hasSalt                = findViewById(R.id.checkbox_hasSugar);
+        isSweet                = findViewById(R.id.radiobtn_isSweet);
+        isSour                 = findViewById(R.id.radiobtn_isSour);
+        isSweetAndSour         = findViewById(R.id.radiobtn_isSweetAndSour);
+        isBitter               = findViewById(R.id.radiobtn_isBitter);
+        isSalty                = findViewById(R.id.radiobtn_isSalty);
+        volumeLabel            = findViewById(R.id.text_volume);
+        weightLabel            = findViewById(R.id.text_weight);
+        addProduct             = findViewById(R.id.button_addProduct);
+        adView                 = findViewById(R.id.adBanner);
+
+        setSupportActionBar(toolbar);
+
+        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override

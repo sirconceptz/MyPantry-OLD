@@ -10,13 +10,15 @@ package com.hermanowicz.pantry;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.hermanowicz.pantry.presenters.MainActivityPresenter;
+import com.hermanowicz.pantry.views.MainActivityView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * <h1>MainActivity</h1>
@@ -27,60 +29,51 @@ import com.google.android.gms.ads.MobileAds;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainActivityView {
 
     private AdView adView;
+    private MainActivityPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button myPantryButton    = findViewById(R.id.button_myPantry);
+        Button myPantryButton = findViewById(R.id.button_myPantry);
         Button scanProductButton = findViewById(R.id.button_scanProduct);
-        Button newProductButton  = findViewById(R.id.button_newProduct);
+        Button newProductButton = findViewById(R.id.button_newProduct);
         Button appSettingsButton = findViewById(R.id.button_appSettings);
-        adView                   = findViewById(R.id.adBanner);
+        adView = findViewById(R.id.adBanner);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        myPantryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
-                startActivity(myPantryActivityIntent);
-                finish();
-            }
+        presenter = new MainActivityPresenter(this, null);
+
+        myPantryButton.setOnClickListener(view -> {
+            Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
+            startActivity(myPantryActivityIntent);
+            finish();
         });
 
-        scanProductButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent scanProductActivityIntent = new Intent(MainActivity.this, ScanProductActivity.class);
-                startActivity(scanProductActivityIntent);
-                finish();
-            }
+        scanProductButton.setOnClickListener(view -> {
+            Intent scanProductActivityIntent = new Intent(MainActivity.this, ScanProductActivity.class);
+            startActivity(scanProductActivityIntent);
+            finish();
         });
 
-        newProductButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
-                startActivity(newProductActivityIntent);
-                finish();
-            }
+        newProductButton.setOnClickListener(view -> {
+            Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
+            startActivity(newProductActivityIntent);
+            finish();
         });
 
-        appSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent appSettingsActivityIntent = new Intent(MainActivity.this, AppSettingsActivity.class);
-                startActivity(appSettingsActivityIntent);
-                finish();
-            }
+        appSettingsButton.setOnClickListener(view -> {
+            Intent appSettingsActivityIntent = new Intent(MainActivity.this, AppSettingsActivity.class);
+            startActivity(appSettingsActivityIntent);
+            finish();
         });
     }
 

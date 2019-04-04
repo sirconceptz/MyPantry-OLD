@@ -10,22 +10,26 @@ package com.hermanowicz.pantry;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.hermanowicz.pantry.presenters.ScanProductActivityPresenter;
+import com.hermanowicz.pantry.views.ScanProductActivityView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * <h1>ScanProductActivity/h1>
@@ -35,9 +39,12 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
-public class ScanProductActivity extends AppCompatActivity {
+public class ScanProductActivity extends AppCompatActivity implements ScanProductActivityView {
 
-    private Context  context;
+    private Context context;
+    private Resources resources;
+    private ScanProductActivityPresenter presenter;
+
     static final int VIBRATE_DURATION = 1000;
 
     @Override
@@ -45,9 +52,12 @@ public class ScanProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_product);
 
-        context = getApplicationContext();
+        presenter = new ScanProductActivityPresenter(this, null);
+
+        context = ScanProductActivity.this;
+        resources = context.getResources();
         IntentIntegrator qrCodeScanner = new IntentIntegrator(this);
-        qrCodeScanner.setPrompt(getResources().getString(R.string.ScanProductActivity_scan_qr_code));
+        qrCodeScanner.setPrompt(resources.getString(R.string.ScanProductActivity_scan_qr_code));
         qrCodeScanner.setOrientationLocked(true);
         qrCodeScanner.setBeepEnabled(true);
         qrCodeScanner.setCameraId(0);
@@ -59,7 +69,7 @@ public class ScanProductActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null){
             if (result.getContents() == null){
-                Toast.makeText(context, getResources().getString(R.string.ScanProductActivity_product_not_found), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, resources.getString(R.string.ScanProductActivity_product_not_found), Toast.LENGTH_LONG).show();
                 Intent mainActivityIntent = new Intent(context, MainActivity.class);
                 startActivity(mainActivityIntent);
                 finish();

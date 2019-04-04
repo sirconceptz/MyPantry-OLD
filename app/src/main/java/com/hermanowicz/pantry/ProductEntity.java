@@ -8,32 +8,33 @@
 
 package com.hermanowicz.pantry;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
-@Entity (tableName = "products")
+@Entity(tableName = "products")
 public class ProductEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int     id;
-    private String  name;                   //required
-    private String  hashCode;               //automatic
-    private String  typeOfProduct;          //required
-    private String  productFeatures;        //required
-    private String  expirationDate;         //required
-    private String  productionDate;         //optional
-    private String  composition;            //optional, only for homemade products
-    private String  healingProperties;      //optional, only for tincture
-    private String  dosage;                 //optional, only for tincture
-    private int     volume;                 //optional
-    private int     weight;                 //optional
-    private int     hasSugar;               //optional
-    private int     hasSalt;                //optional
-    private String  taste;                  //required
+    private String  name;
+    private String  hashCode;
+    private String  typeOfProduct;
+    private String  productFeatures;
+    private String  expirationDate;
+    private String  productionDate;
+    private String  composition;
+    private String  healingProperties;
+    private String  dosage;
+    private int     volume;
+    private int     weight;
+    private int     hasSugar;
+    private int     hasSalt;
+    private String  taste;
 
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }

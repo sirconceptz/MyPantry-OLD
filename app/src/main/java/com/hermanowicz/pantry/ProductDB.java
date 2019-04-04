@@ -8,8 +8,8 @@
 
 package com.hermanowicz.pantry;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 @Database(entities = {ProductEntity.class}, version = 1)
 public abstract class ProductDB extends RoomDatabase {

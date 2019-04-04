@@ -9,16 +9,14 @@
 package com.hermanowicz.pantry;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +36,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialogFragment;
+
 /**
  * <h1>DialogManager</h1>
  * Adapter for dialog windows. Dialog window will be opened after choosing the type of dialog.
@@ -48,25 +50,27 @@ import java.util.Date;
  */
 public class DialogManager extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
 
-    private Context                            context;
-    private EditText                           editTextName, editTextExpirationDateSince, editTextExpirationDateFor,
-                                               editTextProductionDateSince, editTextProductionDateFor, editTextVolumeSince,
-                                               editTextVolumeFor, editTextWeightSince, editTextWeightFor;
-    private Spinner                            spinnerTypeOfProduct, spinnerProductFeatures, spinnerTaste;
-    private CheckBox                           checkBoxHasSugar, checkBoxHasSalt;
-    private String[]                           productFeaturesArray, productTypesArray, filterTypeOfProductArray;
-    private ArrayAdapter<CharSequence>         productFeaturesAdapter;
-    private String                             filterName, filterExpirationDateSince, filterExpirationDateFor,
-                                               filterProductionDateSince, filterProductionDateFor, filterTypeOfProduct,
-                                               filterProductFeatures, filterTaste, dialogType, selectedProductType,
-                                               expirationDateSinceConverted = "", expirationDateForConverted = "";
-    private int                                filterWeightSince, filterWeightFor, filterVolumeSince, filterVolumeFor, filterHasSugar, filterHasSalt;
-    private DialogListener                     dialogListener;
-    private DateFormat                         DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private Date                               dateExpirationSince, dateExpirationFor, dateProductionSince, dateProductionFor;
-    private int                                day, month, year;
-    private boolean                            isTypeOfProductTouched, isProductFeaturesTouched;
-    private Calendar                           calendar;
+    private Context    context;
+    private Resources  resources;
+    private EditText   editTextName, editTextExpirationDateSince, editTextExpirationDateFor,
+                       editTextProductionDateSince, editTextProductionDateFor, editTextVolumeSince,
+                       editTextVolumeFor, editTextWeightSince, editTextWeightFor;
+    private Spinner    spinnerTypeOfProduct, spinnerProductFeatures, spinnerTaste;
+    private CheckBox   checkBoxHasSugar, checkBoxHasSalt;
+    private String[]   productFeaturesArray, productTypesArray, filterTypeOfProductArray;
+    private String     filterName, filterExpirationDateSince, filterExpirationDateFor,
+                       filterProductionDateSince, filterProductionDateFor, filterTypeOfProduct,
+                       filterProductFeatures, filterTaste, dialogType, selectedProductType,
+                       expirationDateSinceConverted = "", expirationDateForConverted = "";
+    private int        filterWeightSince, filterWeightFor, filterVolumeSince, filterVolumeFor,
+                       filterHasSugar, filterHasSalt;
+    private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private Date       dateExpirationSince, dateExpirationFor, dateProductionSince, dateProductionFor;
+    private int        day, month, year;
+    private boolean    isTypeOfProductTouched, isProductFeaturesTouched;
+    private Calendar   calendar;
+    private DialogListener dialogListener;
+    private ArrayAdapter<CharSequence> productFeaturesAdapter;
     private DatePickerDialog.OnDateSetListener productionDateSinceListener, productionDateForListener,
                                                expirationDateSinceListener, expirationDateForListener;
 
@@ -122,7 +126,8 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
         Activity activity = getActivity();
         assert activity != null;
-        context = activity.getApplicationContext();
+        context   = activity.getApplicationContext();
+        resources = context.getResources();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
@@ -133,7 +138,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_name))) {
+        if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_name))) {
             View view    = layoutInflater.inflate(R.layout.dialog_name, null);
             editTextName = view.findViewById(R.id.name);
             Button btnClear = view.findViewById(R.id.button_clear);
@@ -151,12 +156,12 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             filterName = editTextName.getText().toString();
@@ -170,7 +175,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_expiration_date))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_expiration_date))) {
             View view                   = layoutInflater.inflate(R.layout.dialog_expiration_date, null);
             editTextExpirationDateSince = view.findViewById(R.id.edittext_expirationDateSince);
             editTextExpirationDateFor   = view.findViewById(R.id.edittext_expirationDateFor);
@@ -258,12 +263,12 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 }});
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try{
@@ -275,7 +280,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                     filterExpirationDateSince = null;
                                 }
                                 else {
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                                 e.printStackTrace();
                             }
@@ -288,7 +293,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                     filterExpirationDateFor = null;
                                 }
                                 else {
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                                 e.printStackTrace();
                             }
@@ -300,7 +305,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                     if (dateExpirationSince.compareTo(dateExpirationFor) == 0 || dateExpirationSince.compareTo(dateExpirationFor) < 0) {
                                         dialogListener.applyFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
                                     } else {
-                                        Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 catch(NullPointerException e){
@@ -312,7 +317,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_production_date))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_production_date))) {
             View view                   = layoutInflater.inflate(R.layout.dialog_production_date, null);
             editTextProductionDateSince = view.findViewById(R.id.edittext_productionDateSince);
             editTextProductionDateFor   = view.findViewById(R.id.edittext_productionDateFor);
@@ -401,13 +406,13 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 }});
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try{
@@ -419,7 +424,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                     filterProductionDateSince = null;
                                 }
                                 else {
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                                 e.printStackTrace();
                             }
@@ -432,7 +437,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                     filterProductionDateFor = null;
                                 }
                                 else {
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                                 e.printStackTrace();
                             }
@@ -444,7 +449,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                     if (dateProductionSince.compareTo(dateProductionFor) == 0 || dateProductionSince.compareTo(dateProductionFor) < 0) {
                                         dialogListener.applyFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
                                     } else {
-                                        Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 catch(NullPointerException e){
@@ -456,13 +461,13 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_product_type))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_product_type))) {
             View view              = layoutInflater.inflate(R.layout.dialog_type_of_product, null);
             spinnerTypeOfProduct   = view.findViewById(R.id.spinner_typeOfProduct);
             spinnerProductFeatures = view.findViewById(R.id.spinner_productFeatures);
             Button btnClear = view.findViewById(R.id.button_clear);
 
-            filterTypeOfProductArray = getResources().getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+            filterTypeOfProductArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
 
             productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
             productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -505,7 +510,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                     if(isTypeOfProductTouched) {
                         selectedProductType = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
-                        productTypesArray   = getResources().getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+                        productTypesArray   = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
                         updateProductFeaturesSpinner();
                         if(selectedProductType.equals(filterTypeOfProductArray[0]))
                             filterTypeOfProduct = null;
@@ -544,12 +549,12 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if(filterTypeOfProduct != null){
@@ -561,7 +566,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_volume))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_volume))) {
             View view           = layoutInflater.inflate(R.layout.dialog_volume, null);
             editTextVolumeSince = view.findViewById(R.id.edittext_volumeSince);
             editTextVolumeFor   = view.findViewById(R.id.edittext_volumeFor);
@@ -588,18 +593,18 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 }});
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 filterVolumeSince = Integer.valueOf(editTextVolumeSince.getText().toString());
                                 if(filterVolumeSince <= -1){
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                             }
                             catch(NumberFormatException e){
@@ -608,7 +613,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                             try {
                                 filterVolumeFor = Integer.valueOf(editTextVolumeFor.getText().toString());
                                 if(filterVolumeFor <= -1){
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                             }
                             catch(NumberFormatException e){
@@ -620,7 +625,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                         dialogListener.applyFilterVolume(filterVolumeSince, filterVolumeFor);
                                     }
                                     else{
-                                        Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 else {
@@ -633,7 +638,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_weight))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_weight))) {
             View view           = layoutInflater.inflate(R.layout.dialog_weight, null);
             editTextWeightSince = view.findViewById(R.id.edittext_weightSince);
             editTextWeightFor   = view.findViewById(R.id.edittext_weightFor);
@@ -660,18 +665,18 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 }});
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             try {
                                 filterWeightSince = Integer.valueOf(editTextWeightSince.getText().toString());
                                 if(filterWeightSince <= -1){
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                             }
                             catch(NumberFormatException e){
@@ -680,7 +685,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                             try {
                                 filterWeightFor = Integer.valueOf(editTextWeightFor.getText().toString());
                                 if(filterWeightFor <= -1){
-                                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
                             }
                             catch(NumberFormatException e){
@@ -692,7 +697,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                                         dialogListener.applyFilterWeight(filterWeightSince, filterWeightFor);
                                     }
                                     else{
-                                        Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 else {
@@ -705,12 +710,12 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_taste))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_taste))) {
             View view    = layoutInflater.inflate(R.layout.dialog_taste, null);
             spinnerTaste = view.findViewById(R.id.edittext_taste);
             Button btnClear = view.findViewById(R.id.button_clear);
 
-            String[] tasteArray = getResources().getStringArray(R.array.ProductDetailsActivity_taste_array);
+            String[] tasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
 
             try{
                 for(int i = 0; i < tasteArray.length; i++){
@@ -747,12 +752,12 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if(filterTaste != null){
@@ -764,7 +769,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                         }
                     });
         }
-        else if(dialogType.equals(getResources().getString(R.string.ProductDetailsActivity_product_features))) {
+        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_product_features))) {
             View view = layoutInflater.inflate(R.layout.dialog_product_features, null);
             checkBoxHasSugar = view.findViewById(R.id.checkbox_hasSugar);
             checkBoxHasSalt  = view.findViewById(R.id.checkbox_hasSalt);
@@ -809,12 +814,12 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(getResources().getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setPositiveButton(getResources().getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (filterHasSugar == -1 && filterHasSalt == -1) {
@@ -831,7 +836,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
     private void updateProductFeaturesSpinnerAndSelectTypeOfProduct(){
         try{
             if (filterTypeOfProduct.equals(filterTypeOfProductArray[0])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_choose_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_choose_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -840,7 +845,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[1])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_store_products_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -849,7 +854,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[2])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_ready_meals_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_ready_meals_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_ready_meals_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -858,7 +863,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[3])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_vegetables_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_vegetables_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vegetables_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -867,7 +872,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[4])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_fruits_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_fruits_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_fruits_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -876,7 +881,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[5])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_herbs_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_herbs_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_herbs_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -885,7 +890,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[6])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_liqueurs_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_liqueurs_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_liqueurs_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -894,7 +899,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[7])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_wines_type_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_wines_type_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_wines_type_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -903,7 +908,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[8])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_mushrooms_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_mushrooms_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_mushrooms_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -912,7 +917,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[9])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_vinegars_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_vinegars_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vinegars_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -921,7 +926,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200,255,200));
             }
             else if (filterTypeOfProduct.equals(filterTypeOfProductArray[10])){
-                productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_other_products_array);
+                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_other_products_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_other_products_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerProductFeatures.setAdapter(productFeaturesAdapter);
@@ -931,7 +936,7 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
             }
         }
         catch(NullPointerException e){
-            productFeaturesArray = getResources().getStringArray(R.array.ProductDetailsActivity_choose_array);
+            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_choose_array);
             spinnerTypeOfProduct.setSelection(0,false);
             spinnerTypeOfProduct.setBackgroundColor(Color.TRANSPARENT);
         }

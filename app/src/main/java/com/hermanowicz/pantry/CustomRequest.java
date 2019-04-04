@@ -35,9 +35,9 @@ public class CustomRequest extends Request<JSONObject> {
     private Listener<JSONObject> listener;
 
     public CustomRequest(int method, String url, Map<String, String> params,
-                         Listener<JSONObject> reponseListener, ErrorListener errorListener) {
+                         Listener<JSONObject> responseListener, ErrorListener errorListener) {
         super(method, url, errorListener);
-        this.listener = reponseListener;
+        this.listener = responseListener;
     }
 
     @Override

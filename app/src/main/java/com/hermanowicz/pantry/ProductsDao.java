@@ -8,13 +8,13 @@
 
 package com.hermanowicz.pantry;
 
-import android.arch.persistence.db.SupportSQLiteQuery;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.RawQuery;
-
 import java.util.List;
+
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.RawQuery;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 @Dao
 public interface ProductsDao {
@@ -24,9 +24,12 @@ public interface ProductsDao {
     @Query("SELECT id FROM 'products' WHERE id = (:id)")
     int idOFLastProductInDB(int id);
 
+    @Query("SELECT * FROM 'products'")
+    ProductEntity getAllProducts();
+
     @Insert
     void insertProductToDB(ProductEntity... product);
 
     @Query("DELETE FROM 'products' WHERE id = (:id)")
-    int deleteById(int id);
+    int deleteProductById(int id);
 }

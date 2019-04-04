@@ -11,18 +11,23 @@ package com.hermanowicz.pantry;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hermanowicz.pantry.presenters.ProductDetailsActivityPresenter;
+import com.hermanowicz.pantry.views.ProductDetailsActivityView;
+
 import java.util.ArrayList;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 /**
  * <h1>ProductDetailsActivity</h1>
@@ -33,17 +38,21 @@ import java.util.Objects;
  * @version 1.0
  * @since   1.0
  */
-public class ProductDetailsActivity extends AppCompatActivity {
+public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsActivityView {
 
-    private Context         context;
+    private Context context;
+    private Resources resources;
     private DatabaseManager db;
-    private Product         selectedProduct;
+    private Product selectedProduct;
+    private ProductDetailsActivityPresenter presenter;
 
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
+
+        presenter = new ProductDetailsActivityPresenter(this,null);
 
         Intent myPantryActivityIntent = getIntent();
         int productID = myPantryActivityIntent.getIntExtra("product_id", 1);
@@ -56,24 +65,25 @@ public class ProductDetailsActivity extends AppCompatActivity {
             hashCode = 0;
         }
 
-        context                    = getApplicationContext();
-        db                         = new DatabaseManager(context);
-        selectedProduct            = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
-        Toolbar  toolbar           = findViewById(R.id.toolbar);
-        TextView typeOfProduct     = findViewById(R.id.text_productTypeValue);
-        TextView productFeatures   = findViewById(R.id.text_productFeaturesValue);
-        TextView expirationDate    = findViewById(R.id.text_productExpirationDateValue);
-        TextView productionDate    = findViewById(R.id.text_productProductionDateValue);
-        TextView composition       = findViewById(R.id.text_productCompositionValue);
+        context = ProductDetailsActivity.this;
+        resources = context.getResources();
+        db = new DatabaseManager(context);
+        selectedProduct = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        TextView typeOfProduct = findViewById(R.id.text_productTypeValue);
+        TextView productFeatures = findViewById(R.id.text_productFeaturesValue);
+        TextView expirationDate = findViewById(R.id.text_productExpirationDateValue);
+        TextView productionDate = findViewById(R.id.text_productProductionDateValue);
+        TextView composition = findViewById(R.id.text_productCompositionValue);
         TextView healingProperties = findViewById(R.id.text_productHealingPropertiesValue);
-        TextView dosage            = findViewById(R.id.text_productDosageValue);
-        TextView volume            = findViewById(R.id.text_productVolumeValue);
-        TextView weight            = findViewById(R.id.text_productWeightValue);
-        TextView hasSugar          = findViewById(R.id.text_productHasSugarValue);
-        TextView hasSalt           = findViewById(R.id.text_productHasSaltValue);
-        TextView taste             = findViewById(R.id.text_productTasteValue);
-        Button   printQRCode       = findViewById(R.id.button_printQRCode);
-        Button   deleteButton      = findViewById(R.id.button_DeleteProduct);
+        TextView dosage = findViewById(R.id.text_productDosageValue);
+        TextView volume = findViewById(R.id.text_productVolumeValue);
+        TextView weight = findViewById(R.id.text_productWeightValue);
+        TextView hasSugar = findViewById(R.id.text_productHasSugarValue);
+        TextView hasSalt = findViewById(R.id.text_productHasSaltValue);
+        TextView taste = findViewById(R.id.text_productTasteValue);
+        Button printQRCode = findViewById(R.id.button_printQRCode);
+        Button deleteButton = findViewById(R.id.button_DeleteProduct);
 
         setSupportActionBar(toolbar);
 
@@ -86,19 +96,19 @@ public class ProductDetailsActivity extends AppCompatActivity {
             composition.setText(selectedProduct.getComposition());
             healingProperties.setText(selectedProduct.getHealingProperties());
             dosage.setText(selectedProduct.getDosage());
-            volume.setText(selectedProduct.getVolume() + getResources().getString(R.string.ProductDetailsActivity_volume_unit));
-            weight.setText(selectedProduct.getWeight() + getResources().getString(R.string.ProductDetailsActivity_weight_unit));
+            volume.setText(selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit));
+            weight.setText(selectedProduct.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit));
             taste.setText(selectedProduct.getTaste());
             if (selectedProduct.getHasSugar() == 1)
-                hasSugar.setText(getResources().getString(R.string.ProductDetailsActivity_yes));
+                hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_yes));
             else
-                hasSugar.setText(getResources().getString(R.string.ProductDetailsActivity_no));
+                hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_no));
             if (selectedProduct.getHasSalt() == 1)
-                hasSalt.setText(getResources().getString(R.string.ProductDetailsActivity_yes));
+                hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_yes));
             else
-                hasSalt.setText(getResources().getString(R.string.ProductDetailsActivity_no));
+                hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_no));
         } else {
-            Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
         }
 
         printQRCode.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +121,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     finish();
                 }
                 catch (Exception e){
-                    Toast.makeText(context, getResources().getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -121,7 +131,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(db.deleteProductFromDB(selectedProduct.getID())){
                     Notification.cancelNotification(context, selectedProduct);
-                    Toast.makeText(context, getResources().getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
                     Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
                     startActivity(myPantryActivityIntent);
                     finish();
