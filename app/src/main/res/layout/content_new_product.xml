@@ -296,7 +296,7 @@
                 android:text="@string/ProductDetailsActivity_has_sugar" />
 
             <CheckBox
-                android:id="@+id/checkbox_hasSugar"
+                android:id="@+id/checkbox_hasSalt"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
