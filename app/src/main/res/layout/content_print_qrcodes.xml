@@ -62,7 +62,7 @@
         android:text="@string/PrintQRCodesActivity_print_qr_codes"/>
 
     <Button
-        android:id="@+id/button_sendByEmail"
+        android:id="@+id/button_sendPdfByEmail"
         android:layout_width="300dp"
         android:gravity="center"
         android:layout_height="wrap_content"

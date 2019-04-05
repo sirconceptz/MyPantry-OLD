@@ -22,7 +22,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -51,6 +50,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
@@ -76,10 +77,23 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     static final int QR_CODE_HEIGHT = 100;
     static final int APP_PERMISSIONS_EXTERNAL_STORAGE = 23;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.image_qrCode)
+    ImageView image_qrCode;
+    @BindView(R.id.button_printQRCodes)
+    Button button_printQRCodes;
+    @BindView(R.id.button_sendPdfByEmail)
+    Button button_sendPdfByEmail;
+    @BindView(R.id.button_skip)
+    Button button_skipPrinting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_qrcodes);
+
+        ButterKnife.bind(this);
 
         context = PrintQRCodesActivity.this;
         resources = context.getResources();
@@ -88,45 +102,26 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         expirationDates = getIntent().getStringArrayListExtra("expiration_dates");
         qrCodesBitmapArrayList = new ArrayList<>();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        ImageView qrCodeImage = findViewById(R.id.image_qrCode);
-        Button printQRCodes = findViewById(R.id.button_printQRCodes);
-        Button sendPDFByEmail = findViewById(R.id.button_sendByEmail);
-        Button skipPrinting = findViewById(R.id.button_skip);
-
         presenter = new PrintQRCodesActivityPresenter(this, null);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(resources.getString(R.string.PrintQRCodesActivity_print_qr_codes));
 
         try {
-            qrCodeImage.setImageBitmap(generateQRCode(textToQRCode.get(0)));
+            image_qrCode.setImageBitmap(generateQRCode(textToQRCode.get(0)));
         } catch (WriterException e) {
             Toast.makeText(context, resources.getString(R.string.Errors_error) + "WriterException" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        printQRCodes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkPermissionsAndCreatePDF();
-            }
-        });
+        button_printQRCodes.setOnClickListener(v -> checkPermissionsAndCreatePDF());
 
-        sendPDFByEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkPermissionsAndCreatePDF();
-            }
-        });
+        button_sendPdfByEmail.setOnClickListener(v -> checkPermissionsAndCreatePDF());
 
-        skipPrinting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent newProductActivityIntent = new Intent(context, MainActivity.class);
-                startActivity(newProductActivityIntent);
-                finish();
-            }
-    });
+        button_skipPrinting.setOnClickListener(v -> {
+            Intent newProductActivityIntent = new Intent(context, MainActivity.class);
+            startActivity(newProductActivityIntent);
+            finish();
+        });
 
     }
 
@@ -166,8 +161,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(textToQRCode, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT);
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-        Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-        return bitmap;
+        return barcodeEncoder.createBitmap(bitMatrix);
     }
 
     /**

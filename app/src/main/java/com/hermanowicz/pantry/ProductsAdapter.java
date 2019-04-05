@@ -25,6 +25,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static com.hermanowicz.pantry.MyPantryActivity.convertDate;
 
@@ -33,6 +35,15 @@ public class ProductsAdapter extends
 
     private       List<Product>       productList;
     private final OnItemClickListener listener;
+
+    @BindView(R.id.text_productName)
+    TextView nameTv;
+    @BindView(R.id.text_productVolume)
+    TextView volumeTv;
+    @BindView(R.id.text_productWeight)
+    TextView weightTv;
+    @BindView(R.id.text_expirationDate)
+    TextView expirationDateTv;
 
     public ProductsAdapter(List<Product> productList, OnItemClickListener listener) {
         this.productList = productList;
@@ -48,11 +59,7 @@ public class ProductsAdapter extends
 
         public ViewHolder(View itemView) {
             super(itemView);
-
-            nameTv           = itemView.findViewById(R.id.text_productName);
-            volumeTv         = itemView.findViewById(R.id.text_productVolume);
-            weightTv         = itemView.findViewById(R.id.text_productWeight);
-            expirationDateTv = itemView.findViewById(R.id.text_expirationDate);
+            ButterKnife.bind(this, itemView);
         }
 
         public void bind(final Product product, final OnItemClickListener listener){
@@ -74,11 +81,6 @@ public class ProductsAdapter extends
 
     @Override
     public void onBindViewHolder(ProductsAdapter.ViewHolder viewHolder, int position) {
-
-        TextView nameTv = viewHolder.nameTv;
-        TextView volumeTv = viewHolder.volumeTv;
-        TextView weightTv = viewHolder.weightTv;
-        TextView expirationDateTv = viewHolder.expirationDateTv;
 
         Context context = nameTv.getContext();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");

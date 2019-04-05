@@ -18,7 +18,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -33,6 +32,8 @@ import java.util.regex.Pattern;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * <h1>AppSettingsActivity</h1>
@@ -48,10 +49,6 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     private Context           context;
     private DatabaseManager   db;
     private SharedPreferences myPreferences;
-    private EditText          daysBeforeExpirationDate, emailAddress;
-    private NumberPicker      hourOfNotification;
-    private CheckBox          notificationsByEmail, notificationsByPush;
-    private Button            saveSettings, clearDatabase;
     private AppSettingsActivityPresenter presenter;
 
     public static final String PREFERENCES_EMAIL_ADDRESS         = "EMAIL_ADDRESS";
@@ -60,11 +57,30 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     public static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
     public static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.edittext_daysToNotification)
+    EditText daysBeforeExpirationDate;
+    @BindView(R.id.checkbox_emailNotifications)
+    CheckBox notificationsByEmail;
+    @BindView(R.id.checkbox_pushNotifications)
+    CheckBox notificationsByPush;
+    @BindView(R.id.numberpicker_hourOfNotification)
+    NumberPicker hourOfNotification;
+    @BindView(R.id.edittext_emailAddress)
+    EditText emailAddress;
+    @BindView(R.id.button_saveSettings)
+    Button saveSettings;
+    @BindView(R.id.button_clearDatabase)
+    Button clearDatabase;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_settings);
+
+        ButterKnife.bind(this);
 
         init();
         updateSettings();
@@ -86,35 +102,29 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
             }
         });
 
-        saveSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor preferenceEditor = myPreferences.edit();
+        saveSettings.setOnClickListener(view -> {
+            SharedPreferences.Editor preferenceEditor = myPreferences.edit();
 
-                preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, Integer.parseInt(daysBeforeExpirationDate.getText().toString()));
-                preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, notificationsByPush.isChecked());
-                preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotification.getValue());
+            preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, Integer.parseInt(daysBeforeExpirationDate.getText().toString()));
+            preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, notificationsByPush.isChecked());
+            preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotification.getValue());
 
-                setEmailSettings();
+            setEmailSettings();
 
-                if(isNotificationSettingsChanged()){
-                    Notification.cancelAllNotifications(context);
-                    Notification.createNotificationsForAllProducts(context);
-                }
+            if (isNotificationSettingsChanged()) {
+                Notification.cancelAllNotifications(context);
+                Notification.createNotificationsForAllProducts(context);
+            }
 
-                if(preferenceEditor.commit()) {
-                    Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_settings_saved_successful), Toast.LENGTH_LONG).show();
-                }
+            if (preferenceEditor.commit()) {
+                Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_settings_saved_successful), Toast.LENGTH_LONG).show();
             }
         });
 
-        clearDatabase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Notification.cancelAllNotifications(context);
-                db.reCreateDB();
-                Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
-            }
+        clearDatabase.setOnClickListener(view -> {
+            Notification.cancelAllNotifications(context);
+            db.reCreateDB();
+            Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
         });
     }
 
@@ -129,6 +139,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
             preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
             preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, "");
         }
+        preferenceEditor.apply();
     }
 
     private boolean isNotificationSettingsChanged(){
@@ -193,19 +204,9 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     }
 
     private void init(){
-        context                  = getApplicationContext();
-        db                       = new DatabaseManager(context);
-        myPreferences            = PreferenceManager.getDefaultSharedPreferences(context);
-
-        Toolbar toolbar          = findViewById(R.id.toolbar);
-        daysBeforeExpirationDate = findViewById(R.id.edittext_daysToNotification);
-        notificationsByEmail     = findViewById(R.id.checkbox_emailNotifications);
-        notificationsByPush      = findViewById(R.id.checkbox_pushNotifications);
-        hourOfNotification       = findViewById(R.id.numberpicker_hourOfNotification);
-        emailAddress             = findViewById(R.id.edittext_emailAddress);
-        saveSettings             = findViewById(R.id.button_saveSettings);
-        clearDatabase            = findViewById(R.id.button_clearDatabase);
-
+        context = getApplicationContext();
+        db = new DatabaseManager(context);
+        myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         setSupportActionBar(toolbar);
 

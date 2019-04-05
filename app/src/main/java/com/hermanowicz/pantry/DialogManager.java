@@ -12,19 +12,16 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -79,45 +76,45 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
      *
      * @param dialogType this value is needed to choose a type of dialog window
      */
-    public void setDialogType(@NonNull String dialogType) {
+    void setDialogType(@NonNull String dialogType) {
         this.dialogType = dialogType;
     }
 
-    public void setFilterName(@NonNull String filterName) {
+    void setFilterName(@NonNull String filterName) {
         this.filterName = filterName;
     }
 
-    public void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
+    void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
         this.filterExpirationDateSince = filterExpirationDateSince;
         this.filterExpirationDateFor   = filterExpirationDateFor;
     }
 
-    public void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
+    void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
         this.filterProductionDateSince = filterProductionDateSince;
         this.filterProductionDateFor   = filterProductionDateFor;
     }
 
-    public void setFilterTypeOfProduct(@NonNull String filterTypeOfProduct, String filterProductFeatures){
+    void setFilterTypeOfProduct(@NonNull String filterTypeOfProduct, String filterProductFeatures) {
         this.filterTypeOfProduct   = filterTypeOfProduct;
         this.filterProductFeatures = filterProductFeatures;
     }
 
-    public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
+    void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
         this.filterVolumeSince = filterVolumeSince;
         this.filterVolumeFor   = filterVolumeFor;
     }
 
-    public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
+    void setFilterWeight(int filterWeightSince, int filterWeightFor) {
         this.filterWeightSince = filterWeightSince;
         this.filterWeightFor   = filterWeightFor;
     }
 
-    public void setFilterProductFeatures(int filterHasSugarValue, int filterHasSaltValue){
+    void setFilterProductFeatures(int filterHasSugarValue, int filterHasSaltValue) {
         this.filterHasSugar = filterHasSugarValue;
         this.filterHasSalt = filterHasSaltValue;
     }
 
-    public void setFilterTaste(@NonNull String filterTaste){
+    void setFilterTaste(@NonNull String filterTaste) {
         this.filterTaste = filterTaste;
     }
 
@@ -147,31 +144,22 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 editTextName.setText(filterName);
             }
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTextName.setText("");
-                    filterName = null;
-                    }});
+            btnClear.setOnClickListener(view1 -> {
+                editTextName.setText("");
+                filterName = null;
+            });
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            filterName = editTextName.getText().toString();
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        filterName = editTextName.getText().toString();
 
-                            if (filterName.equals("")){
-                                dialogListener.clearFilterName();
-                            }
-                            else{
-                                dialogListener.applyFilterName(filterName);
-                            }
+                        if (filterName.equals("")) {
+                            dialogListener.clearFilterName();
+                        } else {
+                            dialogListener.applyFilterName(filterName);
                         }
                     });
         }
@@ -188,132 +176,105 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 editTextExpirationDateFor.setText(filterExpirationDateFor);
             }
 
-            editTextExpirationDateSince.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (editTextExpirationDateSince.length() < 1) {
-                        year = calendar.get(Calendar.YEAR);
-                        month = calendar.get(Calendar.MONTH);
-                        day = calendar.get(Calendar.DAY_OF_MONTH);
-                    } else {
-                        String[] splitedDate = MyPantryActivity.splitDate(editTextExpirationDateSince.getText().toString());
-                        year = Integer.valueOf(splitedDate[2]);
-                        month = Integer.valueOf(splitedDate[1]);
-                        day = Integer.valueOf(splitedDate[0]);
-                    }
-
-                    DatePickerDialog dialog = new DatePickerDialog(
-                            context,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            expirationDateSinceListener,
-                            year,month,day);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
+            editTextExpirationDateSince.setOnClickListener(v -> {
+                if (editTextExpirationDateSince.length() < 1) {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                } else {
+                    String[] splitedDate = MyPantryActivity.splitDate(editTextExpirationDateSince.getText().toString());
+                    year = Integer.valueOf(splitedDate[2]);
+                    month = Integer.valueOf(splitedDate[1]);
+                    day = Integer.valueOf(splitedDate[0]);
                 }
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        context,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        expirationDateSinceListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
             });
 
-            editTextExpirationDateFor.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (editTextExpirationDateFor.length() < 1) {
-                        year  = calendar.get(Calendar.YEAR);
-                        month = calendar.get(Calendar.MONTH);
-                        day   = calendar.get(Calendar.DAY_OF_MONTH);
-                    }
-                    else{
-                        String[] splitedDate = MyPantryActivity.splitDate(editTextExpirationDateFor.getText().toString());
-                        year  = Integer.valueOf(splitedDate[2]);
-                        month = Integer.valueOf(splitedDate[1]);
-                        day   = Integer.valueOf(splitedDate[0]);
-                    }
-
-                    DatePickerDialog dialog = new DatePickerDialog(
-                            context,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            expirationDateForListener,
-                            year,month,day);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
+            editTextExpirationDateFor.setOnClickListener(v -> {
+                if (editTextExpirationDateFor.length() < 1) {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                } else {
+                    String[] splitedDate = MyPantryActivity.splitDate(editTextExpirationDateFor.getText().toString());
+                    year = Integer.valueOf(splitedDate[2]);
+                    month = Integer.valueOf(splitedDate[1]);
+                    day = Integer.valueOf(splitedDate[0]);
                 }
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        context,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        expirationDateForListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
             });
 
-            expirationDateSinceListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    editTextExpirationDateSince.setText(day + "." + month + "." + year);
-                    expirationDateSinceConverted = year + "-" + month + "-" + day;
-                }
+            expirationDateSinceListener = (datePicker, year, month, day) -> {
+                month = month + 1;
+                editTextExpirationDateSince.setText(day + "." + month + "." + year);
+                expirationDateSinceConverted = year + "-" + month + "-" + day;
             };
 
-            expirationDateForListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    editTextExpirationDateFor.setText(day + "." + month + "." + year);
-                    expirationDateForConverted = year + "-" + month + "-" + day;
-                }
+            expirationDateForListener = (datePicker, year, month, day) -> {
+                month = month + 1;
+                editTextExpirationDateFor.setText(day + "." + month + "." + year);
+                expirationDateForConverted = year + "-" + month + "-" + day;
             };
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTextExpirationDateSince.setText("");
-                    editTextExpirationDateFor.setText("");
-                }});
+            btnClear.setOnClickListener(view12 -> {
+                editTextExpirationDateSince.setText("");
+                editTextExpirationDateFor.setText("");
+            });
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try{
-                                filterExpirationDateSince = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateSinceConverted));
-                                dateExpirationSince = DATE_FORMAT.parse(expirationDateSinceConverted);
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        try {
+                            filterExpirationDateSince = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateSinceConverted));
+                            dateExpirationSince = DATE_FORMAT.parse(expirationDateSinceConverted);
+                        } catch (ParseException e) {
+                            if (expirationDateSinceConverted.length() < 1) {
+                                filterExpirationDateSince = null;
+                            } else {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            catch (ParseException e) {
-                                if(expirationDateSinceConverted.length() < 1) {
-                                    filterExpirationDateSince = null;
-                                }
-                                else {
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
-                                e.printStackTrace();
+                            e.printStackTrace();
+                        }
+                        try {
+                            filterExpirationDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateForConverted));
+                            dateExpirationFor = DATE_FORMAT.parse(expirationDateForConverted);
+                        } catch (ParseException e) {
+                            if (expirationDateForConverted.length() < 1) {
+                                filterExpirationDateFor = null;
+                            } else {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            try{
-                                    filterExpirationDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateForConverted));
-                                    dateExpirationFor = DATE_FORMAT.parse(expirationDateForConverted);
-                            }
-                            catch (ParseException e) {
-                                if(expirationDateForConverted.length() < 1) {
-                                    filterExpirationDateFor = null;
-                                }
-                                else {
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
-                                e.printStackTrace();
-                            }
-                            if (filterExpirationDateSince == null && filterExpirationDateFor == null){
-                                dialogListener.clearFilterExpirationDate();
-                            }
-                            else {
-                                try {
-                                    if (dateExpirationSince.compareTo(dateExpirationFor) == 0 || dateExpirationSince.compareTo(dateExpirationFor) < 0) {
-                                        dialogListener.applyFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
-                                    } else {
-                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                                catch(NullPointerException e){
+                            e.printStackTrace();
+                        }
+                        if (filterExpirationDateSince == null && filterExpirationDateFor == null) {
+                            dialogListener.clearFilterExpirationDate();
+                        } else {
+                            try {
+                                if (dateExpirationSince.compareTo(dateExpirationFor) == 0 || dateExpirationSince.compareTo(dateExpirationFor) < 0) {
                                     dialogListener.applyFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
-                                    e.printStackTrace();
+                                } else {
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
-
+                            } catch (NullPointerException e) {
+                                dialogListener.applyFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
+                                e.printStackTrace();
                             }
+
                         }
                     });
         }
@@ -330,134 +291,106 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 editTextProductionDateFor.setText(filterProductionDateFor);
             }
 
-            editTextProductionDateSince.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (editTextProductionDateSince.length() < 1) {
-                        year  = calendar.get(Calendar.YEAR);
-                        month = calendar.get(Calendar.MONTH);
-                        day   = calendar.get(Calendar.DAY_OF_MONTH);
-                    }
-                    else{
-                        String[] splitedDate = MyPantryActivity.splitDate(editTextProductionDateSince.getText().toString());
-                        year  = Integer.valueOf(splitedDate[2]);
-                        month = Integer.valueOf(splitedDate[1]);
-                        day   = Integer.valueOf(splitedDate[0]);
-                    }
-
-                    DatePickerDialog dialog = new DatePickerDialog(
-                            context,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            productionDateSinceListener,
-                            year,month,day);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
+            editTextProductionDateSince.setOnClickListener(v -> {
+                if (editTextProductionDateSince.length() < 1) {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                } else {
+                    String[] splitedDate = MyPantryActivity.splitDate(editTextProductionDateSince.getText().toString());
+                    year = Integer.valueOf(splitedDate[2]);
+                    month = Integer.valueOf(splitedDate[1]);
+                    day = Integer.valueOf(splitedDate[0]);
                 }
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        context,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        productionDateSinceListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
             });
 
-            editTextProductionDateFor.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (editTextProductionDateFor.length() < 1) {
-                        year  = calendar.get(Calendar.YEAR);
-                        month = calendar.get(Calendar.MONTH);
-                        day   = calendar.get(Calendar.DAY_OF_MONTH);
-                    }
-                    else{
-                        String[] splitedDate = MyPantryActivity.splitDate(editTextProductionDateFor.getText().toString());
-                        year  = Integer.valueOf(splitedDate[2]);
-                        month = Integer.valueOf(splitedDate[1]);
-                        day   = Integer.valueOf(splitedDate[0]);
-                    }
-
-                    DatePickerDialog dialog = new DatePickerDialog(
-                            context,
-                            android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                            productionDateForListener,
-                            year,month,day);
-                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                    dialog.show();
+            editTextProductionDateFor.setOnClickListener(v -> {
+                if (editTextProductionDateFor.length() < 1) {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                } else {
+                    String[] splitedDate = MyPantryActivity.splitDate(editTextProductionDateFor.getText().toString());
+                    year = Integer.valueOf(splitedDate[2]);
+                    month = Integer.valueOf(splitedDate[1]);
+                    day = Integer.valueOf(splitedDate[0]);
                 }
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        context,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        productionDateForListener,
+                        year, month, day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
             });
 
-            productionDateSinceListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    String date = year + "-" + month + "-" + day;
-                    editTextProductionDateSince.setText(date);
-                }
+            productionDateSinceListener = (datePicker, year, month, day) -> {
+                month = month + 1;
+                String date = year + "-" + month + "-" + day;
+                editTextProductionDateSince.setText(date);
             };
 
-            productionDateForListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                    month = month + 1;
-                    String date = year + "-" + month + "-" + day;
-                    editTextProductionDateFor.setText(date);
-                }
+            productionDateForListener = (datePicker, year, month, day) -> {
+                month = month + 1;
+                String date = year + "-" + month + "-" + day;
+                editTextProductionDateFor.setText(date);
             };
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTextProductionDateSince.setText("");
-                    editTextProductionDateFor.setText("");
-                }});
+            btnClear.setOnClickListener(view16 -> {
+                editTextProductionDateSince.setText("");
+                editTextProductionDateFor.setText("");
+            });
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
 
-                        }
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try{
-                                filterProductionDateSince = DATE_FORMAT.format(DATE_FORMAT.parse(editTextProductionDateSince.getText().toString()));
-                                dateProductionSince = DATE_FORMAT.parse(editTextProductionDateSince.getText().toString());
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        try {
+                            filterProductionDateSince = DATE_FORMAT.format(DATE_FORMAT.parse(editTextProductionDateSince.getText().toString()));
+                            dateProductionSince = DATE_FORMAT.parse(editTextProductionDateSince.getText().toString());
+                        } catch (ParseException e) {
+                            if (editTextProductionDateSince.length() < 1) {
+                                filterProductionDateSince = null;
+                            } else {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            catch (ParseException e) {
-                                if(editTextProductionDateSince.length() < 1) {
-                                    filterProductionDateSince = null;
-                                }
-                                else {
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
-                                e.printStackTrace();
+                            e.printStackTrace();
+                        }
+                        try {
+                            filterProductionDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(editTextProductionDateFor.getText().toString()));
+                            dateProductionFor = DATE_FORMAT.parse(editTextProductionDateFor.getText().toString());
+                        } catch (ParseException e) {
+                            if (editTextProductionDateFor.length() < 1) {
+                                filterProductionDateFor = null;
+                            } else {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            try{
-                                filterProductionDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(editTextProductionDateFor.getText().toString()));
-                                dateProductionFor = DATE_FORMAT.parse(editTextProductionDateFor.getText().toString());
-                            }
-                            catch (ParseException e) {
-                                if(editTextProductionDateFor.length() < 1) {
-                                    filterProductionDateFor = null;
-                                }
-                                else {
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
-                                e.printStackTrace();
-                            }
-                            if (filterProductionDateSince == null && filterProductionDateFor == null){
-                                dialogListener.clearFilterProductionDate();
-                            }
-                            else {
-                                try {
-                                    if (dateProductionSince.compareTo(dateProductionFor) == 0 || dateProductionSince.compareTo(dateProductionFor) < 0) {
-                                        dialogListener.applyFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
-                                    } else {
-                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                                catch(NullPointerException e){
+                            e.printStackTrace();
+                        }
+                        if (filterProductionDateSince == null && filterProductionDateFor == null) {
+                            dialogListener.clearFilterProductionDate();
+                        } else {
+                            try {
+                                if (dateProductionSince.compareTo(dateProductionFor) == 0 || dateProductionSince.compareTo(dateProductionFor) < 0) {
                                     dialogListener.applyFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
-                                    e.printStackTrace();
+                                } else {
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
-
+                            } catch (NullPointerException e) {
+                                dialogListener.applyFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
+                                e.printStackTrace();
                             }
+
                         }
                     });
         }
@@ -487,23 +420,18 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 }
             }
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    spinnerTypeOfProduct.setSelection(0, false);
-                    spinnerTypeOfProduct.setBackgroundColor(Color.TRANSPARENT);
-                    filterTypeOfProduct = null;
-                    spinnerProductFeatures.setSelection(0, false);
-                    spinnerProductFeatures.setBackgroundColor(Color.TRANSPARENT);
-                    filterProductFeatures = null;
-                }});
+            btnClear.setOnClickListener(view17 -> {
+                spinnerTypeOfProduct.setSelection(0, false);
+                spinnerTypeOfProduct.setBackgroundColor(Color.TRANSPARENT);
+                filterTypeOfProduct = null;
+                spinnerProductFeatures.setSelection(0, false);
+                spinnerProductFeatures.setBackgroundColor(Color.TRANSPARENT);
+                filterProductFeatures = null;
+            });
 
-            spinnerTypeOfProduct.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    isTypeOfProductTouched = true;
-                    return false;
-                }
+            spinnerTypeOfProduct.setOnTouchListener((v, event) -> {
+                isTypeOfProductTouched = true;
+                return false;
             });
             spinnerTypeOfProduct.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -523,12 +451,9 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 }
             });
 
-            spinnerProductFeatures.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    isProductFeaturesTouched = true;
-                    return false;
-                }
+            spinnerProductFeatures.setOnTouchListener((v, event) -> {
+                isProductFeaturesTouched = true;
+                return false;
             });
 
             spinnerProductFeatures.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -549,20 +474,13 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if(filterTypeOfProduct != null){
-                                dialogListener.applyFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
-                            }
-                            else{
-                                dialogListener.clearFilterTypeOfProduct();
-                            }
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        if (filterTypeOfProduct != null) {
+                            dialogListener.applyFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
+                        } else {
+                            dialogListener.clearFilterTypeOfProduct();
                         }
                     });
         }
@@ -585,56 +503,43 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 editTextVolumeFor.setText("");
             }
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTextVolumeSince.setText("");
-                    editTextVolumeFor.setText("");
-                }});
+            btnClear.setOnClickListener(view18 -> {
+                editTextVolumeSince.setText("");
+                editTextVolumeFor.setText("");
+            });
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                filterVolumeSince = Integer.valueOf(editTextVolumeSince.getText().toString());
-                                if(filterVolumeSince <= -1){
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        try {
+                            filterVolumeSince = Integer.valueOf(editTextVolumeSince.getText().toString());
+                            if (filterVolumeSince <= -1) {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            catch(NumberFormatException e){
-                                filterVolumeSince = -1;
+                        } catch (NumberFormatException e) {
+                            filterVolumeSince = -1;
+                        }
+                        try {
+                            filterVolumeFor = Integer.valueOf(editTextVolumeFor.getText().toString());
+                            if (filterVolumeFor <= -1) {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            try {
-                                filterVolumeFor = Integer.valueOf(editTextVolumeFor.getText().toString());
-                                if(filterVolumeFor <= -1){
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                            catch(NumberFormatException e){
-                                filterVolumeFor = -1;
-                            }
-                            if (filterVolumeSince >= 0 || filterVolumeFor >= 0){
-                                if(filterVolumeSince >= 0 && filterVolumeFor >= 0){
-                                    if (filterVolumeSince < filterVolumeFor || filterVolumeSince == filterVolumeFor){
-                                        dialogListener.applyFilterVolume(filterVolumeSince, filterVolumeFor);
-                                    }
-                                    else{
-                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                                else {
+                        } catch (NumberFormatException e) {
+                            filterVolumeFor = -1;
+                        }
+                        if (filterVolumeSince >= 0 || filterVolumeFor >= 0) {
+                            if (filterVolumeSince >= 0 && filterVolumeFor >= 0) {
+                                if (filterVolumeSince < filterVolumeFor || filterVolumeSince == filterVolumeFor) {
                                     dialogListener.applyFilterVolume(filterVolumeSince, filterVolumeFor);
+                                } else {
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
+                            } else {
+                                dialogListener.applyFilterVolume(filterVolumeSince, filterVolumeFor);
                             }
-                            else {
-                                dialogListener.clearFilterVolume();
-                            }
+                        } else {
+                            dialogListener.clearFilterVolume();
                         }
                     });
         }
@@ -657,56 +562,43 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 editTextWeightFor.setText("");
             }
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    editTextWeightSince.setText("");
-                    editTextWeightFor.setText("");
-                }});
+            btnClear.setOnClickListener(view15 -> {
+                editTextWeightSince.setText("");
+                editTextWeightFor.setText("");
+            });
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                filterWeightSince = Integer.valueOf(editTextWeightSince.getText().toString());
-                                if(filterWeightSince <= -1){
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        try {
+                            filterWeightSince = Integer.valueOf(editTextWeightSince.getText().toString());
+                            if (filterWeightSince <= -1) {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            catch(NumberFormatException e){
-                                filterWeightSince = -1;
+                        } catch (NumberFormatException e) {
+                            filterWeightSince = -1;
+                        }
+                        try {
+                            filterWeightFor = Integer.valueOf(editTextWeightFor.getText().toString());
+                            if (filterWeightFor <= -1) {
+                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                             }
-                            try {
-                                filterWeightFor = Integer.valueOf(editTextWeightFor.getText().toString());
-                                if(filterWeightFor <= -1){
-                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                }
-                            }
-                            catch(NumberFormatException e){
-                                filterWeightFor = -1;
-                            }
-                            if (filterWeightSince >= 0 || filterWeightFor >= 0){
-                                if(filterWeightSince >= 0 && filterWeightFor >= 0){
-                                    if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor){
-                                        dialogListener.applyFilterWeight(filterWeightSince, filterWeightFor);
-                                    }
-                                    else{
-                                        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                                else {
+                        } catch (NumberFormatException e) {
+                            filterWeightFor = -1;
+                        }
+                        if (filterWeightSince >= 0 || filterWeightFor >= 0) {
+                            if (filterWeightSince >= 0 && filterWeightFor >= 0) {
+                                if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor) {
                                     dialogListener.applyFilterWeight(filterWeightSince, filterWeightFor);
+                                } else {
+                                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                                 }
+                            } else {
+                                dialogListener.applyFilterWeight(filterWeightSince, filterWeightFor);
                             }
-                            else {
-                                dialogListener.clearFilterWeight();
-                            }
+                        } else {
+                            dialogListener.clearFilterWeight();
                         }
                     });
         }
@@ -732,13 +624,11 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             filterTaste = String.valueOf(spinnerTaste.getSelectedItem());
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    spinnerTaste.setSelection(0);
-                    spinnerTaste.setBackgroundColor(Color.TRANSPARENT);
-                    filterTaste = null;
-                }});
+            btnClear.setOnClickListener(view14 -> {
+                spinnerTaste.setSelection(0);
+                spinnerTaste.setBackgroundColor(Color.TRANSPARENT);
+                filterTaste = null;
+            });
 
             spinnerTaste.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -752,20 +642,13 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if(filterTaste != null){
-                                dialogListener.applyFilterTaste(filterTaste);
-                            }
-                            else{
-                                dialogListener.clearFilterTaste();
-                            }
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        if (filterTaste != null) {
+                            dialogListener.applyFilterTaste(filterTaste);
+                        } else {
+                            dialogListener.clearFilterTaste();
                         }
                     });
         }
@@ -783,51 +666,38 @@ public class DialogManager extends AppCompatDialogFragment implements DatePicker
                 checkBoxHasSalt.setChecked(true);
             }
 
-            btnClear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    checkBoxHasSugar.setChecked(false);
-                    checkBoxHasSalt.setChecked(false);
-                    filterHasSugar = -1;
-                    filterHasSalt = -1;
-                }});
+            btnClear.setOnClickListener(view13 -> {
+                checkBoxHasSugar.setChecked(false);
+                checkBoxHasSalt.setChecked(false);
+                filterHasSugar = -1;
+                filterHasSalt = -1;
+            });
 
-            checkBoxHasSugar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(checkBoxHasSugar.isChecked())
-                    filterHasSugar = 1;
-                else
-                    filterHasSugar = 0;
-                }}
+            checkBoxHasSugar.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (checkBoxHasSugar.isChecked())
+                            filterHasSugar = 1;
+                        else
+                            filterHasSugar = 0;
+                    }
             );
 
-            checkBoxHasSalt.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(checkBoxHasSalt.isChecked())
-                        filterHasSalt = 1;
-                    else
-                        filterHasSalt = 0;
-                }}
+            checkBoxHasSalt.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                        if (checkBoxHasSalt.isChecked())
+                            filterHasSalt = 1;
+                        else
+                            filterHasSalt = 0;
+                    }
             );
 
             builder.setView(view)
                     .setTitle(dialogType)
-                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
+                    .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                     })
-                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (filterHasSugar == -1 && filterHasSalt == -1) {
-                                dialogListener.clearProductFeatures();
-                            }
-                            else
-                                dialogListener.applyProductFeatures(filterHasSugar, filterHasSalt);
-                        }
+                    .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                        if (filterHasSugar == -1 && filterHasSalt == -1) {
+                            dialogListener.clearProductFeatures();
+                        } else
+                            dialogListener.applyProductFeatures(filterHasSugar, filterHasSalt);
                     });
         }
         return builder.create();

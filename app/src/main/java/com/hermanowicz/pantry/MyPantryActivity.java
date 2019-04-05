@@ -23,7 +23,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
 import com.hermanowicz.pantry.views.MyPantryActivityView;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -35,6 +34,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * <h1>MyPantryActivity</h1>
@@ -50,11 +51,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     private Context          context;
     private Resources        resources;
     private DatabaseManager  db;
-    private ProductDB        productDB;
     private List<Product>    productsFromDB;
-    private TextView         emptyPantryStatement;
-    private DrawerLayout     drawerLayout;
-    private NavigationView   navigationView;
     private ProductsAdapter  adapterProductsRecyclerView;
     private String           fltrName, fltrExpirationDateSince, fltrExpirationDateFor,
                              fltrProductionDateSince, fltrProductionDateFor, fltrTypeOfProduct,
@@ -62,26 +59,33 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     private int              fltrWeightSince = -1, fltrWeightFor = -1, fltrVolumeSince = -1,
                              fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
     public  AdRequest        adRequest;
-    private AdView           adView;
+
     private MyPantryActivityPresenter presenter;
+
+    @BindView(R.id.recyclerview_products)
+    RecyclerView recyclerViewProducts;
+    @BindView(R.id.my_pantry_drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.text_emptyPantryStatement)
+    TextView emptyPantryStatement;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.adBanner)
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_pantry_drawer_layout);
 
+        ButterKnife.bind(this);
+
         context = getApplicationContext();
         resources = context.getResources();
         db = new DatabaseManager(context);
         productsFromDB = db.getProductsFromDB(buildPantryQuery());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        RecyclerView recyclerViewProducts = findViewById(R.id.recyclerview_products);
-        drawerLayout = findViewById(R.id.my_pantry_drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        emptyPantryStatement = findViewById(R.id.text_emptyPantryStatement);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        adView = findViewById(R.id.adBanner);
 
         presenter = new MyPantryActivityPresenter(this, null);
 
@@ -90,19 +94,16 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        productDB = Room.databaseBuilder(context,ProductDB.class, "Article").allowMainThreadQueries().build();
+        ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Article").allowMainThreadQueries().build();
 
-        adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, new ProductsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Product product) {
-                Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-                int productID = product.getID()-1;
-                productDetailsActivityIntent.putExtra("product_id", productID);
-                Product  selectedProduct = productsFromDB.get(productID);
-                productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(selectedProduct.getHashCode()));
-                startActivity(productDetailsActivityIntent);
-                finish();
-            }
+        adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, product -> {
+            Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
+            int productID = product.getID() - 1;
+            productDetailsActivityIntent.putExtra("product_id", productID);
+            Product selectedProduct = productsFromDB.get(productID);
+            productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(selectedProduct.getHashCode()));
+            startActivity(productDetailsActivityIntent);
+            finish();
         });
         recyclerViewProducts.setAdapter(adapterProductsRecyclerView);
         adapterProductsRecyclerView.notifyDataSetChanged();

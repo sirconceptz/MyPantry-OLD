@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +27,8 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * <h1>ProductDetailsActivity</h1>
@@ -46,11 +47,44 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     private Product selectedProduct;
     private ProductDetailsActivityPresenter presenter;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.text_productTypeValue)
+    TextView typeOfProduct;
+    @BindView(R.id.text_productFeaturesValue)
+    TextView productFeatures;
+    @BindView(R.id.text_productExpirationDateValue)
+    TextView expirationDate;
+    @BindView(R.id.text_productProductionDateValue)
+    TextView productionDate;
+    @BindView(R.id.text_productCompositionValue)
+    TextView composition;
+    @BindView(R.id.text_productHealingPropertiesValue)
+    TextView healingProperties;
+    @BindView(R.id.text_productDosageValue)
+    TextView dosage;
+    @BindView(R.id.text_productVolumeValue)
+    TextView volume;
+    @BindView(R.id.text_productWeightValue)
+    TextView weight;
+    @BindView(R.id.text_productHasSugarValue)
+    TextView hasSugar;
+    @BindView(R.id.text_productHasSaltValue)
+    TextView hasSalt;
+    @BindView(R.id.text_productTasteValue)
+    TextView taste;
+    @BindView(R.id.button_printQRCode)
+    Button button_printQRCode;
+    @BindView(R.id.button_deleteProduct)
+    Button button_deleteProduct;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
+
+        ButterKnife.bind(this);
 
         presenter = new ProductDetailsActivityPresenter(this,null);
 
@@ -69,21 +103,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         resources = context.getResources();
         db = new DatabaseManager(context);
         selectedProduct = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        TextView typeOfProduct = findViewById(R.id.text_productTypeValue);
-        TextView productFeatures = findViewById(R.id.text_productFeaturesValue);
-        TextView expirationDate = findViewById(R.id.text_productExpirationDateValue);
-        TextView productionDate = findViewById(R.id.text_productProductionDateValue);
-        TextView composition = findViewById(R.id.text_productCompositionValue);
-        TextView healingProperties = findViewById(R.id.text_productHealingPropertiesValue);
-        TextView dosage = findViewById(R.id.text_productDosageValue);
-        TextView volume = findViewById(R.id.text_productVolumeValue);
-        TextView weight = findViewById(R.id.text_productWeightValue);
-        TextView hasSugar = findViewById(R.id.text_productHasSugarValue);
-        TextView hasSalt = findViewById(R.id.text_productHasSaltValue);
-        TextView taste = findViewById(R.id.text_productTasteValue);
-        Button printQRCode = findViewById(R.id.button_printQRCode);
-        Button deleteButton = findViewById(R.id.button_DeleteProduct);
 
         setSupportActionBar(toolbar);
 
@@ -111,32 +130,25 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
         }
 
-        printQRCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ArrayList<Product> productArrayList = new ArrayList<>();
-                    productArrayList.add(selectedProduct);
-                    startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productArrayList));
-                    finish();
-                }
-                catch (Exception e){
-                    Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                }
+        button_printQRCode.setOnClickListener(view -> {
+            try {
+                ArrayList<Product> productArrayList = new ArrayList<>();
+                productArrayList.add(selectedProduct);
+                startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productArrayList));
+                finish();
+            } catch (Exception e) {
+                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(db.deleteProductFromDB(selectedProduct.getID())){
-                    Notification.cancelNotification(context, selectedProduct);
-                    Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
-                    Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
-                    startActivity(myPantryActivityIntent);
-                    finish();
-                    }
-                }
+        button_deleteProduct.setOnClickListener(view -> {
+            if (db.deleteProductFromDB(selectedProduct.getID())) {
+                Notification.cancelNotification(context, selectedProduct);
+                Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
+                Intent myPantryActivityIntent1 = new Intent(context, MyPantryActivity.class);
+                startActivity(myPantryActivityIntent1);
+                finish();
+            }
         });
     }
 

@@ -8,5 +8,5 @@
 
 package com.hermanowicz.pantry.repositories;
 
-public class ScanProductActivityRepository {
+public interface ScanProductActivityRepository {
 }

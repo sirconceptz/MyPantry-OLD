@@ -31,7 +31,7 @@ import androidx.annotation.NonNull;
  */
 public class Notification {
 
-    public static final int NOTIFICATION_DEFAULT_HOUR = 12;
+    static final int NOTIFICATION_DEFAULT_HOUR = 12;
     public static final int NOTIFICATION_DEFAULT_DAYS = 3;
 
     private static Calendar createCalendar(@NonNull Context context, @NonNull String expirationDate){

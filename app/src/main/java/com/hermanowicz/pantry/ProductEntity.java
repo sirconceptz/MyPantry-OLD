@@ -15,21 +15,21 @@ import androidx.room.PrimaryKey;
 public class ProductEntity {
 
     @PrimaryKey(autoGenerate = true)
-    private int     id;
-    private String  name;
-    private String  hashCode;
-    private String  typeOfProduct;
-    private String  productFeatures;
-    private String  expirationDate;
-    private String  productionDate;
-    private String  composition;
-    private String  healingProperties;
-    private String  dosage;
-    private int     volume;
-    private int     weight;
-    private int     hasSugar;
-    private int     hasSalt;
-    private String  taste;
+    private int id;
+    private String name;
+    private String hashCode;
+    private String typeOfProduct;
+    private String productFeatures;
+    private String expirationDate;
+    private String productionDate;
+    private String composition;
+    private String healingProperties;
+    private String dosage;
+    private int volume;
+    private int weight;
+    private int hasSugar;
+    private int hasSalt;
+    private String taste;
 
     public int getId() {
         return id;

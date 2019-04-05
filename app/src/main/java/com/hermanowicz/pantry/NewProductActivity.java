@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -48,6 +47,8 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * <h1>NewProductActivity</h1>
@@ -67,11 +68,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private Context                            context;
     private Resources                          resources;
     private DatabaseManager                    db;
-    private Spinner                            productTypeSpinner, productFeaturesSpinner;
-    private EditText                           name, expirationDate, productionDate, quantity, composition,
-                                               healingProperties, dosage, volume, weight;
-    private CheckBox                           hasSugar, hasSalt;
-    private RadioButton                        isSweet, isSour, isSweetAndSour, isBitter, isSalty;
     private String                             selectedProductType, taste, productionDateValue,
                                                expirationDateValue, productFeatures;
     private String[]                           productTypesArray;
@@ -81,16 +77,63 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private Calendar                           calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
     private ArrayAdapter<CharSequence>         productFeaturesAdapter;
-    private TextView                           volumeLabel, weightLabel;
-    private Button                             addProduct;
-    private AdView                             adView;
+
     private NewProductActivityPresenter presenter;
 
-    @SuppressLint({"SetTextI18n", "CutPasteId"})
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.edittext_name)
+    EditText name;
+    @BindView(R.id.spinner_productType)
+    Spinner productTypeSpinner;
+    @BindView(R.id.spinner_productFeatures)
+    Spinner productFeaturesSpinner;
+    @BindView(R.id.edittext_expirationDate)
+    EditText expirationDate;
+    @BindView(R.id.edittext_productionDate)
+    EditText productionDate;
+    @BindView(R.id.edittext_quantity)
+    EditText quantity;
+    @BindView(R.id.edittext_composition)
+    EditText composition;
+    @BindView(R.id.edittext_healingProperties)
+    EditText healingProperties;
+    @BindView(R.id.edittext_dosage)
+    EditText dosage;
+    @BindView(R.id.edittext_volume)
+    EditText volume;
+    @BindView(R.id.edittext_weight)
+    EditText weight;
+    @BindView(R.id.checkbox_hasSugar)
+    CheckBox hasSugar;
+    @BindView(R.id.checkbox_hasSalt)
+    CheckBox hasSalt;
+    @BindView(R.id.radiobtn_isSweet)
+    RadioButton isSweet;
+    @BindView(R.id.radiobtn_isSour)
+    RadioButton isSour;
+    @BindView(R.id.radiobtn_isSweetAndSour)
+    RadioButton isSweetAndSour;
+    @BindView(R.id.radiobtn_isBitter)
+    RadioButton isBitter;
+    @BindView(R.id.radiobtn_isSalty)
+    RadioButton isSalty;
+    @BindView(R.id.text_volume)
+    TextView volumeLabel;
+    @BindView(R.id.text_weight)
+    TextView weightLabel;
+    @BindView(R.id.button_addProduct)
+    Button addProduct;
+    @BindView(R.id.adBanner)
+    AdView adView;
+
+    @SuppressLint({"SetTextI18n", "CutPasteId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
+
+        ButterKnife.bind(this);
 
         init();
 
@@ -141,58 +184,43 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             }
         });
 
-        expirationDateListener = new DatePickerDialog.OnDateSetListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                expirationDate.setText(day + "." + month + "." + year);
-                expirationDateValue = year + "-" + month + "-" + day;
-            }
+        expirationDateListener = (datePicker, year, month, day) -> {
+            month = month + 1;
+            expirationDate.setText(day + "." + month + "." + year);
+            expirationDateValue = year + "-" + month + "-" + day;
         };
 
-        productionDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (productionDate.length() < 1) {
-                    calendar = Calendar.getInstance();
-                    year  = calendar.get(Calendar.YEAR);
-                    month = calendar.get(Calendar.MONTH);
-                    day   = calendar.get(Calendar.DAY_OF_MONTH);
-                }
-                else{
-                    String[] splitedDate = MyPantryActivity.splitDate(productionDate.getText().toString());
-                    year  = Integer.valueOf(splitedDate[2]);
-                    month = Integer.valueOf(splitedDate[1]);
-                    day   = Integer.valueOf(splitedDate[0]);
-                }
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        context,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        productionDateListener,
-                        year,month,day);
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
+        productionDate.setOnClickListener(v -> {
+            if (productionDate.length() < 1) {
+                calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+            } else {
+                String[] splitedDate = MyPantryActivity.splitDate(productionDate.getText().toString());
+                year = Integer.valueOf(splitedDate[2]);
+                month = Integer.valueOf(splitedDate[1]);
+                day = Integer.valueOf(splitedDate[0]);
             }
+
+            DatePickerDialog dialog = new DatePickerDialog(
+                    context,
+                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    productionDateListener,
+                    year, month, day);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
         });
 
-        productionDateListener = new DatePickerDialog.OnDateSetListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                productionDate.setText(day + "." + month + "." + year);
-                productionDateValue = year + "-" + month + "-" + day;
-            }
+        productionDateListener = (datePicker, year, month, day) -> {
+            month = month + 1;
+            productionDate.setText(day + "." + month + "." + year);
+            productionDateValue = year + "-" + month + "-" + day;
         };
 
-        productTypeSpinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                isTypeOfProductTouched = true;
-                return false;
-            }
+        productTypeSpinner.setOnTouchListener((v, event) -> {
+            isTypeOfProductTouched = true;
+            return false;
         });
 
         productTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -235,68 +263,61 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 }
         });
 
-        addProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parseQuantityProducts();
-                parseVolumeProduct();
-                parseWeightProduct();
+        addProduct.setOnClickListener(view -> {
+            parseQuantityProducts();
+            parseVolumeProduct();
+            parseWeightProduct();
 
-                if (howManyProductsToAdd < 1){
-                    quantity.setError(resources.getString(R.string.Errors_set_correct_quantity));
-                    Toast.makeText(context, resources.getString(R.string.Errors_set_correct_quantity), Toast.LENGTH_LONG).show();
-                }
-                else{
-                    if(TextUtils.isEmpty(name.getText())) {
-                        name.setError(resources.getString(R.string.Errors_product_name_is_required));
-                        Toast.makeText(context, resources.getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG);
-                    }
-                    else {
-                        if(productTypeSpinner.getSelectedItemId() > 0) {
-                            if(TextUtils.isEmpty(expirationDate.getText())) {
-                                expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
-                                Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG);
+            if (howManyProductsToAdd < 1) {
+                quantity.setError(resources.getString(R.string.Errors_set_correct_quantity));
+                Toast.makeText(context, resources.getString(R.string.Errors_set_correct_quantity), Toast.LENGTH_LONG).show();
+            } else {
+                if (TextUtils.isEmpty(name.getText())) {
+                    name.setError(resources.getString(R.string.Errors_product_name_is_required));
+                    Toast.makeText(context, resources.getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG);
+                } else {
+                    if (productTypeSpinner.getSelectedItemId() > 0) {
+                        if (TextUtils.isEmpty(expirationDate.getText())) {
+                            expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
+                            Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG);
+                        } else {
+                            setTaste();
+                            if (productFeaturesSpinner.getSelectedItemId() > 0)
+                                productFeatures = String.valueOf(productFeaturesSpinner.getSelectedItem());
+                            else
+                                productFeatures = resources.getString(R.string.ProductDetailsActivity_not_selected);
+
+                            List<Product> productList = new ArrayList<Product>() {
+                            };
+                            for (int counter = 1; counter <= howManyProductsToAdd; counter++) {
+                                Product product = new Product.Builder()
+                                        .setID(db.idOfLastProductInDB() + counter)
+                                        .setName(name.getText().toString())
+                                        .setHashCode("")
+                                        .setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()))
+                                        .setProductFeatures(productFeatures)
+                                        .setExpirationDate(expirationDateValue)
+                                        .setProductionDate(productionDateValue)
+                                        .setComposition(composition.getText().toString())
+                                        .setHealingProperties(healingProperties.getText().toString())
+                                        .setDosage(dosage.getText().toString())
+                                        .setVolume(volumeValue)
+                                        .setWeight(weightValue)
+                                        .setHasSugar(Boolean.compare(hasSugar.isChecked(), false))
+                                        .setHasSalt(Boolean.compare(hasSalt.isChecked(), false))
+                                        .setTaste(taste)
+                                        .createProduct();
+                                productList.add(product);
                             }
-                            else {
-                                setTaste();
-                                if (productFeaturesSpinner.getSelectedItemId() > 0)
-                                    productFeatures = String.valueOf(productFeaturesSpinner.getSelectedItem());
-                                else
-                                    productFeatures = resources.getString(R.string.ProductDetailsActivity_not_selected);
-
-                                List <Product> productList = new ArrayList<Product>() {};
-                                for (int counter = 1; counter <= howManyProductsToAdd; counter++) {
-                                    Product product = new Product.Builder()
-                                            .setID(db.idOfLastProductInDB() + counter)
-                                            .setName(name.getText().toString())
-                                            .setHashCode("")
-                                            .setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()))
-                                            .setProductFeatures(productFeatures)
-                                            .setExpirationDate(expirationDateValue)
-                                            .setProductionDate(productionDateValue)
-                                            .setComposition(composition.getText().toString())
-                                            .setHealingProperties(healingProperties.getText().toString())
-                                            .setDosage(dosage.getText().toString())
-                                            .setVolume(volumeValue)
-                                            .setWeight(weightValue)
-                                            .setHasSugar(Boolean.compare(hasSugar.isChecked(), false))
-                                            .setHasSalt(Boolean.compare(hasSalt.isChecked(), false))
-                                            .setTaste(taste)
-                                            .createProduct();
-                                    productList.add(product);
-                                }
-                                if(addProducts(productList)){
-                                    startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productList));
-                                    finish();
-                                }
-                                else{
-                                    Toast.makeText(context, resources.getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
-                                }
+                            if (addProducts(productList)) {
+                                startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productList));
+                                finish();
+                            } else {
+                                Toast.makeText(context, resources.getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
                             }
                         }
-                        else{
-                            Toast.makeText(context, resources.getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
-                        }
+                    } else {
+                        Toast.makeText(context, resources.getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -387,29 +408,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         context                = NewProductActivity.this;
         resources              = context.getResources();
         db                     = new DatabaseManager(context);
-        Toolbar toolbar        = findViewById(R.id.toolbar);
-        name                   = findViewById(R.id.edittext_name);
-        productTypeSpinner     = findViewById(R.id.spinner_productType);
-        productFeaturesSpinner = findViewById(R.id.spinner_productFeatures);
-        expirationDate         = findViewById(R.id.edittext_expirationDate);
-        productionDate         = findViewById(R.id.edittext_productionDate);
-        quantity               = findViewById(R.id.edittext_quantity);
-        composition            = findViewById(R.id.edittext_composition);
-        healingProperties      = findViewById(R.id.edittext_healingProperties);
-        dosage                 = findViewById(R.id.edittext_dosage);
-        volume                 = findViewById(R.id.edittext_volume);
-        weight                 = findViewById(R.id.edittext_weight);
-        hasSugar               = findViewById(R.id.checkbox_hasSugar);
-        hasSalt                = findViewById(R.id.checkbox_hasSugar);
-        isSweet                = findViewById(R.id.radiobtn_isSweet);
-        isSour                 = findViewById(R.id.radiobtn_isSour);
-        isSweetAndSour         = findViewById(R.id.radiobtn_isSweetAndSour);
-        isBitter               = findViewById(R.id.radiobtn_isBitter);
-        isSalty                = findViewById(R.id.radiobtn_isSalty);
-        volumeLabel            = findViewById(R.id.text_volume);
-        weightLabel            = findViewById(R.id.text_weight);
-        addProduct             = findViewById(R.id.button_addProduct);
-        adView                 = findViewById(R.id.adBanner);
 
         setSupportActionBar(toolbar);
 

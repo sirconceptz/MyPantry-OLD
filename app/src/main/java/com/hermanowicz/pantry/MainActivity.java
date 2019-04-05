@@ -19,6 +19,8 @@ import com.hermanowicz.pantry.presenters.MainActivityPresenter;
 import com.hermanowicz.pantry.views.MainActivityView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * <h1>MainActivity</h1>
@@ -31,19 +33,25 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 public class MainActivity extends AppCompatActivity implements MainActivityView {
 
-    private AdView adView;
     private MainActivityPresenter presenter;
 
+    @BindView(R.id.button_myPantry)
+    Button button_myPantry;
+    @BindView(R.id.button_scanProduct)
+    Button button_scanProduct;
+    @BindView(R.id.button_newProduct)
+    Button button_newProduct;
+    @BindView(R.id.button_appSettings)
+    Button button_appSettings;
+    @BindView(R.id.adBanner)
+    AdView adView;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button myPantryButton = findViewById(R.id.button_myPantry);
-        Button scanProductButton = findViewById(R.id.button_scanProduct);
-        Button newProductButton = findViewById(R.id.button_newProduct);
-        Button appSettingsButton = findViewById(R.id.button_appSettings);
-        adView = findViewById(R.id.adBanner);
+        ButterKnife.bind(this);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
 
@@ -52,25 +60,25 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
         presenter = new MainActivityPresenter(this, null);
 
-        myPantryButton.setOnClickListener(view -> {
+        button_myPantry.setOnClickListener(view -> {
             Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
             startActivity(myPantryActivityIntent);
             finish();
         });
 
-        scanProductButton.setOnClickListener(view -> {
+        button_scanProduct.setOnClickListener(view -> {
             Intent scanProductActivityIntent = new Intent(MainActivity.this, ScanProductActivity.class);
             startActivity(scanProductActivityIntent);
             finish();
         });
 
-        newProductButton.setOnClickListener(view -> {
+        button_newProduct.setOnClickListener(view -> {
             Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
             startActivity(newProductActivityIntent);
             finish();
         });
 
-        appSettingsButton.setOnClickListener(view -> {
+        button_appSettings.setOnClickListener(view -> {
             Intent appSettingsActivityIntent = new Intent(MainActivity.this, AppSettingsActivity.class);
             startActivity(appSettingsActivityIntent);
             finish();
