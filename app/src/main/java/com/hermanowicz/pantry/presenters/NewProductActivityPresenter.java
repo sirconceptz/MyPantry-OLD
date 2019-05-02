@@ -8,16 +8,27 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.repositories.NewProductActivityRepository;
-import com.hermanowicz.pantry.views.NewProductActivityView;
+import com.hermanowicz.pantry.interfaces.INewProductActivityPresenter;
+import com.hermanowicz.pantry.interfaces.NewProductActivityView;
+import com.hermanowicz.pantry.models.NewProductActivityModel;
 
-public class NewProductActivityPresenter {
+public class NewProductActivityPresenter implements INewProductActivityPresenter {
 
     private NewProductActivityView view;
-    private NewProductActivityRepository repository;
+    private NewProductActivityModel model;
 
-    public NewProductActivityPresenter(NewProductActivityView view, NewProductActivityRepository repository) {
+    public NewProductActivityPresenter(NewProductActivityView view, NewProductActivityModel model) {
         this.view = view;
-        this.repository = repository;
+        this.model = model;
+    }
+
+    public void onDestroy() {
+        view = null;
+        model = null;
+    }
+
+    @Override
+    public void navigateToMainActivity() {
+        view.navigateToMainActivity();
     }
 }

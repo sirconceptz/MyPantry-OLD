@@ -16,10 +16,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.hermanowicz.pantry.models.Product;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * <h1>DatabaseManager</h1>
@@ -88,11 +90,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String DROP_PRODUCTS_TABLE =
             "DROP TABLE IF EXISTS " + DB_PRODUCTS_TABLE;
 
-    DatabaseManager(Context context) {
+    public DatabaseManager(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    void reCreateDB() {
+    public void recreateDB() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(DROP_PRODUCTS_TABLE);
         onCreate(db);

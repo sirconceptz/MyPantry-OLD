@@ -8,17 +8,37 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.repositories.MainActivityRepository;
-import com.hermanowicz.pantry.views.MainActivityView;
+import com.hermanowicz.pantry.interfaces.MainActivityView;
 
-public class MainActivityPresenter {
+public class MainActivityPresenter implements com.hermanowicz.pantry.interfaces.IMainActivityPresenter {
 
     private MainActivityView view;
-    private MainActivityRepository repository;
 
-
-    public MainActivityPresenter(MainActivityView view, MainActivityRepository repository) {
+    public MainActivityPresenter(MainActivityView view) {
         this.view = view;
-        this.repository = repository;
+    }
+
+    public void onDestroy() {
+        view = null;
+    }
+
+    @Override
+    public void navigateToMyPantryActivity() {
+        view.onNavigationToMyPantryActivity();
+    }
+
+    @Override
+    public void navigateToScanProductActivity() {
+        view.onNavigationToScanProductActivity();
+    }
+
+    @Override
+    public void navigateToNewProductActivity() {
+        view.onNavigationToNewProductActivity();
+    }
+
+    @Override
+    public void navigateToAppSettingsActivity() {
+        view.onNavigationToAppSettingsActivity();
     }
 }

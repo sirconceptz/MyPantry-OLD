@@ -8,17 +8,37 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.repositories.MyPantryActivityRepository;
-import com.hermanowicz.pantry.views.MyPantryActivityView;
+import com.hermanowicz.pantry.interfaces.IMyPantryActivityPresenter;
+import com.hermanowicz.pantry.interfaces.MyPantryActivityView;
+import com.hermanowicz.pantry.models.MyPantryActivityModel;
 
-public class MyPantryActivityPresenter {
+public class MyPantryActivityPresenter implements IMyPantryActivityPresenter {
 
     private MyPantryActivityView view;
-    private MyPantryActivityRepository repository;
+    private MyPantryActivityModel model;
 
-    public MyPantryActivityPresenter(MyPantryActivityView view, MyPantryActivityRepository repository) {
+    public MyPantryActivityPresenter(MyPantryActivityView view, MyPantryActivityModel model) {
         this.view = view;
-        this.repository = repository;
+        this.model = model;
     }
 
+    public void onDestroy() {
+        view = null;
+        model = null;
+    }
+
+    @Override
+    public void clearFilters() {
+        view.clearFilterIcons();
+    }
+
+    @Override
+    public void openDialog(String typeOfDialog) {
+
+    }
+
+    @Override
+    public void navigateToMainActivity() {
+        view.navigateToMainActivity();
+    }
 }

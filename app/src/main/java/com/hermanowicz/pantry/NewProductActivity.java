@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,11 +31,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.hermanowicz.pantry.interfaces.NewProductActivityView;
+import com.hermanowicz.pantry.models.NewProductActivityModel;
+import com.hermanowicz.pantry.models.Product;
 import com.hermanowicz.pantry.presenters.NewProductActivityPresenter;
-import com.hermanowicz.pantry.views.NewProductActivityView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,11 +50,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * <h1>NewProductActivity</h1>
@@ -78,6 +82,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
     private ArrayAdapter<CharSequence>         productFeaturesAdapter;
 
+    private NewProductActivityModel model;
     private NewProductActivityPresenter presenter;
 
     @BindView(R.id.toolbar)
@@ -122,14 +127,12 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     TextView volumeLabel;
     @BindView(R.id.text_weight)
     TextView weightLabel;
-    @BindView(R.id.button_addProduct)
-    Button addProduct;
     @BindView(R.id.adBanner)
     AdView adView;
 
     @SuppressLint({"SetTextI18n", "CutPasteId", "ClickableViewAccessibility"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
 
@@ -137,7 +140,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
         init();
 
-        presenter = new NewProductActivityPresenter(this, null);
+        model = new NewProductActivityModel();
+        presenter = new NewProductActivityPresenter(this, model);
 
         quantity.setText("1");
         volume.setText("0");
@@ -147,41 +151,37 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
         weightLabel.setText(resources.getString(R.string.ProductDetailsActivity_weight) + " (" + resources.getString(R.string.ProductDetailsActivity_weight_unit) + ")");
 
-        name             .setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        composition      .setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        composition.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         healingProperties.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        dosage           .setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        dosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
         productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         productFeaturesSpinner.setAdapter(productFeaturesAdapter);
 
-        expirationDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (expirationDate.length() < 1) {
-                    calendar = Calendar.getInstance();
-                    calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    year  = calendar.get(Calendar.YEAR);
-                    month = calendar.get(Calendar.MONTH);
-                    day   = calendar.get(Calendar.DAY_OF_MONTH);
-                }
-                else{
-                    String[] splitedDate = MyPantryActivity.splitDate(expirationDate.getText().toString());
-                    year  = Integer.valueOf(splitedDate[2]);
-                    month = Integer.valueOf(splitedDate[1]);
-                    day   = Integer.valueOf(splitedDate[0]);
-                }
-
-                DatePickerDialog dialog = new DatePickerDialog(
-                        context,
-                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        expirationDateListener,
-                        year,month,day);
-                dialog.getDatePicker().setMinDate(new Date().getTime());
-                Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                dialog.show();
+        expirationDate.setOnClickListener(v -> {
+            if (expirationDate.length() < 1) {
+                calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+            } else {
+                String[] splitedDate = MyPantryActivity.splitDate(expirationDate.getText().toString());
+                year = Integer.valueOf(splitedDate[2]);
+                month = Integer.valueOf(splitedDate[1]);
+                day = Integer.valueOf(splitedDate[0]);
             }
+
+            DatePickerDialog dialog = new DatePickerDialog(
+                    context,
+                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    expirationDateListener,
+                    year, month, day);
+            dialog.getDatePicker().setMinDate(new Date().getTime());
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
         });
 
         expirationDateListener = (datePicker, year, month, day) -> {
@@ -197,10 +197,10 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
             } else {
-                String[] splitedDate = MyPantryActivity.splitDate(productionDate.getText().toString());
-                year = Integer.valueOf(splitedDate[2]);
-                month = Integer.valueOf(splitedDate[1]);
-                day = Integer.valueOf(splitedDate[0]);
+                String[] splittedDate = MyPantryActivity.splitDate(productionDate.getText().toString());
+                year = Integer.valueOf(splittedDate[2]);
+                month = Integer.valueOf(splittedDate[1]);
+                day = Integer.valueOf(splittedDate[0]);
             }
 
             DatePickerDialog dialog = new DatePickerDialog(
@@ -224,129 +224,66 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         });
 
         productTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    if(isTypeOfProductTouched) {
-                        selectedProductType = String.valueOf(productTypeSpinner.getSelectedItem());
-                        productTypesArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
-                        if (selectedProductType.equals(productTypesArray[0]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[1]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[2]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_ready_meals_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[3]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vegetables_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[4]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_fruits_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[5]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_herbs_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[6]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_liqueurs_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[7]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_wines_type_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[8]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_mushrooms_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[9]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vinegars_array, android.R.layout.simple_spinner_item);
-                        else if (selectedProductType.equals(productTypesArray[10]))
-                            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_other_products_array, android.R.layout.simple_spinner_item);
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if(isTypeOfProductTouched) {
+                    selectedProductType = String.valueOf(productTypeSpinner.getSelectedItem());
+                    productTypesArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+                    if (selectedProductType.equals(productTypesArray[0]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[1]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[2]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_ready_meals_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[3]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vegetables_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[4]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_fruits_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[5]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_herbs_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[6]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_liqueurs_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[7]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_wines_type_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[8]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_mushrooms_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[9]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vinegars_array, android.R.layout.simple_spinner_item);
+                    else if (selectedProductType.equals(productTypesArray[10]))
+                        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_other_products_array, android.R.layout.simple_spinner_item);
 
-                        productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        productFeaturesAdapter.notifyDataSetChanged();
-                        productFeaturesSpinner.setAdapter(productFeaturesAdapter);
-                    }
+                    productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    productFeaturesAdapter.notifyDataSetChanged();
+                    productFeaturesSpinner.setAdapter(productFeaturesAdapter);
                 }
+            }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                }
-        });
-
-        addProduct.setOnClickListener(view -> {
-            parseQuantityProducts();
-            parseVolumeProduct();
-            parseWeightProduct();
-
-            if (howManyProductsToAdd < 1) {
-                quantity.setError(resources.getString(R.string.Errors_set_correct_quantity));
-                Toast.makeText(context, resources.getString(R.string.Errors_set_correct_quantity), Toast.LENGTH_LONG).show();
-            } else {
-                if (TextUtils.isEmpty(name.getText())) {
-                    name.setError(resources.getString(R.string.Errors_product_name_is_required));
-                    Toast.makeText(context, resources.getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG);
-                } else {
-                    if (productTypeSpinner.getSelectedItemId() > 0) {
-                        if (TextUtils.isEmpty(expirationDate.getText())) {
-                            expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
-                            Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG);
-                        } else {
-                            setTaste();
-                            if (productFeaturesSpinner.getSelectedItemId() > 0)
-                                productFeatures = String.valueOf(productFeaturesSpinner.getSelectedItem());
-                            else
-                                productFeatures = resources.getString(R.string.ProductDetailsActivity_not_selected);
-
-                            List<Product> productList = new ArrayList<Product>() {
-                            };
-                            for (int counter = 1; counter <= howManyProductsToAdd; counter++) {
-                                Product product = new Product.Builder()
-                                        .setID(db.idOfLastProductInDB() + counter)
-                                        .setName(name.getText().toString())
-                                        .setHashCode("")
-                                        .setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()))
-                                        .setProductFeatures(productFeatures)
-                                        .setExpirationDate(expirationDateValue)
-                                        .setProductionDate(productionDateValue)
-                                        .setComposition(composition.getText().toString())
-                                        .setHealingProperties(healingProperties.getText().toString())
-                                        .setDosage(dosage.getText().toString())
-                                        .setVolume(volumeValue)
-                                        .setWeight(weightValue)
-                                        .setHasSugar(Boolean.compare(hasSugar.isChecked(), false))
-                                        .setHasSalt(Boolean.compare(hasSalt.isChecked(), false))
-                                        .setTaste(taste)
-                                        .createProduct();
-                                productList.add(product);
-                            }
-                            if (addProducts(productList)) {
-                                startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productList));
-                                finish();
-                            } else {
-                                Toast.makeText(context, resources.getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    } else {
-                        Toast.makeText(context, resources.getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
-                    }
-                }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
 
-    private void parseQuantityProducts(){
+    private void parseQuantityProducts() {
         try {
             howManyProductsToAdd = Integer.parseInt(quantity.getText().toString());
-        }
-        catch (NumberFormatException n){
+        } catch (NumberFormatException n) {
             howManyProductsToAdd = 1;
         }
     }
 
-    private void parseVolumeProduct(){
+    private void parseVolumeProduct() {
         try {
             volumeValue = Integer.parseInt(volume.getText().toString());
-        }
-        catch (NumberFormatException n){
+        } catch (NumberFormatException n) {
             volumeValue = 0;
         }
     }
 
-    private void parseWeightProduct(){
+    private void parseWeightProduct() {
         try {
             weightValue = Integer.parseInt(weight.getText().toString());
-        }
-        catch (NumberFormatException n){
+        } catch (NumberFormatException n) {
             weightValue = 0;
         }
     }
@@ -354,40 +291,91 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private boolean addProducts(List<Product> productsList) {
         boolean isProductsAdded = false;
         Product product;
-        for(int counter = 0; counter < productsList.size(); counter++) {
+        for (int counter = 0; counter < productsList.size(); counter++) {
             product = productsList.get(counter);
             isProductsAdded = db.insertProductToDB(product);
             Notification.createNotification(context, product);
         }
-        if (isProductsAdded) {
-            if (howManyProductsToAdd > 1) {
-                Toast.makeText(context, resources.getString(R.string.NewProductActivity_products_added_successful), Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(context, resources.getString(R.string.NewProductActivity_product_added_successful), Toast.LENGTH_LONG).show();
-            }
-        }
         return isProductsAdded;
     }
 
-    private void setTaste(){
+    private void setTaste() {
         String[] filterTasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
-        if(!isSweet.isChecked() && !isSour.isChecked() && !isSweetAndSour.isChecked() && !isBitter.isChecked() && !isSalty.isChecked()) {
+        if (!isSweet.isChecked() && !isSour.isChecked() && !isSweetAndSour.isChecked() && !isBitter.isChecked() && !isSalty.isChecked()) {
             taste = resources.getString(R.string.ProductDetailsActivity_not_selected);
-        }
-        else if(isSweet.isChecked()){
+        } else if (isSweet.isChecked()) {
             taste = filterTasteArray[1];
-        }
-        else if(isSour.isChecked()){
+        } else if (isSour.isChecked()) {
             taste = filterTasteArray[2];
-        }
-        else if(isSweetAndSour.isChecked()){
+        } else if (isSweetAndSour.isChecked()) {
             taste = filterTasteArray[3];
-        }
-        else if(isBitter.isChecked()){
+        } else if (isBitter.isChecked()) {
             taste = filterTasteArray[4];
-        }
-        else if(isSalty.isChecked()){
+        } else if (isSalty.isChecked()) {
             taste = filterTasteArray[5];
+        }
+    }
+
+    @OnClick(R.id.button_addProduct)
+    void onClickAddProduct() {
+
+        parseQuantityProducts();
+        parseVolumeProduct();
+        parseWeightProduct();
+
+        if (howManyProductsToAdd < 1) {
+            quantity.setError(resources.getString(R.string.Errors_set_correct_quantity));
+            Toast.makeText(context, resources.getString(R.string.Errors_set_correct_quantity), Toast.LENGTH_LONG).show();
+        } else {
+            if (TextUtils.isEmpty(name.getText())) {
+                name.setError(resources.getString(R.string.Errors_product_name_is_required));
+                Toast.makeText(context, resources.getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG);
+            } else {
+                if (productTypeSpinner.getSelectedItemId() > 0) {
+                    if (TextUtils.isEmpty(expirationDate.getText())) {
+                        expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
+                        Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG);
+                    } else {
+                        setTaste();
+                        if (productFeaturesSpinner.getSelectedItemId() > 0)
+                            productFeatures = String.valueOf(productFeaturesSpinner.getSelectedItem());
+                        else
+                            productFeatures = resources.getString(R.string.ProductDetailsActivity_not_selected);
+
+                        List<Product> productList = new ArrayList<Product>() {
+                        };
+                        for (int counter = 1; counter <= howManyProductsToAdd; counter++) {
+                            Product product = new Product.Builder()
+                                    .setID(db.idOfLastProductInDB() + counter)
+                                    .setName(name.getText().toString())
+                                    .setHashCode("")
+                                    .setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()))
+                                    .setProductFeatures(productFeatures)
+                                    .setExpirationDate(expirationDateValue)
+                                    .setProductionDate(productionDateValue)
+                                    .setComposition(composition.getText().toString())
+                                    .setHealingProperties(healingProperties.getText().toString())
+                                    .setDosage(dosage.getText().toString())
+                                    .setVolume(volumeValue)
+                                    .setWeight(weightValue)
+                                    .setHasSugar(Boolean.compare(hasSugar.isChecked(), false))
+                                    .setHasSalt(Boolean.compare(hasSalt.isChecked(), false))
+                                    .setTaste(taste)
+                                    .createProduct();
+                            productList.add(product);
+                        }
+                        if (addProducts(productList)) {
+                            //startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productList));
+                            startActivity(new Intent(NewProductActivity.this, MainActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(context, resources.getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                } else {
+                    Toast.makeText(context, resources.getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 
@@ -405,9 +393,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @SuppressLint("CutPasteId")
     private void init(){
-        context                = NewProductActivity.this;
-        resources              = context.getResources();
-        db                     = new DatabaseManager(context);
+        context = NewProductActivity.this;
+        resources = context.getResources();
+        db = new DatabaseManager(context);
 
         setSupportActionBar(toolbar);
 
@@ -420,9 +408,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Intent mainActivityIntent = new Intent(context, MainActivity.class);
-            startActivity(mainActivityIntent);
-            finish();
+            presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -430,21 +416,43 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     @Override
     public void onResume() {
         super.onResume();
-
         adView.resume();
     }
 
     @Override
     public void onPause() {
         adView.pause();
-
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         adView.destroy();
-
+        presenter.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onAddProduct(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
+        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class);
+
+        printQRCodesActivityIntent.putStringArrayListExtra("text_to_qr_code", textToQRCodeList);
+        printQRCodesActivityIntent.putStringArrayListExtra("expiration_dates", expirationDatesList);
+        printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
+
+        startActivity(printQRCodesActivityIntent);
+        finish();
+    }
+
+    @Override
+    public void onIsProductsAdded(String statementToShow) {
+        Toast.makeText(context, statementToShow, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void navigateToMainActivity() {
+        Intent mainActivityIntent = new Intent(context, MainActivity.class);
+        startActivity(mainActivityIntent);
+        finish();
     }
 }

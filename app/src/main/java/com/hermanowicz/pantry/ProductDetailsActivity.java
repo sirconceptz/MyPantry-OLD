@@ -14,21 +14,25 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.hermanowicz.pantry.interfaces.ProductDetailsActivityView;
+import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
 import com.hermanowicz.pantry.presenters.ProductDetailsActivityPresenter;
-import com.hermanowicz.pantry.views.ProductDetailsActivityView;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * <h1>ProductDetailsActivity</h1>
@@ -45,6 +49,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     private Resources resources;
     private DatabaseManager db;
     private Product selectedProduct;
+    private int productID, hashCode;
+
     private ProductDetailsActivityPresenter presenter;
 
     @BindView(R.id.toolbar)
@@ -73,31 +79,19 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     TextView hasSalt;
     @BindView(R.id.text_productTasteValue)
     TextView taste;
-    @BindView(R.id.button_printQRCode)
-    Button button_printQRCode;
-    @BindView(R.id.button_deleteProduct)
-    Button button_deleteProduct;
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
         ButterKnife.bind(this);
 
-        presenter = new ProductDetailsActivityPresenter(this,null);
+        ProductDetailsActivityModel model = new ProductDetailsActivityModel();
+        presenter = new ProductDetailsActivityPresenter(this, model);
 
-        Intent myPantryActivityIntent = getIntent();
-        int productID = myPantryActivityIntent.getIntExtra("product_id", 1);
-
-        int hashCode;
-        try {
-            hashCode = myPantryActivityIntent.getIntExtra("hash_code", 0);
-        }
-        catch (NumberFormatException n){
-            hashCode = 0;
-        }
+        getDataFromIntent();
 
         context = ProductDetailsActivity.this;
         resources = context.getResources();
@@ -106,58 +100,86 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         setSupportActionBar(toolbar);
 
-        if (hashCode == Integer.parseInt(selectedProduct.getHashCode())) {
-            Objects.requireNonNull(getSupportActionBar()).setTitle(selectedProduct.getName());
-            typeOfProduct.setText(selectedProduct.getTypeOfProduct());
-            productFeatures.setText(selectedProduct.getProductFeatures());
-            expirationDate.setText(MyPantryActivity.convertDate(selectedProduct.getExpirationDate()));
-            productionDate.setText(MyPantryActivity.convertDate(selectedProduct.getProductionDate()));
-            composition.setText(selectedProduct.getComposition());
-            healingProperties.setText(selectedProduct.getHealingProperties());
-            dosage.setText(selectedProduct.getDosage());
-            volume.setText(selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit));
-            weight.setText(selectedProduct.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit));
-            taste.setText(selectedProduct.getTaste());
-            if (selectedProduct.getHasSugar() == 1)
-                hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_yes));
-            else
-                hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_no));
-            if (selectedProduct.getHasSalt() == 1)
-                hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_yes));
-            else
-                hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_no));
-        } else {
-            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-        }
+        presenter.setProduct(selectedProduct);
+        presenter.setHashCode(hashCode);
+        presenter.showProductDetails();
+    }
 
-        button_printQRCode.setOnClickListener(view -> {
-            try {
-                ArrayList<Product> productArrayList = new ArrayList<>();
-                productArrayList.add(selectedProduct);
-                startActivity(PrintQRCodesActivity.createPrintQRCodesActivityIntent(context, productArrayList));
-                finish();
-            } catch (Exception e) {
-                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-            }
-        });
+    void getDataFromIntent() {
+        Intent myPantryActivityIntent = getIntent();
+        productID = myPantryActivityIntent.getIntExtra("product_id", 1);
+        hashCode = myPantryActivityIntent.getIntExtra("hash_code", 0);
+    }
 
-        button_deleteProduct.setOnClickListener(view -> {
-            if (db.deleteProductFromDB(selectedProduct.getID())) {
-                Notification.cancelNotification(context, selectedProduct);
-                Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
-                Intent myPantryActivityIntent1 = new Intent(context, MyPantryActivity.class);
-                startActivity(myPantryActivityIntent1);
-                finish();
-            }
-        });
+    @OnClick(R.id.button_deleteProduct)
+    void onClickDeleteProductButton() {
+        presenter.deleteProduct(selectedProduct.getID());
+    }
+
+    @OnClick(R.id.button_printQRCode)
+    void onClickPrintQRCodeButton() {
+        presenter.printQRCode();
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void showProductDetails(Product product) {
+        Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
+        typeOfProduct.setText(product.getTypeOfProduct());
+        productFeatures.setText(product.getProductFeatures());
+        expirationDate.setText(MyPantryActivity.convertDate(product.getExpirationDate()));
+        productionDate.setText(MyPantryActivity.convertDate(product.getProductionDate()));
+        composition.setText(product.getComposition());
+        healingProperties.setText(product.getHealingProperties());
+        dosage.setText(product.getDosage());
+        volume.setText(product.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit));
+        weight.setText(product.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit));
+        taste.setText(product.getTaste());
+        if (product.getHasSugar() == 1)
+            hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_yes));
+        else
+            hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_no));
+        if (product.getHasSalt() == 1)
+            hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_yes));
+        else
+            hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_no));
+    }
+
+    @Override
+    public void showErrorWrongData() {
+        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDeletedProduct(int productID) {
+        db.deleteProductFromDB(productID);
+        Notification.cancelNotification(context, selectedProduct);
+        Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPrintQRCode(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
+        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class);
+
+        printQRCodesActivityIntent.putStringArrayListExtra("text_to_qr_code", textToQRCodeList);
+        printQRCodesActivityIntent.putStringArrayListExtra("expiration_dates", expirationDatesList);
+        printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
+
+        startActivity(printQRCodesActivityIntent);
+        finish();
+    }
+
+    @Override
+    public void navigateToMyPantryActivity() {
+        Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
+        startActivity(myPantryActivityIntent);
+        finish();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
-            startActivity(myPantryActivityIntent);
-            finish();
+            presenter.navigateToMyPantryActivity();
         }
         return super.onKeyDown(keyCode, event);
     }

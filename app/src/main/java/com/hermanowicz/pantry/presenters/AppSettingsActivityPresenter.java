@@ -8,38 +8,88 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.repositories.AppSettingsRepository;
-import com.hermanowicz.pantry.views.AppSettingsActivityView;
+import com.hermanowicz.pantry.interfaces.AppSettingsActivityView;
+import com.hermanowicz.pantry.models.AppSettingsActivityModel;
 
-public class AppSettingsActivityPresenter {
+public class AppSettingsActivityPresenter implements com.hermanowicz.pantry.interfaces.IAppSettingsActivityPresenter {
 
     private AppSettingsActivityView view;
-    private AppSettingsRepository repository;
+    private AppSettingsActivityModel model;
 
-    public AppSettingsActivityPresenter(AppSettingsActivityView view, AppSettingsRepository repository) {
+    public AppSettingsActivityPresenter(AppSettingsActivityView view, AppSettingsActivityModel model) {
         this.view = view;
-        this.repository = repository;
-
+        this.model = model;
     }
 
-    public void setDaysBeforeExpirationDate(String daysBeforeExpirationDate){
-
+    public void onDestroy() {
+        view = null;
+        model = null;
     }
 
-    public void setEmailNotificationCheckbox(boolean emailNotificationCheckbox){
-
+    @Override
+    public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
+        model.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
     }
 
-    public void setPushNotificationCheckbox(boolean pushNotificationCheckbox){
-
+    @Override
+    public void setIsEmailNotificationsAllowed(boolean isEmailNotificationsAllowed) {
+        model.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
     }
 
-    public void setEmailAddress(String emailAddress){
-
+    @Override
+    public void setIsPushNotificationsAllowed(boolean isPushNotificationsAllowed) {
+        model.setIsPushNotificationsAllowed(isPushNotificationsAllowed);
     }
 
-    public void setHourOfNotifications(int hourOfNotifications){
-
+    @Override
+    public void setHourOfNotifications(int hourOfNotifications) {
+        model.setHourOfNotifications(hourOfNotifications);
     }
 
+    @Override
+    public void setEmailAddress(String emailAddress) {
+        model.setEmailAddress(emailAddress);
+    }
+
+    @Override
+    public void enableEmailCheckbox(String emailAddress) {
+        if (model.isValidEmail(emailAddress) && !emailAddress.isEmpty())
+            view.enableEmailCheckbox(true);
+        else
+            view.enableEmailCheckbox(false);
+    }
+
+    @Override
+    public void loadSettings() {
+        int daysBeforeExpirationDate = model.getDaysBeforeExpirationDate();
+        boolean pushNotificationsAllowed = model.isPushNotificationsAllowed();
+        int hourOfNotifications = model.getHourOfNotifications();
+        String emailAddress = model.getEmailAddress();
+
+        view.setEdittext_daysBeforeExpirationDate(daysBeforeExpirationDate);
+        view.setCheckbox_pushNotification(pushNotificationsAllowed);
+        view.setNumberpicker_hourOfNotifications(hourOfNotifications);
+        view.setEdittext_emailAddress(emailAddress);
+
+        enableEmailCheckbox(emailAddress);
+    }
+
+    @Override
+    public void saveSettings() {
+        model.saveSettings();
+
+        if (model.isNotificationsSettingsChanged())
+            view.recreateNotifications();
+        view.onSettingsSaved();
+    }
+
+    @Override
+    public void clearDatabase() {
+        view.onDatabaseClear();
+    }
+
+    @Override
+    public void navigateToMainActivity() {
+        view.navigateToMainActivity();
+    }
 }

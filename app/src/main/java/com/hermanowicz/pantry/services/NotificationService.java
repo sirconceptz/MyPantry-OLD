@@ -22,11 +22,11 @@ import android.media.RingtoneManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.hermanowicz.pantry.AppSettingsActivity;
 import com.hermanowicz.pantry.ApplicationController;
 import com.hermanowicz.pantry.MyPantryActivity;
 import com.hermanowicz.pantry.R;
@@ -34,9 +34,6 @@ import com.hermanowicz.pantry.R;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 
 /**
  * <h1>NotificationService</h1>
@@ -55,7 +52,7 @@ public class NotificationService extends IntentService {
 
     static final String DAYS_TAG         = "%DAYS%";
     static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
-    static final String URL_API          = "https://www.mypantry.eu/api";
+    static final String URL_API = "https://www.mypantry.eu/api/";
     static final String API_MAIL_FILE    = "mail.php";
 
     public NotificationService(){
@@ -75,10 +72,12 @@ public class NotificationService extends IntentService {
         SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         productName                     = intent.getStringExtra("PRODUCT_NAME");
         int               productID     = intent.getIntExtra("PRODUCT_ID", 0);
-        daysToNotification              = myPreferences.getInt(
-                AppSettingsActivity.PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
+        daysToNotification = 3;
+        //daysToNotification              = myPreferences.getInt(
+        //        AppSettingsActivity.PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
 
-        if(AppSettingsActivity.isPushNotificationAllowed(context)) {
+        //if(AppSettingsActivity.isPushNotificationAllowed(context)) {
+        if (true) {
             String channelId = "my_channel_" + productID;
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -117,24 +116,18 @@ public class NotificationService extends IntentService {
             assert notificationManager != null;
             notificationManager.notify(productID, notificationCompat);
         }
-        if(AppSettingsActivity.isEmailNotificationAllowed(context)){
+        //if(AppSettingsActivity.isEmailNotificationAllowed(context)){
+        if (true) {
             HashMap<String, String> params = new HashMap<String, String>();
-            params.put("to_email_address", AppSettingsActivity.getEmailForNotifications(context));
+            //params.put("to_email_address", AppSettingsActivity.getEmailForNotifications(context));
+            params.put("to_email_address", "gghost92@gmail.com");
             params.put("subject", context.getResources().getString(R.string.Notifications_title));
             params.put("message", createStatement());
             String url = URL_API + API_MAIL_FILE;
 
             request_json = new JsonObjectRequest(url, new JSONObject(params),
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.e(getResources().getString(R.string.Errors_error), error.getMessage());
-                }
-            });
+                    response -> {
+                    }, error -> VolleyLog.e(getResources().getString(R.string.Errors_error), error.getMessage()));
             ApplicationController.getInstance().addToRequestQueue(request_json);
         }
     }

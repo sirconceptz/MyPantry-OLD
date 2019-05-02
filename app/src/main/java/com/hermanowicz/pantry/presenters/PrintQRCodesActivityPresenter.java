@@ -8,16 +8,92 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.repositories.PrintQRCodesRepository;
-import com.hermanowicz.pantry.views.PrintQRCodesActivityView;
+import android.graphics.Bitmap;
 
-public class PrintQRCodesActivityPresenter {
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.hermanowicz.pantry.interfaces.IPrintQRCodesActivityPresenter;
+import com.hermanowicz.pantry.interfaces.PrintQRCodesActivityView;
+import com.hermanowicz.pantry.models.PrintQRCodesActivityModel;
+
+import java.util.ArrayList;
+
+public class PrintQRCodesActivityPresenter implements IPrintQRCodesActivityPresenter {
 
     private PrintQRCodesActivityView view;
-    private PrintQRCodesRepository repository;
+    private PrintQRCodesActivityModel model;
 
-    public PrintQRCodesActivityPresenter(PrintQRCodesActivityView view, PrintQRCodesRepository repository) {
+    private ArrayList<String> textToQRCodeArray, namesOfProductsArray, expirationDatesArray;
+
+    public PrintQRCodesActivityPresenter(PrintQRCodesActivityView view, PrintQRCodesActivityModel model) {
         this.view = view;
-        this.repository = repository;
+        this.model = model;
+    }
+
+    public void onDestroy() {
+        view = null;
+        model = null;
+    }
+
+    private boolean createAndSavePDF() {
+        boolean result = model.checkWritePermission();
+        model.setTextToQRCodeArray(textToQRCodeArray);
+        model.setNamesOfProductsArray(namesOfProductsArray);
+        model.setExpirationDatesArray(expirationDatesArray);
+        if (result) {
+            model.createAndSavePDF();
+        } else {
+            view.showPermissionsError();
+            model.requestWritePermission();
+        }
+        return result;
+    }
+
+    @Override
+    public void setTextToQRCodeArray(ArrayList<String> textToQRCodeArray) {
+        this.textToQRCodeArray = textToQRCodeArray;
+    }
+
+    @Override
+    public void setNamesOfProductsArray(ArrayList<String> namesOfProductsArray) {
+        this.namesOfProductsArray = namesOfProductsArray;
+    }
+
+    @Override
+    public void setExpirationDatesArray(ArrayList<String> expirationDatesArray) {
+        this.expirationDatesArray = expirationDatesArray;
+    }
+
+    @Override
+    public void setActivity(AppCompatActivity activity) {
+        model.setActivity(activity);
+    }
+
+    @Override
+    public void showQRCodeImage() {
+        Bitmap qrCodeImage = model.generateQRCode(textToQRCodeArray.get(0));
+        view.showQRCodeImage(qrCodeImage);
+    }
+
+    @Override
+    public void onClickPrintQRCodes() {
+        if (createAndSavePDF())
+            view.openPDF();
+    }
+
+    @Override
+    public void onClickSendPdfByEmail() {
+        if (createAndSavePDF())
+            view.sendPDFByEmail();
+    }
+
+    @Override
+    public void onClickSkipButton() {
+        view.navigateToNewProductActivity();
+    }
+
+    @Override
+    public void navigateToMainActivity() {
+        view.navigateToMainActivity();
     }
 }

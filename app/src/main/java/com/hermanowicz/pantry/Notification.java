@@ -14,12 +14,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+
+import com.hermanowicz.pantry.models.Product;
 import com.hermanowicz.pantry.receivers.NotificationBroadcastReceiver;
 
 import java.util.Calendar;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 /**
  * <h1>Notification</h1>
@@ -31,7 +32,7 @@ import androidx.annotation.NonNull;
  */
 public class Notification {
 
-    static final int NOTIFICATION_DEFAULT_HOUR = 12;
+    public static final int NOTIFICATION_DEFAULT_HOUR = 12;
     public static final int NOTIFICATION_DEFAULT_DAYS = 3;
 
     private static Calendar createCalendar(@NonNull Context context, @NonNull String expirationDate){
@@ -41,10 +42,10 @@ public class Notification {
         calendar.set(Calendar.YEAR, Integer.valueOf(dateArray[0]));
         calendar.set(Calendar.MONTH, (Integer.valueOf(dateArray[1]))-1);
         calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(dateArray[2]));
-        calendar.set(Calendar.HOUR_OF_DAY, AppSettingsActivity.getHourOfNotifications(context));
+        //calendar.set(Calendar.HOUR_OF_DAY, AppSettingsActivity.getHourOfNotifications(context));
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        calendar.add(Calendar.DAY_OF_MONTH, -(AppSettingsActivity.getDaysBeforeNotificationFromSettings(context)));
+        //calendar.add(Calendar.DAY_OF_MONTH, -(AppSettingsActivity.getDaysBeforeNotificationFromSettings(context)));
 
         return calendar;
     }
@@ -80,7 +81,7 @@ public class Notification {
         }
     }
 
-    static void cancelNotification(@NonNull Context context, @NonNull Product product){
+    public static void cancelNotification(@NonNull Context context, @NonNull Product product) {
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -90,7 +91,7 @@ public class Notification {
         alarmManager.cancel(pendingIntent);
     }
 
-    static void cancelAllNotifications(@NonNull Context context){
+    public static void cancelAllNotifications(@NonNull Context context) {
         DatabaseManager db           = new DatabaseManager(context);
         List<Product> productsList   = db.getProductsFromDB("SELECT * FROM 'products' DESC");
         AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));

@@ -16,16 +16,8 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.material.navigation.NavigationView;
-import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
-import com.hermanowicz.pantry.views.MyPantryActivityView;
-
-import java.util.List;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,6 +26,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.navigation.NavigationView;
+import com.hermanowicz.pantry.interfaces.MyPantryActivityView;
+import com.hermanowicz.pantry.models.MyPantryActivityModel;
+import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -60,6 +64,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
                              fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
     public  AdRequest        adRequest;
 
+    private MyPantryActivityModel model;
     private MyPantryActivityPresenter presenter;
 
     @BindView(R.id.recyclerview_products)
@@ -76,7 +81,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     AdView adView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_pantry_drawer_layout);
 
@@ -87,7 +92,8 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         db = new DatabaseManager(context);
         productsFromDB = db.getProductsFromDB(buildPantryQuery());
 
-        presenter = new MyPantryActivityPresenter(this, null);
+        model = new MyPantryActivityModel();
+        presenter = new MyPantryActivityPresenter(this, model);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
 
@@ -100,8 +106,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
             Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
             int productID = product.getID() - 1;
             productDetailsActivityIntent.putExtra("product_id", productID);
-            Product selectedProduct = productsFromDB.get(productID);
-            productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(selectedProduct.getHashCode()));
+            productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(product.getHashCode()));
             startActivity(productDetailsActivityIntent);
             finish();
         });
@@ -124,10 +129,12 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
                 menuItem -> {
                     type_of_dialog = menuItem.getTitle().toString();
                     if (type_of_dialog.equals(resources.getString(R.string.MyPantryActivity_clear_filters))){
+                        presenter.clearFilters();
                         clearFilters();
                     }
                     else{
                         openDialog(type_of_dialog);
+                        presenter.openDialog(type_of_dialog);
                     }
                     drawerLayout.closeDrawers();
                     return true;
@@ -593,9 +600,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Intent mainActivityIntent = new Intent(context, MainActivity.class);
-            startActivity(mainActivityIntent);
-            finish();
+            presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -603,6 +608,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     @Override
     public void onResume() {
         super.onResume();
+        presenter = new MyPantryActivityPresenter(this, model);
 
         adView.resume();
     }
@@ -617,7 +623,28 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     @Override
     public void onDestroy() {
         adView.destroy();
+        presenter.onDestroy();
 
         super.onDestroy();
+    }
+
+    @Override
+    public void showEmptyPantryStatement() {
+        emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_empty_pantry));
+    }
+
+    @Override
+    public void clearFilterIcons() {
+        int sizeOfMenu = navigationView.getMenu().size();
+        for (int i = 1; i < sizeOfMenu - 1; i++) {
+            navigationView.getMenu().getItem(i).setIcon(R.drawable.ic_check_box_false);
+        }
+    }
+
+    @Override
+    public void navigateToMainActivity() {
+        Intent mainActivityIntent = new Intent(context, MainActivity.class);
+        startActivity(mainActivityIntent);
+        finish();
     }
 }
