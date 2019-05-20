@@ -40,7 +40,6 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
 
     private Context context;
     private Resources resources;
-
     private ScanProductActivityModel model;
     private ScanProductActivityPresenter presenter;
 

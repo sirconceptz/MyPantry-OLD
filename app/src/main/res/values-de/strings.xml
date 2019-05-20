@@ -73,6 +73,7 @@
         <item>Weine</item>
         <item>Pilze</item>
         <item>Essige</item>
+        <item>Chemische produkte</item>
         <item>Andere</item>
     </string-array>
     <string-array name="ProductDetailsActivity_choose_array">
@@ -135,6 +136,13 @@
         <item>Apfelessig</item>
         <item>Kräuteressig</item>
         <item>Fruchtessig</item>
+        <item>Andere</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_chemical_products_array">
+        <item>Wählen</item>
+        <item>Reinigungsmittel</item>
+        <item>Flüssigkeiten</item>
+        <item>Pulver</item>
         <item>Andere</item>
     </string-array>
     <string-array name="ProductDetailsActivity_other_products_array">

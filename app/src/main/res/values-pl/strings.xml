@@ -73,6 +73,7 @@
         <item>Wina</item>
         <item>Grzyby</item>
         <item>Octy</item>
+        <item>Produkty chemiczne</item>
         <item>Inne</item>
     </string-array>
     <string-array name="ProductDetailsActivity_choose_array">
@@ -135,6 +136,13 @@
         <item>Jabłkowe</item>
         <item>Ziołowe</item>
         <item>Owocowe</item>
+        <item>Inne</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_chemical_products_array">
+        <item>Wybierz</item>
+        <item>Środki czystości</item>
+        <item>Płyny</item>
+        <item>Proszki</item>
         <item>Inne</item>
     </string-array>
     <string-array name="ProductDetailsActivity_other_products_array">

@@ -51,7 +51,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     private Context context;
     private Resources resources;
-
     private PrintQRCodesActivityPresenter presenter;
 
     static final String PDF_FILENAME = "qrcodes-mypantry.pdf";

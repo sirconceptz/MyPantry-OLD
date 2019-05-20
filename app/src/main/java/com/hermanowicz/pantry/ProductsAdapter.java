@@ -9,6 +9,7 @@
 package com.hermanowicz.pantry;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,17 +32,19 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.hermanowicz.pantry.MyPantryActivity.convertDate;
-
 public class ProductsAdapter extends
         RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 
-    private       List<Product>       productList;
+    private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
+
+    private List<Product> productList;
+    private SharedPreferences myPreferences;
     private final OnItemClickListener listener;
 
-    public ProductsAdapter(List<Product> productList, OnItemClickListener listener) {
+    ProductsAdapter(List<Product> productList, OnItemClickListener listener, SharedPreferences myPreferences) {
         this.productList = productList;
-        this.listener    = listener;
+        this.listener = listener;
+        this.myPreferences = myPreferences;
     }
 
     @Override
@@ -60,7 +63,10 @@ public class ProductsAdapter extends
         Date expirationDateDt = calendar.getTime();
         String volumeString = resources.getString(R.string.ProductDetailsActivity_volume) + ": " +  selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit);
         String weightString = resources.getString(R.string.ProductDetailsActivity_weight) + ": " +  selectedProduct.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit);
-        String expirationDateString = convertDate(selectedProduct.getExpirationDate());
+        String expirationDateString = selectedProduct.getExpirationDate();
+        String[] dateArray = expirationDateString.split("-");
+        if (dateArray.length > 1)
+            expirationDateString = dateArray[2] + "." + dateArray[1] + "." + dateArray[0];
 
         nameTv.setText(selectedProduct.getName());
         volumeTv.setText(volumeString);
@@ -72,7 +78,8 @@ public class ProductsAdapter extends
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        //calendar.add(Calendar.DAY_OF_MONTH, appSettingsActivityModel.getDaysBeforeExpirationDate());
+        calendar.add(Calendar.DAY_OF_MONTH, myPreferences.getInt(
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS));
         calendar.add(Calendar.DAY_OF_MONTH, 3);
         Date dayOfNotification = calendar.getTime();
         if (dayOfNotification.after(expirationDateDt))
@@ -111,8 +118,6 @@ public class ProductsAdapter extends
         @BindView(R.id.text_expirationDate)
         TextView expirationDateTv;
 
-        //public TextView      nameTv, volumeTv, weightTv, expirationDateTv;
-
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -124,7 +129,6 @@ public class ProductsAdapter extends
         }
 
         public void bind(final Product product, final OnItemClickListener listener) {
-
         }
     }
 

@@ -46,11 +46,13 @@ import java.util.HashMap;
  */
 public class NotificationService extends IntentService {
 
-    private String            productName;
-    private int               daysToNotification;
-    public  JsonObjectRequest request_json;
-
-    static final String DAYS_TAG         = "%DAYS%";
+    static final String DAYS_TAG = "%DAYS%";
+    private static final String PREFERENCES_EMAIL_ADDRESS = "EMAIL_ADDRESS";
+    private static final String PREFERENCES_EMAIL_NOTIFICATIONS = "EMAIL_NOTIFICATIONS?";
+    private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
+    public JsonObjectRequest request_json;
+    private String productName;
+    private int daysToNotification;
     static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
     static final String URL_API = "https://www.mypantry.eu/api/";
     static final String API_MAIL_FILE    = "mail.php";
@@ -73,8 +75,8 @@ public class NotificationService extends IntentService {
         productName                     = intent.getStringExtra("PRODUCT_NAME");
         int               productID     = intent.getIntExtra("PRODUCT_ID", 0);
         daysToNotification = 3;
-        //daysToNotification              = myPreferences.getInt(
-        //        AppSettingsActivity.PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
+        daysToNotification = myPreferences.getInt(
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
 
         //if(AppSettingsActivity.isPushNotificationAllowed(context)) {
         if (true) {
@@ -84,7 +86,7 @@ public class NotificationService extends IntentService {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 CharSequence name  = "my_channel";
                 String Description = "Products expiration dates notification channel";
-                int importance     = NotificationManager.IMPORTANCE_DEFAULT;
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
                 NotificationChannel mChannel = new NotificationChannel(channelId, name, importance);
                 mChannel.setDescription(Description);
                 mChannel.enableLights(true);
@@ -116,11 +118,10 @@ public class NotificationService extends IntentService {
             assert notificationManager != null;
             notificationManager.notify(productID, notificationCompat);
         }
-        //if(AppSettingsActivity.isEmailNotificationAllowed(context)){
-        if (true) {
+        if (myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS,
+                true)) {
             HashMap<String, String> params = new HashMap<String, String>();
-            //params.put("to_email_address", AppSettingsActivity.getEmailForNotifications(context));
-            params.put("to_email_address", "gghost92@gmail.com");
+            params.put("to_email_address", myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
             params.put("subject", context.getResources().getString(R.string.Notifications_title));
             params.put("message", createStatement());
             String url = URL_API + API_MAIL_FILE;

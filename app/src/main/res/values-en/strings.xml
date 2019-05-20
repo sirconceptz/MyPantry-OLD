@@ -72,6 +72,7 @@
         <item>Wines</item>
         <item>Mushrooms</item>
         <item>Vinegars</item>
+        <item>Chemical products</item>
         <item>Other</item>
     </string-array>
     <string-array name="ProductDetailsActivity_choose_array">
@@ -134,6 +135,13 @@
         <item>Apple</item>
         <item>Herb</item>
         <item>Fruit</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="ProductDetailsActivity_chemical_products_array">
+        <item>Choose</item>
+        <item>Cleaning products</item>
+        <item>Liquids</item>
+        <item>Powders</item>
         <item>Other</item>
     </string-array>
     <string-array name="ProductDetailsActivity_other_products_array">

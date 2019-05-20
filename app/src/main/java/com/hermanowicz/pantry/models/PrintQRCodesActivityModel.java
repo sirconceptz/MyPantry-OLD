@@ -26,7 +26,6 @@ import com.hermanowicz.pantry.PermissionsHandlerAndroid;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -128,8 +127,6 @@ public class PrintQRCodesActivityModel {
             FileOutputStream pdfOutputStream = new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + PDF_FILENAME, false);
             pdfDocument.writeTo(pdfOutputStream);
             pdfOutputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

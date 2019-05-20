@@ -50,7 +50,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     private DatabaseManager db;
     private Product selectedProduct;
     private int productID, hashCode;
-
     private ProductDetailsActivityPresenter presenter;
 
     @BindView(R.id.toolbar)
@@ -105,10 +104,18 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         presenter.showProductDetails();
     }
 
-    void getDataFromIntent() {
+    private void getDataFromIntent() {
         Intent myPantryActivityIntent = getIntent();
         productID = myPantryActivityIntent.getIntExtra("product_id", 1);
         hashCode = myPantryActivityIntent.getIntExtra("hash_code", 0);
+    }
+
+    private String convertDateFormat(String dateToConvert) {
+        String[] dateArray = dateToConvert.split("-");
+        String convertedDate = "";
+        if (dateArray.length > 1)
+            convertedDate = dateArray[2] + "." + dateArray[1] + "." + dateArray[0];
+        return convertedDate;
     }
 
     @OnClick(R.id.button_deleteProduct)
@@ -127,8 +134,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
         typeOfProduct.setText(product.getTypeOfProduct());
         productFeatures.setText(product.getProductFeatures());
-        expirationDate.setText(MyPantryActivity.convertDate(product.getExpirationDate()));
-        productionDate.setText(MyPantryActivity.convertDate(product.getProductionDate()));
+        expirationDate.setText(convertDateFormat(product.getExpirationDate()));
+        productionDate.setText(convertDateFormat(product.getProductionDate()));
         composition.setText(product.getComposition());
         healingProperties.setText(product.getHealingProperties());
         dosage.setText(product.getDosage());

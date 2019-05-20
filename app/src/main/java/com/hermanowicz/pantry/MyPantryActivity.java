@@ -10,8 +10,10 @@ package com.hermanowicz.pantry;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -25,12 +27,20 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
+import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
+import com.hermanowicz.pantry.dialog.NameFilterDialog;
+import com.hermanowicz.pantry.dialog.ProductFeaturesFilterDialog;
+import com.hermanowicz.pantry.dialog.ProductionDateFilterDialog;
+import com.hermanowicz.pantry.dialog.TasteFilterDialog;
+import com.hermanowicz.pantry.dialog.TypeOfProductFilterDialog;
+import com.hermanowicz.pantry.dialog.VolumeFilterDialog;
+import com.hermanowicz.pantry.dialog.WeightFilterDialog;
+import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryActivityView;
 import com.hermanowicz.pantry.models.MyPantryActivityModel;
 import com.hermanowicz.pantry.models.Product;
@@ -50,25 +60,20 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
-public class MyPantryActivity extends AppCompatActivity implements DialogManager.DialogListener, MyPantryActivityView {
+public class MyPantryActivity extends AppCompatActivity implements MyPantryActivityView, DialogListener {
 
-    private Context          context;
-    private Resources        resources;
-    private DatabaseManager  db;
-    private List<Product>    productsFromDB;
-    private ProductsAdapter  adapterProductsRecyclerView;
-    private String           fltrName, fltrExpirationDateSince, fltrExpirationDateFor,
-                             fltrProductionDateSince, fltrProductionDateFor, fltrTypeOfProduct,
-                             fltrProductFeatures, fltrTaste, type_of_dialog;
-    private int              fltrWeightSince = -1, fltrWeightFor = -1, fltrVolumeSince = -1,
-                             fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
-    public  AdRequest        adRequest;
+    public ProductsAdapter adapterProductsRecyclerView;
+    public AdRequest adRequest;
+    @BindView(R.id.recyclerview_products)
+    RecyclerView recyclerviewProducts;
+    private Context context;
+    private Resources resources;
+    private DatabaseManager db;
+    private List<Product> productsFromDB;
 
     private MyPantryActivityModel model;
     private MyPantryActivityPresenter presenter;
-
-    @BindView(R.id.recyclerview_products)
-    RecyclerView recyclerViewProducts;
+    private SharedPreferences sharedPreferences;
     @BindView(R.id.my_pantry_drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.nav_view)
@@ -90,7 +95,7 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         context = getApplicationContext();
         resources = context.getResources();
         db = new DatabaseManager(context);
-        productsFromDB = db.getProductsFromDB(buildPantryQuery());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         model = new MyPantryActivityModel();
         presenter = new MyPantryActivityPresenter(this, model);
@@ -100,7 +105,10 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Article").allowMainThreadQueries().build();
+        //Do przejścia na ROOM, na razie nie ruszać
+        //ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Article").allowMainThreadQueries().build();
+
+        presenter.initRecyclerViewData();
 
         adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, product -> {
             Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
@@ -109,11 +117,11 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
             productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(product.getHashCode()));
             startActivity(productDetailsActivityIntent);
             finish();
-        });
-        recyclerViewProducts.setAdapter(adapterProductsRecyclerView);
+        }, sharedPreferences);
+        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
         adapterProductsRecyclerView.notifyDataSetChanged();
-        recyclerViewProducts.setLayoutManager(new LinearLayoutManager(context));
-        recyclerViewProducts.setHasFixedSize(true);
+        recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
+        recyclerviewProducts.setHasFixedSize(true);
 
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -127,340 +135,16 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
 
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    type_of_dialog = menuItem.getTitle().toString();
+                    String type_of_dialog = menuItem.getTitle().toString();
                     if (type_of_dialog.equals(resources.getString(R.string.MyPantryActivity_clear_filters))){
                         presenter.clearFilters();
-                        clearFilters();
                     }
                     else{
-                        openDialog(type_of_dialog);
                         presenter.openDialog(type_of_dialog);
                     }
                     drawerLayout.closeDrawers();
                     return true;
                 });
-    }
-
-    /**
-     * The method to open dialog window to input search filters.
-     *
-     * @param dialogType value of dialog type
-     */
-    public void openDialog(String dialogType){
-
-        DialogManager dialog = new DialogManager();
-
-        if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_name))) {
-            if (fltrName != null) {
-                dialog.setFilterName(fltrName);
-            }
-            else {
-                dialog.setFilterName(null);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_expiration_date))) {
-            if (fltrExpirationDateSince != null || fltrExpirationDateFor != null) {
-                dialog.setFilterExpirationDate(fltrExpirationDateSince, fltrExpirationDateFor);
-            } else {
-                dialog.setFilterExpirationDate(null, null);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_production_date))) {
-            if (fltrProductionDateSince != null || fltrProductionDateFor != null) {
-                dialog.setFilterProductionDate(fltrProductionDateSince, fltrProductionDateFor);
-            } else {
-                dialog.setFilterProductionDate(null, null);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_product_type))) {
-            if (fltrTypeOfProduct != null || fltrProductFeatures != null) {
-                dialog.setFilterTypeOfProduct(fltrTypeOfProduct, fltrProductFeatures);
-            } else {
-                dialog.setFilterTypeOfProduct(null, null);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_volume))) {
-            if (fltrVolumeSince >= 0 || fltrVolumeFor >= 0) {
-                dialog.setFilterVolume(fltrVolumeSince, fltrVolumeFor);
-            } else {
-                dialog.setFilterVolume(-1, -1);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_weight))) {
-            if (fltrWeightSince >= 0 || fltrWeightFor >= 0) {
-                dialog.setFilterWeight(fltrWeightSince, fltrWeightFor);
-            } else {
-                dialog.setFilterWeight(-1, -1);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_taste))) {
-            if (fltrTaste != null) {
-                dialog.setFilterTaste(fltrTaste);
-            } else {
-                dialog.setFilterTaste(null);
-            }
-        }
-        else if(dialogType.equals(resources.getString(R.string.ProductDetailsActivity_product_features))) {
-            if (fltrHasSugar >= 0 || fltrHasSalt >= 0) {
-                dialog.setFilterProductFeatures(fltrHasSugar, fltrHasSalt);
-            } else {
-                dialog.setFilterProductFeatures(-1,-1);
-            }
-        }
-        dialog.setDialogType(dialogType);
-        dialog.show(getSupportFragmentManager(), "");
-    }
-
-    public void refreshListView(){
-        productsFromDB = db.getProductsFromDB(buildPantryQuery());
-        if(emptyPantryStatement.getText().toString() == resources.getString(R.string.MyPantryActivity_empty_pantry)){}
-        else if(productsFromDB.size()==0){
-            emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_not_found));
-        }
-        else{
-            emptyPantryStatement.setText("");
-        }
-        adapterProductsRecyclerView.notifyDataSetChanged();
-    }
-
-    public void clearFilters() {
-        fltrName                = null;
-        fltrTypeOfProduct       = null;
-        fltrProductFeatures     = null;
-        fltrExpirationDateSince = null;
-        fltrExpirationDateFor   = null;
-        fltrProductionDateSince = null;
-        fltrProductionDateFor   = null;
-        fltrVolumeSince         = -1;
-        fltrVolumeFor           = -1;
-        fltrWeightSince         = -1;
-        fltrWeightFor           = -1;
-        fltrHasSugar            = -1;
-        fltrHasSalt             = -1;
-        fltrTaste               = null;
-        productsFromDB          = db.getProductsFromDB(buildPantryQuery());
-
-        int sizeOfMenu = navigationView.getMenu().size();
-        for (int i = 1; i < sizeOfMenu-1; i++) {
-            navigationView.getMenu().getItem(i).setIcon(R.drawable.ic_check_box_false);
-        }
-        refreshListView();
-    }
-
-    /**
-     * The method to build a string for database query to search a products.
-     *
-     * @return query to select data from database.
-     */
-    public String buildPantryQuery() {
-        String selectQuery = "SELECT * FROM 'products'";
-
-        if(fltrName != null){
-            selectQuery = selectQuery + " WHERE name LIKE '%" + fltrName + "%'";
-        }
-        if(fltrExpirationDateSince != null && fltrExpirationDateFor == null){
-            if(fltrName == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "expiration_date >= '" + fltrExpirationDateSince + "'";
-        }
-        if(fltrExpirationDateSince == null && fltrExpirationDateFor != null){
-            if(fltrName == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "expiration_date <= '" + fltrExpirationDateFor + "'";
-        }
-        if(fltrExpirationDateSince != null && fltrExpirationDateFor != null){
-            if(fltrName == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "expiration_date BETWEEN '" + fltrExpirationDateSince + "' AND '" + fltrExpirationDateFor + "'";
-        }
-        if(fltrProductionDateSince != null && fltrProductionDateFor == null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery  + "production_date >= '" + fltrProductionDateSince + "'";
-        }
-        if(fltrProductionDateSince == null && fltrProductionDateFor != null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "production_date <= '" + fltrProductionDateFor + "'";
-        }
-        if(fltrProductionDateSince != null && fltrProductionDateFor != null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "production_date BETWEEN'" + fltrProductionDateSince + "' AND '" + fltrProductionDateFor + "'";
-        }
-        if(fltrTypeOfProduct != null && fltrProductFeatures == null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "type_of_product LIKE '%" + fltrTypeOfProduct + "%'";
-        }
-        if(fltrTypeOfProduct == null && fltrProductFeatures!= null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "product_features LIKE '%" + fltrProductFeatures + "%'";
-        }
-        if(fltrTypeOfProduct != null && fltrProductFeatures != null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "type_of_product LIKE '%" + fltrTypeOfProduct + "%' AND product_features LIKE '%" + fltrProductFeatures + "%'";
-        }
-        if(fltrVolumeSince >= 0 && fltrVolumeFor == -1){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery  + "volume >= '" + fltrVolumeSince + "'";
-        }
-        if(fltrVolumeSince == -1 && fltrVolumeFor >= 0){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "volume <= '" + fltrVolumeFor + "'";
-        }
-        if(fltrVolumeSince >= 0 && fltrVolumeFor >= 0 ){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "volume BETWEEN '" + fltrVolumeSince  + "' AND '" + fltrVolumeFor + "'";
-        }
-        if(fltrWeightSince >= 0 && fltrWeightFor == -1){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery  + "weight >= '" + fltrWeightSince + "'";
-        }
-        if(fltrWeightSince == -1 && fltrWeightFor >= 0){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "weight <= '" + fltrWeightFor + "'";
-        }
-        if(fltrWeightSince >= 0 && fltrWeightFor >= 0 ){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null  && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "weight BETWEEN '" + fltrWeightSince  + "' AND '" + fltrWeightFor + "'";
-        }
-        if(fltrHasSugar >= 0){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1 && fltrWeightSince == -1 && fltrWeightFor == -1){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "has_sugar='" + fltrHasSugar + "'";
-        }
-        if(fltrHasSalt >= 0){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1 && fltrWeightSince == -1 && fltrWeightFor == -1
-                    && fltrHasSugar == -1){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "has_salt='" + fltrHasSalt + "'";
-        }
-        if(fltrTaste != null){
-            if(fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1 && fltrWeightSince == -1 && fltrWeightFor == -1
-                    && fltrHasSugar == -1  && fltrHasSalt == -1){
-                selectQuery = selectQuery + " WHERE ";
-            }
-            else{
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "taste='" + fltrTaste + "'";
-        }
-        selectQuery = selectQuery + " ORDER BY expiration_date ASC";
-        return selectQuery;
-    }
-
-    /**
-     * The method to convert date to show in local format.
-     *
-     * @param dateToConvert date to convert
-     * @return              converted date
-     */
-    public static String convertDate(@NonNull String dateToConvert){
-        String[] dateArray = dateToConvert.split("-");
-        String convertedDate = "";
-        if (dateArray.length > 1)
-            convertedDate = dateArray[2] + "." + dateArray[1] + "." + dateArray[0];
-        return convertedDate;
-    }
-
-    public static String[] splitDate(@NonNull String dateToSplit){
-        String[] dateArray = dateToSplit.split("\\.");
-        return dateArray;
     }
 
     @Override
@@ -471,130 +155,6 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void applyFilterName(String filterName) {
-        navigationView.getMenu().getItem(1).setIcon(R.drawable.ic_check_box_true);
-        fltrName = filterName;
-        refreshListView();
-    }
-
-    @Override
-    public void applyFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
-        navigationView.getMenu().getItem(2).setIcon(R.drawable.ic_check_box_true);
-        fltrExpirationDateSince = filterExpirationDateSince;
-        fltrExpirationDateFor   = filterExpirationDateFor;
-        refreshListView();
-    }
-
-    @Override
-    public void applyFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
-        navigationView.getMenu().getItem(3).setIcon(R.drawable.ic_check_box_true);
-        fltrProductionDateSince = filterProductionDateSince;
-        fltrProductionDateFor   = filterProductionDateFor;
-        refreshListView();
-    }
-
-    @Override
-    public void applyFilterTypeOfProduct( String filterTypeOfProduct, String filterProductFeatures) {
-        navigationView.getMenu().getItem(4).setIcon(R.drawable.ic_check_box_true);
-        fltrTypeOfProduct   = filterTypeOfProduct;
-        fltrProductFeatures = filterProductFeatures;
-        refreshListView();
-    }
-
-    @Override
-    public void applyFilterVolume(int filterVolumeSince, int filterVolumeFor) {
-        navigationView.getMenu().getItem(5).setIcon(R.drawable.ic_check_box_true);
-        fltrVolumeSince = filterVolumeSince;
-        fltrVolumeFor   = filterVolumeFor;
-        refreshListView();
-    }
-
-    @Override
-    public void applyFilterWeight(int filterWeightSince, int filterWeightFor) {
-        navigationView.getMenu().getItem(6).setIcon(R.drawable.ic_check_box_true);
-        fltrWeightSince = filterWeightSince;
-        fltrWeightFor = filterWeightFor;
-        refreshListView();
-    }
-
-    @Override
-    public void applyFilterTaste(String filterTaste) {
-        navigationView.getMenu().getItem(7).setIcon(R.drawable.ic_check_box_true);
-        fltrTaste = filterTaste;
-        refreshListView();
-    }
-
-    @Override
-    public void applyProductFeatures(int filterHasSugar, int filterHasSalt) {
-        navigationView.getMenu().getItem(8).setIcon(R.drawable.ic_check_box_true);
-        fltrHasSugar = filterHasSugar;
-        fltrHasSalt  = filterHasSalt;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterName() {
-        navigationView.getMenu().getItem(1).setIcon(R.drawable.ic_check_box_false);
-        fltrName = null;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterExpirationDate() {
-        navigationView.getMenu().getItem(2).setIcon(R.drawable.ic_check_box_false);
-        fltrExpirationDateSince = null;
-        fltrExpirationDateFor   = null;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterProductionDate() {
-        navigationView.getMenu().getItem(3).setIcon(R.drawable.ic_check_box_false);
-        fltrProductionDateSince = null;
-        fltrProductionDateFor   = null;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterTypeOfProduct() {
-        navigationView.getMenu().getItem(4).setIcon(R.drawable.ic_check_box_false);
-        fltrTypeOfProduct   = null;
-        fltrProductFeatures = null;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterVolume() {
-        navigationView.getMenu().getItem(5).setIcon(R.drawable.ic_check_box_false);
-        fltrVolumeSince = -1;
-        fltrVolumeFor   = -1;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterWeight() {
-        navigationView.getMenu().getItem(6).setIcon(R.drawable.ic_check_box_false);
-        fltrWeightSince = -1;
-        fltrWeightFor   = -1;
-        refreshListView();
-    }
-
-    @Override
-    public void clearFilterTaste() {
-        navigationView.getMenu().getItem(7).setIcon(R.drawable.ic_check_box_false);
-        fltrTaste = null;
-        refreshListView();
-    }
-
-    @Override
-    public void clearProductFeatures() {
-        navigationView.getMenu().getItem(8).setIcon(R.drawable.ic_check_box_false);
-        fltrHasSugar = -1;
-        fltrHasSalt  = -1;
-        refreshListView();
     }
 
     @Override
@@ -609,14 +169,12 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     public void onResume() {
         super.onResume();
         presenter = new MyPantryActivityPresenter(this, model);
-
         adView.resume();
     }
 
     @Override
     public void onPause() {
         adView.pause();
-
         super.onPause();
     }
 
@@ -626,6 +184,45 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
         presenter.onDestroy();
 
         super.onDestroy();
+    }
+
+    @Override
+    public void openDialog(String typeOfDialog) {
+        if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_name))) {
+            NameFilterDialog nameFilterDialog = new NameFilterDialog(presenter.getFilterName());
+            nameFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_expiration_date))) {
+            ExpirationDateFilterDialog expirationDateFilterDialog = new ExpirationDateFilterDialog(presenter.getFilterExpirationDateSince(), presenter.getFilterExpirationDateFor());
+            expirationDateFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_production_date))) {
+            ProductionDateFilterDialog productionDateFilterDialog = new ProductionDateFilterDialog(presenter.getFilterProductionDateSince(), presenter.getFilterProductionDateFor());
+            productionDateFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_product_type))) {
+            TypeOfProductFilterDialog typeOfProductFilterDialog = new TypeOfProductFilterDialog(presenter.getFilterTypeOfProduct(), presenter.getFilterProductFeatures());
+            typeOfProductFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_volume))) {
+            VolumeFilterDialog volumeFilterDialog = new VolumeFilterDialog(presenter.getFilterVolumeSince(), presenter.getFilterVolumeFor());
+            volumeFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_weight))) {
+            WeightFilterDialog weightFilterDialog = new WeightFilterDialog(presenter.getFilterWeightSince(), presenter.getFilterWeightFor());
+            weightFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_taste))) {
+            TasteFilterDialog tasteFilterDialog = new TasteFilterDialog(presenter.getFilterTaste());
+            tasteFilterDialog.show(getSupportFragmentManager(), "");
+        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_product_features))) {
+            ProductFeaturesFilterDialog productFeaturesFilterDialog = new ProductFeaturesFilterDialog(presenter.getFilterHasSugar(), presenter.getFilterHasSalt());
+            productFeaturesFilterDialog.show(getSupportFragmentManager(), "");
+        }
+    }
+
+    @Override
+    public void setFilterIcon(int position) {
+        navigationView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_true);
+    }
+
+    @Override
+    public void clearFilterIcon(int position) {
+        navigationView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_false);
     }
 
     @Override
@@ -642,9 +239,115 @@ public class MyPantryActivity extends AppCompatActivity implements DialogManager
     }
 
     @Override
+    public void initData(String pantryQuery) {
+        productsFromDB = db.getProductsFromDB(pantryQuery);
+    }
+
+    @Override
+    public void refreshListView(String pantryQuery) {
+        productsFromDB = db.getProductsFromDB(pantryQuery);
+        if (emptyPantryStatement.getText().toString() == resources.getString(R.string.MyPantryActivity_empty_pantry)) {
+        } else if (productsFromDB.size() == 0) {
+            emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_not_found));
+        } else {
+            emptyPantryStatement.setText("");
+        }
+        adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, product -> {
+            Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
+            int productID = product.getID() - 1;
+            productDetailsActivityIntent.putExtra("product_id", productID);
+            productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(product.getHashCode()));
+            startActivity(productDetailsActivityIntent);
+            finish();
+        }, sharedPreferences);
+        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
+        adapterProductsRecyclerView.notifyDataSetChanged();
+    }
+
+    @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
         finish();
+    }
+
+    @Override
+    public void setFilterName(String filterName) {
+        presenter.setFilterName(filterName);
+    }
+
+    @Override
+    public void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
+        presenter.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
+    }
+
+    @Override
+    public void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
+        presenter.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
+    }
+
+    @Override
+    public void setFilterTypeOfProduct(String filterTypeOfProduct, String filterProductFeatures) {
+        presenter.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
+    }
+
+    @Override
+    public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
+        presenter.setFilterVolume(filterVolumeSince, filterVolumeFor);
+    }
+
+    @Override
+    public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
+        presenter.setFilterWeight(filterWeightSince, filterWeightFor);
+    }
+
+    @Override
+    public void setFilterTaste(String filterTaste) {
+        presenter.setFilterTaste(filterTaste);
+    }
+
+    @Override
+    public void setProductFeatures(int filterHasSugar, int filterHasSalt) {
+        presenter.setProductFeatures(filterHasSugar, filterHasSalt);
+    }
+
+    @Override
+    public void clearFilterName() {
+        presenter.clearFilterName();
+    }
+
+    @Override
+    public void clearFilterExpirationDate() {
+        presenter.clearFilterExpirationDate();
+    }
+
+    @Override
+    public void clearFilterProductionDate() {
+        presenter.clearFilterProductionDate();
+    }
+
+    @Override
+    public void clearFilterTypeOfProduct() {
+        presenter.clearFilterTypeOfProduct();
+    }
+
+    @Override
+    public void clearFilterVolume() {
+        presenter.clearFilterVolume();
+    }
+
+    @Override
+    public void clearFilterWeight() {
+        presenter.clearFilterWeight();
+    }
+
+    @Override
+    public void clearFilterTaste() {
+        presenter.clearFilterTaste();
+    }
+
+    @Override
+    public void clearProductFeatures() {
+        presenter.clearProductFeatures();
     }
 }

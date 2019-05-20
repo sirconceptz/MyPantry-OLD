@@ -46,10 +46,12 @@ import butterknife.OnClick;
 
 public class AppSettingsActivity extends AppCompatActivity implements AppSettingsActivityView {
 
-    @BindView(R.id.edittext_daysToNotification)
-    EditText edittext_daysBeforeExpirationDate;
+    private Context context;
+    private AppSettingsActivityModel model;
     private AppSettingsActivityPresenter presenter;
 
+    @BindView(R.id.edittext_daysToNotification)
+    EditText edittext_daysBeforeExpirationDate;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.checkbox_emailNotifications)
@@ -60,7 +62,6 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     NumberPicker numberpicker_hourOfNotifications;
     @BindView(R.id.edittext_emailAddress)
     EditText edittext_emailAddress;
-    private Context context;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -75,7 +76,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
         setSupportActionBar(toolbar);
 
-        AppSettingsActivityModel model = new AppSettingsActivityModel(myPreferences);
+        model = new AppSettingsActivityModel(myPreferences);
         presenter = new AppSettingsActivityPresenter(this, model);
 
         presenter.loadSettings();
@@ -184,6 +185,13 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter = new AppSettingsActivityPresenter(this, model);
+
     }
 
     @Override

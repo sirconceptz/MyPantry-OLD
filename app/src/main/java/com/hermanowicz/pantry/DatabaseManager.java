@@ -110,7 +110,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             db.close();
         }
         catch (Exception e){
-            result=false;
+            result = false;
             Log.d("DatabaseManager","Error while deleting product from database.");
         }
         return result;
@@ -193,7 +193,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM 'products'", null);
         cursor.moveToLast();
-        int id = 0;
+        int id;
         try{
             id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
         }

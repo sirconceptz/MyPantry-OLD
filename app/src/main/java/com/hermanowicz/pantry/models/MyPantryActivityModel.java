@@ -10,15 +10,20 @@ package com.hermanowicz.pantry.models;
 
 public class MyPantryActivityModel {
 
-    private String fltrName, fltrExpirationDateSince, fltrExpirationDateFor,
-            fltrProductionDateSince, fltrProductionDateFor, fltrTypeOfProduct,
-            fltrProductFeatures, fltrTaste, type_of_dialog;
-    private int fltrWeightSince = -1, fltrWeightFor = -1, fltrVolumeSince = -1,
-            fltrVolumeFor = -1, fltrHasSugar = -1, fltrHasSalt = -1;
-
-    public MyPantryActivityModel() {
-
-    }
+    private String fltrName = null;
+    private String fltrExpirationDateSince = null;
+    private String fltrExpirationDateFor = null;
+    private String fltrProductionDateSince = null;
+    private String fltrProductionDateFor = null;
+    private String fltrTypeOfProduct = null;
+    private String fltrProductFeatures = null;
+    private String fltrTaste = null;
+    private int fltrWeightSince = -1;
+    private int fltrWeightFor = -1;
+    private int fltrVolumeSince = -1;
+    private int fltrVolumeFor = -1;
+    private int fltrHasSugar = -1;
+    private int fltrHasSalt = -1;
 
     public void clearFilters() {
         fltrName = null;
@@ -35,6 +40,62 @@ public class MyPantryActivityModel {
         fltrHasSugar = -1;
         fltrHasSalt = -1;
         fltrTaste = null;
+    }
+
+    public String getFilterName() {
+        return this.fltrName;
+    }
+
+    public String getFilterExpirationDateSince() {
+        return this.fltrExpirationDateSince;
+    }
+
+    public void setFilterExpirationDateSince(String expirationDateSince) {
+        this.fltrExpirationDateSince = expirationDateSince;
+    }
+
+    public String getFilterExpirationDateFor() {
+        return this.fltrExpirationDateFor;
+    }
+
+    public void setFilterExpirationDateFor(String expirationDateFor) {
+        this.fltrExpirationDateFor = expirationDateFor;
+    }
+
+    public String getFilterProductionDateSince() {
+        return this.fltrProductionDateSince;
+    }
+
+    public void setFilterProductionDateSince(String productionDateSince) {
+        this.fltrProductionDateSince = productionDateSince;
+    }
+
+    public String getFilterProductionDateFor() {
+        return this.fltrProductionDateFor;
+    }
+
+    public void setFilterProductionDateFor(String productionDateFor) {
+        this.fltrProductionDateFor = productionDateFor;
+    }
+
+    public String getFilterTypeOfProduct() {
+        return this.fltrTypeOfProduct;
+    }
+
+    public void setFilterTypeOfProduct(String typeOfProduct) {
+        this.fltrTypeOfProduct = typeOfProduct;
+    }
+
+    public String getFilterProductFeatures() {
+        return this.fltrProductFeatures;
+    }
+
+    public void setFilterProductFeatures(String productFeatures) {
+        this.fltrProductFeatures = productFeatures;
+    }
+
+    public int getFilterVolumeSince() {
+        return fltrVolumeSince;
     }
 
     public String buildPantryQuery() {
@@ -211,4 +272,60 @@ public class MyPantryActivityModel {
         return selectQuery;
     }
 
+    public void setFilterVolumeSince(int volumeSince) {
+        this.fltrVolumeSince = volumeSince;
+    }
+
+    public int getFilterVolumeFor() {
+        return fltrVolumeFor;
+    }
+
+    public void setFilterVolumeFor(int volumeFor) {
+        this.fltrVolumeFor = volumeFor;
+    }
+
+    public int getFilterWeightSince() {
+        return fltrWeightSince;
+    }
+
+    public void setFilterWeightSince(int weightSince) {
+        this.fltrWeightSince = weightSince;
+    }
+
+    public int getFilterWeightFor() {
+        return fltrWeightFor;
+    }
+
+    public void setFilterWeightFor(int weightFor) {
+        this.fltrWeightFor = weightFor;
+    }
+
+    public int getFilterHasSugar() {
+        return fltrHasSugar;
+    }
+
+    public void setFilterHasSugar(int hasSugar) {
+        this.fltrHasSugar = hasSugar;
+    }
+
+    public int getFilterHasSalt() {
+        return fltrHasSalt;
+    }
+
+    public void setFilterHasSalt(int hasSalt) {
+        this.fltrHasSalt = hasSalt;
+    }
+
+    public String getFilterTaste() {
+        return fltrTaste;
+
+    }
+
+    public void setFilterTaste(String taste) {
+        this.fltrTaste = taste;
+    }
+
+    public void setFilterNameOfProduct(String nameOfProduct) {
+        this.fltrName = nameOfProduct;
+    }
 }

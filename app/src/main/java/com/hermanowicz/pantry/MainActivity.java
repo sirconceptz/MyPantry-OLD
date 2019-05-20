@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @Override
     public void onResume() {
         super.onResume();
+        presenter = new MainActivityPresenter(this);
         adView.resume();
     }
 
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     @Override
     public void onDestroy() {
         adView.destroy();
+        presenter.onDestroy();
         super.onDestroy();
     }
 }

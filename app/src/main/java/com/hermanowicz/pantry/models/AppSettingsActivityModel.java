@@ -102,7 +102,6 @@ public class AppSettingsActivityModel {
     }
 
     public void saveSettings() {
-
         SharedPreferences.Editor preferenceEditor = myPreferences.edit();
 
         preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, daysBeforeExpirationDate);

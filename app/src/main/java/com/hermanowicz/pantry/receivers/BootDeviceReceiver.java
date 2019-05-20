@@ -12,9 +12,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.hermanowicz.pantry.Notification;
-
 import androidx.annotation.NonNull;
+
+import com.hermanowicz.pantry.Notification;
 
 /**
  * <h1>BootDeviceReceiver</h1>
@@ -27,9 +27,9 @@ import androidx.annotation.NonNull;
  * @since   1.0
  */
 public class BootDeviceReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-
         Notification.createNotificationsForAllProducts(context);
     }
 }
