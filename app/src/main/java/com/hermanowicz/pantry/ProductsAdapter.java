@@ -118,7 +118,7 @@ public class ProductsAdapter extends
         @BindView(R.id.text_expirationDate)
         TextView expirationDateTv;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 

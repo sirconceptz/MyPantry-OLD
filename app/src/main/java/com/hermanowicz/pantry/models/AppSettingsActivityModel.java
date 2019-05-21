@@ -24,6 +24,7 @@ public class AppSettingsActivityModel {
     private static final String PREFERENCES_PUSH_NOTIFICATIONS = "PUSH_NOTIFICATIONS?";
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
     private static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
+
     private SharedPreferences myPreferences;
     private int daysBeforeExpirationDate, hourOfNotifications;
     private boolean emailNotificationsAllowed, pushNotificationsAllowed;

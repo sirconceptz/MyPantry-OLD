@@ -64,8 +64,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
     public ProductsAdapter adapterProductsRecyclerView;
     public AdRequest adRequest;
-    @BindView(R.id.recyclerview_products)
-    RecyclerView recyclerviewProducts;
     private Context context;
     private Resources resources;
     private DatabaseManager db;
@@ -74,6 +72,9 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
     private MyPantryActivityModel model;
     private MyPantryActivityPresenter presenter;
     private SharedPreferences sharedPreferences;
+
+    @BindView(R.id.recyclerview_products)
+    RecyclerView recyclerviewProducts;
     @BindView(R.id.my_pantry_drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.nav_view)

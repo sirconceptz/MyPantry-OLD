@@ -67,14 +67,14 @@ import butterknife.OnClick;
  */
 public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductActivityView {
 
-    private Context                            context;
-    private Resources                          resources;
-    private DatabaseManager                    db;
+    private Context context;
+    private Resources resources;
+    private DatabaseManager db;
     private int day, month, year;
-    private boolean                            isTypeOfProductTouched;
-    private Calendar                           calendar;
+    private boolean isTypeOfProductTouched;
+    private Calendar calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence>         productFeaturesAdapter;
+    private ArrayAdapter<CharSequence> productFeaturesAdapter;
 
     private NewProductActivityModel model;
     private NewProductActivityPresenter presenter;

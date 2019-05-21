@@ -47,6 +47,7 @@ import butterknife.OnClick;
 public class AppSettingsActivity extends AppCompatActivity implements AppSettingsActivityView {
 
     private Context context;
+
     private AppSettingsActivityModel model;
     private AppSettingsActivityPresenter presenter;
 
