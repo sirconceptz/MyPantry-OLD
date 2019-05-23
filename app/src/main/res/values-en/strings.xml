@@ -169,10 +169,10 @@
     <string name="PrintQRCodesActivity_email_with_pdf_subject">[My Pantry] PDF with QR codes for printing</string>
     <!--AppSettingsActivity-->
     <string name="AppSettingsActivity_notifications_send_by">Send notifications about expirations date of product</string>
-    <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notification?</string>
+    <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notifications?</string>
     <string name="AppSettingsActivity_notifications_push">via push notications</string>
     <string name="AppSettingsActivity_notifications_email">via email</string>
-    <string name="AppSettingsActivity_give_email_adress">Give your email address to receive a notification.</string>
+    <string name="AppSettingsActivity_give_email_adress">Give your email address to receive a notifications.</string>
     <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">How many days before the expiration date of product send a notification?</string>
     <string name="AppSettingsActivity_save_settings">Save settings</string>
     <string name="AppSettingsActivity_clear_database">Clear database</string>

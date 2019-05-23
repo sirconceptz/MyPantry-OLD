@@ -15,24 +15,24 @@ import java.util.ArrayList;
 
 public class ProductDetailsActivityModel {
 
-    private Product product;
-    private int hashCode;
+    private ProductEntity product;
+    private String hashCode;
 
-    public Product getProduct() {
+    public ProductEntity getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void setProduct(ProductEntity product) {
         this.product = product;
     }
 
-    public void setHashCode(int hashCode) {
+    public void setHashCode(String hashCode) {
         this.hashCode = hashCode;
     }
 
     public boolean compareHashCode() {
         boolean result;
-        result = hashCode == Integer.valueOf(product.getHashCode());
+        result = hashCode.equals(product.getHashCode());
         return result;
     }
 
@@ -41,7 +41,7 @@ public class ProductDetailsActivityModel {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("product_id", product.getID());
+            jsonObject.put("product_id", product.getId());
             jsonObject.put("hash_code", product.getHashCode());
             textToQRCodeList.add(jsonObject.toString());
         } catch (JSONException e) {

@@ -7,137 +7,126 @@
   ~ Released under Apache License Version 2.0                                 ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".AppSettingsActivity"
     tools:showIn="@layout/activity_app_settings">
-    <ScrollView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
-           android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification" />
+        <TextView
+            android:id="@+id/textview_howManyDaysToExpirationDate"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="64dp"
+            android:text="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/edittext_daysToNotification"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:maxLength="2"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="number" />
+        <EditText
+            android:id="@+id/edittext_daysToNotification"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="16dp"
+            android:ems="10"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="LabelFor, Autofill" />
 
-            <TextView
-                android:layout_width="240dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="70dp"
-                android:text="@string/AppSettingsActivity_notifications_send_by" />
+        <TextView
+            android:id="@+id/textview_hourOfNotifications"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="@string/AppSettingsActivity_hour_of_notification"
+            app:layout_constraintStart_toStartOf="@+id/textview_howManyDaysToExpirationDate"
+            app:layout_constraintTop_toBottomOf="@+id/textview_howManyDaysToExpirationDate" />
 
-            <CheckBox
-                android:id="@+id/checkbox_emailNotifications"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="180dp"
-                android:layout_marginTop="115dp"
-                android:layout_marginEnd="30dp"
-                android:text="@string/AppSettingsActivity_notifications_email" />
+        <NumberPicker
+            android:id="@+id/numberpicker_hourOfNotification"
+            android:layout_width="70dp"
+            android:layout_height="170dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_daysToNotification" />
 
-            <CheckBox
-                android:id="@+id/checkbox_pushNotifications"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="180dp"
-                android:layout_marginTop="150dp"
-                android:layout_marginEnd="30dp"
-                android:text="@string/AppSettingsActivity_notifications_push" />
+        <TextView
+            android:id="@+id/textView_typesOfNotifications"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="64dp"
+            android:text="@string/AppSettingsActivity_notifications_send_by"
+            app:layout_constraintStart_toStartOf="@+id/textview_hourOfNotifications"
+            app:layout_constraintTop_toBottomOf="@+id/textview_hourOfNotifications" />
 
-           <TextView
-               android:layout_width="200dp"
-               android:layout_height="wrap_content"
-               android:layout_alignParentStart="true"
-               android:layout_alignParentTop="true"
-               android:layout_marginStart="20dp"
-               android:layout_marginTop="275dp"
-               android:text="@string/AppSettingsActivity_hour_of_notification" />
+        <CheckBox
+            android:id="@+id/checkbox_emailNotifications"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/AppSettingsActivity_notifications_email"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_typesOfNotifications" />
 
-           <NumberPicker
-               android:id="@+id/numberpicker_hourOfNotification"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignParentTop="true"
-               android:layout_alignParentEnd="true"
-               android:layout_marginStart="0dp"
-               android:layout_marginTop="200dp"
-               android:layout_marginEnd="20dp"
-               android:gravity="center"/>
+        <CheckBox
+            android:id="@+id/checkbox_pushNotifications"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:text="@string/AppSettingsActivity_notifications_push"
+            app:layout_constraintEnd_toEndOf="@+id/checkbox_emailNotifications"
+            app:layout_constraintTop_toBottomOf="@+id/checkbox_emailNotifications" />
 
-           <EditText
-               android:id="@+id/edittext_emailAddress"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:layout_alignParentTop="true"
-               android:layout_alignParentEnd="true"
-               android:layout_marginStart="20dp"
-               android:layout_marginTop="400dp"
-               android:layout_marginEnd="20dp"
-               android:ems="10"
-               android:hint="@string/AppSettingsActivity_give_email_adress"
-               android:gravity="center"
-               android:autofillHints="email"
-               android:inputType="textEmailAddress" />
-           <Button
-                android:id="@+id/button_saveSettings"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="45dp"
-                android:layout_marginTop="450dp"
-                android:layout_marginEnd="45dp"
-                android:text="@string/AppSettingsActivity_save_settings" />
+        <EditText
+            android:id="@+id/edittext_emailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:autofillHints="email"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/AppSettingsActivity_give_email_adress"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkbox_pushNotifications" />
 
-           <Button
-               android:id="@+id/button_clearDatabase"
-               android:layout_width="300dp"
-               android:layout_height="wrap_content"
-               android:layout_toStartOf="@id/button_saveSettings"
-               android:layout_alignParentStart="true"
-               android:layout_alignParentEnd="true"
-               android:layout_marginStart="45dp"
-               android:layout_marginTop="600dp"
-               android:layout_marginEnd="45dp"
-               android:text="@string/AppSettingsActivity_clear_database"
-               app:layout_constraintEnd_toEndOf="parent"
-               app:layout_constraintStart_toStartOf="parent"
-               tools:layout_editor_absoluteY="317dp" />
+        <Button
+            android:id="@+id/button_saveSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/AppSettingsActivity_save_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edittext_emailAddress" />
 
-        </RelativeLayout>
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/button_clearDatabase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/AppSettingsActivity_clear_database"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintTop_toBottomOf="@+id/button_saveSettings" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

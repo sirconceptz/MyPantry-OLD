@@ -7,10 +7,12 @@
   ~ Released under Apache License Version 2.0                                 ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_width="match_parent"
+    tools:context=".MyPantryActivity">
 
     <EditText
         android:id="@+id/edittext_expirationDateSince"
@@ -19,25 +21,40 @@
         android:ems="10"
         android:focusable="false"
         android:hint="@string/MyPantryActivity_since"
-        android:inputType="date"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="Autofill" />
 
     <EditText
         android:id="@+id/edittext_expirationDateFor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_below="@id/edittext_expirationDateSince"
-        android:layout_alignParentStart="true"
         android:ems="10"
         android:focusable="false"
-        android:hint="@string/MyPantryActivity_for"
-        android:inputType="date"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/MyPantryActivity_since"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_expirationDateSince"
+        tools:ignore="Autofill" />
 
     <Button
         android:id="@+id/button_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/edittext_expirationDateFor"
-        android:text="@string/MyPantryActivity_clear"/>
-</RelativeLayout>
+        android:text="@string/MyPantryActivity_clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_expirationDateFor" />
+</androidx.constraintlayout.widget.ConstraintLayout>

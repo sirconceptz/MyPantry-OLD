@@ -7,32 +7,46 @@
   ~ Released under Apache License Version 2.0                                 ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_width="match_parent"
+    tools:context=".MyPantryActivity">
 
     <Spinner
         android:id="@+id/spinner_typeOfProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/ProductDetailsActivity_type_of_product_array" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:entries="@array/ProductDetailsActivity_type_of_product_array"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/spinner_productFeatures"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/spinner_typeOfProduct"
-        android:entries="@array/ProductDetailsActivity_store_products_array" />
+        android:entries="@array/ProductDetailsActivity_store_products_array"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_typeOfProduct" />
 
     <Button
         android:id="@+id/button_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
-        android:layout_below="@id/spinner_productFeatures"
-        android:text="@string/MyPantryActivity_clear"/>
-
-</RelativeLayout>
+        android:text="@string/MyPantryActivity_clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_productFeatures" />
+</androidx.constraintlayout.widget.ConstraintLayout>

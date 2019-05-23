@@ -6,30 +6,31 @@
  * Released under Apache License Version 2.0                                  *
  ******************************************************************************/
 
-package com.hermanowicz.pantry;
-
-import java.util.List;
+package com.hermanowicz.pantry.interfaces;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import androidx.room.RawQuery;
-import androidx.sqlite.db.SupportSQLiteQuery;
+
+import com.hermanowicz.pantry.models.ProductEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Dao
 public interface ProductsDao {
-    @RawQuery
-    List<ProductEntity> getProductsFromDB(SupportSQLiteQuery query);
+    @Query("SELECT * FROM 'products' WHERE id = (:id)")
+    ProductEntity getProductById(int id);
 
-    @Query("SELECT id FROM 'products' WHERE id = (:id)")
-    int idOFLastProductInDB(int id);
-
-    @Query("SELECT * FROM 'products'")
-    ProductEntity getAllProducts();
+    @Query("SELECT * FROM 'products' ORDER BY expirationDate ASC")
+    List<ProductEntity> getAllProducts();
 
     @Insert
-    void insertProductToDB(ProductEntity... product);
+    void insertProductToDB(ArrayList<ProductEntity> productsArrayList);
 
     @Query("DELETE FROM 'products' WHERE id = (:id)")
-    int deleteProductById(int id);
+    void deleteProductById(int id);
+
+    @Query("DELETE FROM 'products'")
+    void clearDb();
 }

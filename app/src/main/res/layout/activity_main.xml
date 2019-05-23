@@ -14,49 +14,64 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <Button
+        android:id="@+id/button_myPantry"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/MainActivity_my_pantry_button"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <Button
+        android:id="@+id/button_scanProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/MainActivity_scan_product_button"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/button_myPantry" />
 
-            <Button
-                android:id="@+id/button_myPantry"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/MainActivity_my_pantry_button" />
+    <Button
+        android:id="@+id/button_newProduct"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/MainActivity_new_product_button"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/button_scanProduct" />
 
-            <Button
-                android:id="@+id/button_scanProduct"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/MainActivity_scan_product_button" />
+    <Button
+        android:id="@+id/button_appSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/MainActivity_app_settings"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/button_newProduct" />
 
-            <Button
-                android:id="@+id/button_newProduct"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/MainActivity_new_product_button" />
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent" />
 
-            <Button
-                android:id="@+id/button_appSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/MainActivity_app_settings" />
-
-        </LinearLayout>
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adBanner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id" />
-
-    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

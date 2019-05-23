@@ -34,13 +34,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.interfaces.NewProductActivityView;
 import com.hermanowicz.pantry.models.NewProductActivityModel;
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 import com.hermanowicz.pantry.presenters.NewProductActivityPresenter;
 
 import java.util.ArrayList;
@@ -69,12 +70,13 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     private Context context;
     private Resources resources;
-    private DatabaseManager db;
     private int day, month, year;
     private boolean isTypeOfProductTouched;
     private Calendar calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
     private ArrayAdapter<CharSequence> productFeaturesAdapter;
+    @BindView(R.id.text_volumeLabel)
+    TextView volumeLabel;
 
     private NewProductActivityModel model;
     private NewProductActivityPresenter presenter;
@@ -117,10 +119,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     RadioButton isBitter;
     @BindView(R.id.radiobtn_isSalty)
     RadioButton isSalty;
-    @BindView(R.id.text_volume)
-    TextView volumeLabel;
-    @BindView(R.id.text_weight)
+    @BindView(R.id.text_weightLabel)
     TextView weightLabel;
+    private ProductDB productDB;
     @BindView(R.id.adBanner)
     AdView adView;
 
@@ -137,6 +138,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         model = new NewProductActivityModel(resources);
         presenter = new NewProductActivityPresenter(this, model);
 
+        productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+
         productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
         productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         productFeaturesSpinner.setAdapter(productFeaturesAdapter);
@@ -150,9 +153,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 day = calendar.get(Calendar.DAY_OF_MONTH);
             } else {
                 String[] expirationDateArray = presenter.getExpirationDateArray();
-                year = Integer.valueOf(expirationDateArray[2]);
+                year = Integer.valueOf(expirationDateArray[0]);
                 month = Integer.valueOf(expirationDateArray[1]);
-                day = Integer.valueOf(expirationDateArray[0]);
+                day = Integer.valueOf(expirationDateArray[2]);
             }
 
             DatePickerDialog dialog = new DatePickerDialog(
@@ -168,6 +171,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         expirationDateListener = (datePicker, year, month, day) -> {
             month = month + 1;
             presenter.showExpirationDate(day, month, year);
+            presenter.setExpirationDate(expirationDate.getText().toString());
         };
 
         productionDate.setOnClickListener(v -> {
@@ -178,10 +182,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 day = calendar.get(Calendar.DAY_OF_MONTH);
             } else {
                 String[] productionDateArray = presenter.getProductionDateArray();
-                year = Integer.valueOf(productionDateArray[2]);
+                year = Integer.valueOf(productionDateArray[0]);
                 month = Integer.valueOf(productionDateArray[1]);
-                day = Integer.valueOf(productionDateArray[0]);
-
+                day = Integer.valueOf(productionDateArray[2]);
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     context,
@@ -195,6 +198,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         productionDateListener = (datePicker, year, month, day) -> {
             month = month + 1;
             presenter.showProductionDate(day, month, year);
+            presenter.setProductionDate(productionDate.getText().toString());
         };
 
         productTypeSpinner.setOnTouchListener((v, event) -> {
@@ -219,7 +223,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @OnClick(R.id.button_addProduct)
     void onClickAddProduct() {
-        presenter.setIdOfLastProductInDb(db.idOfLastProductInDB());
         presenter.setName(name.getText().toString());
         presenter.setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()));
         presenter.setProductFeatures(String.valueOf(productFeaturesSpinner.getSelectedItem()));
@@ -257,7 +260,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private void init(){
         context = NewProductActivity.this;
         resources = context.getResources();
-        db = new DatabaseManager(context);
 
         setSupportActionBar(toolbar);
 
@@ -321,15 +323,13 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     }
 
     @Override
-    public boolean isAddProductsSuccess(ArrayList<Product> productsArrayList) {
-        boolean isProductsAdded = false;
-        Product product;
-        for (int counter = 0; counter < productsArrayList.size(); counter++) {
-            product = productsArrayList.get(counter);
-            isProductsAdded = db.insertProductToDB(product);
-            Notification.createNotification(context, product);
+    public void isAddProductsSuccess(ArrayList<ProductEntity> productEntityArrayList) {
+        ProductEntity productEntity;
+        productDB.productsDao().insertProductToDB(productEntityArrayList);
+        for (int counter = 0; counter < productEntityArrayList.size(); counter++) {
+            productEntity = productEntityArrayList.get(counter);
+            Notification.createNotification(context, productEntity);
         }
-        return isProductsAdded;
     }
 
     @Override
@@ -397,11 +397,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     public void showErrorExpirationDateNotSet() {
         expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
         Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showErrorSomethingIsWrong() {
-        Toast.makeText(context, resources.getString(R.string.Errors_something_wrong), Toast.LENGTH_LONG).show();
     }
 
     @Override

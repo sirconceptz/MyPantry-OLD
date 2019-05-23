@@ -6,7 +6,7 @@
  * Released under Apache License Version 2.0                                  *
  ******************************************************************************/
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.models;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -27,8 +27,8 @@ public class ProductEntity {
     private String dosage;
     private int volume;
     private int weight;
-    private int hasSugar;
-    private int hasSalt;
+    private boolean hasSugar;
+    private boolean hasSalt;
     private String taste;
 
     public int getId() {
@@ -127,19 +127,19 @@ public class ProductEntity {
         this.weight = weight;
     }
 
-    public int getHasSugar() {
+    public boolean getHasSugar() {
         return hasSugar;
     }
 
-    public void setHasSugar(int hasSugar) {
+    public void setHasSugar(boolean hasSugar) {
         this.hasSugar = hasSugar;
     }
 
-    public int getHasSalt() {
+    public boolean getHasSalt() {
         return hasSalt;
     }
 
-    public void setHasSalt(int hasSalt) {
+    public void setHasSalt(boolean hasSalt) {
         this.hasSalt = hasSalt;
     }
 

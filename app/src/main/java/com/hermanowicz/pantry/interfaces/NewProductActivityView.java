@@ -8,14 +8,14 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 
 import java.util.ArrayList;
 
 public interface NewProductActivityView {
     void navigateToPrintQRCodesActivity(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList);
 
-    boolean isAddProductsSuccess(ArrayList<Product> productsArrayList);
+    void isAddProductsSuccess(ArrayList<ProductEntity> productEntityArrayList);
 
     void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);
 
@@ -31,6 +31,5 @@ public interface NewProductActivityView {
 
     void showErrorExpirationDateNotSet();
 
-    void showErrorSomethingIsWrong();
     void navigateToMainActivity();
 }

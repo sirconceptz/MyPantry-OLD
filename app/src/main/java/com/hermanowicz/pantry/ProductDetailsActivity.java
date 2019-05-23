@@ -21,10 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
 
 import com.hermanowicz.pantry.interfaces.ProductDetailsActivityView;
-import com.hermanowicz.pantry.models.Product;
 import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
+import com.hermanowicz.pantry.models.ProductEntity;
 import com.hermanowicz.pantry.presenters.ProductDetailsActivityPresenter;
 
 import java.util.ArrayList;
@@ -47,9 +48,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     private Context context;
     private Resources resources;
-    private DatabaseManager db;
-    private Product selectedProduct;
-    private int productID, hashCode;
+    private ProductDB productDB;
+    private ProductEntity selectedProduct;
+    private int productID;
+    private String hashCode;
+
     private ProductDetailsActivityPresenter presenter;
 
     @BindView(R.id.toolbar)
@@ -94,20 +97,21 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         context = ProductDetailsActivity.this;
         resources = context.getResources();
-        db = new DatabaseManager(context);
-        selectedProduct = db.getProductsFromDB("SELECT * FROM 'products' DESC").get(productID);
+
+        productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        selectedProduct = productDB.productsDao().getProductById(productID);
 
         setSupportActionBar(toolbar);
 
         presenter.setProduct(selectedProduct);
-        presenter.setHashCode(hashCode);
+        presenter.setHashCode(String.valueOf(hashCode));
         presenter.showProductDetails();
     }
 
     private void getDataFromIntent() {
         Intent myPantryActivityIntent = getIntent();
-        productID = myPantryActivityIntent.getIntExtra("product_id", 1);
-        hashCode = myPantryActivityIntent.getIntExtra("hash_code", 0);
+        productID = myPantryActivityIntent.getIntExtra("product_id", 0);
+        hashCode = myPantryActivityIntent.getStringExtra("hash_code");
     }
 
     private String convertDateFormat(String dateToConvert) {
@@ -120,7 +124,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @OnClick(R.id.button_deleteProduct)
     void onClickDeleteProductButton() {
-        presenter.deleteProduct(selectedProduct.getID());
+        presenter.deleteProduct(selectedProduct.getId());
     }
 
     @OnClick(R.id.button_printQRCode)
@@ -130,7 +134,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void showProductDetails(Product product) {
+    public void showProductDetails(ProductEntity product) {
         Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
         typeOfProduct.setText(product.getTypeOfProduct());
         productFeatures.setText(product.getProductFeatures());
@@ -142,11 +146,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         volume.setText(product.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit));
         weight.setText(product.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit));
         taste.setText(product.getTaste());
-        if (product.getHasSugar() == 1)
+        if (product.getHasSugar())
             hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_yes));
         else
             hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_no));
-        if (product.getHasSalt() == 1)
+        if (product.getHasSalt())
             hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_yes));
         else
             hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_no));
@@ -159,7 +163,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @Override
     public void onDeletedProduct(int productID) {
-        db.deleteProductFromDB(productID);
+        productDB.productsDao().deleteProductById(productID);
         Notification.cancelNotification(context, selectedProduct);
         Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
     }

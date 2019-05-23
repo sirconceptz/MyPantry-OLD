@@ -30,42 +30,35 @@ public class NewProductActivityModel {
     private String healingProperties = "";
     private String dosage = "";
     private String taste = "";
-    private int idOfLastProductInDB, quantity, volume, weight;
+    private int quantity, volume, weight;
     private boolean hasSugar, hasSalt, isSweet, isSour, isSweetAndSour, isBitter, isSalty;
 
     public NewProductActivityModel(Resources resources) {
         this.resources = resources;
     }
 
-    public ArrayList<Product> buildProductsList() {
+    public ArrayList<ProductEntity> buildProductsList() {
         setTaste();
-        ArrayList<Product> productArrayList = new ArrayList<Product>() {
-        };
+        ArrayList<ProductEntity> productArrayList = new ArrayList<>();
         for (int counter = 1; counter <= quantity; counter++) {
-            Product product = new Product.Builder()
-                    .setID(idOfLastProductInDB + counter)
-                    .setName(name)
-                    .setHashCode("")
-                    .setTypeOfProduct(typeOfProduct)
-                    .setProductFeatures(productFeatures)
-                    .setExpirationDate(expirationDate)
-                    .setProductionDate(productionDate)
-                    .setComposition(composition)
-                    .setHealingProperties(healingProperties)
-                    .setDosage(dosage)
-                    .setVolume(volume)
-                    .setWeight(weight)
-                    .setHasSugar(Boolean.compare(hasSugar, false))
-                    .setHasSalt(Boolean.compare(hasSalt, false))
-                    .setTaste(taste)
-                    .createProduct();
-            productArrayList.add(product);
+            ProductEntity productEntity = new ProductEntity();
+            productEntity.setName(name);
+            productEntity.setTypeOfProduct(typeOfProduct);
+            productEntity.setProductFeatures(productFeatures);
+            productEntity.setExpirationDate(expirationDate);
+            productEntity.setProductionDate(productionDate);
+            productEntity.setComposition(composition);
+            productEntity.setHealingProperties(healingProperties);
+            productEntity.setDosage(dosage);
+            productEntity.setVolume(volume);
+            productEntity.setWeight(weight);
+            productEntity.setHasSugar(hasSugar);
+            productEntity.setHasSalt(hasSalt);
+            productEntity.setTaste(taste);
+            productEntity.setHashCode(String.valueOf(productEntity.hashCode()));
+            productArrayList.add(productEntity);
         }
         return productArrayList;
-    }
-
-    public void setIdOfLastProductInDb(int idOfLastProductInDB) {
-        this.idOfLastProductInDB = idOfLastProductInDB;
     }
 
     public void setName(String name) {
@@ -80,7 +73,6 @@ public class NewProductActivityModel {
         this.productFeatures = productFeatures;
     }
 
-
     public void setExpirationDate(String expirationDate) {
         try {
             String[] expirationDateArray = expirationDate.split("\\.");
@@ -92,7 +84,6 @@ public class NewProductActivityModel {
             this.expirationDate = "";
         }
     }
-
 
     public void setProductionDate(String productionDate) {
         try {
@@ -161,13 +152,12 @@ public class NewProductActivityModel {
     }
 
     public String[] getExpirationDateArrayList() {
-        String[] expirationDateArray = expirationDate.split("\\-");
+        String[] expirationDateArray = expirationDate.split("-");
         return expirationDateArray;
     }
 
-
     public String[] getProductionDateArrayList() {
-        String[] productionDateArray = productionDate.split("\\-");
+        String[] productionDateArray = productionDate.split("-");
         return productionDateArray;
     }
 
@@ -203,7 +193,7 @@ public class NewProductActivityModel {
             taste = filterTasteArray[3];
         } else if (isBitter) {
             taste = filterTasteArray[4];
-        } else if (isSalty) {
+        } else {
             taste = filterTasteArray[5];
         }
     }
@@ -217,14 +207,14 @@ public class NewProductActivityModel {
         return statementToShow;
     }
 
-    public boolean checkCorrectProductName() {
+    public boolean isProductNameValid() {
         boolean correctProductName = false;
-        if (!name.equals(""))
+        if (name.length() > 0)
             correctProductName = true;
-        return correctProductName;
+        return !correctProductName;
     }
 
-    public boolean checkCorrectTypeOfProduct() {
+    public boolean isTypeOfProductValid() {
         String[] typeOfProductsArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
         boolean correctTypeOfProduct = false;
         if (!typeOfProduct.equals(typeOfProductsArray[0]))
@@ -232,20 +222,20 @@ public class NewProductActivityModel {
         return correctTypeOfProduct;
     }
 
-    public boolean checkCorrectExpirationDate() {
+    public boolean isExpirationDateValid() {
         boolean correctExpirationDate = false;
-        if (!expirationDate.equals(""))
+        if (expirationDate.length() > 0)
             correctExpirationDate = true;
         return correctExpirationDate;
     }
 
-    public ArrayList<String> getTextToQRCodeList(List<Product> productsList) {
+    public ArrayList<String> getTextToQRCodeList(List<ProductEntity> productsList) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
 
         for (int counter = 0; counter < productsList.size(); counter++) {
             try {
-                jsonObject.put("product_id", productsList.get(counter).getID());
+                jsonObject.put("product_id", productsList.get(counter).getId());
                 jsonObject.put("hash_code", productsList.get(counter).hashCode());
                 textToQRCodeList.add(jsonObject.toString());
             } catch (JSONException e) {
@@ -255,7 +245,7 @@ public class NewProductActivityModel {
         return textToQRCodeList;
     }
 
-    public ArrayList<String> getNamesOfProductsList(List<Product> productsList) {
+    public ArrayList<String> getNamesOfProductsList(List<ProductEntity> productsList) {
         ArrayList<String> namesOfProductsList = new ArrayList<>();
         String productName;
 
@@ -270,7 +260,7 @@ public class NewProductActivityModel {
         return namesOfProductsList;
     }
 
-    public ArrayList<String> getExpirationDatesList(List<Product> productsList) {
+    public ArrayList<String> getExpirationDatesList(List<ProductEntity> productsList) {
         ArrayList<String> expirationDatesList = new ArrayList<>();
 
         for (int counter = 0; counter < productsList.size(); counter++) {

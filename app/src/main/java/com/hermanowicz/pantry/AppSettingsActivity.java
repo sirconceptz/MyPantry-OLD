@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.room.Room;
 
 import com.hermanowicz.pantry.interfaces.AppSettingsActivityView;
 import com.hermanowicz.pantry.models.AppSettingsActivityModel;
@@ -167,8 +168,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     public void onDatabaseClear() {
-        DatabaseManager db = new DatabaseManager(context);
-        db.recreateDB();
+        ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        productDB.productsDao().clearDb();
         Notification.cancelAllNotifications(context);
         Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
     }

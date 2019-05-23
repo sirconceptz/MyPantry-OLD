@@ -49,8 +49,6 @@ public interface INewProductActivityPresenter {
 
     void parseWeight(String weight);
 
-    void setIdOfLastProductInDb(int idOfLastProductInDB);
-
     void addProducts();
 
     void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);
@@ -58,5 +56,6 @@ public interface INewProductActivityPresenter {
     String[] getExpirationDateArray();
 
     String[] getProductionDateArray();
+
     void navigateToMainActivity();
 }

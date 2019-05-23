@@ -8,12 +8,12 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 
 public interface IProductDetailsActivityPresenter {
-    void setProduct(Product product);
+    void setProduct(ProductEntity product);
 
-    void setHashCode(int hashCode);
+    void setHashCode(String hashCode);
 
     void showProductDetails();
 

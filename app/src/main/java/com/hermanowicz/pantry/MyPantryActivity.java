@@ -27,6 +27,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -43,7 +44,7 @@ import com.hermanowicz.pantry.dialog.WeightFilterDialog;
 import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryActivityView;
 import com.hermanowicz.pantry.models.MyPantryActivityModel;
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
 
 import java.util.List;
@@ -66,12 +67,12 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
     public AdRequest adRequest;
     private Context context;
     private Resources resources;
-    private DatabaseManager db;
-    private List<Product> productsFromDB;
+    private ProductDB productDB;
+    private List<ProductEntity> productEntityList;
+    private SharedPreferences sharedPreferences;
 
     private MyPantryActivityModel model;
     private MyPantryActivityPresenter presenter;
-    private SharedPreferences sharedPreferences;
 
     @BindView(R.id.recyclerview_products)
     RecyclerView recyclerviewProducts;
@@ -95,7 +96,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
         context = getApplicationContext();
         resources = context.getResources();
-        db = new DatabaseManager(context);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         model = new MyPantryActivityModel();
@@ -106,16 +106,12 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
         adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        //Do przejścia na ROOM, na razie nie ruszać
-        //ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Article").allowMainThreadQueries().build();
-
         presenter.initRecyclerViewData();
 
-        adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, product -> {
+        adapterProductsRecyclerView = new ProductsAdapter(productEntityList, product -> {
             Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-            int productID = product.getID() - 1;
-            productDetailsActivityIntent.putExtra("product_id", productID);
-            productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(product.getHashCode()));
+            productDetailsActivityIntent.putExtra("product_id", product.getId());
+            productDetailsActivityIntent.putExtra("hash_code", product.getHashCode());
             startActivity(productDetailsActivityIntent);
             finish();
         }, sharedPreferences);
@@ -130,7 +126,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        if(productsFromDB.size()==0){
+        if (productEntityList.size() == 0) {
             emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_empty_pantry));
         }
 
@@ -150,10 +146,9 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            drawerLayout.openDrawer(GravityCompat.START);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -241,23 +236,23 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
     @Override
     public void initData(String pantryQuery) {
-        productsFromDB = db.getProductsFromDB(pantryQuery);
+        productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        productEntityList = productDB.productsDao().getAllProducts();
     }
 
     @Override
     public void refreshListView(String pantryQuery) {
-        productsFromDB = db.getProductsFromDB(pantryQuery);
-        if (emptyPantryStatement.getText().toString() == resources.getString(R.string.MyPantryActivity_empty_pantry)) {
-        } else if (productsFromDB.size() == 0) {
-            emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_not_found));
-        } else {
-            emptyPantryStatement.setText("");
+        if (emptyPantryStatement.getText().toString() != resources.getString(R.string.MyPantryActivity_empty_pantry)) {
+            if (productEntityList.size() == 0) {
+                emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_not_found));
+            } else {
+                emptyPantryStatement.setText("");
+            }
         }
-        adapterProductsRecyclerView = new ProductsAdapter(productsFromDB, product -> {
+        adapterProductsRecyclerView = new ProductsAdapter(productEntityList, product -> {
             Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-            int productID = product.getID() - 1;
-            productDetailsActivityIntent.putExtra("product_id", productID);
-            productDetailsActivityIntent.putExtra("hash_code", Integer.parseInt(product.getHashCode()));
+            productDetailsActivityIntent.putExtra("product_id", product.getId());
+            productDetailsActivityIntent.putExtra("hash_code", product.getHashCode());
             startActivity(productDetailsActivityIntent);
             finish();
         }, sharedPreferences);

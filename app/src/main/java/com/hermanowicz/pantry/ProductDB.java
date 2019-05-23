@@ -11,6 +11,9 @@ package com.hermanowicz.pantry;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
+import com.hermanowicz.pantry.interfaces.ProductsDao;
+import com.hermanowicz.pantry.models.ProductEntity;
+
 @Database(entities = {ProductEntity.class}, version = 1)
 public abstract class ProductDB extends RoomDatabase {
     public abstract ProductsDao productsDao();

@@ -11,7 +11,7 @@ package com.hermanowicz.pantry.presenters;
 import com.hermanowicz.pantry.interfaces.INewProductActivityPresenter;
 import com.hermanowicz.pantry.interfaces.NewProductActivityView;
 import com.hermanowicz.pantry.models.NewProductActivityModel;
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 
 import java.util.ArrayList;
 
@@ -33,16 +33,13 @@ public class NewProductActivityPresenter implements INewProductActivityPresenter
     @Override
     public void setName(String name) {
         model.setName(name);
-        if (!model.checkCorrectProductName())
+        if (model.isProductNameValid())
             view.showErrorNameNotSet();
     }
 
     @Override
     public void setTypeOfProduct(String typeOfProduct) {
-        if (typeOfProduct.length() > 1)
-            model.setTypeOfProduct(typeOfProduct);
-        else
-            view.showErrorCategoryNotSelected();
+        model.setTypeOfProduct(typeOfProduct);
     }
 
     @Override
@@ -53,8 +50,6 @@ public class NewProductActivityPresenter implements INewProductActivityPresenter
     @Override
     public void setExpirationDate(String expirationDate) {
         model.setExpirationDate(expirationDate);
-        if (!model.checkCorrectExpirationDate())
-            view.showErrorExpirationDateNotSet();
     }
 
     @Override
@@ -138,30 +133,24 @@ public class NewProductActivityPresenter implements INewProductActivityPresenter
     }
 
     @Override
-    public void setIdOfLastProductInDb(int idOfLastProductInDB) {
-        model.setIdOfLastProductInDb(idOfLastProductInDB);
-    }
-
-    @Override
     public void addProducts() {
-        if (!model.checkCorrectProductName())
+        if (model.isProductNameValid())
             view.showErrorNameNotSet();
-        else if (!model.checkCorrectExpirationDate())
+        else if (!model.isExpirationDateValid())
             view.showErrorExpirationDateNotSet();
-        else if (!model.checkCorrectTypeOfProduct())
+        else if (!model.isTypeOfProductValid())
             view.showErrorCategoryNotSelected();
         else {
-            ArrayList<Product> productsArrayList = model.buildProductsList();
-            if (view.isAddProductsSuccess(productsArrayList)) {
-                ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
+            ArrayList<ProductEntity> productsArrayList = model.buildProductsList();
+            view.isAddProductsSuccess(productsArrayList);
+            ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
 
-                textToQRCodeList = model.getTextToQRCodeList(productsArrayList);
-                namesOfProductsList = model.getNamesOfProductsList(productsArrayList);
-                expirationDatesList = model.getExpirationDatesList(productsArrayList);
+            textToQRCodeList = model.getTextToQRCodeList(productsArrayList);
+            namesOfProductsList = model.getNamesOfProductsList(productsArrayList);
+            expirationDatesList = model.getExpirationDatesList(productsArrayList);
 
-                view.showStatementOnAreProductsAdded(model.getOnProductAddStatement());
-                view.navigateToPrintQRCodesActivity(textToQRCodeList, namesOfProductsList, expirationDatesList);
-            }
+            view.showStatementOnAreProductsAdded(model.getOnProductAddStatement());
+            view.navigateToPrintQRCodesActivity(textToQRCodeList, namesOfProductsList, expirationDatesList);
         }
     }
 

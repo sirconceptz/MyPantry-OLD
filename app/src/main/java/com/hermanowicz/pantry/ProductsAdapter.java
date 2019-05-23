@@ -8,6 +8,7 @@
 
 package com.hermanowicz.pantry;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -21,7 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,16 +38,17 @@ public class ProductsAdapter extends
 
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
 
-    private List<Product> productList;
+    private List<ProductEntity> productList;
     private SharedPreferences myPreferences;
     private final OnItemClickListener listener;
 
-    ProductsAdapter(List<Product> productList, OnItemClickListener listener, SharedPreferences myPreferences) {
+    ProductsAdapter(List<ProductEntity> productList, OnItemClickListener listener, SharedPreferences myPreferences) {
         this.productList = productList;
         this.listener = listener;
         this.myPreferences = myPreferences;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ProductsAdapter.ViewHolder viewHolder, int position) {
 
@@ -58,7 +60,7 @@ public class ProductsAdapter extends
         Context context = nameTv.getContext();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Resources resources = context.getResources();
-        final Product selectedProduct = productList.get(position);
+        final ProductEntity selectedProduct = productList.get(position);
         Calendar calendar = Calendar.getInstance();
         Date expirationDateDt = calendar.getTime();
         String volumeString = resources.getString(R.string.ProductDetailsActivity_volume) + ": " +  selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit);
@@ -68,7 +70,10 @@ public class ProductsAdapter extends
         if (dateArray.length > 1)
             expirationDateString = dateArray[2] + "." + dateArray[1] + "." + dateArray[0];
 
-        nameTv.setText(selectedProduct.getName());
+        if (selectedProduct.getName().length() > 25)
+            nameTv.setText(selectedProduct.getName().substring(0, 24) + "...");
+        else
+            nameTv.setText(selectedProduct.getName());
         volumeTv.setText(volumeString);
         weightTv.setText(weightString);
         expirationDateTv.setText(expirationDateString);
@@ -92,7 +97,7 @@ public class ProductsAdapter extends
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Product product);
+        void onItemClick(ProductEntity product);
     }
 
     @NonNull
@@ -115,7 +120,7 @@ public class ProductsAdapter extends
         TextView volumeTv;
         @BindView(R.id.text_productWeight)
         TextView weightTv;
-        @BindView(R.id.text_expirationDate)
+        @BindView(R.id.text_expirationDateValue)
         TextView expirationDateTv;
 
         ViewHolder(View itemView) {
@@ -125,10 +130,10 @@ public class ProductsAdapter extends
             nameTv = itemView.findViewById(R.id.text_productName);
             volumeTv = itemView.findViewById(R.id.text_productVolume);
             weightTv = itemView.findViewById(R.id.text_productWeight);
-            expirationDateTv = itemView.findViewById(R.id.text_expirationDate);
+            expirationDateTv = itemView.findViewById(R.id.text_expirationDateValue);
         }
 
-        public void bind(final Product product, final OnItemClickListener listener) {
+        public void bind(final ProductEntity product, final OnItemClickListener listener) {
         }
     }
 

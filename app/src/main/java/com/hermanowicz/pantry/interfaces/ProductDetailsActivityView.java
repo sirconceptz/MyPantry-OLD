@@ -8,12 +8,12 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.models.Product;
+import com.hermanowicz.pantry.models.ProductEntity;
 
 import java.util.ArrayList;
 
 public interface ProductDetailsActivityView{
-    void showProductDetails(Product product);
+    void showProductDetails(ProductEntity product);
 
     void showErrorWrongData();
 
