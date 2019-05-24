@@ -23,6 +23,7 @@
 
         <TextView
             android:id="@+id/textview_howManyDaysToExpirationDate"
+            android:textColor="@color/text_color"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -47,6 +48,7 @@
 
         <TextView
             android:id="@+id/textview_hourOfNotifications"
+            android:textColor="@color/text_color"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
@@ -65,6 +67,7 @@
 
         <TextView
             android:id="@+id/textView_typesOfNotifications"
+            android:textColor="@color/text_color"
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_marginTop="64dp"
@@ -74,6 +77,7 @@
 
         <CheckBox
             android:id="@+id/checkbox_emailNotifications"
+            android:textColor="@color/text_color"
             android:layout_width="200dp"
             android:layout_height="45dp"
             android:layout_marginStart="16dp"
@@ -84,6 +88,7 @@
 
         <CheckBox
             android:id="@+id/checkbox_pushNotifications"
+            android:textColor="@color/text_color"
             android:layout_width="200dp"
             android:layout_height="45dp"
             android:text="@string/AppSettingsActivity_notifications_push"

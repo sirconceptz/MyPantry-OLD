@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -67,7 +68,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
     public AdRequest adRequest;
     private Context context;
     private Resources resources;
-    private ProductDB productDB;
+    private ProductDb productDB;
     private List<ProductEntity> productEntityList;
     private SharedPreferences sharedPreferences;
 
@@ -89,6 +90,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_pantry_drawer_layout);
 
@@ -236,7 +238,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
     @Override
     public void initData(String pantryQuery) {
-        productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
         productEntityList = productDB.productsDao().getAllProducts();
     }
 

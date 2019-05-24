@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Copyright (c) 2019.                                                       ~
   ~ Mateusz Hermanowicz                                                       ~
@@ -9,26 +8,33 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <!-- Light/Day mode theme. -->
+    <!-- Dark/Night mode theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">
             @color/cast_libraries_material_featurehighlight_outer_highlight_default_color
         </item>
-        <item name="android:statusBarColor">@color/color_primary_statusbar</item>
-        <item name="android:navigationBarColor">@color/color_primary_statusbar</item>
-        <item name="android:textColorPrimary">@color/color_primary</item>
-        <item name="android:colorButtonNormal">@color/button_color</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <item name="android:text">@color/text_color</item>
         <item name="android:colorBackground" tools:ignore="PrivateResource">
-            @color/background_material_light
+            @color/background_material
         </item>
-        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
     </style>
 
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/text_color</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

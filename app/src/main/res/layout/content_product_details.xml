@@ -19,6 +19,7 @@
 
         <TextView
             android:id="@+id/text_productTypeLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -30,6 +31,7 @@
 
         <TextView
             android:id="@+id/text_productTypeValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="110dp"
@@ -43,6 +45,7 @@
 
         <TextView
             android:id="@+id/text_productFeaturesLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -54,6 +57,7 @@
 
         <TextView
             android:id="@+id/text_productFeaturesValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -67,6 +71,7 @@
 
         <TextView
             android:id="@+id/text_productProductionDateLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -78,6 +83,7 @@
 
         <TextView
             android:id="@+id/text_productProductionDateValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -91,6 +97,7 @@
 
         <TextView
             android:id="@+id/text_productExpirationDateLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -102,6 +109,7 @@
 
         <TextView
             android:id="@+id/text_productExpirationDateValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -115,6 +123,7 @@
 
         <TextView
             android:id="@+id/text_productVolumeLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -126,6 +135,7 @@
 
         <TextView
             android:id="@+id/text_productVolumeValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -139,6 +149,7 @@
 
         <TextView
             android:id="@+id/text_productWeightLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -150,6 +161,7 @@
 
         <TextView
             android:id="@+id/text_productWeightValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -163,6 +175,7 @@
 
         <TextView
             android:id="@+id/text_productTasteLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -174,6 +187,7 @@
 
         <TextView
             android:id="@+id/text_productTasteValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -187,6 +201,7 @@
 
         <TextView
             android:id="@+id/text_productHasSugarLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -198,6 +213,7 @@
 
         <TextView
             android:id="@+id/text_productHasSugarValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -211,6 +227,7 @@
 
         <TextView
             android:id="@+id/text_productHasSaltLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -222,6 +239,7 @@
 
         <TextView
             android:id="@+id/text_productHasSaltValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="0dp"
@@ -235,6 +253,7 @@
 
         <TextView
             android:id="@+id/text_productCompositionLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -246,6 +265,7 @@
 
         <TextView
             android:id="@+id/text_productCompositionValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -262,6 +282,7 @@
 
         <TextView
             android:id="@+id/text_productHealingPropertiesLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -273,6 +294,7 @@
 
         <TextView
             android:id="@+id/text_productHealingPropertiesValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="112dp"
@@ -289,6 +311,7 @@
 
         <TextView
             android:id="@+id/text_productDosageLabel"
+            android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -301,6 +324,7 @@
 
         <TextView
             android:id="@+id/text_productDosageValue"
+            android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"

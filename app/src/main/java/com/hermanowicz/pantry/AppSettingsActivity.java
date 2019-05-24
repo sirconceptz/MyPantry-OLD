@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
@@ -68,6 +69,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_settings);
 
@@ -81,9 +83,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         model = new AppSettingsActivityModel(myPreferences);
         presenter = new AppSettingsActivityPresenter(this, model);
 
-        presenter.loadSettings();
-
         setNumberpickerSettings();
+        presenter.loadSettings();
 
         edittext_emailAddress.addTextChangedListener(new TextWatcher() {
             @Override
@@ -168,7 +169,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     public void onDatabaseClear() {
-        ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        ProductDb productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
         productDB.productsDao().clearDb();
         Notification.cancelAllNotifications(context);
         Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();

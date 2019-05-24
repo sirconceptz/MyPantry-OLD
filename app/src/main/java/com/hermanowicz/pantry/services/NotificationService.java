@@ -106,7 +106,7 @@ public class NotificationService extends IntentService {
             builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.ic_launcher_round));
             builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-            builder.setLights(getResources().getColor(R.color.colorPrimary), 500, 1000);
+            builder.setLights(getResources().getColor(R.color.color_primary), 500, 1000);
             builder.setAutoCancel(true);
             Intent notifyIntent = new Intent(context, MyPantryActivity.class);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<?xml version="1.0" encoding="utf-8"?><!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   ~ Copyright (c) 2019.                                                       ~
   ~ Mateusz Hermanowicz                                                       ~
   ~ My Pantry                                                                 ~
@@ -9,7 +8,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <!-- Light/Day mode theme. -->
+    <!-- Dark/Night mode theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
@@ -18,10 +17,13 @@
         </item>
         <item name="android:statusBarColor">@color/color_primary_statusbar</item>
         <item name="android:navigationBarColor">@color/color_primary_statusbar</item>
-        <item name="android:textColorPrimary">@color/color_primary</item>
-        <item name="android:colorButtonNormal">@color/button_color</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <item name="android:text">@color/text_color</item>
         <item name="android:colorBackground" tools:ignore="PrivateResource">
-            @color/background_material_light
+            @color/background_material
+        </item>
+        <item name="android:colorButtonNormal" tools:ignore="PrivateResource">
+            @color/button_color
         </item>
         <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
         <item name="windowActionBar">false</item>

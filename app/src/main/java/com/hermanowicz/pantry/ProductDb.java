@@ -15,6 +15,6 @@ import com.hermanowicz.pantry.interfaces.ProductsDao;
 import com.hermanowicz.pantry.models.ProductEntity;
 
 @Database(entities = {ProductEntity.class}, version = 1)
-public abstract class ProductDB extends RoomDatabase {
+public abstract class ProductDb extends RoomDatabase {
     public abstract ProductsDao productsDao();
 }

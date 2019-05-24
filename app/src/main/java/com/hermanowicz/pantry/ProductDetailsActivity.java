@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
@@ -48,7 +49,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     private Context context;
     private Resources resources;
-    private ProductDB productDB;
+    private ProductDb productDB;
     private ProductEntity selectedProduct;
     private int productID;
     private String hashCode;
@@ -85,6 +86,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 
@@ -98,7 +100,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         context = ProductDetailsActivity.this;
         resources = context.getResources();
 
-        productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
         selectedProduct = productDB.productsDao().getProductById(productID);
 
         setSupportActionBar(toolbar);

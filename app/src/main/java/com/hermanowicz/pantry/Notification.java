@@ -82,7 +82,7 @@ public class Notification {
     }
 
     public static void createNotificationsForAllProducts(@NonNull Context context){
-        ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        ProductDb productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
         List<ProductEntity> productsFromDB = productDB.productsDao().getAllProducts();
         for(int counter=0; counter < productsFromDB.size(); counter++){
             ProductEntity selectedProduct = productsFromDB.get(counter);
@@ -101,7 +101,7 @@ public class Notification {
     }
 
     public static void cancelAllNotifications(@NonNull Context context) {
-        ProductDB productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        ProductDb productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
         List<ProductEntity> productsList = productDB.productsDao().getAllProducts();
         AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);

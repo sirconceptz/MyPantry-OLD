@@ -33,6 +33,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.room.Room;
 
@@ -74,9 +75,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private boolean isTypeOfProductTouched;
     private Calendar calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> productFeaturesAdapter;
     @BindView(R.id.text_volumeLabel)
     TextView volumeLabel;
+    private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
 
     private NewProductActivityModel model;
     private NewProductActivityPresenter presenter;
@@ -119,15 +120,16 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     RadioButton isBitter;
     @BindView(R.id.radiobtn_isSalty)
     RadioButton isSalty;
+    private ProductDb productDB;
     @BindView(R.id.text_weightLabel)
     TextView weightLabel;
-    private ProductDB productDB;
     @BindView(R.id.adBanner)
     AdView adView;
 
     @SuppressLint({"SetTextI18n", "CutPasteId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
 
@@ -138,7 +140,11 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         model = new NewProductActivityModel(resources);
         presenter = new NewProductActivityPresenter(this, model);
 
-        productDB = Room.databaseBuilder(context, ProductDB.class, "Products").allowMainThreadQueries().build();
+        productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
+
+        typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_type_of_product_array, android.R.layout.simple_spinner_item);
+        typeOfProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        productTypeSpinner.setAdapter(typeOfProductAdapter);
 
         productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
         productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

@@ -12,7 +12,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -37,17 +40,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     private MainActivityPresenter presenter;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.adBanner)
     AdView adView;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
+
+        setSupportActionBar(toolbar);
+        ActionBar actionbar = getSupportActionBar();
+        assert actionbar != null;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
