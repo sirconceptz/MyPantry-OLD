@@ -1,10 +1,19 @@
-/******************************************************************************
- * Copyright (c) 2019.                                                        *
- * Mateusz Hermanowicz                                                        *
- * My Pantry                                                                  *
- * https://www.mypantry.eu                                                    *
- * Released under Apache License Version 2.0                                  *
- ******************************************************************************/
+/*
+ * Copyright (c) 2019
+ * Mateusz Hermanowicz - All rights reserved.
+ * My Pantry
+ * https://www.mypantry.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.hermanowicz.pantry.services;
 
@@ -46,16 +55,18 @@ import java.util.HashMap;
  */
 public class NotificationService extends IntentService {
 
-    static final String DAYS_TAG = "%DAYS%";
     private static final String PREFERENCES_EMAIL_ADDRESS = "EMAIL_ADDRESS";
     private static final String PREFERENCES_EMAIL_NOTIFICATIONS = "EMAIL_NOTIFICATIONS?";
+    private static final String PREFERENCES_PUSH_NOTIFICATIONS = "PUSH_NOTIFICATIONS?";
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
-    public JsonObjectRequest request_json;
-    private String productName;
-    private int daysToNotification;
+    static final String DAYS_TAG = "%DAYS%";
     static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
     static final String URL_API = "https://www.mypantry.eu/api/";
     static final String API_MAIL_FILE    = "mail.php";
+
+    private JsonObjectRequest request_json;
+    private String productName;
+    private int daysToNotification;
 
     public NotificationService(){
         super("NotificationService");
@@ -78,8 +89,8 @@ public class NotificationService extends IntentService {
         daysToNotification = myPreferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
 
-        //if(AppSettingsActivity.isPushNotificationAllowed(context)) {
-        if (true) {
+        if (myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
+                true)) {
             String channelId = "my_channel_" + productID;
             NotificationManager notificationManager = (NotificationManager)
                     context.getSystemService(Context.NOTIFICATION_SERVICE);
