@@ -137,8 +137,6 @@ public class NewProductActivityPresenter implements INewProductActivityPresenter
     public void addProducts() {
         if (model.isProductNameValid())
             view.showErrorNameNotSet();
-        else if (!model.isExpirationDateValid())
-            view.showErrorExpirationDateNotSet();
         else if (!model.isTypeOfProductValid())
             view.showErrorCategoryNotSelected();
         else {

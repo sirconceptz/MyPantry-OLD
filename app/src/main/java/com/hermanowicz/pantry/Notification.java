@@ -65,18 +65,21 @@ public class Notification {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, product.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
 
-        Calendar calendar = createCalendar(context, product.getExpirationDate());
+        if(!product.getExpirationDate().equals("-"))
+        {
+            Calendar calendar = createCalendar(context, product.getExpirationDate());
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            assert alarmManager != null;
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                    calendar.getTimeInMillis(), pendingIntent);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            assert alarmManager != null;
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-        } else {
-            assert alarmManager != null;
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            if (Build.VERSION.SDK_INT >= 23) {
+                assert alarmManager != null;
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                        calendar.getTimeInMillis(), pendingIntent);
+            } else if (Build.VERSION.SDK_INT >= 19) {
+                assert alarmManager != null;
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            } else {
+                assert alarmManager != null;
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
         }
     }
 
@@ -89,28 +92,32 @@ public class Notification {
         }
     }
 
-    public static void cancelNotification(@NonNull Context context, @NonNull Product product) {
-        AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
-        Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, product.getId(), intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        pendingIntent.cancel();
-        assert alarmManager != null;
-        alarmManager.cancel(pendingIntent);
+    static void cancelNotification(@NonNull Context context, @NonNull Product product) {
+        if(!product.getExpirationDate().equals("-")) {
+            AlarmManager alarmManager = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
+            Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    context, product.getId(), intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingIntent.cancel();
+            assert alarmManager != null;
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
-    public static void cancelAllNotifications(@NonNull Context context) {
+    static void cancelAllNotifications(@NonNull Context context) {
         ProductDb productDb = ProductDb.getInstance(context);
         List<Product> productsList = productDb.productsDao().getAllProductsAsList();
         AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
-        for(int counter = 0; counter < productsList.size(); counter++){
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    context, productsList.get(counter).getId(), intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            pendingIntent.cancel();
-            alarmManager.cancel(pendingIntent);
+        for(int i = 0; i < productsList.size(); i++){
+            if(!productsList.get(i).getExpirationDate().equals("-")) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        context, productsList.get(i).getId(), intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                pendingIntent.cancel();
+                alarmManager.cancel(pendingIntent);
+            }
         }
     }
 }

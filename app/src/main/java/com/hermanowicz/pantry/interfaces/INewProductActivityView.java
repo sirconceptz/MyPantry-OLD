@@ -30,7 +30,5 @@ public interface INewProductActivityView {
 
     void showErrorCategoryNotSelected();
 
-    void showErrorExpirationDateNotSet();
-
     void navigateToMainActivity();
 }

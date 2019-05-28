@@ -42,6 +42,9 @@ public class NewProductActivityModel {
         setTaste();
         List<Product> productsList = new ArrayList<>();
         for (int counter = 1; counter <= quantity; counter++) {
+            if(!isExpirationDateValid())
+                expirationDate="-";
+
             Product product = new Product();
             product.setName(name);
             product.setTypeOfProduct(typeOfProduct);

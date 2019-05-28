@@ -166,7 +166,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements IProduc
     @Override
     public void onDeletedProduct(int productID) {
         productsViewModel.deleteProductById(productID);
-        //Notification.cancelNotification(context, selectedProduct);
+        Notification.cancelNotification(context, selectedProduct);
         Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
     }
 

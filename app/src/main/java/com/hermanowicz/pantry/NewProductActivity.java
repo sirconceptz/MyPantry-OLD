@@ -398,12 +398,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     }
 
     @Override
-    public void showErrorExpirationDateNotSet() {
-        expirationDate.setError(resources.getString(R.string.Errors_expiration_date_is_required));
-        Toast.makeText(context, resources.getString(R.string.Errors_expiration_date_is_required), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
