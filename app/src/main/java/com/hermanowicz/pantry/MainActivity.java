@@ -20,7 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.hermanowicz.pantry.interfaces.MainActivityView;
+import com.hermanowicz.pantry.interfaces.IMainActivityView;
 import com.hermanowicz.pantry.presenters.MainActivityPresenter;
 
 import butterknife.BindView;
@@ -36,14 +36,14 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity implements MainActivityView {
-
-    private MainActivityPresenter presenter;
+public class MainActivity extends AppCompatActivity implements IMainActivityView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.adBanner)
     AdView adView;
+
+    private MainActivityPresenter presenter;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

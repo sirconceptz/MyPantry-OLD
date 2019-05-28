@@ -6,13 +6,13 @@
  * Released under Apache License Version 2.0                                  *
  ******************************************************************************/
 
-package com.hermanowicz.pantry.models;
+package com.hermanowicz.pantry.db;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "products")
-public class ProductEntity {
+public class Product {
 
     @PrimaryKey(autoGenerate = true)
     private int id;

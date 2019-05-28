@@ -8,10 +8,26 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 
-public interface PermissionHandler {
-    boolean checkHasPermission(AppCompatActivity activity, String permission);
+import com.hermanowicz.pantry.db.Product;
 
-    void requestPermission(AppCompatActivity activity, String[] permissions, int requestCode);
+import java.util.List;
+
+public interface IMyPantryActivityView {
+    void openDialog(String typeOfDialog);
+
+    void setFilterIcon(int position);
+
+    void clearFilterIcon(int position);
+
+    void showEmptyPantryStatement();
+
+    void clearFilterIcons();
+
+    void navigateToMainActivity();
+
+    void updateRecyclerViewAdapter();
+
+    LiveData<List<Product>> getProductLiveData();
 }

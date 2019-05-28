@@ -35,19 +35,20 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.room.Room;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.hermanowicz.pantry.interfaces.NewProductActivityView;
+import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.interfaces.INewProductActivityView;
 import com.hermanowicz.pantry.models.NewProductActivityModel;
-import com.hermanowicz.pantry.models.ProductEntity;
 import com.hermanowicz.pantry.presenters.NewProductActivityPresenter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -67,20 +68,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductActivityView {
-
-    private Context context;
-    private Resources resources;
-    private int day, month, year;
-    private boolean isTypeOfProductTouched;
-    private Calendar calendar;
-    private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    @BindView(R.id.text_volumeLabel)
-    TextView volumeLabel;
-    private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
-
-    private NewProductActivityModel model;
-    private NewProductActivityPresenter presenter;
+public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, INewProductActivityView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -120,11 +108,23 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     RadioButton isBitter;
     @BindView(R.id.radiobtn_isSalty)
     RadioButton isSalty;
-    private ProductDb productDB;
+    @BindView(R.id.text_volumeLabel)
+    TextView volumeLabel;
     @BindView(R.id.text_weightLabel)
     TextView weightLabel;
     @BindView(R.id.adBanner)
     AdView adView;
+
+    private Context context;
+    private Resources resources;
+    private int day, month, year;
+    private boolean isTypeOfProductTouched;
+    private Calendar calendar;
+    private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
+    private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
+
+    private NewProductActivityModel model;
+    private NewProductActivityPresenter presenter;
 
     @SuppressLint({"SetTextI18n", "CutPasteId", "ClickableViewAccessibility"})
     @Override
@@ -139,8 +139,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
         model = new NewProductActivityModel(resources);
         presenter = new NewProductActivityPresenter(this, model);
-
-        productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
 
         typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_type_of_product_array, android.R.layout.simple_spinner_item);
         typeOfProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -163,10 +161,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 month = Integer.valueOf(expirationDateArray[1]);
                 day = Integer.valueOf(expirationDateArray[2]);
             }
-
             DatePickerDialog dialog = new DatePickerDialog(
                     context,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    R.style.AppThemeDatePicker,
                     expirationDateListener,
                     year, month, day);
             dialog.getDatePicker().setMinDate(new Date().getTime());
@@ -194,7 +191,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     context,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    R.style.AppThemeDatePicker,
                     productionDateListener,
                     year, month, day);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -329,12 +326,13 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     }
 
     @Override
-    public void isAddProductsSuccess(ArrayList<ProductEntity> productEntityArrayList) {
-        ProductEntity productEntity;
-        productDB.productsDao().insertProductToDB(productEntityArrayList);
-        for (int counter = 0; counter < productEntityArrayList.size(); counter++) {
-            productEntity = productEntityArrayList.get(counter);
-            Notification.createNotification(context, productEntity);
+    public void isAddProductsSuccess(List<Product> productArrayList) {
+        Product product;
+        ProductsViewModel productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        productsViewModel.insertProduct(productArrayList);
+        for (int counter = 0; counter < productArrayList.size(); counter++) {
+            product = productArrayList.get(counter);
+            Notification.createNotification(context, product);
         }
     }
 

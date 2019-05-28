@@ -38,9 +38,9 @@ public class AppSettingsActivityModel {
         this.hourOfNotifications = myPreferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS,
                 Notification.NOTIFICATION_DEFAULT_HOUR);
         this.emailNotificationsAllowed = myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS,
-                true);
-        this.pushNotificationsAllowed = myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
                 false);
+        this.pushNotificationsAllowed = myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
+                true);
         this.emailAddress = myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, "");
     }
 
@@ -62,6 +62,10 @@ public class AppSettingsActivityModel {
 
     public boolean isPushNotificationsAllowed() {
         return pushNotificationsAllowed;
+    }
+
+    public boolean isEmailNotificationsAllowed() {
+        return emailNotificationsAllowed;
     }
 
     public String getEmailAddress() {
@@ -119,5 +123,4 @@ public class AppSettingsActivityModel {
 
         preferenceEditor.apply();
     }
-
 }

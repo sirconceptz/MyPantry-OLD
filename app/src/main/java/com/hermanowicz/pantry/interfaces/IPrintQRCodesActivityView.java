@@ -8,12 +8,18 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import java.util.List;
+import android.graphics.Bitmap;
 
-public interface ScanProductActivityView {
-    void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList);
+public interface IPrintQRCodesActivityView {
+    void showPermissionsError();
 
-    void showErrorProductNotFound();
+    void showQRCodeImage(Bitmap qrCodeImage);
+
+    void openPDF();
+
+    void sendPDFByEmail();
+
+    void navigateToNewProductActivity();
 
     void navigateToMainActivity();
 }

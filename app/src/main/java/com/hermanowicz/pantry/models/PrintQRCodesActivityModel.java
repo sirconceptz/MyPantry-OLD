@@ -35,6 +35,7 @@ public class PrintQRCodesActivityModel {
     private static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
     private static final int QR_CODE_WIDTH = 100;
     private static final int QR_CODE_HEIGHT = 100;
+
     private ArrayList<String> textToQRCodeArray;
     private ArrayList<String> namesOfProductsArray;
     private ArrayList<String> expirationDatesArray;

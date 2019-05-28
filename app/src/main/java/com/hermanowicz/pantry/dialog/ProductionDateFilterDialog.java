@@ -29,7 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.DialogListener;
+import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,9 +48,11 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
     EditText edittextProductionDateFor;
     @BindView(R.id.button_clear)
     Button btnClear;
+
     private Context context;
     private Resources resources;
-    private DialogListener dialogListener;
+    private Activity activity;
+    private IFilterDialogListener dialogListener;
     private Calendar calendar;
     private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private Date dateProductionSince, dateProductionFor;
@@ -70,8 +72,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
     @SuppressLint("SetTextI18n")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        Activity activity = getActivity();
+        activity = getActivity();
         assert activity != null;
         context = activity.getApplicationContext();
         resources = context.getResources();
@@ -81,7 +82,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
 
@@ -92,10 +93,12 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
         if (filterProductionDateSince != null) {
             dateArray = filterProductionDateSince.split("-");
             edittextProductionDateSince.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
+            productionDateSinceConverted = filterProductionDateSince;
         }
         if (filterProductionDateFor != null) {
             dateArray = filterProductionDateFor.split("-");
             edittextProductionDateFor.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
+            productionDateForConverted = filterProductionDateFor;
         }
 
         edittextProductionDateSince.setOnClickListener(v -> {
@@ -110,10 +113,9 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
                 month = Integer.valueOf(dateArray[1]);
                 day = Integer.valueOf(dateArray[0]);
             }
-
             DatePickerDialog dialog = new DatePickerDialog(
                     activity,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    R.style.AppThemeDatePicker,
                     productionDateSinceListener,
                     year, month, day);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -135,10 +137,11 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
 
             DatePickerDialog dialog = new DatePickerDialog(
                     activity,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    R.style.AppThemeDatePicker,
                     productionDateForListener,
                     year, month, day);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getDatePicker();
             dialog.show();
         });
 
@@ -157,7 +160,10 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
         btnClear.setOnClickListener(view12 -> {
             edittextProductionDateSince.setText("");
             edittextProductionDateFor.setText("");
+            productionDateSinceConverted = "";
+            productionDateForConverted = "";
         });
+
         builder.setView(view)
                 .setTitle(resources.getString(R.string.ProductDetailsActivity_production_date))
                 .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
@@ -208,7 +214,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (DialogListener) context;
+            dialogListener = (IFilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

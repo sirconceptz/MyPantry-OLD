@@ -11,6 +11,7 @@ package com.hermanowicz.pantry.models;
 import android.content.res.Resources;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.db.Product;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,28 +38,28 @@ public class NewProductActivityModel {
         this.resources = resources;
     }
 
-    public ArrayList<ProductEntity> buildProductsList() {
+    public List<Product> buildProductsList() {
         setTaste();
-        ArrayList<ProductEntity> productArrayList = new ArrayList<>();
+        List<Product> productsList = new ArrayList<>();
         for (int counter = 1; counter <= quantity; counter++) {
-            ProductEntity productEntity = new ProductEntity();
-            productEntity.setName(name);
-            productEntity.setTypeOfProduct(typeOfProduct);
-            productEntity.setProductFeatures(productFeatures);
-            productEntity.setExpirationDate(expirationDate);
-            productEntity.setProductionDate(productionDate);
-            productEntity.setComposition(composition);
-            productEntity.setHealingProperties(healingProperties);
-            productEntity.setDosage(dosage);
-            productEntity.setVolume(volume);
-            productEntity.setWeight(weight);
-            productEntity.setHasSugar(hasSugar);
-            productEntity.setHasSalt(hasSalt);
-            productEntity.setTaste(taste);
-            productEntity.setHashCode(String.valueOf(productEntity.hashCode()));
-            productArrayList.add(productEntity);
+            Product product = new Product();
+            product.setName(name);
+            product.setTypeOfProduct(typeOfProduct);
+            product.setProductFeatures(productFeatures);
+            product.setExpirationDate(expirationDate);
+            product.setProductionDate(productionDate);
+            product.setComposition(composition);
+            product.setHealingProperties(healingProperties);
+            product.setDosage(dosage);
+            product.setVolume(volume);
+            product.setWeight(weight);
+            product.setHasSugar(hasSugar);
+            product.setHasSalt(hasSalt);
+            product.setTaste(taste);
+            product.setHashCode(String.valueOf(product.hashCode()));
+            productsList.add(product);
         }
-        return productArrayList;
+        return productsList;
     }
 
     public void setName(String name) {
@@ -229,7 +230,7 @@ public class NewProductActivityModel {
         return correctExpirationDate;
     }
 
-    public ArrayList<String> getTextToQRCodeList(List<ProductEntity> productsList) {
+    public ArrayList<String> getTextToQRCodeList(List<Product> productsList) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
 
@@ -245,7 +246,7 @@ public class NewProductActivityModel {
         return textToQRCodeList;
     }
 
-    public ArrayList<String> getNamesOfProductsList(List<ProductEntity> productsList) {
+    public ArrayList<String> getNamesOfProductsList(List<Product> productsList) {
         ArrayList<String> namesOfProductsList = new ArrayList<>();
         String productName;
 
@@ -260,7 +261,7 @@ public class NewProductActivityModel {
         return namesOfProductsList;
     }
 
-    public ArrayList<String> getExpirationDatesList(List<ProductEntity> productsList) {
+    public ArrayList<String> getExpirationDatesList(List<Product> productsList) {
         ArrayList<String> expirationDatesList = new ArrayList<>();
 
         for (int counter = 0; counter < productsList.size(); counter++) {

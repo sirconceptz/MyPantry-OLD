@@ -26,14 +26,16 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
+import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
 import com.hermanowicz.pantry.dialog.NameFilterDialog;
 import com.hermanowicz.pantry.dialog.ProductFeaturesFilterDialog;
@@ -42,10 +44,9 @@ import com.hermanowicz.pantry.dialog.TasteFilterDialog;
 import com.hermanowicz.pantry.dialog.TypeOfProductFilterDialog;
 import com.hermanowicz.pantry.dialog.VolumeFilterDialog;
 import com.hermanowicz.pantry.dialog.WeightFilterDialog;
-import com.hermanowicz.pantry.interfaces.DialogListener;
-import com.hermanowicz.pantry.interfaces.MyPantryActivityView;
+import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.interfaces.IMyPantryActivityView;
 import com.hermanowicz.pantry.models.MyPantryActivityModel;
-import com.hermanowicz.pantry.models.ProductEntity;
 import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
 
 import java.util.List;
@@ -62,18 +63,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
-public class MyPantryActivity extends AppCompatActivity implements MyPantryActivityView, DialogListener {
-
-    public ProductsAdapter adapterProductsRecyclerView;
-    public AdRequest adRequest;
-    private Context context;
-    private Resources resources;
-    private ProductDb productDB;
-    private List<ProductEntity> productEntityList;
-    private SharedPreferences sharedPreferences;
-
-    private MyPantryActivityModel model;
-    private MyPantryActivityPresenter presenter;
+public class MyPantryActivity extends AppCompatActivity implements IMyPantryActivityView, IFilterDialogListener {
 
     @BindView(R.id.recyclerview_products)
     RecyclerView recyclerviewProducts;
@@ -87,6 +77,16 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
     Toolbar toolbar;
     @BindView(R.id.adBanner)
     AdView adView;
+
+    public ProductsAdapter adapterProductsRecyclerView;
+    public AdRequest adRequest;
+    private Context context;
+    private Resources resources;
+    private SharedPreferences sharedPreferences;
+    private ProductsViewModel productsViewModel;
+
+    private MyPantryActivityModel model;
+    private MyPantryActivityPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,34 +103,13 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
         model = new MyPantryActivityModel();
         presenter = new MyPantryActivityPresenter(this, model);
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
-
-        adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
-        presenter.initRecyclerViewData();
-
-        adapterProductsRecyclerView = new ProductsAdapter(productEntityList, product -> {
-            Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-            productDetailsActivityIntent.putExtra("product_id", product.getId());
-            productDetailsActivityIntent.putExtra("hash_code", product.getHashCode());
-            startActivity(productDetailsActivityIntent);
-            finish();
-        }, sharedPreferences);
-        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
-        adapterProductsRecyclerView.notifyDataSetChanged();
-        recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
-        recyclerviewProducts.setHasFixedSize(true);
+        initData();
 
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
-
-        if (productEntityList.size() == 0) {
-            emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_empty_pantry));
-        }
 
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
@@ -144,6 +123,33 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
                     drawerLayout.closeDrawers();
                     return true;
                 });
+    }
+
+    void initData(){
+        MobileAds.initialize(context, "ca-app-pub-4025776034769422~3797748160");
+
+        adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        presenter.setProductLiveData(productsViewModel.getAllProducts());
+        presenter.getProductLiveData().observe(this, productList -> {
+            presenter.setProductList(productList);
+            adapterProductsRecyclerView.setData(productList);
+        });
+        adapterProductsRecyclerView = new ProductsAdapter(product -> {
+            Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
+            productDetailsActivityIntent.putExtra("product_id", product.getId());
+            productDetailsActivityIntent.putExtra("hash_code", product.getHashCode());
+            MyPantryActivity.this.startActivity(productDetailsActivityIntent);
+            MyPantryActivity.this.finish();
+        }, sharedPreferences);
+        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
+        adapterProductsRecyclerView.notifyDataSetChanged();
+        recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
+        recyclerviewProducts.setHasFixedSize(true);
+
+        presenter.setProductList(productsViewModel.getAllProductsAsList());
     }
 
     @Override
@@ -237,32 +243,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
     }
 
     @Override
-    public void initData(String pantryQuery) {
-        productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
-        productEntityList = productDB.productsDao().getAllProducts();
-    }
-
-    @Override
-    public void refreshListView(String pantryQuery) {
-        if (emptyPantryStatement.getText().toString() != resources.getString(R.string.MyPantryActivity_empty_pantry)) {
-            if (productEntityList.size() == 0) {
-                emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_not_found));
-            } else {
-                emptyPantryStatement.setText("");
-            }
-        }
-        adapterProductsRecyclerView = new ProductsAdapter(productEntityList, product -> {
-            Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-            productDetailsActivityIntent.putExtra("product_id", product.getId());
-            productDetailsActivityIntent.putExtra("hash_code", product.getHashCode());
-            startActivity(productDetailsActivityIntent);
-            finish();
-        }, sharedPreferences);
-        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
-        adapterProductsRecyclerView.notifyDataSetChanged();
-    }
-
-    @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
@@ -270,7 +250,19 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
     }
 
     @Override
+    public void updateRecyclerViewAdapter() {
+        presenter.getProductLiveData().observe(this, productEntities -> adapterProductsRecyclerView.setData(productEntities));
+        adapterProductsRecyclerView.notifyDataSetChanged();
+    }
+
+    @Override
+    public LiveData<List<Product>> getProductLiveData() {
+        return productsViewModel.getAllProducts();
+    }
+
+    @Override
     public void setFilterName(String filterName) {
+        presenter.setProductList(productsViewModel.getAllProductsAsList());
         presenter.setFilterName(filterName);
     }
 
@@ -291,11 +283,13 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryActiv
 
     @Override
     public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
+        presenter.setProductList(productsViewModel.getAllProductsAsList());
         presenter.setFilterVolume(filterVolumeSince, filterVolumeFor);
     }
 
     @Override
     public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
+        presenter.setProductList(productsViewModel.getAllProductsAsList());
         presenter.setFilterWeight(filterWeightSince, filterWeightFor);
     }
 

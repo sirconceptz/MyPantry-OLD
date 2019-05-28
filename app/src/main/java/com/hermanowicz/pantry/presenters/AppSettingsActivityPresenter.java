@@ -8,15 +8,15 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.interfaces.AppSettingsActivityView;
+import com.hermanowicz.pantry.interfaces.IAppSettingsActivityView;
 import com.hermanowicz.pantry.models.AppSettingsActivityModel;
 
 public class AppSettingsActivityPresenter implements com.hermanowicz.pantry.interfaces.IAppSettingsActivityPresenter {
 
-    private AppSettingsActivityView view;
+    private IAppSettingsActivityView view;
     private AppSettingsActivityModel model;
 
-    public AppSettingsActivityPresenter(AppSettingsActivityView view, AppSettingsActivityModel model) {
+    public AppSettingsActivityPresenter(IAppSettingsActivityView view, AppSettingsActivityModel model) {
         this.view = view;
         this.model = model;
     }
@@ -53,7 +53,7 @@ public class AppSettingsActivityPresenter implements com.hermanowicz.pantry.inte
 
     @Override
     public void enableEmailCheckbox(String emailAddress) {
-        if (model.isValidEmail(emailAddress) && !emailAddress.isEmpty())
+        if (model.isValidEmail(emailAddress))
             view.enableEmailCheckbox(true);
         else
             view.enableEmailCheckbox(false);
@@ -63,15 +63,18 @@ public class AppSettingsActivityPresenter implements com.hermanowicz.pantry.inte
     public void loadSettings() {
         int daysBeforeExpirationDate = model.getDaysBeforeExpirationDate();
         boolean pushNotificationsAllowed = model.isPushNotificationsAllowed();
+        boolean emailNotificationsAllowed = model.isEmailNotificationsAllowed();
         int hourOfNotifications = model.getHourOfNotifications();
         String emailAddress = model.getEmailAddress();
 
         view.setEdittext_daysBeforeExpirationDate(daysBeforeExpirationDate);
         view.setCheckbox_pushNotification(pushNotificationsAllowed);
+        view.setCheckbox_emailNotification(emailNotificationsAllowed);
         view.setNumberpicker_hourOfNotifications(hourOfNotifications);
         view.setEdittext_emailAddress(emailAddress);
 
         enableEmailCheckbox(emailAddress);
+        view.showCodeVersion();
     }
 
     @Override

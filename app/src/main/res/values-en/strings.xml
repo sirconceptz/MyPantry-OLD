@@ -188,6 +188,7 @@
     <string name="Errors_permission_is_needed_to_save_the_file">Permission is required to create a file</string>
     <string name="Errors_category_not_selected">Category was not selected</string>
     <string name="Errors_set_correct_quantity">Give the correct quantity</string>
-    <string name="Errors_product_name_is_required">Der Name des Produkts ist erforderlich</string>
-    <string name="Errors_expiration_date_is_required">Das Verfallsdatum ist erforderlich</string>
+    <string name="Errors_product_name_is_required">Name of product is required</string>
+    <string name="Errors_expiration_date_is_required">Expiration date is required</string>
+    <string name="AppSettingsActivity_version">Version</string>
 </resources>

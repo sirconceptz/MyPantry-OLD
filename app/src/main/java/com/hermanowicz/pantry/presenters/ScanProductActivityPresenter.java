@@ -9,17 +9,17 @@
 package com.hermanowicz.pantry.presenters;
 
 import com.hermanowicz.pantry.interfaces.IScanProductActivityPresenter;
-import com.hermanowicz.pantry.interfaces.ScanProductActivityView;
+import com.hermanowicz.pantry.interfaces.IScanProductActivityView;
 import com.hermanowicz.pantry.models.ScanProductActivityModel;
 
 import java.util.List;
 
 public class ScanProductActivityPresenter implements IScanProductActivityPresenter {
 
-    private ScanProductActivityView view;
+    private IScanProductActivityView view;
     private ScanProductActivityModel model;
 
-    public ScanProductActivityPresenter(ScanProductActivityView view, ScanProductActivityModel model) {
+    public ScanProductActivityPresenter(IScanProductActivityView view, ScanProductActivityModel model) {
         this.view = view;
         this.model = model;
     }

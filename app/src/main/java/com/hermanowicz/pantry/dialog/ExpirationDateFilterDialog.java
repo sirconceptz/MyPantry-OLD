@@ -29,7 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.DialogListener;
+import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -48,10 +48,11 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
     EditText edittextExpirationDateFor;
     @BindView(R.id.button_clear)
     Button btnClear;
+
     private Context context;
     private Resources resources;
     private Activity activity;
-    private DialogListener dialogListener;
+    private IFilterDialogListener dialogListener;
     private Calendar calendar;
     private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private Date dateExpirationSince, dateExpirationFor;
@@ -81,7 +82,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
 
@@ -92,10 +93,12 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
         if (filterExpirationDateSince != null) {
             dateArray = filterExpirationDateSince.split("-");
             edittextExpirationDateSince.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
+            expirationDateSinceConverted = filterExpirationDateSince;
         }
         if (filterExpirationDateFor != null) {
             dateArray = filterExpirationDateFor.split("-");
             edittextExpirationDateFor.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
+            expirationDateForConverted = filterExpirationDateFor;
         }
 
         edittextExpirationDateSince.setOnClickListener(v -> {
@@ -112,7 +115,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     activity,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    R.style.AppThemeDatePicker,
                     expirationDateSinceListener,
                     year, month, day);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -134,7 +137,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
 
             DatePickerDialog dialog = new DatePickerDialog(
                     activity,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                    R.style.AppThemeDatePicker,
                     expirationDateForListener,
                     year, month, day);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -157,7 +160,10 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
         btnClear.setOnClickListener(view12 -> {
             edittextExpirationDateSince.setText("");
             edittextExpirationDateFor.setText("");
+            expirationDateSinceConverted = "";
+            expirationDateForConverted = "";
         });
+
         builder.setView(view)
                 .setTitle(resources.getString(R.string.ProductDetailsActivity_expiration_date))
                 .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
@@ -208,7 +214,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (DialogListener) context;
+            dialogListener = (IFilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

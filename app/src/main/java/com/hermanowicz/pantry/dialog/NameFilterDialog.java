@@ -23,7 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.DialogListener;
+import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +34,8 @@ public class NameFilterDialog extends AppCompatDialogFragment {
     EditText edittextName;
     @BindView(R.id.button_clear)
     Button btnClear;
-    private DialogListener dialogListener;
+
+    private IFilterDialogListener dialogListener;
     private String filterName;
 
     public NameFilterDialog(String filterName) {
@@ -43,13 +44,12 @@ public class NameFilterDialog extends AppCompatDialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         Activity activity = getActivity();
         assert activity != null;
         Context context = activity.getApplicationContext();
         Resources resources = context.getResources();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
 
@@ -57,7 +57,7 @@ public class NameFilterDialog extends AppCompatDialogFragment {
 
         ButterKnife.bind(this, view);
 
-        if (filterName != null && !filterName.equals("")) {
+        if (filterName != null) {
             edittextName.setText(filterName);
         }
 
@@ -72,7 +72,11 @@ public class NameFilterDialog extends AppCompatDialogFragment {
                 })
                 .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
                     filterName = edittextName.getText().toString();
-                    dialogListener.setFilterName(filterName);
+                    if (!filterName.equals("")) {
+                        dialogListener.setFilterName(filterName);
+                    } else {
+                        dialogListener.clearFilterName();
+                    }
                 });
         return builder.create();
     }
@@ -81,7 +85,7 @@ public class NameFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (DialogListener) context;
+            dialogListener = (IFilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

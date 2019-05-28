@@ -17,9 +17,9 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
-import androidx.room.Room;
 
-import com.hermanowicz.pantry.models.ProductEntity;
+import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.receivers.NotificationBroadcastReceiver;
 
 import java.util.Calendar;
@@ -58,13 +58,12 @@ public class Notification {
         return calendar;
     }
 
-    static void createNotification(@NonNull Context context, @NonNull ProductEntity product) {
+    static void createNotification(@NonNull Context context, @NonNull Product product) {
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         intent.putExtra("PRODUCT_NAME", product.getName());
         intent.putExtra("PRODUCT_ID", product.getId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, product.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
-
 
         Calendar calendar = createCalendar(context, product.getExpirationDate());
 
@@ -82,27 +81,28 @@ public class Notification {
     }
 
     public static void createNotificationsForAllProducts(@NonNull Context context){
-        ProductDb productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
-        List<ProductEntity> productsFromDB = productDB.productsDao().getAllProducts();
-        for(int counter=0; counter < productsFromDB.size(); counter++){
-            ProductEntity selectedProduct = productsFromDB.get(counter);
+        ProductDb productDb = ProductDb.getInstance(context);
+        List<Product> productsList = productDb.productsDao().getAllProductsAsList();
+        for(int counter=0; counter < productsList.size(); counter++){
+            Product selectedProduct = productsList.get(counter);
             Notification.createNotification(context, selectedProduct);
         }
     }
 
-    public static void cancelNotification(@NonNull Context context, @NonNull ProductEntity product) {
+    public static void cancelNotification(@NonNull Context context, @NonNull Product product) {
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, product.getId(), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         pendingIntent.cancel();
+        assert alarmManager != null;
         alarmManager.cancel(pendingIntent);
     }
 
     public static void cancelAllNotifications(@NonNull Context context) {
-        ProductDb productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
-        List<ProductEntity> productsList = productDB.productsDao().getAllProducts();
+        ProductDb productDb = ProductDb.getInstance(context);
+        List<Product> productsList = productDb.productsDao().getAllProductsAsList();
         AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         for(int counter = 0; counter < productsList.size(); counter++){

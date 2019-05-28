@@ -22,11 +22,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.room.Room;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.hermanowicz.pantry.interfaces.ProductDetailsActivityView;
+import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.interfaces.IProductDetailsActivityView;
 import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
-import com.hermanowicz.pantry.models.ProductEntity;
 import com.hermanowicz.pantry.presenters.ProductDetailsActivityPresenter;
 
 import java.util.ArrayList;
@@ -45,16 +45,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsActivityView {
-
-    private Context context;
-    private Resources resources;
-    private ProductDb productDB;
-    private ProductEntity selectedProduct;
-    private int productID;
-    private String hashCode;
-
-    private ProductDetailsActivityPresenter presenter;
+public class ProductDetailsActivity extends AppCompatActivity implements IProductDetailsActivityView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -83,6 +74,15 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @BindView(R.id.text_productTasteValue)
     TextView taste;
 
+    private Context context;
+    private Resources resources;
+    private Product selectedProduct;
+    private ProductsViewModel productsViewModel;
+    private int productID;
+    private String hashCode;
+
+    private ProductDetailsActivityPresenter presenter;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,8 +100,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         context = ProductDetailsActivity.this;
         resources = context.getResources();
 
-        productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
-        selectedProduct = productDB.productsDao().getProductById(productID);
+        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        selectedProduct = productsViewModel.getProductById(productID);
 
         setSupportActionBar(toolbar);
 
@@ -136,7 +136,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void showProductDetails(ProductEntity product) {
+    public void showProductDetails(Product product) {
         Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
         typeOfProduct.setText(product.getTypeOfProduct());
         productFeatures.setText(product.getProductFeatures());
@@ -165,8 +165,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @Override
     public void onDeletedProduct(int productID) {
-        productDB.productsDao().deleteProductById(productID);
-        Notification.cancelNotification(context, selectedProduct);
+        productsViewModel.deleteProductById(productID);
+        //Notification.cancelNotification(context, selectedProduct);
         Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
     }
 

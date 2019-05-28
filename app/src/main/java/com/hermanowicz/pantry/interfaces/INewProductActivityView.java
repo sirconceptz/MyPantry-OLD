@@ -8,14 +8,15 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.models.ProductEntity;
+import com.hermanowicz.pantry.db.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public interface NewProductActivityView {
+public interface INewProductActivityView {
     void navigateToPrintQRCodesActivity(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList);
 
-    void isAddProductsSuccess(ArrayList<ProductEntity> productEntityArrayList);
+    void isAddProductsSuccess(List<Product> productArrayList);
 
     void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);
 

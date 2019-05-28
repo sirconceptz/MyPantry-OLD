@@ -8,12 +8,10 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MainActivityView {
-    void onNavigationToMyPantryActivity();
+import androidx.appcompat.app.AppCompatActivity;
 
-    void onNavigationToScanProductActivity();
+public interface IPermissionHandler {
+    boolean checkHasPermission(AppCompatActivity activity, String permission);
 
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
+    void requestPermission(AppCompatActivity activity, String[] permissions, int requestCode);
 }

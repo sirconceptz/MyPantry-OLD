@@ -12,6 +12,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -20,6 +22,7 @@ import android.view.KeyEvent;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,9 +30,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.room.Room;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.hermanowicz.pantry.interfaces.AppSettingsActivityView;
+import com.hermanowicz.pantry.dialog.ClearDbDialog;
+import com.hermanowicz.pantry.interfaces.IAppSettingsActivityView;
+import com.hermanowicz.pantry.interfaces.IAppSettingsDialogListener;
 import com.hermanowicz.pantry.models.AppSettingsActivityModel;
 import com.hermanowicz.pantry.presenters.AppSettingsActivityPresenter;
 
@@ -46,7 +51,7 @@ import butterknife.OnClick;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity implements AppSettingsActivityView {
+public class AppSettingsActivity extends AppCompatActivity implements IAppSettingsActivityView, IAppSettingsDialogListener {
 
     private Context context;
 
@@ -65,6 +70,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     NumberPicker numberpicker_hourOfNotifications;
     @BindView(R.id.edittext_emailAddress)
     EditText edittext_emailAddress;
+    @BindView(R.id.textView_version)
+    TextView textView_version;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -111,7 +118,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @OnClick(R.id.button_clearDatabase)
     void onClickClearDatabaseButton() {
-        presenter.clearDatabase();
+        ClearDbDialog clearDbDialog = new ClearDbDialog();
+        clearDbDialog.show(getSupportFragmentManager(), "");
     }
 
     @OnClick(R.id.button_saveSettings)
@@ -142,6 +150,11 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     }
 
     @Override
+    public void setCheckbox_emailNotification(boolean isEmailNotificationsAllowed) {
+        checkbox_notificationsByEmail.setChecked(isEmailNotificationsAllowed);
+    }
+
+    @Override
     public void setEdittext_emailAddress(String emailAddress) {
         edittext_emailAddress.setText(emailAddress);
     }
@@ -169,10 +182,22 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     public void onDatabaseClear() {
-        ProductDb productDB = Room.databaseBuilder(context, ProductDb.class, "Products").allowMainThreadQueries().build();
-        productDB.productsDao().clearDb();
+        ProductsViewModel productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        productsViewModel.deleteAllProducts();
         Notification.cancelAllNotifications(context);
         Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void showCodeVersion() {
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            textView_version.setText(getResources().getString(R.string.AppSettingsActivity_version) + ": " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            textView_version.setText("");
+        }
     }
 
     @Override
@@ -201,5 +226,10 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     protected void onDestroy() {
         presenter.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void clearDatabaseConfirmation() {
+        presenter.clearDatabase();
     }
 }

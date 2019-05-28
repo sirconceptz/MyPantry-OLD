@@ -8,18 +8,18 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.interfaces.ProductDetailsActivityView;
+import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.interfaces.IProductDetailsActivityView;
 import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
-import com.hermanowicz.pantry.models.ProductEntity;
 
 import java.util.ArrayList;
 
 public class ProductDetailsActivityPresenter implements com.hermanowicz.pantry.interfaces.IProductDetailsActivityPresenter {
 
-    private ProductDetailsActivityView view;
+    private IProductDetailsActivityView view;
     private ProductDetailsActivityModel model;
 
-    public ProductDetailsActivityPresenter(ProductDetailsActivityView view, ProductDetailsActivityModel model) {
+    public ProductDetailsActivityPresenter(IProductDetailsActivityView view, ProductDetailsActivityModel model) {
         this.view = view;
         this.model = model;
     }
@@ -30,7 +30,7 @@ public class ProductDetailsActivityPresenter implements com.hermanowicz.pantry.i
     }
 
     @Override
-    public void setProduct(ProductEntity product) {
+    public void setProduct(Product product) {
         model.setProduct(product);
     }
 
@@ -42,7 +42,7 @@ public class ProductDetailsActivityPresenter implements com.hermanowicz.pantry.i
     @Override
     public void showProductDetails() {
         if (model.compareHashCode()) {
-            ProductEntity product = model.getProduct();
+            Product product = model.getProduct();
             view.showProductDetails(product);
         } else {
             view.showErrorWrongData();

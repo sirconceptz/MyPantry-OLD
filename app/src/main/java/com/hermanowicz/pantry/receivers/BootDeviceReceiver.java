@@ -30,6 +30,6 @@ public class BootDeviceReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-        Notification.createNotificationsForAllProducts(context);
+       Notification.createNotificationsForAllProducts(context);
     }
 }

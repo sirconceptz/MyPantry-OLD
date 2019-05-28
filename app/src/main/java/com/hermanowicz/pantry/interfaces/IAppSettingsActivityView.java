@@ -8,18 +8,26 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import android.graphics.Bitmap;
+public interface IAppSettingsActivityView {
+    void setEdittext_daysBeforeExpirationDate(int daysBeforeExpirationDate);
 
-public interface PrintQRCodesActivityView {
-    void showPermissionsError();
+    void setCheckbox_pushNotification(boolean isPushNotificationsAllowed);
 
-    void showQRCodeImage(Bitmap qrCodeImage);
+    void setCheckbox_emailNotification(boolean isEmailNotificationsAllowed);
 
-    void openPDF();
+    void setEdittext_emailAddress(String emailAddress);
 
-    void sendPDFByEmail();
+    void setNumberpicker_hourOfNotifications(int hourOfNotifications);
 
-    void navigateToNewProductActivity();
+    void recreateNotifications();
+
+    void enableEmailCheckbox(boolean isValidEmail);
+
+    void onSettingsSaved();
+
+    void onDatabaseClear();
+
+    void showCodeVersion();
 
     void navigateToMainActivity();
 }

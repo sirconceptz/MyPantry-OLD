@@ -23,7 +23,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.hermanowicz.pantry.interfaces.ScanProductActivityView;
+import com.hermanowicz.pantry.interfaces.IScanProductActivityView;
 import com.hermanowicz.pantry.models.ScanProductActivityModel;
 import com.hermanowicz.pantry.presenters.ScanProductActivityPresenter;
 
@@ -37,7 +37,7 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
-public class ScanProductActivity extends AppCompatActivity implements ScanProductActivityView {
+public class ScanProductActivity extends AppCompatActivity implements IScanProductActivityView {
 
     private Context context;
     private Resources resources;

@@ -8,19 +8,20 @@
 
 package com.hermanowicz.pantry.presenters;
 
+import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.interfaces.INewProductActivityPresenter;
-import com.hermanowicz.pantry.interfaces.NewProductActivityView;
+import com.hermanowicz.pantry.interfaces.INewProductActivityView;
 import com.hermanowicz.pantry.models.NewProductActivityModel;
-import com.hermanowicz.pantry.models.ProductEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NewProductActivityPresenter implements INewProductActivityPresenter {
 
-    private NewProductActivityView view;
+    private INewProductActivityView view;
     private NewProductActivityModel model;
 
-    public NewProductActivityPresenter(NewProductActivityView view, NewProductActivityModel model) {
+    public NewProductActivityPresenter(INewProductActivityView view, NewProductActivityModel model) {
         this.view = view;
         this.model = model;
     }
@@ -141,7 +142,7 @@ public class NewProductActivityPresenter implements INewProductActivityPresenter
         else if (!model.isTypeOfProductValid())
             view.showErrorCategoryNotSelected();
         else {
-            ArrayList<ProductEntity> productsArrayList = model.buildProductsList();
+            List<Product> productsArrayList = model.buildProductsList();
             view.isAddProductsSuccess(productsArrayList);
             ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
 

@@ -20,6 +20,17 @@
         <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
     </style>
 
+    <style name="AppThemeDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
+        <item name="colorAccent">
+            @color/cast_libraries_material_featurehighlight_outer_highlight_default_color
+        </item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <item name="android:colorBackground" tools:ignore="PrivateResource">@color/background_material_light</item>
+        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+    </style>
+
     <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColor">@color/text_color</item>
     </style>
@@ -27,6 +38,10 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppThemeDatePicker" parent="android:Theme.Holo.Light">
+        <item name="android:layout_gravity">center</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

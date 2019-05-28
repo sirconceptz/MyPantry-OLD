@@ -191,4 +191,5 @@
     <string name="Errors_set_correct_quantity">Podaj prawidłową ilość produktów</string>
     <string name="Errors_product_name_is_required">Nazwa produktu jest wymagana</string>
     <string name="Errors_expiration_date_is_required">Data przydatności produktu jest wymagana</string>
+    <string name="AppSettingsActivity_version">Wersja</string>
 </resources>

@@ -9,14 +9,14 @@
 package com.hermanowicz.pantry.interfaces;
 
 /**
- * <h1>DialogListener</h1>
+ * <h1>IFilterDialogListener</h1>
  * Interface to set values from dialog windows.
  *
  * @author Mateusz Hermanowicz
  * @version 1.0
  * @since 1.0
  */
-public interface DialogListener {
+public interface IFilterDialogListener {
     void setFilterName(String filterName);
 
     void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor);

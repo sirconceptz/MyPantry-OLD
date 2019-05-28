@@ -8,13 +8,13 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.interfaces.MainActivityView;
+import com.hermanowicz.pantry.interfaces.IMainActivityView;
 
 public class MainActivityPresenter implements com.hermanowicz.pantry.interfaces.IMainActivityPresenter {
 
-    private MainActivityView view;
+    private IMainActivityView view;
 
-    public MainActivityPresenter(MainActivityView view) {
+    public MainActivityPresenter(IMainActivityView view) {
         this.view = view;
     }
 

@@ -26,7 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.DialogListener;
+import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,13 +39,14 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     Spinner spinnerProductFeatures;
     @BindView(R.id.button_clear)
     Button btnClear;
+
     private Context context;
     private Resources resources;
-    private DialogListener dialogListener;
+    private IFilterDialogListener dialogListener;
     private String filterTypeOfProduct, filterProductFeatures, selectedProductType;
     private String[] typeOfProductArray, productFeaturesArray;
-    private ArrayAdapter<CharSequence> productFeaturesAdapter;
-    private boolean isTypeOfProductTouched, isProductFeaturesTouched;
+    private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
+    private boolean isTypeOfProductTouched;
 
     public TypeOfProductFilterDialog(String filterTypeOfProduct, String filterProductFeatures) {
         this.filterTypeOfProduct = filterTypeOfProduct;
@@ -60,7 +61,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         context = activity.getApplicationContext();
         resources = context.getResources();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
 
@@ -71,6 +72,10 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         selectedProductType = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
         typeOfProductArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
         productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_choose_array);
+
+        typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_type_of_product_array, android.R.layout.simple_spinner_item);
+        typeOfProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTypeOfProduct.setAdapter(typeOfProductAdapter);
 
         productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
         productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -110,10 +115,6 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
                     selectedProductType = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
                     typeOfProductArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
                     updateProductFeaturesSpinner();
-                    if (selectedProductType.equals(typeOfProductArray[0]))
-                        filterTypeOfProduct = null;
-                    else
-                        filterTypeOfProduct = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
                 }
             }
 
@@ -122,21 +123,9 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
             }
         });
 
-        spinnerProductFeatures.setOnTouchListener((v, event) -> {
-            isProductFeaturesTouched = true;
-            return false;
-        });
-
         spinnerProductFeatures.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if (isProductFeaturesTouched) {
-                    if (String.valueOf(spinnerProductFeatures.getSelectedItem()).equals(productFeaturesArray[0])) {
-                        filterProductFeatures = null;
-                    } else {
-                        filterProductFeatures = String.valueOf(spinnerProductFeatures.getSelectedItem());
-                    }
-                }
             }
 
             @Override
@@ -149,10 +138,14 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
                 .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (filterTypeOfProduct != null) {
-                        dialogListener.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
-                    } else {
+                    if (String.valueOf(spinnerTypeOfProduct.getSelectedItem()).equals(typeOfProductArray[0]))
                         dialogListener.clearFilterTypeOfProduct();
+                    else{
+                        filterTypeOfProduct = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
+                        filterProductFeatures = null;
+                        if (!String.valueOf(spinnerProductFeatures.getSelectedItem()).equals(productFeaturesArray[0]))
+                            filterProductFeatures = String.valueOf(spinnerProductFeatures.getSelectedItem());
+                        dialogListener.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
                     }
                 });
         return builder.create();
@@ -162,7 +155,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (DialogListener) context;
+            dialogListener = (IFilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
@@ -170,15 +163,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
 
     private void updateProductFeaturesSpinnerAndSelectTypeOfProduct() {
         try {
-            if (filterTypeOfProduct.equals(typeOfProductArray[0])) {
-                productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_choose_array);
-                productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
-                spinnerTypeOfProduct.setSelection(0, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
-            } else if (filterTypeOfProduct.equals(typeOfProductArray[1])) {
+            if (filterTypeOfProduct.equals(typeOfProductArray[1])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, android.R.layout.simple_spinner_item);
                 productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

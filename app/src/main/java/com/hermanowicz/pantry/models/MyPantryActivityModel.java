@@ -8,324 +8,146 @@
 
 package com.hermanowicz.pantry.models;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
+
+import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.filter.Filter;
+import com.hermanowicz.pantry.filter.FilterModel;
+
+import java.util.List;
+
 public class MyPantryActivityModel {
 
-    private String fltrName = null;
-    private String fltrExpirationDateSince = null;
-    private String fltrExpirationDateFor = null;
-    private String fltrProductionDateSince = null;
-    private String fltrProductionDateFor = null;
-    private String fltrTypeOfProduct = null;
-    private String fltrProductFeatures = null;
-    private String fltrTaste = null;
-    private int fltrWeightSince = -1;
-    private int fltrWeightFor = -1;
-    private int fltrVolumeSince = -1;
-    private int fltrVolumeFor = -1;
-    private int fltrHasSugar = -1;
-    private int fltrHasSalt = -1;
+    private LiveData<List<Product>> productLiveData;
+    private MutableLiveData<FilterModel> product = new MutableLiveData<>();
+    private FilterModel filterProduct = new FilterModel();
+    private Filter filter;
 
-    public void clearFilters() {
-        fltrName = null;
-        fltrTypeOfProduct = null;
-        fltrProductFeatures = null;
-        fltrExpirationDateSince = null;
-        fltrExpirationDateFor = null;
-        fltrProductionDateSince = null;
-        fltrProductionDateFor = null;
-        fltrVolumeSince = -1;
-        fltrVolumeFor = -1;
-        fltrWeightSince = -1;
-        fltrWeightFor = -1;
-        fltrHasSugar = -1;
-        fltrHasSalt = -1;
-        fltrTaste = null;
+    public LiveData<List<Product>> getProductLiveData() {
+        return productLiveData;
     }
 
-    public String getFilterName() {
-        return this.fltrName;
+    public void setProductList(List<Product> productList) {
+        filter = new Filter(productList);
     }
 
-    public String getFilterExpirationDateSince() {
-        return this.fltrExpirationDateSince;
+    public void setProductLiveData(LiveData<List<Product>> productLiveData) {
+        this.productLiveData = productLiveData;
     }
 
-    public void setFilterExpirationDateSince(String expirationDateSince) {
-        this.fltrExpirationDateSince = expirationDateSince;
+    public void clearFilters(){
+        filterProduct = new FilterModel();
     }
 
-    public String getFilterExpirationDateFor() {
-        return this.fltrExpirationDateFor;
+    public void filterProductListByName(String fltrName) {
+        filterProduct.setName(fltrName);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public void setFilterExpirationDateFor(String expirationDateFor) {
-        this.fltrExpirationDateFor = expirationDateFor;
+    public void filterProductListByTypeOfProduct(String fltrTypeOfProduct, String fltrProductFeatures) {
+        filterProduct.setTypeOfProduct(fltrTypeOfProduct);
+        filterProduct.setProductFeatures(fltrProductFeatures);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public String getFilterProductionDateSince() {
-        return this.fltrProductionDateSince;
+    public void filterProductListByExpirationDate(String fltrExpirationDateSince, String fltrExpirationDateFor) {
+        filterProduct.setExpirationDateSince(fltrExpirationDateSince);
+        filterProduct.setExpirationDateFor(fltrExpirationDateFor);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public void setFilterProductionDateSince(String productionDateSince) {
-        this.fltrProductionDateSince = productionDateSince;
+    public void filterProductListByProductionDate(String fltrProductionDateSince, String fltrProductionDateFor) {
+        filterProduct.setProductionDateSince(fltrProductionDateSince);
+        filterProduct.setProductionDateFor(fltrProductionDateFor);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public String getFilterProductionDateFor() {
-        return this.fltrProductionDateFor;
+    public void filterProductListByVolume(int fltrVolumeSince, int fltrVolumeFor) {
+        filterProduct.setVolumeSince(fltrVolumeSince);
+        filterProduct.setVolumeFor(fltrVolumeFor);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public void setFilterProductionDateFor(String productionDateFor) {
-        this.fltrProductionDateFor = productionDateFor;
+    public void filterProductListByWeight(int fltrWeightSince, int fltrWeightFor) {
+        filterProduct.setWeightSince(fltrWeightSince);
+        filterProduct.setWeightFor(fltrWeightFor);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public String getFilterTypeOfProduct() {
-        return this.fltrTypeOfProduct;
+    public void filterProductListBySugarAndSalt(int fltrHasSugar, int fltrHasSalt) {
+        filterProduct.setHasSugar(fltrHasSugar);
+        filterProduct.setHasSalt(fltrHasSalt);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public void setFilterTypeOfProduct(String typeOfProduct) {
-        this.fltrTypeOfProduct = typeOfProduct;
+    public void filterProductListByTaste(String fltrTaste){
+        filterProduct.setTaste(fltrTaste);
+        productLiveData = Transformations.switchMap(product, filter::filterByProduct);
+        product.setValue(filterProduct);
     }
 
-    public String getFilterProductFeatures() {
-        return this.fltrProductFeatures;
+    public String getFilterName(){
+        return filterProduct.getName();
     }
 
-    public void setFilterProductFeatures(String productFeatures) {
-        this.fltrProductFeatures = productFeatures;
+    public String getFilterTypeOfProduct(){
+        return filterProduct.getTypeOfProduct();
     }
 
-    public int getFilterVolumeSince() {
-        return fltrVolumeSince;
+    public String getFilterProductFeatures(){
+        return filterProduct.getProductFeatures();
     }
 
-    public String buildPantryQuery() {
-        String selectQuery = "SELECT * FROM 'products'";
-
-        if (fltrName != null) {
-            selectQuery = selectQuery + " WHERE name LIKE '%" + fltrName + "%'";
-        }
-        if (fltrExpirationDateSince != null && fltrExpirationDateFor == null) {
-            if (fltrName == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "expiration_date >= '" + fltrExpirationDateSince + "'";
-        }
-        if (fltrExpirationDateSince == null && fltrExpirationDateFor != null) {
-            if (fltrName == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "expiration_date <= '" + fltrExpirationDateFor + "'";
-        }
-        if (fltrExpirationDateSince != null && fltrExpirationDateFor != null) {
-            if (fltrName == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "expiration_date BETWEEN '" + fltrExpirationDateSince + "' AND '" + fltrExpirationDateFor + "'";
-        }
-        if (fltrProductionDateSince != null && fltrProductionDateFor == null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "production_date >= '" + fltrProductionDateSince + "'";
-        }
-        if (fltrProductionDateSince == null && fltrProductionDateFor != null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "production_date <= '" + fltrProductionDateFor + "'";
-        }
-        if (fltrProductionDateSince != null && fltrProductionDateFor != null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "production_date BETWEEN'" + fltrProductionDateSince + "' AND '" + fltrProductionDateFor + "'";
-        }
-        if (fltrTypeOfProduct != null && fltrProductFeatures == null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "type_of_product LIKE '%" + fltrTypeOfProduct + "%'";
-        }
-        if (fltrTypeOfProduct == null && fltrProductFeatures != null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "product_features LIKE '%" + fltrProductFeatures + "%'";
-        }
-        if (fltrTypeOfProduct != null && fltrProductFeatures != null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "type_of_product LIKE '%" + fltrTypeOfProduct + "%' AND product_features LIKE '%" + fltrProductFeatures + "%'";
-        }
-        if (fltrVolumeSince >= 0 && fltrVolumeFor == -1) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "volume >= '" + fltrVolumeSince + "'";
-        }
-        if (fltrVolumeSince == -1 && fltrVolumeFor >= 0) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "volume <= '" + fltrVolumeFor + "'";
-        }
-        if (fltrVolumeSince >= 0 && fltrVolumeFor >= 0) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "volume BETWEEN '" + fltrVolumeSince + "' AND '" + fltrVolumeFor + "'";
-        }
-        if (fltrWeightSince >= 0 && fltrWeightFor == -1) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "weight >= '" + fltrWeightSince + "'";
-        }
-        if (fltrWeightSince == -1 && fltrWeightFor >= 0) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "weight <= '" + fltrWeightFor + "'";
-        }
-        if (fltrWeightSince >= 0 && fltrWeightFor >= 0) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "weight BETWEEN '" + fltrWeightSince + "' AND '" + fltrWeightFor + "'";
-        }
-        if (fltrHasSugar >= 0) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1 && fltrWeightSince == -1 && fltrWeightFor == -1) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "has_sugar='" + fltrHasSugar + "'";
-        }
-        if (fltrHasSalt >= 0) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1 && fltrWeightSince == -1 && fltrWeightFor == -1
-                    && fltrHasSugar == -1) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "has_salt='" + fltrHasSalt + "'";
-        }
-        if (fltrTaste != null) {
-            if (fltrName == null && fltrExpirationDateSince == null && fltrExpirationDateFor == null && fltrProductionDateSince == null
-                    && fltrProductionDateFor == null && fltrTypeOfProduct == null && fltrProductFeatures == null
-                    && fltrVolumeSince == -1 && fltrVolumeFor == -1 && fltrWeightSince == -1 && fltrWeightFor == -1
-                    && fltrHasSugar == -1 && fltrHasSalt == -1) {
-                selectQuery = selectQuery + " WHERE ";
-            } else {
-                selectQuery = selectQuery + " AND ";
-            }
-            selectQuery = selectQuery + "taste='" + fltrTaste + "'";
-        }
-        selectQuery = selectQuery + " ORDER BY expiration_date ASC";
-        return selectQuery;
+    public String getFilterExpirationDateSince(){
+        return filterProduct.getExpirationDateSince();
     }
 
-    public void setFilterVolumeSince(int volumeSince) {
-        this.fltrVolumeSince = volumeSince;
+    public String getFilterExpirationDateFor(){
+        return filterProduct.getExpirationDateFor();
     }
 
-    public int getFilterVolumeFor() {
-        return fltrVolumeFor;
+    public String getFilterProductionDateSince(){
+        return filterProduct.getProductionDateSince();
     }
 
-    public void setFilterVolumeFor(int volumeFor) {
-        this.fltrVolumeFor = volumeFor;
+    public String getFilterProductionDateFor(){
+        return filterProduct.getProductionDateFor();
     }
 
-    public int getFilterWeightSince() {
-        return fltrWeightSince;
+    public int getFilterVolumeSince(){
+        return filterProduct.getVolumeSince();
     }
 
-    public void setFilterWeightSince(int weightSince) {
-        this.fltrWeightSince = weightSince;
+    public int getFilterVolumeFor(){
+        return filterProduct.getVolumeFor();
     }
 
-    public int getFilterWeightFor() {
-        return fltrWeightFor;
+    public int getFilterWeightSince(){
+        return filterProduct.getWeightSince();
     }
 
-    public void setFilterWeightFor(int weightFor) {
-        this.fltrWeightFor = weightFor;
+    public int getFilterWeightFor(){
+        return filterProduct.getWeightFor();
     }
 
-    public int getFilterHasSugar() {
-        return fltrHasSugar;
+    public int getFilterHasSugar(){
+        return filterProduct.getHasSugar();
     }
 
-    public void setFilterHasSugar(int hasSugar) {
-        this.fltrHasSugar = hasSugar;
+    public int getFilterHasSalt(){
+        return filterProduct.getHasSalt();
     }
 
-    public int getFilterHasSalt() {
-        return fltrHasSalt;
-    }
-
-    public void setFilterHasSalt(int hasSalt) {
-        this.fltrHasSalt = hasSalt;
-    }
-
-    public String getFilterTaste() {
-        return fltrTaste;
-
-    }
-
-    public void setFilterTaste(String taste) {
-        this.fltrTaste = taste;
-    }
-
-    public void setFilterNameOfProduct(String nameOfProduct) {
-        this.fltrName = nameOfProduct;
+    public String getFilterTaste(){
+        return filterProduct.getTaste();
     }
 }

@@ -24,7 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.DialogListener;
+import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +37,8 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
     EditText edittextVolumeFor;
     @BindView(R.id.button_clear)
     Button btnClear;
-    private DialogListener dialogListener;
+
+    private IFilterDialogListener dialogListener;
     private int filterVolumeSince, filterVolumeFor;
 
     public VolumeFilterDialog(int filterVolumeSince, int filterVolumeFor) {
@@ -53,7 +54,7 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
         Context context = activity.getApplicationContext();
         Resources resources = context.getResources();
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
 
@@ -118,7 +119,7 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (DialogListener) context;
+            dialogListener = (IFilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

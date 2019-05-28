@@ -6,15 +6,14 @@
  * Released under Apache License Version 2.0                                  *
  ******************************************************************************/
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.interfaces;
 
-import androidx.room.Database;
-import androidx.room.RoomDatabase;
+public interface IMainActivityView {
+    void onNavigationToMyPantryActivity();
 
-import com.hermanowicz.pantry.interfaces.ProductsDao;
-import com.hermanowicz.pantry.models.ProductEntity;
+    void onNavigationToScanProductActivity();
 
-@Database(entities = {ProductEntity.class}, version = 1)
-public abstract class ProductDb extends RoomDatabase {
-    public abstract ProductsDao productsDao();
+    void onNavigationToNewProductActivity();
+
+    void onNavigationToAppSettingsActivity();
 }

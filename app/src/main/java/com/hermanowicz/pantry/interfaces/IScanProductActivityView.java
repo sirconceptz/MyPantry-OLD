@@ -8,17 +8,12 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MyPantryActivityView {
-    void openDialog(String typeOfDialog);
+import java.util.List;
 
-    void setFilterIcon(int position);
+public interface IScanProductActivityView {
+    void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList);
 
-    void clearFilterIcon(int position);
-    void showEmptyPantryStatement();
-    void clearFilterIcons();
+    void showErrorProductNotFound();
 
-    void initData(String pantryQuery);
-
-    void refreshListView(String pantryQuery);
     void navigateToMainActivity();
 }

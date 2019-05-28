@@ -13,6 +13,7 @@
     android:id="@+id/scrollView2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="32dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".AppSettingsActivity"
     tools:showIn="@layout/activity_app_settings">
@@ -103,6 +104,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:autofillHints="email"
+            android:textColorHint="@color/text_color"
             android:ems="10"
             android:gravity="center"
             android:hint="@string/AppSettingsActivity_give_email_adress"

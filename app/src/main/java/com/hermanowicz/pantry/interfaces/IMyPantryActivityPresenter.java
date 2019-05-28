@@ -8,6 +8,12 @@
 
 package com.hermanowicz.pantry.interfaces;
 
+import androidx.lifecycle.LiveData;
+
+import com.hermanowicz.pantry.db.Product;
+
+import java.util.List;
+
 public interface IMyPantryActivityPresenter {
     String getFilterName();
 
@@ -36,9 +42,16 @@ public interface IMyPantryActivityPresenter {
     int getFilterHasSalt();
 
     String getFilterTaste();
+
     void clearFilters();
+
     void openDialog(String typeOfDialog);
 
-    void initRecyclerViewData();
+    void setProductLiveData(LiveData<List<Product>> productLiveData);
+
+    LiveData<List<Product>> getProductLiveData();
+
+    void setProductList(List<Product> productList);
+
     void navigateToMainActivity();
 }

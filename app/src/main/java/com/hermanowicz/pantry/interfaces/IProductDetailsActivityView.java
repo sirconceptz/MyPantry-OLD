@@ -8,29 +8,18 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.Query;
-
-import com.hermanowicz.pantry.models.ProductEntity;
+import com.hermanowicz.pantry.db.Product;
 
 import java.util.ArrayList;
-import java.util.List;
 
-@Dao
-public interface ProductsDao {
-    @Query("SELECT * FROM 'products' WHERE id = (:id)")
-    ProductEntity getProductById(int id);
+public interface IProductDetailsActivityView {
+    void showProductDetails(Product product);
 
-    @Query("SELECT * FROM 'products' ORDER BY expirationDate ASC")
-    List<ProductEntity> getAllProducts();
+    void showErrorWrongData();
 
-    @Insert
-    void insertProductToDB(ArrayList<ProductEntity> productsArrayList);
+    void onDeletedProduct(int productID);
 
-    @Query("DELETE FROM 'products' WHERE id = (:id)")
-    void deleteProductById(int id);
+    void onPrintQRCode(ArrayList<String> textToQRCodeArray, ArrayList<String> namesOfProductsArray, ArrayList<String> expirationDatesArray);
 
-    @Query("DELETE FROM 'products'")
-    void clearDb();
+    void navigateToMyPantryActivity();
 }

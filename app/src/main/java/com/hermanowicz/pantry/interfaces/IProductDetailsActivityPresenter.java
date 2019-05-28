@@ -8,10 +8,10 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.models.ProductEntity;
+import com.hermanowicz.pantry.db.Product;
 
 public interface IProductDetailsActivityPresenter {
-    void setProduct(ProductEntity product);
+    void setProduct(Product product);
 
     void setHashCode(String hashCode);
 

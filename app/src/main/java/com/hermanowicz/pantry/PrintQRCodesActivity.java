@@ -25,7 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
-import com.hermanowicz.pantry.interfaces.PrintQRCodesActivityView;
+import com.hermanowicz.pantry.interfaces.IPrintQRCodesActivityView;
 import com.hermanowicz.pantry.models.PrintQRCodesActivityModel;
 import com.hermanowicz.pantry.presenters.PrintQRCodesActivityPresenter;
 
@@ -48,18 +48,18 @@ import static androidx.core.content.FileProvider.getUriForFile;
  * @version 1.0
  * @since   1.0
  */
-public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesActivityView {
-
-    private Context context;
-    private Resources resources;
-    private PrintQRCodesActivityPresenter presenter;
-
-    static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
+public class PrintQRCodesActivity extends AppCompatActivity implements IPrintQRCodesActivityView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.image_qrCode)
     ImageView image_qrCode;
+
+    static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
+
+    private Context context;
+    private Resources resources;
+    private PrintQRCodesActivityPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

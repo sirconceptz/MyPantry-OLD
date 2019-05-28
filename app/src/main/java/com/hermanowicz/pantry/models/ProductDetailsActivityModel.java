@@ -8,6 +8,8 @@
 
 package com.hermanowicz.pantry.models;
 
+import com.hermanowicz.pantry.db.Product;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,14 +17,14 @@ import java.util.ArrayList;
 
 public class ProductDetailsActivityModel {
 
-    private ProductEntity product;
+    private Product product;
     private String hashCode;
 
-    public ProductEntity getProduct() {
+    public Product getProduct() {
         return product;
     }
 
-    public void setProduct(ProductEntity product) {
+    public void setProduct(Product product) {
         this.product = product;
     }
 

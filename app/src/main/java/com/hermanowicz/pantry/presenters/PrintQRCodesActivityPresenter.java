@@ -13,19 +13,19 @@ import android.graphics.Bitmap;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hermanowicz.pantry.interfaces.IPrintQRCodesActivityPresenter;
-import com.hermanowicz.pantry.interfaces.PrintQRCodesActivityView;
+import com.hermanowicz.pantry.interfaces.IPrintQRCodesActivityView;
 import com.hermanowicz.pantry.models.PrintQRCodesActivityModel;
 
 import java.util.ArrayList;
 
 public class PrintQRCodesActivityPresenter implements IPrintQRCodesActivityPresenter {
 
-    private PrintQRCodesActivityView view;
+    private IPrintQRCodesActivityView view;
     private PrintQRCodesActivityModel model;
 
     private ArrayList<String> textToQRCodeArray, namesOfProductsArray, expirationDatesArray;
 
-    public PrintQRCodesActivityPresenter(PrintQRCodesActivityView view, PrintQRCodesActivityModel model) {
+    public PrintQRCodesActivityPresenter(IPrintQRCodesActivityView view, PrintQRCodesActivityModel model) {
         this.view = view;
         this.model = model;
     }
