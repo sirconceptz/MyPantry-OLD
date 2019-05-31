@@ -21,6 +21,7 @@ import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.interfaces.INewProductActivityPresenter;
 import com.hermanowicz.pantry.interfaces.INewProductActivityView;
 import com.hermanowicz.pantry.models.NewProductActivityModel;
+import com.hermanowicz.pantry.utils.PrintQRData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,9 +154,9 @@ public class NewProductActivityPresenter implements INewProductActivityPresenter
             view.isAddProductsSuccess(productsArrayList);
             ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
 
-            textToQRCodeList = model.getTextToQRCodeList(productsArrayList);
-            namesOfProductsList = model.getNamesOfProductsList(productsArrayList);
-            expirationDatesList = model.getExpirationDatesList(productsArrayList);
+            textToQRCodeList = PrintQRData.getTextToQRCodeList(productsArrayList);
+            namesOfProductsList = PrintQRData.getNamesOfProductsList(productsArrayList);
+            expirationDatesList = PrintQRData.getExpirationDatesList(productsArrayList);
 
             view.showStatementOnAreProductsAdded(model.getOnProductAddStatement());
             view.navigateToPrintQRCodesActivity(textToQRCodeList, namesOfProductsList, expirationDatesList);

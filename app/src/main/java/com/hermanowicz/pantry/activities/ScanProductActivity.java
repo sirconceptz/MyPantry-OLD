@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.IScanProductActivityView;
 import com.hermanowicz.pantry.models.ScanProductActivityModel;
 import com.hermanowicz.pantry.presenters.ScanProductActivityPresenter;

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.utils;
 
 
 import android.app.Application;
@@ -43,27 +43,27 @@ public class ProductsViewModel extends AndroidViewModel {
         executorService = Executors.newSingleThreadExecutor();
     }
 
-    LiveData<List<Product>> getAllProducts() {
+    public LiveData<List<Product>> getAllProducts() {
         return productsDao.getAllProducts();
     }
 
-    List<Product> getAllProductsAsList(){
+    public List<Product> getAllProductsAsList(){
         return productsDao.getAllProductsAsList();
     }
 
-    Product getProductById(int id){
+    public Product getProductById(int id){
         return productsDao.getProductById(id);
     }
 
-    void insertProduct(List<Product> productEntities) {
+    public void insertProduct(List<Product> productEntities) {
         executorService.execute(() -> productsDao.insertProductToDB(productEntities));
     }
 
-    void deleteProductById(int id) {
+    public void deleteProductById(int id) {
         executorService.execute(() -> productsDao.deleteProductById(id));
     }
 
-    void deleteAllProducts() {
+    public void deleteAllProducts() {
         executorService.execute(() -> productsDao.clearDb());
     }
 }

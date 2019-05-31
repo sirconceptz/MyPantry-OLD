@@ -24,6 +24,14 @@ import androidx.room.Query;
 
 import java.util.List;
 
+/**
+ * <h1>ProductsDao</h1>
+ * Products dao needed to support database.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 @Dao
 public interface ProductsDao {
     @Query("SELECT * FROM products WHERE id = (:id)")

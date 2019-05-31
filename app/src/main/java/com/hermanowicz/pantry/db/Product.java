@@ -20,6 +20,14 @@ package com.hermanowicz.pantry.db;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+/**
+ * <h1>Product/h1>
+ * Product model. Is needed to support database and used to store a product data.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 @Entity(tableName = "products")
 public class Product {
 

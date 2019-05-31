@@ -25,6 +25,14 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+/**
+ * <h1>ProductDb/h1>
+ * Database class
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 @Database(entities = {Product.class}, version = 1)
 public abstract class ProductDb extends RoomDatabase {
     public abstract ProductsDao productsDao();

@@ -17,8 +17,6 @@
 
 package com.hermanowicz.pantry.filter;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -31,6 +29,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * <h1>Filter</h1>
+ * Class for filtering products according to data from the filter model.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class Filter {
 
     private List<Product> productList;
@@ -48,7 +54,6 @@ public class Filter {
         List<Product> tempProductList = new ArrayList<>();
 
         for(int i = 0; this.productList.size() > i; i++){
-            Log.d("Petla:", String.valueOf(i));
             if(isProductNameValid(this.productList.get(i).getName())
                     && isProductTypeOfProductValid(this.productList.get(i).getTypeOfProduct(), this.productList.get(i).getProductFeatures())
                     && isProductExpirationDateValid(this.productList.get(i).getExpirationDate())

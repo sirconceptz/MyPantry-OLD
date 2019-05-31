@@ -20,8 +20,10 @@ package com.hermanowicz.pantry.presenters;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.interfaces.IProductDetailsActivityView;
 import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
+import com.hermanowicz.pantry.utils.PrintQRData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDetailsActivityPresenter implements com.hermanowicz.pantry.interfaces.IProductDetailsActivityPresenter {
 
@@ -68,10 +70,11 @@ public class ProductDetailsActivityPresenter implements com.hermanowicz.pantry.i
     @Override
     public void printQRCode() {
         ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
+        List<Product> productList = model.getProductList();
 
-        textToQRCodeList = model.getTextToQRCodeList();
-        namesOfProductsList = model.getNamesOfProductsList();
-        expirationDatesList = model.getExpirationDatesList();
+        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList);
+        namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
+        expirationDatesList = PrintQRData.getExpirationDatesList(productList);
 
         view.onPrintQRCode(textToQRCodeList, namesOfProductsList, expirationDatesList);
     }

@@ -62,5 +62,21 @@ public interface IMyPantryActivityPresenter {
 
     void setProductList(List<Product> productList);
 
+    List<Product> getProductList();
+
+    void clearSelectList();
+
+    List<Product> getSelectList();
+
+    void setIsMultiSelect(boolean state);
+
+    boolean getIsMultiSelect();
+
+    void addMultiSelectProduct(int position);
+
+    void deleteSelectedProducts();
+
+    void printSelectedProducts();
+
     void navigateToMainActivity();
 }

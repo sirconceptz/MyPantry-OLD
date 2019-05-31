@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +34,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
+import com.hermanowicz.pantry.BuildConfig;
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.IPrintQRCodesActivityView;
 import com.hermanowicz.pantry.models.PrintQRCodesActivityModel;
 import com.hermanowicz.pantry.presenters.PrintQRCodesActivityPresenter;

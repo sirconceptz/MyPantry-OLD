@@ -38,6 +38,14 @@ import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * <h1>VolumeFilterDialog</h1>
+ * The dialog window needed to set filters by volume of product to search for products in the pantry.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class VolumeFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.edittext_volumeSince)

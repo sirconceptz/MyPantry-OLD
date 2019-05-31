@@ -15,20 +15,19 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.IMainActivityView;
 import com.hermanowicz.pantry.presenters.MainActivityPresenter;
 
@@ -39,7 +38,6 @@ import butterknife.OnClick;
 /**
  * <h1>MainActivity</h1>
  * Main activity - main window of the application. First window after launching this application.
- * In main activity is only main menu with buttons to the other activities.
  *
  * @author  Mateusz Hermanowicz
  * @version 1.0
@@ -47,8 +45,6 @@ import butterknife.OnClick;
  */
 public class MainActivity extends AppCompatActivity implements IMainActivityView {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.adBanner)
     AdView adView;
 
@@ -63,10 +59,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
         ButterKnife.bind(this);
 
         MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
-
-        setSupportActionBar(toolbar);
-        ActionBar actionbar = getSupportActionBar();
-        assert actionbar != null;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);

@@ -39,6 +39,8 @@
     <string name="MyPantryActivity_set">Set</string>
     <string name="MyPantryActivity_cancel">Abbestellen</string>
     <string name="MyPantryActivity_clear_filters">Filter löschen</string>
+    <string name="MyPantryActivity_delete_products">Produkte löschen</string>
+    <string name="MyPantryActivity_do_you_want_to_delete_products">Do you want to delete selected products?</string>
     <!--ScanProductActivity-->
     <string name="ScanProductActivity_scan_qr_code">Scannen Sie den QR-Code des Produkts</string>
     <string name="ScanProductActivity_product_not_found">Das Produkt wurde nicht gefunden.</string>
@@ -188,6 +190,7 @@
     <string name="AppSettingsActivity_clear_database">Löschen Sie die Datenbank</string>
     <string name="AppSettingsActivity_settings_saved_successful">Die Einstellungen wurden erfolgreich gespeichert. </string>
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
+    <string name="AppSettingsActivity_do_you_want_to_clear_db">Möchten Sie die Produktdatenbank wirklich löschen?</string>
     <!--Notifications-->
     <string name="Notifications_title">[Meine Speisekammer] Das Produkt wird bald verfallen.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% läuft bald ab. Sie haben noch %DAYS% Tage bis zu diesem Datum.</string>

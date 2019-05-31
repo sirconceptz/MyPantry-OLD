@@ -39,6 +39,8 @@
     <string name="MyPantryActivity_set">Ustaw</string>
     <string name="MyPantryActivity_cancel">Anuluj</string>
     <string name="MyPantryActivity_clear_filters">Wyczyść filtry</string>
+    <string name="MyPantryActivity_delete_products">Usuń produkty</string>
+    <string name="MyPantryActivity_do_you_want_to_delete_products">Czy chcesz usunąć wybrane produkty?</string>
     <!--ScanProductActivity-->
     <string name="ScanProductActivity_scan_qr_code">Skanuj kod QR produktu</string>
     <string name="ScanProductActivity_product_not_found">Produkt nie został znaleziony.</string>
@@ -188,6 +190,7 @@
     <string name="AppSettingsActivity_clear_database">Wyczyść bazę danych</string>
     <string name="AppSettingsActivity_settings_saved_successful">Ustawienia zostały pomyślnie zapisane.</string>
     <string name="AppSettingsActivity_database_is_clear">Baza danych została wyczyszczona.</string>
+    <string name="AppSettingsActivity_do_you_want_to_clear_db">Czy jesteś pewien, że chcesz wyczyścićbazę danych?</string>
     <!--Notifications-->
     <string name="Notifications_title">[Moja Spiżarnia] Produkt wkrótce się przeterminuje.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% wkrótce się przeterminuje. Zostało Ci mniej niż %DAYS% dni, aby zdążyć przed tą datą.</string>    <!--Errors-->

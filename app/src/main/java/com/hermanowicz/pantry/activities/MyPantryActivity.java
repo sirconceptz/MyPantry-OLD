@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,8 +23,12 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.ActionMode;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +41,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +49,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.dialog.DeleteProductsDialog;
 import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
 import com.hermanowicz.pantry.dialog.NameFilterDialog;
 import com.hermanowicz.pantry.dialog.ProductFeaturesFilterDialog;
@@ -53,11 +60,17 @@ import com.hermanowicz.pantry.dialog.TasteFilterDialog;
 import com.hermanowicz.pantry.dialog.TypeOfProductFilterDialog;
 import com.hermanowicz.pantry.dialog.VolumeFilterDialog;
 import com.hermanowicz.pantry.dialog.WeightFilterDialog;
+import com.hermanowicz.pantry.interfaces.IDeleteProductsDialogListener;
 import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 import com.hermanowicz.pantry.interfaces.IMyPantryActivityView;
 import com.hermanowicz.pantry.models.MyPantryActivityModel;
 import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
+import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.ProductsAdapter;
+import com.hermanowicz.pantry.utils.ProductsViewModel;
+import com.hermanowicz.pantry.utils.RecyclerProductClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,13 +79,13 @@ import butterknife.ButterKnife;
 /**
  * <h1>MyPantryActivity</h1>
  * Activity for My Pantry. In this activity is available the list view with products from database.
- * The user can filter search results using product attributes.
+ * The user can filter search results using product attributes. After a long click on the product, the multiselect mode is activated.
  *
  * @author  Mateusz Hermanowicz
  * @version 1.0
  * @since   1.0
  */
-public class MyPantryActivity extends AppCompatActivity implements IMyPantryActivityView, IFilterDialogListener {
+public class MyPantryActivity extends AppCompatActivity implements IMyPantryActivityView, IFilterDialogListener, IDeleteProductsDialogListener {
 
     @BindView(R.id.recyclerview_products)
     RecyclerView recyclerviewProducts;
@@ -87,12 +100,12 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     @BindView(R.id.adBanner)
     AdView adView;
 
-    public ProductsAdapter adapterProductsRecyclerView;
-    public AdRequest adRequest;
+    private ProductsAdapter adapterProductsRecyclerView;
     private Context context;
     private Resources resources;
     private SharedPreferences sharedPreferences;
     private ProductsViewModel productsViewModel;
+    private ActionMode mActionMode;
 
     private MyPantryActivityModel model;
     private MyPantryActivityPresenter presenter;
@@ -112,13 +125,63 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
         model = new MyPantryActivityModel();
         presenter = new MyPantryActivityPresenter(this, model);
 
-        initData();
-
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         assert actionbar != null;
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
+        initData();
+    }
+
+    private void initData() {
+        MobileAds.initialize(context, "ca-app-pub-4025776034769422~3797748160");
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
+        presenter.setProductLiveData(productsViewModel.getAllProducts());
+        presenter.getProductLiveData().observe(this, productList -> {
+            presenter.setProductList(productList);
+            adapterProductsRecyclerView.setData(productList);
+        });
+        adapterProductsRecyclerView = new ProductsAdapter(sharedPreferences);
+        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
+        adapterProductsRecyclerView.notifyDataSetChanged();
+        recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
+        recyclerviewProducts.setHasFixedSize(true);
+        recyclerviewProducts.setItemAnimator(new DefaultItemAnimator());
+        recyclerviewProducts.addOnItemTouchListener(new RecyclerProductClickListener(this, recyclerviewProducts, new RecyclerProductClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (presenter.getIsMultiSelect())
+                    multiSelect(position);
+                else {
+                    List<Product> productList = presenter.getProductList();
+                    Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
+                    productDetailsActivityIntent.putExtra("product_id", productList.get(position).getId());
+                    productDetailsActivityIntent.putExtra("hash_code", productList.get(position).getHashCode());
+                    MyPantryActivity.this.startActivity(productDetailsActivityIntent);
+                    MyPantryActivity.this.finish();
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                if (!presenter.getIsMultiSelect()) {
+                    presenter.clearSelectList();
+                    presenter.setIsMultiSelect(true);
+
+                    if (mActionMode == null) {
+                        mActionMode = startActionMode(mActionModeCallback);
+                    }
+                }
+                multiSelect(position);
+            }
+        }));
+
+        presenter.setProductList(productsViewModel.getAllProductsAsList());
 
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
@@ -134,40 +197,14 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
                 });
     }
 
-    void initData(){
-        MobileAds.initialize(context, "ca-app-pub-4025776034769422~3797748160");
-
-        adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        presenter.setProductLiveData(productsViewModel.getAllProducts());
-        presenter.getProductLiveData().observe(this, productList -> {
-            presenter.setProductList(productList);
-            adapterProductsRecyclerView.setData(productList);
-        });
-        adapterProductsRecyclerView = new ProductsAdapter(product -> {
-            Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-            productDetailsActivityIntent.putExtra("product_id", product.getId());
-            productDetailsActivityIntent.putExtra("hash_code", product.getHashCode());
-            MyPantryActivity.this.startActivity(productDetailsActivityIntent);
-            MyPantryActivity.this.finish();
-        }, sharedPreferences);
-        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
-        adapterProductsRecyclerView.notifyDataSetChanged();
-        recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
-        recyclerviewProducts.setHasFixedSize(true);
-
-        presenter.setProductList(productsViewModel.getAllProductsAsList());
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            drawerLayout.openDrawer(GravityCompat.START);
-            return true;
+    private void multiSelect(int position) {
+        if(!presenter.getIsMultiSelect())
+            toolbar.startActionMode(mActionModeCallback);
+        if (mActionMode != null) {
+            presenter.addMultiSelectProduct(position);
+            mActionMode.setTitle(String.valueOf(presenter.getSelectList().size()));
         }
-        return super.onOptionsItemSelected(item);
+        updateSelectsRecyclerViewAdapter();
     }
 
     @Override
@@ -200,7 +237,7 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     }
 
     @Override
-    public void openDialog(String typeOfDialog) {
+    public void openFilterDialog(String typeOfDialog) {
         if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_name))) {
             NameFilterDialog nameFilterDialog = new NameFilterDialog(presenter.getFilterName());
             nameFilterDialog.show(getSupportFragmentManager(), "");
@@ -259,8 +296,36 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     }
 
     @Override
-    public void updateRecyclerViewAdapter() {
-        presenter.getProductLiveData().observe(this, productEntities -> adapterProductsRecyclerView.setData(productEntities));
+    public void updateSelectsRecyclerViewAdapter() {
+        adapterProductsRecyclerView.setMultiSelectList(presenter.getSelectList());
+        adapterProductsRecyclerView.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateProductsRecyclerViewAdapter() {
+        presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
+        adapterProductsRecyclerView.setData(presenter.getProductList());
+        adapterProductsRecyclerView.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onPrintProducts(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
+        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class);
+
+        printQRCodesActivityIntent.putStringArrayListExtra("text_to_qr_code", textToQRCodeList);
+        printQRCodesActivityIntent.putStringArrayListExtra("expiration_dates", expirationDatesList);
+        printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
+
+        startActivity(printQRCodesActivityIntent);
+        finish();
+    }
+
+    @Override
+    public void onDeleteProducts(List<Product> productList) {
+        for(int i = 0; productList.size() > i; i++) {
+            productsViewModel.deleteProductById(productList.get(i).getId());
+            Notification.cancelNotification(context, productList.get(i));
+        }
         adapterProductsRecyclerView.notifyDataSetChanged();
     }
 
@@ -351,4 +416,69 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     public void clearProductFeatures() {
         presenter.clearProductFeatures();
     }
+
+    @Override
+    public void onDeleteProducts() {
+        presenter.deleteSelectedProducts();
+        presenter.setIsMultiSelect(false);
+        mActionMode.finish();
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_print:
+                return true;
+            case R.id.action_delete:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.multi_select_products, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_delete:
+                    DeleteProductsDialog deleteProductsDialog = new DeleteProductsDialog();
+                    deleteProductsDialog.show(getSupportFragmentManager(), "");
+                    return true;
+                case R.id.action_print:
+                    presenter.printSelectedProducts();
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+            presenter.setIsMultiSelect(false);
+            presenter.clearSelectList();
+            updateSelectsRecyclerViewAdapter();
+        }
+    };
 }

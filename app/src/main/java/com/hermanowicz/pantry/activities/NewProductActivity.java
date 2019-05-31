@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.activities;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
@@ -49,10 +49,13 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.interfaces.INewProductActivityView;
 import com.hermanowicz.pantry.models.NewProductActivityModel;
 import com.hermanowicz.pantry.presenters.NewProductActivityPresenter;
+import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.ProductsViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;

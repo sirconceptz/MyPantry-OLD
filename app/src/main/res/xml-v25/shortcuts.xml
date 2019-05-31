@@ -26,7 +26,7 @@
         android:shortcutShortLabel="@string/title_activity_my_pantry">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.MyPantryActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.MyPantryActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
     <shortcut
@@ -38,7 +38,7 @@
         android:shortcutShortLabel="@string/title_activity_scan_the_product">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.ScanProductActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.ScanProductActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
     <shortcut
@@ -50,7 +50,7 @@
         android:shortcutShortLabel="@string/title_activity_new_product">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.NewProductActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.NewProductActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
 </shortcuts>

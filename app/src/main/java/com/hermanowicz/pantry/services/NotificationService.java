@@ -36,9 +36,9 @@ import androidx.core.app.NotificationCompat;
 
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.hermanowicz.pantry.ApplicationController;
-import com.hermanowicz.pantry.MyPantryActivity;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.activities.MyPantryActivity;
+import com.hermanowicz.pantry.utils.ApplicationController;
 
 import org.json.JSONObject;
 
@@ -87,7 +87,7 @@ public class NotificationService extends IntentService {
         int               productID     = intent.getIntExtra("PRODUCT_ID", 0);
         daysToNotification = 3;
         daysToNotification = myPreferences.getInt(
-                PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.Notification.NOTIFICATION_DEFAULT_DAYS);
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.utils.Notification.NOTIFICATION_DEFAULT_DAYS);
 
         if (myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
                 true)) {

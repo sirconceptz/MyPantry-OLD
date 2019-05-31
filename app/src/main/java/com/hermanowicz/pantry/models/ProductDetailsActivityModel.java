@@ -19,10 +19,8 @@ package com.hermanowicz.pantry.models;
 
 import com.hermanowicz.pantry.db.Product;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDetailsActivityModel {
 
@@ -47,39 +45,9 @@ public class ProductDetailsActivityModel {
         return result;
     }
 
-    public ArrayList<String> getTextToQRCodeList() {
-        ArrayList<String> textToQRCodeList = new ArrayList<>();
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("product_id", product.getId());
-            jsonObject.put("hash_code", product.getHashCode());
-            textToQRCodeList.add(jsonObject.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return textToQRCodeList;
-    }
-
-    public ArrayList<String> getNamesOfProductsList() {
-        ArrayList<String> namesOfProductsList = new ArrayList<>();
-
-        String productName = product.getName();
-        if (productName.length() > 15) {
-            namesOfProductsList.add(productName.substring(0, 14) + ".");
-        } else {
-            namesOfProductsList.add(productName);
-        }
-
-        return namesOfProductsList;
-    }
-
-    public ArrayList<String> getExpirationDatesList() {
-        ArrayList<String> expirationDatesList = new ArrayList<>();
-
-        expirationDatesList.add(product.getExpirationDate());
-
-        return expirationDatesList;
+    public List<Product> getProductList(){
+        List<Product> productList = new ArrayList<>();
+        productList.add(product);
+        return productList;
     }
 }

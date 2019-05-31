@@ -22,7 +22,7 @@
         android:icon="@drawable/ic_my_pantry_shortcut">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.MyPantryActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.MyPantryActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
     <shortcut
@@ -30,7 +30,7 @@
         android:icon="@drawable/ic_search">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.ScanProductActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.ScanProductActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
     <shortcut
@@ -38,7 +38,7 @@
         android:icon="@drawable/ic_new_product_shortcut">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.NewProductActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.NewProductActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
 </shortcuts>

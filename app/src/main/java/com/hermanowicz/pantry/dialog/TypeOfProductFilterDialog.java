@@ -40,6 +40,14 @@ import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * <h1>TypeOfProductFilterDialog</h1>
+ * The dialog window needed to set filters by type of product to search for products in the pantry.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.spinner_typeOfProduct)

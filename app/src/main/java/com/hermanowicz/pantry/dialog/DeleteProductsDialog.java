@@ -24,40 +24,25 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.hermanowicz.pantry.interfaces.IDeleteProductsDialogListener;
 
 /**
- * <h1>NameFilterDialog</h1>
- * The dialog window needed to set filters by name to search for products in the pantry.
+ * <h1>DeleteProductDialog</h1>
+ * Dialog window for delete selected products from my pantry.
  *
  * @author  Mateusz Hermanowicz
  * @version 1.0
  * @since   1.0
  */
-public class NameFilterDialog extends AppCompatDialogFragment {
+public class DeleteProductsDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.name)
-    EditText edittextName;
-    @BindView(R.id.button_clear)
-    Button btnClear;
-
-    private IFilterDialogListener dialogListener;
-    private String filterName;
-
-    public NameFilterDialog(String filterName) {
-        this.filterName = filterName;
-    }
+    private IDeleteProductsDialogListener dialogListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -70,30 +55,14 @@ public class NameFilterDialog extends AppCompatDialogFragment {
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
 
-        View view = layoutInflater.inflate(R.layout.dialog_name, null);
-
-        ButterKnife.bind(this, view);
-
-        if (filterName != null) {
-            edittextName.setText(filterName);
-        }
-
-        btnClear.setOnClickListener(view1 -> {
-            edittextName.setText("");
-            filterName = null;
-        });
+        View view = layoutInflater.inflate(R.layout.dialog_delete_products, null);
 
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_name))
+                .setTitle(resources.getString(R.string.MyPantryActivity_delete_products))
                 .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    filterName = edittextName.getText().toString();
-                    if (!filterName.equals("")) {
-                        dialogListener.setFilterName(filterName);
-                    } else {
-                        dialogListener.clearFilterName();
-                    }
+                .setPositiveButton(resources.getString(R.string.MyPantryActivity_delete_products), (dialog, which) -> {
+                    dialogListener.onDeleteProducts();
                 });
         return builder.create();
     }
@@ -102,7 +71,7 @@ public class NameFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (IDeleteProductsDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

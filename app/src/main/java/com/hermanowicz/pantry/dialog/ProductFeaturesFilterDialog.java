@@ -37,6 +37,14 @@ import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * <h1>ProductFeaturesFilterDialog</h1>
+ * The dialog window needed to set filters by product features to search for products in the pantry.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.checkbox_hasSugar)

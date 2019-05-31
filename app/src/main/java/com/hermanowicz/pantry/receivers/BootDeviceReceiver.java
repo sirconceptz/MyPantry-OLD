@@ -23,7 +23,7 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 
-import com.hermanowicz.pantry.Notification;
+import com.hermanowicz.pantry.utils.Notification;
 
 /**
  * <h1>BootDeviceReceiver</h1>

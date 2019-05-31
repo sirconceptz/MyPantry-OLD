@@ -32,6 +32,14 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.IAppSettingsDialogListener;
 
+/**
+ * <h1>DeleteProductDialog</h1>
+ * Dialog window for delete selected products from my pantry.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class ClearDbDialog extends AppCompatDialogFragment {
 
     private IAppSettingsDialogListener dialogListener;

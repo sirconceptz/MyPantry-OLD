@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout"
-    tools:context=".MyPantryActivity">
+    tools:context=".activities.MyPantryActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

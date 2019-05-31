@@ -21,7 +21,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context=".MyPantryActivity">
+    tools:context=".activities.MyPantryActivity">
 
     <TextView
         android:id="@+id/statement"
@@ -30,7 +30,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
-        android:text="Czy jesteś pewien, że chcesz wyczyścić bazę danych?"
+        android:text="@string/AppSettingsActivity_do_you_want_to_clear_db"
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

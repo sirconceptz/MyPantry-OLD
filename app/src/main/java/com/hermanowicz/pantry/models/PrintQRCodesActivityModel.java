@@ -31,7 +31,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.hermanowicz.pantry.PermissionsHandlerAndroid;
+import com.hermanowicz.pantry.utils.PermissionsHandlerAndroid;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.io.File;

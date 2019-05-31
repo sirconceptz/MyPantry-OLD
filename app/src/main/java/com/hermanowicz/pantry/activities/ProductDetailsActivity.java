@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -33,10 +33,13 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.interfaces.IProductDetailsActivityView;
 import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
 import com.hermanowicz.pantry.presenters.ProductDetailsActivityPresenter;
+import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.ProductsViewModel;
 
 import java.util.ArrayList;
 import java.util.Objects;

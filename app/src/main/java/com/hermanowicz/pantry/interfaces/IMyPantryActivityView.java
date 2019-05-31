@@ -21,10 +21,11 @@ import androidx.lifecycle.LiveData;
 
 import com.hermanowicz.pantry.db.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IMyPantryActivityView {
-    void openDialog(String typeOfDialog);
+    void openFilterDialog(String typeOfDialog);
 
     void setFilterIcon(int position);
 
@@ -36,7 +37,13 @@ public interface IMyPantryActivityView {
 
     void navigateToMainActivity();
 
-    void updateRecyclerViewAdapter();
+    void updateSelectsRecyclerViewAdapter();
+
+    void updateProductsRecyclerViewAdapter();
+
+    void onPrintProducts(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList);
+
+    void onDeleteProducts(List<Product> productList);
 
     LiveData<List<Product>> getProductLiveData();
 }

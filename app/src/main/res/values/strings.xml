@@ -37,6 +37,8 @@
     <string name="MyPantryActivity_set">Set</string>
     <string name="MyPantryActivity_cancel">Cancel</string>
     <string name="MyPantryActivity_clear_filters">Clear filters</string>
+    <string name="MyPantryActivity_delete_products">Delete products</string>
+    <string name="MyPantryActivity_do_you_want_to_delete_products">Do you want to delete selected products?</string>
     <!--ScanProductActivity-->
     <string name="ScanProductActivity_scan_qr_code">Scan QR code of the product</string>
     <string name="ScanProductActivity_product_not_found">Product was not found.</string>
@@ -186,6 +188,7 @@
     <string name="AppSettingsActivity_clear_database">Clear database</string>
     <string name="AppSettingsActivity_settings_saved_successful">Settings are saved successful.</string>
     <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
+    <string name="AppSettingsActivity_do_you_want_to_clear_db">Are you sure you want to clear the product database?</string>
     <!--Notifications-->
     <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% is overdue. You have less than %DAYS% days to make it before this date.</string>

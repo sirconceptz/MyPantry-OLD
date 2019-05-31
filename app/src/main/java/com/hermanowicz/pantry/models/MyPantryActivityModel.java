@@ -25,6 +25,7 @@ import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyPantryActivityModel {
@@ -33,17 +34,48 @@ public class MyPantryActivityModel {
     private MutableLiveData<FilterModel> product = new MutableLiveData<>();
     private FilterModel filterProduct = new FilterModel();
     private Filter filter;
+    private List<Product> productList;
+    private List<Product> selectProductList = new ArrayList<>();
+    private boolean isMultiSelect = false;
 
     public LiveData<List<Product>> getProductLiveData() {
         return productLiveData;
     }
 
+    public List<Product> getProductList(){
+        return productList;
+    }
+
+    public void setIsMultiSelect(boolean state){
+        this.isMultiSelect = state;
+    }
+
+    public boolean getIsMultiSelect(){
+        return this.isMultiSelect;
+    }
+
+    public List<Product> getSelectProductList(){
+        return selectProductList;
+    }
+
+    public void clearSelectList(){
+        this.selectProductList = new ArrayList<>();
+    }
+
     public void setProductList(List<Product> productList) {
-        filter = new Filter(productList);
+        this.productList = productList;
+        filter = new Filter(this.productList);
     }
 
     public void setProductLiveData(LiveData<List<Product>> productLiveData) {
         this.productLiveData = productLiveData;
+    }
+
+    public void addMultiSelect(int position) {
+        if (selectProductList.contains(productList.get(position)))
+            selectProductList.remove(productList.get(position));
+        else
+            selectProductList.add(productList.get(position));
     }
 
     public void clearFilters(){

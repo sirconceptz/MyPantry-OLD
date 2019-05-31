@@ -24,7 +24,7 @@
     android:paddingTop="56dp"
     android:paddingBottom="50dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MyPantryActivity"
+    tools:context=".activities.MyPantryActivity"
     tools:showIn="@layout/activity_my_pantry">
 
 <androidx.recyclerview.widget.RecyclerView

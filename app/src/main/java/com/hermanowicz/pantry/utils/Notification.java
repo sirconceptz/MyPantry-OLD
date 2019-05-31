@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.utils;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -67,7 +67,7 @@ public class Notification {
         return calendar;
     }
 
-    static void createNotification(@NonNull Context context, @NonNull Product product) {
+    public static void createNotification(@NonNull Context context, @NonNull Product product) {
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         intent.putExtra("PRODUCT_NAME", product.getName());
         intent.putExtra("PRODUCT_ID", product.getId());
@@ -101,7 +101,7 @@ public class Notification {
         }
     }
 
-    static void cancelNotification(@NonNull Context context, @NonNull Product product) {
+    public static void cancelNotification(@NonNull Context context, @NonNull Product product) {
         if(!product.getExpirationDate().equals("-")) {
             AlarmManager alarmManager = (AlarmManager) (context.getSystemService(Context.ALARM_SERVICE));
             Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
@@ -114,7 +114,7 @@ public class Notification {
         }
     }
 
-    static void cancelAllNotifications(@NonNull Context context) {
+    public static void cancelAllNotifications(@NonNull Context context) {
         ProductDb productDb = ProductDb.getInstance(context);
         List<Product> productsList = productDb.productsDao().getAllProductsAsList();
         AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));

@@ -49,6 +49,14 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * <h1>ExpirationDateFilterDialog</h1>
+ * The dialog window needed to set filters by expiration date to search for products in the pantry.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class ExpirationDateFilterDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
 
     @BindView(R.id.edittext_expirationDateSince)

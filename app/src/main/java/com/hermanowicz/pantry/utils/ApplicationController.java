@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.utils;
 
 import android.app.Application;
 import android.text.TextUtils;

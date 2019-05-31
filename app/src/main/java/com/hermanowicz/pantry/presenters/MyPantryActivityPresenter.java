@@ -24,7 +24,9 @@ import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 import com.hermanowicz.pantry.interfaces.IMyPantryActivityPresenter;
 import com.hermanowicz.pantry.interfaces.IMyPantryActivityView;
 import com.hermanowicz.pantry.models.MyPantryActivityModel;
+import com.hermanowicz.pantry.utils.PrintQRData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyPantryActivityPresenter implements IMyPantryActivityPresenter, IFilterDialogListener {
@@ -51,11 +53,61 @@ public class MyPantryActivityPresenter implements IMyPantryActivityPresenter, IF
     }
 
     @Override
+    public List<Product> getProductList() {
+        return model.getProductList();
+    }
+
+    @Override
+    public void clearSelectList() {
+        model.clearSelectList();
+    }
+
+    @Override
+    public List<Product> getSelectList() {
+        return model.getSelectProductList();
+    }
+
+    @Override
+    public void setIsMultiSelect(boolean state) {
+        model.setIsMultiSelect(state);
+    }
+
+    @Override
+    public boolean getIsMultiSelect() {
+        return model.getIsMultiSelect();
+    }
+
+    @Override
+    public void addMultiSelectProduct(int position) {
+        model.addMultiSelect(position);
+        view.updateSelectsRecyclerViewAdapter();
+    }
+
+    @Override
+    public void deleteSelectedProducts() {
+        List<Product> productList = model.getSelectProductList();
+        view.onDeleteProducts(productList);
+        clearFilters();
+    }
+
+    @Override
+    public void printSelectedProducts() {
+        ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
+        List<Product> productList = model.getSelectProductList();
+
+        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList);
+        namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
+        expirationDatesList = PrintQRData.getExpirationDatesList(productList);
+
+        view.onPrintProducts(textToQRCodeList, namesOfProductsList, expirationDatesList);
+    }
+
+    @Override
     public void clearFilters() {
         model.clearFilters();
         view.clearFilterIcons();
         model.setProductLiveData(view.getProductLiveData());
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
@@ -157,112 +209,112 @@ public class MyPantryActivityPresenter implements IMyPantryActivityPresenter, IF
     public void setFilterName(String filterName) {
         model.filterProductListByName(filterName);
         view.setFilterIcon(1);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
         model.filterProductListByExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
         view.setFilterIcon(2);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
         model.filterProductListByProductionDate(filterProductionDateSince, filterProductionDateFor);
         view.setFilterIcon(3);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterTypeOfProduct(String filterTypeOfProduct, String filterProductFeatures) {
         model.filterProductListByTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
         view.setFilterIcon(4);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
         model.filterProductListByVolume(filterVolumeSince, filterVolumeFor);
         view.setFilterIcon(5);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
         model.filterProductListByWeight(filterWeightSince, filterWeightFor);
         view.setFilterIcon(6);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterTaste(String filterTaste) {
         model.filterProductListByTaste(filterTaste);
         view.setFilterIcon(7);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setProductFeatures(int filterHasSugar, int filterHasSalt) {
         model.filterProductListBySugarAndSalt(filterHasSugar, filterHasSalt);
         view.setFilterIcon(8);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterName() {
         model.filterProductListByName(null);
         view.clearFilterIcon(1);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterExpirationDate() {
         model.filterProductListByExpirationDate(null, null);
         view.clearFilterIcon(2);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterProductionDate() {
         model.filterProductListByProductionDate(null, null);
         view.clearFilterIcon(3);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterTypeOfProduct() {
         model.filterProductListByTypeOfProduct(null, null);
         view.clearFilterIcon(4);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterVolume() {
         model.filterProductListByVolume(-1, -1);
         view.clearFilterIcon(5);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterWeight() {
         model.filterProductListByWeight(-1, -1);
         view.clearFilterIcon(6);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearFilterTaste() {
         model.filterProductListByTaste(null);
         view.clearFilterIcon(7);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void clearProductFeatures() {
         model.filterProductListBySugarAndSalt(-1, -1);
         view.clearFilterIcon(8);
-        view.updateRecyclerViewAdapter();
+        view.updateProductsRecyclerViewAdapter();
     }
 
     @Override
@@ -272,6 +324,6 @@ public class MyPantryActivityPresenter implements IMyPantryActivityPresenter, IF
 
     @Override
     public void openDialog(String typeOfDialog) {
-        view.openDialog(typeOfDialog);
+        view.openFilterDialog(typeOfDialog);
     }
 }

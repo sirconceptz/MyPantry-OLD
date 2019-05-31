@@ -40,6 +40,14 @@ import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * <h1>TasteFilterDialog</h1>
+ * The dialog window needed to set filters by taste to search for products in the pantry.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.0
+ */
 public class TasteFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.spinner_taste)

@@ -22,9 +22,6 @@ import android.content.res.Resources;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -240,45 +237,5 @@ public class NewProductActivityModel {
         if (expirationDate.length() > 0)
             correctExpirationDate = true;
         return correctExpirationDate;
-    }
-
-    public ArrayList<String> getTextToQRCodeList(List<Product> productsList) {
-        ArrayList<String> textToQRCodeList = new ArrayList<>();
-        JSONObject jsonObject = new JSONObject();
-
-        for (int counter = 0; counter < productsList.size(); counter++) {
-            try {
-                jsonObject.put("product_id", productsList.get(counter).getId());
-                jsonObject.put("hash_code", productsList.get(counter).hashCode());
-                textToQRCodeList.add(jsonObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return textToQRCodeList;
-    }
-
-    public ArrayList<String> getNamesOfProductsList(List<Product> productsList) {
-        ArrayList<String> namesOfProductsList = new ArrayList<>();
-        String productName;
-
-        for (int counter = 0; counter < productsList.size(); counter++) {
-            productName = productsList.get(counter).getName();
-            if (productName.length() > 15) {
-                namesOfProductsList.add(productName.substring(0, 14) + ".");
-            } else {
-                namesOfProductsList.add(productName);
-            }
-        }
-        return namesOfProductsList;
-    }
-
-    public ArrayList<String> getExpirationDatesList(List<Product> productsList) {
-        ArrayList<String> expirationDatesList = new ArrayList<>();
-
-        for (int counter = 0; counter < productsList.size(); counter++) {
-            expirationDatesList.add(productsList.get(counter).getExpirationDate());
-        }
-        return expirationDatesList;
     }
 }

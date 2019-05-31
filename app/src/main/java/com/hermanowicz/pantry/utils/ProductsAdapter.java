@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry;
+package com.hermanowicz.pantry.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,13 +24,12 @@ import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 
 import java.text.ParseException;
@@ -49,29 +48,28 @@ public class ProductsAdapter extends
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
 
     private List<Product> productList;
+    private List<Product> multiSelectList;
     private SharedPreferences myPreferences;
-    private final OnItemClickListener listener;
 
-    ProductsAdapter(OnItemClickListener listener, SharedPreferences myPreferences) {
-        this.listener = listener;
+    public ProductsAdapter(SharedPreferences myPreferences) {
         this.myPreferences = myPreferences;
         this.productList = new ArrayList<>();
+        this.multiSelectList = new ArrayList<>();
     }
 
     public void setData(List<Product> newData){
-        if (this.productList != null) {
-            this.productList.clear();
-            this.productList = newData;
-        }
-        else{
-            this.productList = newData;
-        }
+        this.productList = newData;
+        notifyDataSetChanged();
+    }
+
+    public void setMultiSelectList(List<Product> multiSelectList){
+        this.multiSelectList = multiSelectList;
         notifyDataSetChanged();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull ProductsAdapter.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
         TextView nameTv = viewHolder.nameTv;
         TextView volumeTv = viewHolder.volumeTv;
@@ -106,19 +104,18 @@ public class ProductsAdapter extends
         }
         calendar.add(Calendar.DAY_OF_MONTH, myPreferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS));
-        calendar.add(Calendar.DAY_OF_MONTH, 3);
         Date dayOfNotification = calendar.getTime();
-        if (dayOfNotification.after(expirationDateDt))
-            viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_expired_products));
-
-        viewHolder.itemView.setOnClickListener(v -> listener.onItemClick(selectedProduct));
-
-        Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left);
-        viewHolder.itemView.setAnimation(animation);
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(Product product);
+        if (multiSelectList.contains(productList.get(position))) {
+            viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_product_selected));
+        }
+        else{
+            if (dayOfNotification.after(expirationDateDt)){
+                viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_expired_products));
+            }
+            else{
+                viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_material));
+            }
+        }
     }
 
     @NonNull
@@ -147,14 +144,9 @@ public class ProductsAdapter extends
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            nameTv = itemView.findViewById(R.id.text_productName);
-            volumeTv = itemView.findViewById(R.id.text_productVolume);
-            weightTv = itemView.findViewById(R.id.text_productWeight);
-            expirationDateTv = itemView.findViewById(R.id.text_expirationDateValue);
         }
 
-        public void bind(final Product product, final OnItemClickListener listener) {
+        public void bind(final Product product) {
         }
     }
 

@@ -20,7 +20,9 @@
     <color name="color_primary">#001ea6</color>
     <color name="color_primary_statusbar">#001883</color>
     <color name="text_color">#DD00011B</color>
-    <color name="background_material" tools:ignore="PrivateResource">#B3E5FC</color>
+    <color name="background_material" tools:ignore="PrivateResource">#E1F1FF</color>
     <color name="background_expired_products">#FF8181</color>
+    <color name="background_product_selected">#6FAEFF</color>
     <color name="button_color">#82B1FF</color>
+    <color name="cast_libraries_material_featurehighlight_outer_highlight_default_color">#2196F3</color>
 </resources>

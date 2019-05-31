@@ -22,7 +22,7 @@ import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 
-import com.hermanowicz.pantry.Notification;
+import com.hermanowicz.pantry.utils.Notification;
 
 import java.util.regex.Pattern;
 
