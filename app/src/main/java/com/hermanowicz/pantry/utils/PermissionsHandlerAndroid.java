@@ -23,9 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.hermanowicz.pantry.interfaces.IPermissionHandler;
+import com.hermanowicz.pantry.interfaces.PermissionHandler;
 
-public class PermissionsHandlerAndroid implements IPermissionHandler {
+public class PermissionsHandlerAndroid implements PermissionHandler {
     @Override
     public boolean checkHasPermission(AppCompatActivity activity, String permission) {
         return ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED;

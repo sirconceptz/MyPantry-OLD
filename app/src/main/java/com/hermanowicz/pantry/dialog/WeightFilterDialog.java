@@ -20,7 +20,6 @@ package com.hermanowicz.pantry.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.filter.FilterModel;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,21 +55,18 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
     @BindView(R.id.button_clear)
     Button btnClear;
 
-    private IFilterDialogListener dialogListener;
-    private int filterWeightSince, filterWeightFor;
+    private FilterDialogListener dialogListener;
+    private int filterWeightSince, filterWeightFor; // state "-1" for disabled
 
-    public WeightFilterDialog(int filterWeightSince, int filterWeightFor) {
-        this.filterWeightSince = filterWeightSince;
-        this.filterWeightFor = filterWeightFor;
+    public WeightFilterDialog(FilterModel filterProduct) {
+        this.filterWeightSince = filterProduct.getWeightSince();
+        this.filterWeightFor = filterProduct.getWeightFor();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Activity activity = getActivity();
-        assert activity != null;
-        Context context = activity.getApplicationContext();
-        Resources resources = context.getResources();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
@@ -79,55 +76,39 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
 
         ButterKnife.bind(this, view);
 
-        if (filterWeightSince >= 0) {
-            edittextWeightSince.setText(String.valueOf(filterWeightSince));
-        } else {
-            edittextWeightSince.setText("");
-        }
-        if (filterWeightFor >= 0) {
-            edittextWeightFor.setText(String.valueOf(filterWeightFor));
-        } else {
-            edittextWeightFor.setText("");
-        }
+        if (filterWeightSince >= 0) edittextWeightSince.setText(String.valueOf(filterWeightSince));
+
+        if (filterWeightFor >= 0) edittextWeightFor.setText(String.valueOf(filterWeightFor));
+
 
         btnClear.setOnClickListener(view18 -> {
             edittextWeightSince.setText("");
             edittextWeightFor.setText("");
         });
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_weight))
-                .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.ProductDetailsActivity_weight))
+                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
                     try {
                         filterWeightSince = Integer.valueOf(edittextWeightSince.getText().toString());
-                        if (filterWeightSince <= -1) {
-                            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                        }
                     } catch (NumberFormatException e) {
                         filterWeightSince = -1;
                     }
                     try {
                         filterWeightFor = Integer.valueOf(edittextWeightFor.getText().toString());
-                        if (filterWeightFor <= -1) {
-                            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                        }
                     } catch (NumberFormatException e) {
                         filterWeightFor = -1;
                     }
-                    if (filterWeightSince >= 0 || filterWeightFor >= 0) {
-                        if (filterWeightSince >= 0 && filterWeightFor >= 0) {
-                            if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor) {
-                                dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
-                            } else {
-                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
+                    if (filterWeightSince >= 0 && filterWeightFor >= 0) {
+                        if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor) {
                             dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
+                        } else {
+                            Toast.makeText(getContext(), getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
                         }
-                    } else {
-                        dialogListener.clearFilterVolume();
                     }
+                    else
+                        dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
                 });
         return builder.create();
     }
@@ -136,7 +117,7 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (FilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

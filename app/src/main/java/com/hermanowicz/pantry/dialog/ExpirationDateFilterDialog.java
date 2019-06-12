@@ -17,31 +17,28 @@
 
 package com.hermanowicz.pantry.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.filter.FilterModel;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
+import com.hermanowicz.pantry.utils.DateHelper;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,7 +54,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
-public class ExpirationDateFilterDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
+public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.edittext_expirationDateSince)
     EditText edittextExpirationDateSince;
@@ -66,35 +63,25 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
     @BindView(R.id.button_clear)
     Button btnClear;
 
-    private Context context;
-    private Resources resources;
     private Activity activity;
-    private IFilterDialogListener dialogListener;
+    private FilterDialogListener dialogListener;
     private Calendar calendar;
-    private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private Date dateExpirationSince, dateExpirationFor;
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String filterExpirationDateSince;
     private String filterExpirationDateFor;
-    private String expirationDateSinceConverted = "";
-    private String expirationDateForConverted = "";
-    private String[] dateArray;
     private DatePickerDialog.OnDateSetListener expirationDateSinceListener, expirationDateForListener;
     private int year, month, day;
 
-    public ExpirationDateFilterDialog(String filterExpirationDateSince, String filterExpirationDateFor) {
-        this.filterExpirationDateSince = filterExpirationDateSince;
-        this.filterExpirationDateFor = filterExpirationDateFor;
+    public ExpirationDateFilterDialog(FilterModel filterProduct) {
+        this.filterExpirationDateSince = filterProduct.getExpirationDateSince();
+        this.filterExpirationDateFor = filterProduct.getExpirationDateFor();
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         activity = getActivity();
-        assert activity != null;
-        context = activity.getApplicationContext();
-        resources = context.getResources();
 
-        DATE_FORMAT.setLenient(false);
+        dateFormat.setLenient(false);
 
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -108,27 +95,24 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
         ButterKnife.bind(this, view);
 
         if (filterExpirationDateSince != null) {
-            dateArray = filterExpirationDateSince.split("-");
-            edittextExpirationDateSince.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
-            expirationDateSinceConverted = filterExpirationDateSince;
+            DateHelper date = new DateHelper(filterExpirationDateSince);
+            edittextExpirationDateSince.setText(date.getDateInLocalFormat());
         }
         if (filterExpirationDateFor != null) {
-            dateArray = filterExpirationDateFor.split("-");
-            edittextExpirationDateFor.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
-            expirationDateForConverted = filterExpirationDateFor;
+            DateHelper date = new DateHelper(filterExpirationDateFor);
+            edittextExpirationDateFor.setText(date.getDateInLocalFormat());
         }
 
         edittextExpirationDateSince.setOnClickListener(v -> {
             if (edittextExpirationDateSince.length() < 1) {
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(0);
             } else {
-                String date = edittextExpirationDateSince.getText().toString();
-                dateArray = date.split("\\.");
-                year = Integer.valueOf(dateArray[2]);
-                month = Integer.valueOf(dateArray[1]);
-                day = Integer.valueOf(dateArray[0]);
+                DateHelper date = new DateHelper(filterExpirationDateSince);
+                year = date.getYearFromDate();
+                month = date.getMonthFromDate();
+                day = date.getDayFromDate();
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     activity,
@@ -141,15 +125,14 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
 
         edittextExpirationDateFor.setOnClickListener(v -> {
             if (edittextExpirationDateFor.length() < 1) {
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(0);
             } else {
-                String date = edittextExpirationDateFor.getText().toString();
-                dateArray = date.split("\\.");
-                year = Integer.valueOf(dateArray[2]);
-                month = Integer.valueOf(dateArray[1]);
-                day = Integer.valueOf(dateArray[0]);
+                DateHelper date = new DateHelper(filterExpirationDateFor);
+                year = date.getYearFromDate();
+                month = date.getMonthFromDate();
+                day = date.getDayFromDate();
             }
 
             DatePickerDialog dialog = new DatePickerDialog(
@@ -163,66 +146,38 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
         });
 
         expirationDateSinceListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            edittextExpirationDateSince.setText(day + "." + month + "." + year);
-            expirationDateSinceConverted = year + "-" + month + "-" + day;
+            calendar.set(year, month-1, day);
+            Date date = calendar.getTime();
+            DateHelper dateHelper = new DateHelper(dateFormat.format(date));
+            edittextExpirationDateSince.setText(dateHelper.getDateInLocalFormat());
+            filterExpirationDateSince = dateFormat.format(date);
         };
 
         expirationDateForListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            edittextExpirationDateFor.setText(day + "." + month + "." + year);
-            expirationDateForConverted = year + "-" + month + "-" + day;
+            calendar.set(year, month-1, day);
+            Date date = calendar.getTime();
+            DateHelper dateHelper = new DateHelper(dateFormat.format(date));
+            edittextExpirationDateFor.setText(dateHelper.getDateInLocalFormat());
+            filterExpirationDateFor = dateFormat.format(date);
         };
 
         btnClear.setOnClickListener(view12 -> {
             edittextExpirationDateSince.setText("");
             edittextExpirationDateFor.setText("");
-            expirationDateSinceConverted = "";
-            expirationDateForConverted = "";
+            filterExpirationDateSince = null;
+            filterExpirationDateFor = null;
         });
 
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_expiration_date))
-                .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.ProductDetailsActivity_expiration_date))
+                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    try {
-                        filterExpirationDateSince = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateSinceConverted));
-                        dateExpirationSince = DATE_FORMAT.parse(expirationDateSinceConverted);
-                    } catch (ParseException e) {
-                        if (expirationDateSinceConverted.length() < 1) {
-                            filterExpirationDateSince = null;
-                        } else {
-                            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                        }
-                        e.printStackTrace();
-                    }
-                    try {
-                        filterExpirationDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(expirationDateForConverted));
-                        dateExpirationFor = DATE_FORMAT.parse(expirationDateForConverted);
-                    } catch (ParseException e) {
-                        if (expirationDateForConverted.length() < 1) {
-                            filterExpirationDateFor = null;
-                        } else {
-                            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                        }
-                        e.printStackTrace();
-                    }
-                    if (filterExpirationDateSince == null && filterExpirationDateFor == null) {
-                        dialogListener.clearFilterExpirationDate();
-                    } else {
-                        try {
-                            if (dateExpirationSince.compareTo(dateExpirationFor) == 0 || dateExpirationSince.compareTo(dateExpirationFor) < 0) {
-                                dialogListener.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
-                            } else {
-                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                            }
-                        } catch (NullPointerException e) {
-                            dialogListener.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
-                            e.printStackTrace();
-                        }
-
-                    }
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    if (edittextExpirationDateSince.length() < 1)
+                        filterExpirationDateSince = null;
+                    if (edittextExpirationDateFor.length() < 1)
+                        filterExpirationDateFor = null;
+                    dialogListener.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
                 });
         return builder.create();
     }
@@ -231,13 +186,9 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment implemen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (FilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
-    }
-
-    @Override
-    public void onDateSet(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
     }
 }

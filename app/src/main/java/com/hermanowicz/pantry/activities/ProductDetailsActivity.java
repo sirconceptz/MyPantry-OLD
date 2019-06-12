@@ -17,10 +17,8 @@
 
 package com.hermanowicz.pantry.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.TextView;
@@ -31,15 +29,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.interfaces.IProductDetailsActivityView;
-import com.hermanowicz.pantry.models.ProductDetailsActivityModel;
-import com.hermanowicz.pantry.presenters.ProductDetailsActivityPresenter;
+import com.hermanowicz.pantry.db.ProductDb;
+import com.hermanowicz.pantry.interfaces.ProductDetailsView;
+import com.hermanowicz.pantry.presenters.ProductDetailsPresenter;
+import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Notification;
-import com.hermanowicz.pantry.utils.ProductsViewModel;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -57,7 +57,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class ProductDetailsActivity extends AppCompatActivity implements IProductDetailsActivityView {
+public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -85,17 +85,17 @@ public class ProductDetailsActivity extends AppCompatActivity implements IProduc
     TextView hasSalt;
     @BindView(R.id.text_productTasteValue)
     TextView taste;
+    @BindView(R.id.adBanner)
+    AdView adView;
 
     private Context context;
-    private Resources resources;
+    private ProductDb productDb;
     private Product selectedProduct;
-    private ProductsViewModel productsViewModel;
     private int productID;
     private String hashCode;
 
-    private ProductDetailsActivityPresenter presenter;
+    private ProductDetailsPresenter presenter;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
@@ -104,16 +104,19 @@ public class ProductDetailsActivity extends AppCompatActivity implements IProduc
 
         ButterKnife.bind(this);
 
-        ProductDetailsActivityModel model = new ProductDetailsActivityModel();
-        presenter = new ProductDetailsActivityPresenter(this, model);
+        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        presenter = new ProductDetailsPresenter(this);
 
         getDataFromIntent();
 
         context = ProductDetailsActivity.this;
-        resources = context.getResources();
 
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        selectedProduct = productsViewModel.getProductById(productID);
+        productDb = ProductDb.getInstance(context);
+        selectedProduct = productDb.productsDao().getProductById(productID);
 
         setSupportActionBar(toolbar);
 
@@ -128,14 +131,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements IProduc
         hashCode = myPantryActivityIntent.getStringExtra("hash_code");
     }
 
-    private String convertDateFormat(String dateToConvert) {
-        String[] dateArray = dateToConvert.split("-");
-        String convertedDate = "";
-        if (dateArray.length > 1)
-            convertedDate = dateArray[2] + "." + dateArray[1] + "." + dateArray[0];
-        return convertedDate;
-    }
-
     @OnClick(R.id.button_deleteProduct)
     void onClickDeleteProductButton() {
         presenter.deleteProduct(selectedProduct.getId());
@@ -146,40 +141,34 @@ public class ProductDetailsActivity extends AppCompatActivity implements IProduc
         presenter.printQRCode();
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void showProductDetails(Product product) {
         Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
         typeOfProduct.setText(product.getTypeOfProduct());
         productFeatures.setText(product.getProductFeatures());
-        expirationDate.setText(convertDateFormat(product.getExpirationDate()));
-        productionDate.setText(convertDateFormat(product.getProductionDate()));
+        DateHelper dateHelper = new DateHelper(product.getExpirationDate());
+        expirationDate.setText(dateHelper.getDateInLocalFormat());
+        productionDate.setText(dateHelper.getDateInLocalFormat());
         composition.setText(product.getComposition());
         healingProperties.setText(product.getHealingProperties());
         dosage.setText(product.getDosage());
-        volume.setText(product.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit));
-        weight.setText(product.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit));
+        volume.setText(String.format("%s%s", product.getVolume(), getString(R.string.ProductDetailsActivity_volume_unit)));
+        weight.setText(String.format("%s%s", product.getWeight(), getString(R.string.ProductDetailsActivity_weight_unit)));
         taste.setText(product.getTaste());
-        if (product.getHasSugar())
-            hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_yes));
-        else
-            hasSugar.setText(resources.getString(R.string.ProductDetailsActivity_no));
-        if (product.getHasSalt())
-            hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_yes));
-        else
-            hasSalt.setText(resources.getString(R.string.ProductDetailsActivity_no));
+        if (product.getHasSugar()) hasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (product.getHasSalt()) hasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
     }
 
     @Override
     public void showErrorWrongData() {
-        Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDeletedProduct(int productID) {
-        productsViewModel.deleteProductById(productID);
+        productDb.productsDao().deleteProductById(productID);
         Notification.cancelNotification(context, selectedProduct);
-        Toast.makeText(context, resources.getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -203,7 +192,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements IProduc
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMyPantryActivity();
         }
         return super.onKeyDown(keyCode, event);

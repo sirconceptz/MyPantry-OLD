@@ -38,13 +38,13 @@ public interface ProductsDao {
     Product getProductById(int id);
 
     @Query("SELECT * FROM products ORDER BY expirationDate ASC")
-    LiveData<List<Product>> getAllProducts();
+    LiveData<List<Product>> getAllProductsAsLivedata();
 
     @Query("SELECT * FROM products ORDER BY expirationDate ASC")
     List<Product> getAllProductsAsList();
 
     @Insert
-    void insertProductToDB(List<Product> productsArrayList);
+    void insertProductsToDB(List<Product> products);
 
     @Query("DELETE FROM products WHERE id = (:id)")
     void deleteProductById(int id);

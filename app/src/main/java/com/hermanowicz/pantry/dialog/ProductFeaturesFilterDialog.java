@@ -20,7 +20,6 @@ package com.hermanowicz.pantry.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.filter.Filter;
+import com.hermanowicz.pantry.filter.FilterModel;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,22 +55,19 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
     @BindView(R.id.button_clear)
     Button btnClear;
 
-    private IFilterDialogListener dialogListener;
-    private int filterHasSugar;
-    private int filterHasSalt;
+    private FilterDialogListener dialogListener;
+    private Filter.Set filterHasSugar;
+    private Filter.Set filterHasSalt;
 
-    public ProductFeaturesFilterDialog(int filterHasSugar, int filterHasSalt) {
-        this.filterHasSugar = filterHasSugar;
-        this.filterHasSalt = filterHasSalt;
+    public ProductFeaturesFilterDialog(FilterModel filterProduct) {
+        this.filterHasSugar = filterProduct.getHasSugar();
+        this.filterHasSalt = filterProduct.getHasSalt();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Activity activity = getActivity();
-        assert activity != null;
-        Context context = activity.getApplicationContext();
-        Resources resources = context.getResources();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
@@ -79,47 +77,41 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
 
         ButterKnife.bind(this, view);
 
-        if (filterHasSugar > 0) {
+        if (filterHasSugar == Filter.Set.YES)
             checkboxHasSugar.setChecked(true);
-        }
 
-        if (filterHasSalt > 0) {
+        if (filterHasSalt == Filter.Set.YES)
             checkboxHasSalt.setChecked(true);
-        }
 
         btnClear.setOnClickListener(view13 -> {
             checkboxHasSugar.setChecked(false);
             checkboxHasSalt.setChecked(false);
-            filterHasSugar = -1;
-            filterHasSalt = -1;
+            filterHasSugar = Filter.Set.DISABLED;
+            filterHasSalt = Filter.Set.DISABLED;
         });
 
         checkboxHasSugar.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (checkboxHasSugar.isChecked())
-                        filterHasSugar = 1;
+                        filterHasSugar = Filter.Set.YES;
                     else
-                        filterHasSugar = 0;
+                        filterHasSugar = Filter.Set.NO;
                 }
         );
 
         checkboxHasSalt.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (checkboxHasSalt.isChecked())
-                        filterHasSalt = 1;
+                        filterHasSalt = Filter.Set.YES;
                     else
-                        filterHasSalt = 0;
+                        filterHasSalt = Filter.Set.NO;
                 }
         );
 
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_product_features))
-                .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.ProductDetailsActivity_product_features))
+                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (filterHasSugar == -1 && filterHasSalt == -1) {
-                        dialogListener.clearProductFeatures();
-                    } else
-                        dialogListener.setProductFeatures(filterHasSugar, filterHasSalt);
-                });
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    dialogListener.setProductFeatures(filterHasSugar, filterHasSalt);});
         return builder.create();
     }
 
@@ -127,7 +119,7 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (FilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

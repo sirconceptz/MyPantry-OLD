@@ -38,7 +38,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activities.MyPantryActivity;
-import com.hermanowicz.pantry.utils.ApplicationController;
+import com.hermanowicz.pantry.utils.EmailManager;
 
 import org.json.JSONObject;
 
@@ -73,7 +73,7 @@ public class NotificationService extends IntentService {
     }
 
     private String createStatement(){
-        String statement = getApplicationContext().getResources().getString(R.string.Notifications_statement);
+        String statement = getString(R.string.Notifications_statement);
         statement = statement.replace(DAYS_TAG, String.valueOf(daysToNotification));
         statement = statement.replace(PRODUCT_NAME_TAG, productName);
         return statement;
@@ -110,7 +110,7 @@ public class NotificationService extends IntentService {
             String notificationStatement = createStatement();
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
-            builder.setContentTitle(getApplicationContext().getResources().getString(R.string.Notifications_title));
+            builder.setContentTitle(getString(R.string.Notifications_title));
             builder.setContentText(notificationStatement);
             builder.setStyle(new NotificationCompat.BigTextStyle().bigText(notificationStatement));
             builder.setSmallIcon(R.mipmap.ic_launcher_round);
@@ -133,14 +133,14 @@ public class NotificationService extends IntentService {
                 true)) {
             HashMap<String, String> params = new HashMap<String, String>();
             params.put("to_email_address", myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
-            params.put("subject", context.getResources().getString(R.string.Notifications_title));
+            params.put("subject", getString(R.string.Notifications_title));
             params.put("message", createStatement());
             String url = URL_API + API_MAIL_FILE;
 
             request_json = new JsonObjectRequest(url, new JSONObject(params),
                     response -> {
-                    }, error -> VolleyLog.e(getResources().getString(R.string.Errors_error), error.getMessage()));
-            ApplicationController.getInstance().addToRequestQueue(request_json);
+                    }, error -> VolleyLog.e(getString(R.string.Errors_error), error.getMessage()));
+            EmailManager.getInstance().addEmailToRequestQueue(request_json);
         }
     }
 }

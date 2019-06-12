@@ -50,6 +50,9 @@
     <string name="NewProductActivity_products_added_successful">The products has been added to the product database.</string>
     <string name="NewProductActivity_product_type">Product type</string>
     <string name="NewProductActivity_product_features">Product features</string>
+    <string name="NewProductActivity_quantity_value" translatable="false">1</string>
+    <string name="NewProductActivity_volume_value" translatable="false">0</string>
+    <string name="NewProductActivity_weight_value" translatable="false">0</string>
     <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_name">Name</string>
     <string name="ProductDetailsActivity_quantity">Quantity</string>
@@ -203,5 +206,6 @@
     <string name="Errors_expiration_date_is_required">Expiration date is required</string>
     <!--AdMobSettings-->
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-4025776034769422/4404129112</string>
+    <string name="admob_ad_id" translatable="false">ca-app-pub-4025776034769422~3797748160</string>
     <string name="AppSettingsActivity_version">Version</string>
 </resources>

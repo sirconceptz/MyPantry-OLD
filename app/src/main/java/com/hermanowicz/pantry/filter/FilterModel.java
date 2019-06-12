@@ -41,8 +41,8 @@ public class FilterModel {
     private int volumeFor = -1;
     private int weightSince = -1;
     private int weightFor = -1;
-    private int hasSugar = -1;
-    private int hasSalt = -1;
+    private Filter.Set hasSugar = Filter.Set.DISABLED;
+    private Filter.Set hasSalt = Filter.Set.DISABLED;
     private String taste = null;
 
     public String getName() {
@@ -157,19 +157,19 @@ public class FilterModel {
         this.weightFor = weightFor;
     }
 
-    public int getHasSugar() {
+    public Filter.Set getHasSugar() {
         return hasSugar;
     }
 
-    public void setHasSugar(int hasSugar) {
+    public void setHasSugar(Filter.Set hasSugar) {
         this.hasSugar = hasSugar;
     }
 
-    public int getHasSalt() {
+    public Filter.Set getHasSalt() {
         return hasSalt;
     }
 
-    public void setHasSalt(int hasSalt) {
+    public void setHasSalt(Filter.Set hasSalt) {
         this.hasSalt = hasSalt;
     }
 

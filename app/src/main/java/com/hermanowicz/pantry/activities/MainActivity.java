@@ -28,8 +28,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IMainActivityView;
-import com.hermanowicz.pantry.presenters.MainActivityPresenter;
+import com.hermanowicz.pantry.interfaces.MainActivityView;
+import com.hermanowicz.pantry.presenters.MainPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,12 +43,12 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity implements IMainActivityView {
+public class MainActivity extends AppCompatActivity implements MainActivityView {
 
     @BindView(R.id.adBanner)
     AdView adView;
 
-    private MainActivityPresenter presenter;
+    private MainPresenter presenter;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
 
         ButterKnife.bind(this);
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
+        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        presenter = new MainActivityPresenter(this);
+        presenter = new MainPresenter(this);
     }
 
     @OnClick(R.id.button_myPantry)
@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
     @Override
     public void onResume() {
         super.onResume();
-        presenter = new MainActivityPresenter(this);
         adView.resume();
     }
 
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements IMainActivityView
     @Override
     public void onDestroy() {
         adView.destroy();
-        presenter.onDestroy();
         super.onDestroy();
     }
 }

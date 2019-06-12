@@ -17,10 +17,10 @@
 
 package com.hermanowicz.pantry.utils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,14 +47,13 @@ public class ProductsAdapter extends
 
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
 
-    private List<Product> productList;
-    private List<Product> multiSelectList;
-    private SharedPreferences myPreferences;
+    private List<Product> productList = new ArrayList<>();
+    private List<Product> multiSelectList = new ArrayList<>();
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SharedPreferences preferences;
 
-    public ProductsAdapter(SharedPreferences myPreferences) {
-        this.myPreferences = myPreferences;
-        this.productList = new ArrayList<>();
-        this.multiSelectList = new ArrayList<>();
+    public ProductsAdapter(SharedPreferences preferences) {
+        this.preferences = preferences;
     }
 
     public void setData(List<Product> newData){
@@ -67,7 +66,6 @@ public class ProductsAdapter extends
         notifyDataSetChanged();
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
@@ -77,32 +75,30 @@ public class ProductsAdapter extends
         TextView expirationDateTv = viewHolder.expirationDateTv;
 
         Context context = nameTv.getContext();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Resources resources = context.getResources();
         final Product selectedProduct = productList.get(position);
         Calendar calendar = Calendar.getInstance();
         Date expirationDateDt = calendar.getTime();
-        String volumeString = resources.getString(R.string.ProductDetailsActivity_volume) + ": " +  selectedProduct.getVolume() + resources.getString(R.string.ProductDetailsActivity_volume_unit);
-        String weightString = resources.getString(R.string.ProductDetailsActivity_weight) + ": " +  selectedProduct.getWeight() + resources.getString(R.string.ProductDetailsActivity_weight_unit);
-        String expirationDateString = selectedProduct.getExpirationDate();
-        String[] dateArray = expirationDateString.split("-");
-        if (dateArray.length > 1)
-            expirationDateString = dateArray[2] + "." + dateArray[1] + "." + dateArray[0];
+        String volumeString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_volume), selectedProduct.getVolume(), resources.getString(R.string.ProductDetailsActivity_volume_unit));
+        String weightString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_weight), selectedProduct.getWeight(), resources.getString(R.string.ProductDetailsActivity_weight_unit));
 
-        if (selectedProduct.getName().length() > 25)
-            nameTv.setText(selectedProduct.getName().substring(0, 24) + "...");
-        else
-            nameTv.setText(selectedProduct.getName());
+        nameTv.setText(selectedProduct.getShortName());
         volumeTv.setText(volumeString);
         weightTv.setText(weightString);
-        expirationDateTv.setText(expirationDateString);
+        if(selectedProduct.getExpirationDate().length() > 1) {
+            DateHelper dateHelper = new DateHelper(selectedProduct.getExpirationDate());
+            expirationDateTv.setText(dateHelper.getDateInLocalFormat());
+        }
+        else{
+            expirationDateTv.setText(selectedProduct.getExpirationDate());
+        }
 
         try {
             expirationDateDt = simpleDateFormat.parse(selectedProduct.getExpirationDate());
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("ProductsAdapter", e.toString());
         }
-        calendar.add(Calendar.DAY_OF_MONTH, myPreferences.getInt(
+        calendar.add(Calendar.DAY_OF_MONTH, preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS));
         Date dayOfNotification = calendar.getTime();
         if (multiSelectList.contains(productList.get(position))) {
@@ -130,7 +126,7 @@ public class ProductsAdapter extends
         return holder;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+   class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_productName)
         TextView nameTv;
@@ -144,9 +140,6 @@ public class ProductsAdapter extends
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-        }
-
-        public void bind(final Product product) {
         }
     }
 

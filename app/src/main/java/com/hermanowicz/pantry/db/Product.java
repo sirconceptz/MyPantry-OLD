@@ -60,6 +60,13 @@ public class Product {
         return name;
     }
 
+    public String getShortName(){
+        if(name.length()>25)
+            return name.substring(0, 24) + "...";
+        else
+            return name;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -167,4 +174,6 @@ public class Product {
     public void setTaste(String taste) {
         this.taste = taste;
     }
+
+
 }

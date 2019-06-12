@@ -20,7 +20,6 @@ package com.hermanowicz.pantry.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,7 +34,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.filter.FilterModel;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,20 +55,17 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
     @BindView(R.id.button_clear)
     Button btnClear;
 
-    private IFilterDialogListener dialogListener;
+    private FilterDialogListener dialogListener;
     private String filterTaste;
 
-    public TasteFilterDialog(String filterTaste) {
-        this.filterTaste = filterTaste;
+    public TasteFilterDialog(FilterModel filterProduct) {
+        this.filterTaste = filterProduct.getTaste();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Activity activity = getActivity();
-        assert activity != null;
-        Context context = activity.getApplicationContext();
-        Resources resources = context.getResources();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
@@ -78,9 +75,9 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
 
         ButterKnife.bind(this, view);
 
-        String[] tasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
+        String[] tasteArray = getResources().getStringArray(R.array.ProductDetailsActivity_taste_array);
 
-        ArrayAdapter<CharSequence> tasteAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_taste_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> tasteAdapter = ArrayAdapter.createFromResource(getContext(), R.array.ProductDetailsActivity_taste_array, android.R.layout.simple_spinner_item);
         tasteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTaste.setAdapter(tasteAdapter);
 
@@ -115,16 +112,13 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
         });
 
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_taste))
-                .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.ProductDetailsActivity_taste))
+                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    filterTaste = String.valueOf(spinnerTaste.getSelectedItem());
-                    if (filterTaste.equals(tasteArray[0])) {
-                        dialogListener.clearFilterTaste();
-                    } else {
-                        dialogListener.setFilterTaste(filterTaste);
-                    }
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    if(!String.valueOf(spinnerTaste.getSelectedItem()).equals(tasteArray[0]))
+                        filterTaste = String.valueOf(spinnerTaste.getSelectedItem());
+                    dialogListener.setFilterTaste(filterTaste);
                 });
         return builder.create();
     }
@@ -133,7 +127,7 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (FilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }

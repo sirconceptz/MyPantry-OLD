@@ -20,7 +20,6 @@ package com.hermanowicz.pantry.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
@@ -36,11 +35,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +50,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.dialog.DeleteProductsDialog;
 import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
 import com.hermanowicz.pantry.dialog.NameFilterDialog;
@@ -60,14 +60,13 @@ import com.hermanowicz.pantry.dialog.TasteFilterDialog;
 import com.hermanowicz.pantry.dialog.TypeOfProductFilterDialog;
 import com.hermanowicz.pantry.dialog.VolumeFilterDialog;
 import com.hermanowicz.pantry.dialog.WeightFilterDialog;
-import com.hermanowicz.pantry.interfaces.IDeleteProductsDialogListener;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
-import com.hermanowicz.pantry.interfaces.IMyPantryActivityView;
-import com.hermanowicz.pantry.models.MyPantryActivityModel;
-import com.hermanowicz.pantry.presenters.MyPantryActivityPresenter;
+import com.hermanowicz.pantry.filter.Filter;
+import com.hermanowicz.pantry.interfaces.DeleteProductsDialogListener;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
+import com.hermanowicz.pantry.interfaces.MyPantryView;
+import com.hermanowicz.pantry.presenters.MyPantryPresenter;
 import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.ProductsAdapter;
-import com.hermanowicz.pantry.utils.ProductsViewModel;
 import com.hermanowicz.pantry.utils.RecyclerProductClickListener;
 
 import java.util.ArrayList;
@@ -85,7 +84,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
-public class MyPantryActivity extends AppCompatActivity implements IMyPantryActivityView, IFilterDialogListener, IDeleteProductsDialogListener {
+public class MyPantryActivity extends AppCompatActivity implements MyPantryView, FilterDialogListener, DeleteProductsDialogListener {
 
     @BindView(R.id.recyclerview_products)
     RecyclerView recyclerviewProducts;
@@ -102,13 +101,11 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
 
     private ProductsAdapter adapterProductsRecyclerView;
     private Context context;
-    private Resources resources;
+    private ProductDb productDb;
     private SharedPreferences sharedPreferences;
-    private ProductsViewModel productsViewModel;
     private ActionMode mActionMode;
 
-    private MyPantryActivityModel model;
-    private MyPantryActivityPresenter presenter;
+    private MyPantryPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,29 +116,27 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
         ButterKnife.bind(this);
 
         context = getApplicationContext();
-        resources = context.getResources();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        productDb = ProductDb.getInstance(context);
 
-        model = new MyPantryActivityModel();
-        presenter = new MyPantryActivityPresenter(this, model);
+        presenter = new MyPantryPresenter(this);
 
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
-        assert actionbar != null;
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+            actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
 
         initData();
     }
 
     private void initData() {
-        MobileAds.initialize(context, "ca-app-pub-4025776034769422~3797748160");
+        MobileAds.initialize(context, getResources().getString(R.string.admob_ad_id));
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-
-        productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        presenter.setProductLiveData(productsViewModel.getAllProducts());
+        presenter.setProductLiveData(productDb.productsDao().getAllProductsAsLivedata());
         presenter.getProductLiveData().observe(this, productList -> {
             presenter.setProductList(productList);
             adapterProductsRecyclerView.setData(productList);
@@ -159,9 +154,9 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
                     multiSelect(position);
                 else {
                     List<Product> productList = presenter.getProductList();
-                    Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class);
-                    productDetailsActivityIntent.putExtra("product_id", productList.get(position).getId());
-                    productDetailsActivityIntent.putExtra("hash_code", productList.get(position).getHashCode());
+                    Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class)
+                            .putExtra("product_id", productList.get(position).getId())
+                            .putExtra("hash_code", productList.get(position).getHashCode());
                     MyPantryActivity.this.startActivity(productDetailsActivityIntent);
                     MyPantryActivity.this.finish();
                 }
@@ -181,16 +176,16 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
             }
         }));
 
-        presenter.setProductList(productsViewModel.getAllProductsAsList());
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
 
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
-                    String type_of_dialog = menuItem.getTitle().toString();
-                    if (type_of_dialog.equals(resources.getString(R.string.MyPantryActivity_clear_filters))){
+                    int typeOfDialog = menuItem.getItemId();
+                    if (typeOfDialog == R.id.filter_clear){
                         presenter.clearFilters();
                     }
                     else{
-                        presenter.openDialog(type_of_dialog);
+                        presenter.openDialog(typeOfDialog);
                     }
                     drawerLayout.closeDrawers();
                     return true;
@@ -202,14 +197,39 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
             toolbar.startActionMode(mActionModeCallback);
         if (mActionMode != null) {
             presenter.addMultiSelectProduct(position);
-            mActionMode.setTitle(String.valueOf(presenter.getSelectList().size()));
+            if(presenter.getSelectList().size() == 0)
+                mActionMode.finish();
+            else
+                mActionMode.setTitle(String.valueOf(presenter.getSelectList().size()));
         }
         updateSelectsRecyclerViewAdapter();
     }
 
+    private AppCompatDialogFragment createDialog(int typeOfDialog){
+        AppCompatDialogFragment dialog = null;
+        if (typeOfDialog == R.id.filter_name) {
+            dialog = new NameFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_expiration_date) {
+            dialog = new ExpirationDateFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_production_date) {
+            dialog = new ProductionDateFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_product_type) {
+            dialog = new TypeOfProductFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_volume) {
+            dialog = new VolumeFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_weight) {
+            dialog = new WeightFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_taste) {
+            dialog = new TasteFilterDialog(presenter.getFilterProduct());
+        } else if (typeOfDialog == R.id.filter_product_features) {
+            dialog = new ProductFeaturesFilterDialog(presenter.getFilterProduct());
+        }
+            return dialog;
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
@@ -218,7 +238,6 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     @Override
     public void onResume() {
         super.onResume();
-        presenter = new MyPantryActivityPresenter(this, model);
         adView.resume();
     }
 
@@ -231,38 +250,12 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     @Override
     public void onDestroy() {
         adView.destroy();
-        presenter.onDestroy();
-
         super.onDestroy();
     }
 
     @Override
-    public void openFilterDialog(String typeOfDialog) {
-        if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_name))) {
-            NameFilterDialog nameFilterDialog = new NameFilterDialog(presenter.getFilterName());
-            nameFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_expiration_date))) {
-            ExpirationDateFilterDialog expirationDateFilterDialog = new ExpirationDateFilterDialog(presenter.getFilterExpirationDateSince(), presenter.getFilterExpirationDateFor());
-            expirationDateFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_production_date))) {
-            ProductionDateFilterDialog productionDateFilterDialog = new ProductionDateFilterDialog(presenter.getFilterProductionDateSince(), presenter.getFilterProductionDateFor());
-            productionDateFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_product_type))) {
-            TypeOfProductFilterDialog typeOfProductFilterDialog = new TypeOfProductFilterDialog(presenter.getFilterTypeOfProduct(), presenter.getFilterProductFeatures());
-            typeOfProductFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_volume))) {
-            VolumeFilterDialog volumeFilterDialog = new VolumeFilterDialog(presenter.getFilterVolumeSince(), presenter.getFilterVolumeFor());
-            volumeFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_weight))) {
-            WeightFilterDialog weightFilterDialog = new WeightFilterDialog(presenter.getFilterWeightSince(), presenter.getFilterWeightFor());
-            weightFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_taste))) {
-            TasteFilterDialog tasteFilterDialog = new TasteFilterDialog(presenter.getFilterTaste());
-            tasteFilterDialog.show(getSupportFragmentManager(), "");
-        } else if (typeOfDialog.equals(resources.getString(R.string.ProductDetailsActivity_product_features))) {
-            ProductFeaturesFilterDialog productFeaturesFilterDialog = new ProductFeaturesFilterDialog(presenter.getFilterHasSugar(), presenter.getFilterHasSalt());
-            productFeaturesFilterDialog.show(getSupportFragmentManager(), "");
-        }
+    public void openFilterDialog(int typeOfDialog) {
+        createDialog(typeOfDialog).show(getSupportFragmentManager(), "");
     }
 
     @Override
@@ -276,8 +269,11 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
     }
 
     @Override
-    public void showEmptyPantryStatement() {
-        emptyPantryStatement.setText(resources.getString(R.string.MyPantryActivity_empty_pantry));
+    public void showEmptyPantryStatement(boolean state) {
+        if(state)
+            emptyPantryStatement.setText(getString(R.string.MyPantryActivity_empty_pantry));
+        else
+            emptyPantryStatement.setText("");
     }
 
     @Override
@@ -310,119 +306,79 @@ public class MyPantryActivity extends AppCompatActivity implements IMyPantryActi
 
     @Override
     public void onPrintProducts(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
-        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class);
-
-        printQRCodesActivityIntent.putStringArrayListExtra("text_to_qr_code", textToQRCodeList);
-        printQRCodesActivityIntent.putStringArrayListExtra("expiration_dates", expirationDatesList);
-        printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
-
+        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
+                .putStringArrayListExtra("text_to_qr_code", textToQRCodeList)
+                .putStringArrayListExtra("expiration_dates", expirationDatesList)
+                .putStringArrayListExtra("names_of_products", namesOfProductsList);
         startActivity(printQRCodesActivityIntent);
         finish();
     }
 
     @Override
     public void onDeleteProducts(List<Product> productList) {
-        for(int i = 0; productList.size() > i; i++) {
-            productsViewModel.deleteProductById(productList.get(i).getId());
-            Notification.cancelNotification(context, productList.get(i));
+        for(Product product : productList) {
+            productDb.productsDao().deleteProductById(product.getId());
+            Notification.cancelNotification(context, product);
         }
-        adapterProductsRecyclerView.notifyDataSetChanged();
     }
 
     @Override
     public LiveData<List<Product>> getProductLiveData() {
-        return productsViewModel.getAllProducts();
+        return productDb.productsDao().getAllProductsAsLivedata();
     }
 
     @Override
     public void setFilterName(String filterName) {
-        presenter.setProductList(productsViewModel.getAllProductsAsList());
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterName(filterName);
     }
 
     @Override
     public void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
     }
 
     @Override
     public void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
     }
 
     @Override
     public void setFilterTypeOfProduct(String filterTypeOfProduct, String filterProductFeatures) {
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
     }
 
     @Override
     public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
-        presenter.setProductList(productsViewModel.getAllProductsAsList());
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterVolume(filterVolumeSince, filterVolumeFor);
     }
 
     @Override
     public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
-        presenter.setProductList(productsViewModel.getAllProductsAsList());
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterWeight(filterWeightSince, filterWeightFor);
     }
 
     @Override
     public void setFilterTaste(String filterTaste) {
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterTaste(filterTaste);
     }
 
     @Override
-    public void setProductFeatures(int filterHasSugar, int filterHasSalt) {
+    public void setProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt) {
+        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setProductFeatures(filterHasSugar, filterHasSalt);
-    }
-
-    @Override
-    public void clearFilterName() {
-        presenter.clearFilterName();
-    }
-
-    @Override
-    public void clearFilterExpirationDate() {
-        presenter.clearFilterExpirationDate();
-    }
-
-    @Override
-    public void clearFilterProductionDate() {
-        presenter.clearFilterProductionDate();
-    }
-
-    @Override
-    public void clearFilterTypeOfProduct() {
-        presenter.clearFilterTypeOfProduct();
-    }
-
-    @Override
-    public void clearFilterVolume() {
-        presenter.clearFilterVolume();
-    }
-
-    @Override
-    public void clearFilterWeight() {
-        presenter.clearFilterWeight();
-    }
-
-    @Override
-    public void clearFilterTaste() {
-        presenter.clearFilterTaste();
-    }
-
-    @Override
-    public void clearProductFeatures() {
-        presenter.clearProductFeatures();
     }
 
     @Override
     public void onDeleteProducts() {
         presenter.deleteSelectedProducts();
-        presenter.setIsMultiSelect(false);
         mActionMode.finish();
-
     }
 
     @Override

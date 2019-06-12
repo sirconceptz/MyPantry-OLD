@@ -35,6 +35,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  */
 @Database(entities = {Product.class}, version = 1)
 public abstract class ProductDb extends RoomDatabase {
+
     public abstract ProductsDao productsDao();
 
     private static ProductDb INSTANCE;

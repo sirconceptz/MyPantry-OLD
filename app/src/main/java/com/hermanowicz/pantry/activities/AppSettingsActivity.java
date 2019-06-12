@@ -17,12 +17,9 @@
 
 package com.hermanowicz.pantry.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -39,16 +36,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.dialog.ClearDbDialog;
-import com.hermanowicz.pantry.interfaces.IAppSettingsActivityView;
-import com.hermanowicz.pantry.interfaces.IAppSettingsDialogListener;
-import com.hermanowicz.pantry.models.AppSettingsActivityModel;
-import com.hermanowicz.pantry.presenters.AppSettingsActivityPresenter;
+import com.hermanowicz.pantry.interfaces.AppSettingsDialogListener;
+import com.hermanowicz.pantry.interfaces.AppSettingsView;
+import com.hermanowicz.pantry.presenters.AppSettingsPresenter;
 import com.hermanowicz.pantry.utils.Notification;
-import com.hermanowicz.pantry.utils.ProductsViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,29 +58,28 @@ import butterknife.OnClick;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity implements IAppSettingsActivityView, IAppSettingsDialogListener {
+public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView, AppSettingsDialogListener {
 
     private Context context;
+    private SharedPreferences preferences;
 
-    private AppSettingsActivityModel model;
-    private AppSettingsActivityPresenter presenter;
+    private AppSettingsPresenter presenter;
 
     @BindView(R.id.edittext_daysToNotification)
-    EditText edittext_daysBeforeExpirationDate;
+    EditText daysBeforeExpirationDate;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.checkbox_emailNotifications)
-    CheckBox checkbox_notificationsByEmail;
+    CheckBox notificationsByEmail;
     @BindView(R.id.checkbox_pushNotifications)
-    CheckBox checkbox_notificationsByPush;
+    CheckBox notificationsByPush;
     @BindView(R.id.numberpicker_hourOfNotification)
-    NumberPicker numberpicker_hourOfNotifications;
+    NumberPicker hourOfNotifications;
     @BindView(R.id.edittext_emailAddress)
-    EditText edittext_emailAddress;
+    EditText emailAddress;
     @BindView(R.id.textView_version)
-    TextView textView_version;
+    TextView appVersion;
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
@@ -95,17 +89,16 @@ public class AppSettingsActivity extends AppCompatActivity implements IAppSettin
         ButterKnife.bind(this);
 
         context = getApplicationContext();
-        SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         setSupportActionBar(toolbar);
 
-        model = new AppSettingsActivityModel(myPreferences);
-        presenter = new AppSettingsActivityPresenter(this, model);
+        presenter = new AppSettingsPresenter(this, preferences);
 
         setNumberpickerSettings();
         presenter.loadSettings();
 
-        edittext_emailAddress.addTextChangedListener(new TextWatcher() {
+        emailAddress.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -116,16 +109,16 @@ public class AppSettingsActivity extends AppCompatActivity implements IAppSettin
 
             @Override
             public void afterTextChanged(Editable s) {
-                String emailAddress = edittext_emailAddress.getText().toString();
+                String emailAddress = AppSettingsActivity.this.emailAddress.getText().toString();
                 presenter.enableEmailCheckbox(emailAddress);
             }
         });
     }
 
     void setNumberpickerSettings() {
-        numberpicker_hourOfNotifications.setMinValue(1);
-        numberpicker_hourOfNotifications.setMaxValue(24);
-        numberpicker_hourOfNotifications.setWrapSelectorWheel(false);
+        hourOfNotifications.setMinValue(1);
+        hourOfNotifications.setMaxValue(24);
+        hourOfNotifications.setWrapSelectorWheel(false);
     }
 
     @OnClick(R.id.button_clearDatabase)
@@ -136,11 +129,11 @@ public class AppSettingsActivity extends AppCompatActivity implements IAppSettin
 
     @OnClick(R.id.button_saveSettings)
     void onClickSaveSettingsButton() {
-        int daysToNotification = Integer.parseInt(edittext_daysBeforeExpirationDate.getText().toString());
-        boolean isEmailNotificationsAllowed = checkbox_notificationsByEmail.isChecked();
-        boolean isPushNotificationsAllowed = checkbox_notificationsByPush.isChecked();
-        int hourOfNotifications = numberpicker_hourOfNotifications.getValue();
-        String emailAddress = edittext_emailAddress.getText().toString();
+        int daysToNotification = Integer.parseInt(daysBeforeExpirationDate.getText().toString());
+        boolean isEmailNotificationsAllowed = notificationsByEmail.isChecked();
+        boolean isPushNotificationsAllowed = notificationsByPush.isChecked();
+        int hourOfNotifications = this.hourOfNotifications.getValue();
+        String emailAddress = this.emailAddress.getText().toString();
 
         presenter.setDaysBeforeExpirationDate(daysToNotification);
         presenter.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
@@ -152,28 +145,28 @@ public class AppSettingsActivity extends AppCompatActivity implements IAppSettin
     }
 
     @Override
-    public void setEdittext_daysBeforeExpirationDate(int daysBeforeExpirationDate) {
-        edittext_daysBeforeExpirationDate.setText(String.valueOf(daysBeforeExpirationDate));
+    public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
+        this.daysBeforeExpirationDate.setText(String.valueOf(daysBeforeExpirationDate));
     }
 
     @Override
     public void setCheckbox_pushNotification(boolean isPushNotificationsAllowed) {
-        checkbox_notificationsByPush.setChecked(isPushNotificationsAllowed);
+        notificationsByPush.setChecked(isPushNotificationsAllowed);
     }
 
     @Override
     public void setCheckbox_emailNotification(boolean isEmailNotificationsAllowed) {
-        checkbox_notificationsByEmail.setChecked(isEmailNotificationsAllowed);
+        notificationsByEmail.setChecked(isEmailNotificationsAllowed);
     }
 
     @Override
-    public void setEdittext_emailAddress(String emailAddress) {
-        edittext_emailAddress.setText(emailAddress);
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress.setText(emailAddress);
     }
 
     @Override
-    public void setNumberpicker_hourOfNotifications(int hourOfNotifications) {
-        numberpicker_hourOfNotifications.setValue(hourOfNotifications);
+    public void setHourOfNotifications(int hourOfNotifications) {
+        this.hourOfNotifications.setValue(hourOfNotifications);
     }
 
     @Override
@@ -184,32 +177,25 @@ public class AppSettingsActivity extends AppCompatActivity implements IAppSettin
 
     @Override
     public void enableEmailCheckbox(boolean isValidEmail) {
-        checkbox_notificationsByEmail.setEnabled(isValidEmail);
+        notificationsByEmail.setEnabled(isValidEmail);
     }
 
     @Override
     public void onSettingsSaved() {
-        Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_settings_saved_successful), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.AppSettingsActivity_settings_saved_successful), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDatabaseClear() {
-        ProductsViewModel productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        productsViewModel.deleteAllProducts();
+        ProductDb productDb = ProductDb.getInstance(context);
+        productDb.productsDao().clearDb();
         Notification.cancelAllNotifications(context);
-        Toast.makeText(context, getResources().getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
-    public void showCodeVersion() {
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = pInfo.versionName;
-            textView_version.setText(getResources().getString(R.string.AppSettingsActivity_version) + ": " + version);
-        } catch (PackageManager.NameNotFoundException e) {
-            textView_version.setText("");
-        }
+    public void showCodeVersion(String version) {
+        appVersion.setText(String.format("%s: %s", getString(R.string.AppSettingsActivity_version), version));
     }
 
     @Override
@@ -221,27 +207,14 @@ public class AppSettingsActivity extends AppCompatActivity implements IAppSettin
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        presenter = new AppSettingsActivityPresenter(this, model);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        presenter.onDestroy();
-        super.onDestroy();
-    }
-
-    @Override
-    public void clearDatabaseConfirmation() {
+    public void onPositiveClickClearDatabase() {
         presenter.clearDatabase();
     }
 }

@@ -25,8 +25,8 @@ android {
         applicationId "com.hermanowicz.pantry"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 5
-        versionName "1.2.0"
+        versionCode 7
+        versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -39,6 +39,9 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
     buildTypes {
         release {
@@ -58,22 +61,26 @@ android {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/INDEX.LIST'
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.jakewharton:butterknife:10.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
     implementation 'androidx.core:core:1.2.0-alpha01'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0-beya01'
     implementation 'com.google.firebase:firebase-database:17.0.0'
     implementation 'com.google.firebase:firebase-ads:17.2.1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha05'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0-alpha06'
     implementation 'com.google.android.gms:play-services:12.0.1'
     implementation 'com.mcxiaoke.volley:library:1.0.19'
     implementation 'androidx.multidex:multidex:2.0.1'
@@ -82,16 +89,20 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'jp.wasabeef:recyclerview-animators:2.2.3'
-    implementation 'androidx.room:room-runtime:2.1.0-beta01'
+    implementation 'androidx.room:room-runtime:2.1.0-rc01'
     implementation 'androidx.drawerlayout:drawerlayout:1.1.0-alpha01'
-    implementation 'androidx.annotation:annotation:1.1.0-rc01'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
     implementation 'android.arch.lifecycle:runtime:1.1.1'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
-    androidTestImplementation 'androidx.test:runner:1.2.0-beta01'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
-    testImplementation 'junit:junit:4.13-beta-3'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'com.android.support.test:runner:1.0.2'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:5.3.2"
+    testImplementation "org.mockito:mockito-all:1.10.19"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.3.2"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-    annotationProcessor 'androidx.room:room-compiler:2.1.0-beta01'
+    annotationProcessor 'androidx.room:room-compiler:2.1.0-rc01'
 }

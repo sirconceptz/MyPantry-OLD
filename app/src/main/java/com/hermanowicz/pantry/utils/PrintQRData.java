@@ -17,6 +17,8 @@
 
 package com.hermanowicz.pantry.utils;
 
+import android.util.Log;
+
 import com.hermanowicz.pantry.db.Product;
 
 import org.json.JSONException;
@@ -45,7 +47,7 @@ public class PrintQRData {
                 jsonObject.put("hash_code", productsList.get(counter).hashCode());
                 textToQRCodeList.add(jsonObject.toString());
             } catch (JSONException e) {
-                e.printStackTrace();
+               Log.e("json", e.toString());
             }
         }
         return textToQRCodeList;

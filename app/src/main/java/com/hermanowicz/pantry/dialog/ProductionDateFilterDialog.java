@@ -17,31 +17,28 @@
 
 package com.hermanowicz.pantry.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.filter.FilterModel;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
+import com.hermanowicz.pantry.utils.DateHelper;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,7 +54,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
-public class ProductionDateFilterDialog extends AppCompatDialogFragment implements DatePickerDialog.OnDateSetListener {
+public class ProductionDateFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.edittext_productionDateSince)
     EditText edittextProductionDateSince;
@@ -66,35 +63,25 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
     @BindView(R.id.button_clear)
     Button btnClear;
 
-    private Context context;
-    private Resources resources;
     private Activity activity;
-    private IFilterDialogListener dialogListener;
-    private Calendar calendar;
-    private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-    private Date dateProductionSince, dateProductionFor;
+    private FilterDialogListener dialogListener;
+    private Calendar calendar = Calendar.getInstance();
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String filterProductionDateSince;
     private String filterProductionDateFor;
-    private String productionDateSinceConverted = "";
-    private String productionDateForConverted = "";
-    private String[] dateArray;
     private DatePickerDialog.OnDateSetListener productionDateSinceListener, productionDateForListener;
     private int year, month, day;
 
-    public ProductionDateFilterDialog(String filterProductionDateSince, String filterProductionDateFor) {
-        this.filterProductionDateSince = filterProductionDateSince;
-        this.filterProductionDateFor = filterProductionDateFor;
+    public ProductionDateFilterDialog(FilterModel filterProduct) {
+        this.filterProductionDateSince = filterProduct.getProductionDateSince();
+        this.filterProductionDateFor = filterProduct.getProductionDateFor();
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         activity = getActivity();
-        assert activity != null;
-        context = activity.getApplicationContext();
-        resources = context.getResources();
 
-        DATE_FORMAT.setLenient(false);
+        dateFormat.setLenient(false);
 
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -108,27 +95,24 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
         ButterKnife.bind(this, view);
 
         if (filterProductionDateSince != null) {
-            dateArray = filterProductionDateSince.split("-");
-            edittextProductionDateSince.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
-            productionDateSinceConverted = filterProductionDateSince;
+            DateHelper date = new DateHelper(filterProductionDateSince);
+            edittextProductionDateSince.setText(date.getDateInLocalFormat());
         }
         if (filterProductionDateFor != null) {
-            dateArray = filterProductionDateFor.split("-");
-            edittextProductionDateFor.setText(dateArray[2] + "." + dateArray[1] + "." + dateArray[0]);
-            productionDateForConverted = filterProductionDateFor;
+            DateHelper date = new DateHelper(filterProductionDateFor);
+            edittextProductionDateFor.setText(date.getDateInLocalFormat());
         }
 
         edittextProductionDateSince.setOnClickListener(v -> {
             if (edittextProductionDateSince.length() < 1) {
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(0);
             } else {
-                String date = edittextProductionDateSince.getText().toString();
-                dateArray = date.split("\\.");
-                year = Integer.valueOf(dateArray[2]);
-                month = Integer.valueOf(dateArray[1]);
-                day = Integer.valueOf(dateArray[0]);
+                DateHelper date = new DateHelper(filterProductionDateSince);
+                year = date.getYearFromDate();
+                month = date.getMonthFromDate();
+                day = date.getDayFromDate();
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     activity,
@@ -141,15 +125,14 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
 
         edittextProductionDateFor.setOnClickListener(v -> {
             if (edittextProductionDateFor.length() < 1) {
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(0);
             } else {
-                String date = edittextProductionDateFor.getText().toString();
-                dateArray = date.split("\\.");
-                year = Integer.valueOf(dateArray[2]);
-                month = Integer.valueOf(dateArray[1]);
-                day = Integer.valueOf(dateArray[0]);
+                DateHelper date = new DateHelper(filterProductionDateFor);
+                year = date.getYearFromDate();
+                month = date.getMonthFromDate();
+                day = date.getDayFromDate();
             }
 
             DatePickerDialog dialog = new DatePickerDialog(
@@ -163,66 +146,38 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
         });
 
         productionDateSinceListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            edittextProductionDateSince.setText(day + "." + month + "." + year);
-            productionDateSinceConverted = year + "-" + month + "-" + day;
+            calendar.set(year, month-1, day);
+            Date date = calendar.getTime();
+            DateHelper dateHelper = new DateHelper(dateFormat.format(date));
+            edittextProductionDateSince.setText(dateHelper.getDateInLocalFormat());
+            filterProductionDateSince = dateFormat.format(date);
         };
 
         productionDateForListener = (datePicker, year, month, day) -> {
-            month = month + 1;
-            edittextProductionDateFor.setText(day + "." + month + "." + year);
-            productionDateForConverted = year + "-" + month + "-" + day;
+            calendar.set(year, month-1, day);
+            Date date = calendar.getTime();
+            DateHelper dateHelper = new DateHelper(dateFormat.format(date));
+            edittextProductionDateFor.setText(dateHelper.getDateInLocalFormat());
+            filterProductionDateFor = dateFormat.format(date);
         };
 
         btnClear.setOnClickListener(view12 -> {
             edittextProductionDateSince.setText("");
             edittextProductionDateFor.setText("");
-            productionDateSinceConverted = "";
-            productionDateForConverted = "";
+            filterProductionDateSince = null;
+            filterProductionDateFor = null;
         });
 
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_production_date))
-                .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.ProductDetailsActivity_production_date))
+                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    try {
-                        filterProductionDateSince = DATE_FORMAT.format(DATE_FORMAT.parse(productionDateSinceConverted));
-                        dateProductionSince = DATE_FORMAT.parse(productionDateSinceConverted);
-                    } catch (ParseException e) {
-                        if (productionDateSinceConverted.length() < 1) {
-                            filterProductionDateSince = null;
-                        } else {
-                            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                        }
-                        e.printStackTrace();
-                    }
-                    try {
-                        filterProductionDateFor = DATE_FORMAT.format(DATE_FORMAT.parse(productionDateForConverted));
-                        dateProductionFor = DATE_FORMAT.parse(productionDateForConverted);
-                    } catch (ParseException e) {
-                        if (productionDateForConverted.length() < 1) {
-                            filterProductionDateFor = null;
-                        } else {
-                            Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                        }
-                        e.printStackTrace();
-                    }
-                    if (filterProductionDateSince == null && filterProductionDateFor == null) {
-                        dialogListener.clearFilterProductionDate();
-                    } else {
-                        try {
-                            if (dateProductionSince.compareTo(dateProductionFor) == 0 || dateProductionSince.compareTo(dateProductionFor) < 0) {
-                                dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
-                            } else {
-                                Toast.makeText(context, resources.getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
-                            }
-                        } catch (NullPointerException e) {
-                            dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
-                            e.printStackTrace();
-                        }
-
-                    }
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    if (edittextProductionDateSince.length() < 1)
+                        filterProductionDateSince = null;
+                    if (edittextProductionDateFor.length() < 1)
+                        filterProductionDateFor = null;
+                    dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
                 });
         return builder.create();
     }
@@ -231,13 +186,9 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment implemen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (FilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
-    }
-
-    @Override
-    public void onDateSet(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
     }
 }

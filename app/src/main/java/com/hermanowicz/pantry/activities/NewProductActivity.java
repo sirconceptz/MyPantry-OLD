@@ -17,7 +17,6 @@
 
 package com.hermanowicz.pantry.activities;
 
-import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +34,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,21 +44,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.interfaces.INewProductActivityView;
-import com.hermanowicz.pantry.models.NewProductActivityModel;
-import com.hermanowicz.pantry.presenters.NewProductActivityPresenter;
+import com.hermanowicz.pantry.db.ProductDb;
+import com.hermanowicz.pantry.interfaces.NewProductView;
+import com.hermanowicz.pantry.presenters.NewProductPresenter;
+import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Notification;
-import com.hermanowicz.pantry.utils.ProductsViewModel;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -70,7 +68,7 @@ import butterknife.OnClick;
 /**
  * <h1>NewProductActivity</h1>
  * Activity to add a new product. User can add a new product to the database.
- * In new product user can choose a type of product, taste, name, production and expiration dates,
+ * In new product user can choose a type of product, tasteGroup, name, production and expiration dates,
  * composition, volume, weight and for specific products attributes like healing properties
  * or dosage. Product can have a sugar and a salt (checkbox). User can add more like 1 item after
  * giving quantity. After inserting a new product to database user will be asked (in different
@@ -80,7 +78,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, INewProductActivityView {
+public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -110,16 +108,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     CheckBox hasSugar;
     @BindView(R.id.checkbox_hasSalt)
     CheckBox hasSalt;
-    @BindView(R.id.radiobtn_isSweet)
-    RadioButton isSweet;
-    @BindView(R.id.radiobtn_isSour)
-    RadioButton isSour;
-    @BindView(R.id.radiobtn_isSweetAndSour)
-    RadioButton isSweetAndSour;
-    @BindView(R.id.radiobtn_isBitter)
-    RadioButton isBitter;
-    @BindView(R.id.radiobtn_isSalty)
-    RadioButton isSalty;
+    @BindView(R.id.radiogroup_taste)
+    RadioGroup tasteGroup;
     @BindView(R.id.text_volumeLabel)
     TextView volumeLabel;
     @BindView(R.id.text_weightLabel)
@@ -131,14 +121,11 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private Resources resources;
     private int day, month, year;
     private boolean isTypeOfProductTouched;
-    private Calendar calendar;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
     private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
 
-    private NewProductActivityModel model;
-    private NewProductActivityPresenter presenter;
+    private NewProductPresenter presenter;
 
-    @SuppressLint({"SetTextI18n", "CutPasteId", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
@@ -149,8 +136,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
         init();
 
-        model = new NewProductActivityModel(resources);
-        presenter = new NewProductActivityPresenter(this, model);
+        presenter = new NewProductPresenter(this, resources, ProductDb.getInstance(context));
 
         typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_type_of_product_array, android.R.layout.simple_spinner_item);
         typeOfProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -162,16 +148,14 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
         expirationDate.setOnClickListener(v -> {
             if (expirationDate.length() < 1) {
-                calendar = Calendar.getInstance();
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(1);
             } else {
-                String[] expirationDateArray = presenter.getExpirationDateArray();
-                year = Integer.valueOf(expirationDateArray[0]);
-                month = Integer.valueOf(expirationDateArray[1]);
-                day = Integer.valueOf(expirationDateArray[2]);
+                int[] expirationDateArray = presenter.getExpirationDateArray();
+                year = expirationDateArray[0];
+                month = expirationDateArray[1];
+                day = expirationDateArray[2];
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     context,
@@ -184,22 +168,20 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         });
 
         expirationDateListener = (datePicker, year, month, day) -> {
-            month = month + 1;
             presenter.showExpirationDate(day, month, year);
-            presenter.setExpirationDate(expirationDate.getText().toString());
+            presenter.setExpirationDate(year, month, day);
         };
 
         productionDate.setOnClickListener(v -> {
             if (productionDate.length() < 1) {
-                calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(0);
             } else {
-                String[] productionDateArray = presenter.getProductionDateArray();
-                year = Integer.valueOf(productionDateArray[0]);
-                month = Integer.valueOf(productionDateArray[1]);
-                day = Integer.valueOf(productionDateArray[2]);
+                int[] productionDateArray = presenter.getProductionDateArray();
+                year = productionDateArray[0];
+                month = productionDateArray[1];
+                day = productionDateArray[2];
             }
             DatePickerDialog dialog = new DatePickerDialog(
                     context,
@@ -211,9 +193,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         });
 
         productionDateListener = (datePicker, year, month, day) -> {
-            month = month + 1;
             presenter.showProductionDate(day, month, year);
-            presenter.setProductionDate(productionDate.getText().toString());
+            presenter.setProductionDate(year, month, day);
         };
 
         productTypeSpinner.setOnTouchListener((v, event) -> {
@@ -238,25 +219,23 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @OnClick(R.id.button_addProduct)
     void onClickAddProduct() {
-        presenter.setName(name.getText().toString());
-        presenter.setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()));
-        presenter.setProductFeatures(String.valueOf(productFeaturesSpinner.getSelectedItem()));
-        presenter.setExpirationDate(expirationDate.getText().toString());
-        presenter.setProductionDate(productionDate.getText().toString());
-        presenter.setComposition(composition.getText().toString());
-        presenter.setHealingProperties(healingProperties.getText().toString());
-        presenter.setDosage(dosage.getText().toString());
-        presenter.parseQuantity(quantity.getText().toString());
-        presenter.parseVolume(volume.getText().toString());
-        presenter.parseWeight(weight.getText().toString());
-        presenter.setHasSugar(hasSugar.isChecked());
-        presenter.setHasSalt(hasSalt.isChecked());
-        presenter.setIsSweet(isSweet.isChecked());
-        presenter.setIsSour(isSour.isChecked());
-        presenter.setIsSweetAndSour(isSweetAndSour.isChecked());
-        presenter.setIsBitter(isBitter.isChecked());
-        presenter.setIsSalty(isSalty.isChecked());
-        presenter.addProducts();
+        int selectedTasteId = tasteGroup.getCheckedRadioButtonId();
+        RadioButton taste = findViewById(selectedTasteId);
+
+        Product product = new Product();
+        product.setName(name.getText().toString());
+        product.setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()));
+        product.setProductFeatures(String.valueOf(productFeaturesSpinner.getSelectedItem()));
+        product.setComposition(composition.getText().toString());
+        product.setHealingProperties(healingProperties.getText().toString());
+        product.setDosage(dosage.getText().toString());
+        product.setVolume(Integer.parseInt(volume.getText().toString()));
+        product.setWeight(Integer.parseInt(weight.getText().toString()));
+        product.setHasSugar(hasSugar.isChecked());
+        product.setHasSalt(hasSalt.isChecked());
+        product.setTaste(String.valueOf(taste.getText()));
+        presenter.setQuantity(quantity.getText().toString());
+        presenter.addProducts(product);
     }
 
     @Override
@@ -271,25 +250,20 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     public void onDateSet(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
     }
 
-    @SuppressLint({"CutPasteId", "SetTextI18n"})
     private void init(){
         context = NewProductActivity.this;
         resources = context.getResources();
 
         setSupportActionBar(toolbar);
 
-        MobileAds.initialize(getApplicationContext(), "ca-app-pub-4025776034769422~3797748160");
+        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        quantity.setText("1");
-        volume.setText("0");
-        weight.setText("0");
+        volumeLabel.setText(String.format("%s (%s)", getString(R.string.ProductDetailsActivity_volume), getString(R.string.ProductDetailsActivity_volume_unit)));
 
-        volumeLabel.setText(resources.getString(R.string.ProductDetailsActivity_volume) + " (" + resources.getString(R.string.ProductDetailsActivity_volume_unit) + ")");
-
-        weightLabel.setText(resources.getString(R.string.ProductDetailsActivity_weight) + " (" + resources.getString(R.string.ProductDetailsActivity_weight_unit) + ")");
+        weightLabel.setText(String.format("%s (%s)", getString(R.string.ProductDetailsActivity_weight), getString(R.string.ProductDetailsActivity_weight_unit)));
 
         name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         composition.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -299,7 +273,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
@@ -308,7 +282,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     @Override
     public void onResume() {
         super.onResume();
-        presenter = new NewProductActivityPresenter(this, model);
         adView.resume();
     }
 
@@ -321,29 +294,23 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     @Override
     public void onDestroy() {
         adView.destroy();
-        presenter.onDestroy();
         super.onDestroy();
     }
 
     @Override
     public void navigateToPrintQRCodesActivity(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
-        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class);
-
-        printQRCodesActivityIntent.putStringArrayListExtra("text_to_qr_code", textToQRCodeList);
-        printQRCodesActivityIntent.putStringArrayListExtra("expiration_dates", expirationDatesList);
-        printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
+        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
+                .putStringArrayListExtra("text_to_qr_code", textToQRCodeList)
+                .putStringArrayListExtra("expiration_dates", expirationDatesList)
+                .putStringArrayListExtra("names_of_products", namesOfProductsList);
 
         startActivity(printQRCodesActivityIntent);
         finish();
     }
 
     @Override
-    public void isAddProductsSuccess(List<Product> productArrayList) {
-        Product product;
-        ProductsViewModel productsViewModel = ViewModelProviders.of(this).get(ProductsViewModel.class);
-        productsViewModel.insertProduct(productArrayList);
-        for (int counter = 0; counter < productArrayList.size(); counter++) {
-            product = productArrayList.get(counter);
+    public void onProductsAdd(List<Product> products) {
+        for (Product product : products) {
             Notification.createNotification(context, product);
         }
     }
@@ -386,27 +353,25 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         Toast.makeText(context, statementToShow, Toast.LENGTH_LONG).show();
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
-    public void showExpirationDate(int day, int month, int year) {
-        expirationDate.setText(day + "." + month + "." + year);
+    public void showExpirationDate(String date) {
+        expirationDate.setText(date);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
-    public void showProductionDate(int day, int month, int year) {
-        productionDate.setText(day + "." + month + "." + year);
+    public void showProductionDate(String date) {
+        productionDate.setText(date);
     }
 
     @Override
     public void showErrorNameNotSet() {
-        name.setError(resources.getString(R.string.Errors_product_name_is_required));
-        Toast.makeText(context, resources.getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG).show();
+        name.setError(getString(R.string.Errors_product_name_is_required));
+        Toast.makeText(context, getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showErrorCategoryNotSelected() {
-        Toast.makeText(context, resources.getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
     }
 
     @Override

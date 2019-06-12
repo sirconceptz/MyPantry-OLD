@@ -19,7 +19,6 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.KeyEvent;
@@ -33,9 +32,8 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IScanProductActivityView;
-import com.hermanowicz.pantry.models.ScanProductActivityModel;
-import com.hermanowicz.pantry.presenters.ScanProductActivityPresenter;
+import com.hermanowicz.pantry.interfaces.ScanProductView;
+import com.hermanowicz.pantry.presenters.ScanProductPresenter;
 
 import java.util.List;
 
@@ -47,13 +45,11 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
-public class ScanProductActivity extends AppCompatActivity implements IScanProductActivityView {
+public class ScanProductActivity extends AppCompatActivity implements ScanProductView {
 
     private Context context;
-    private Resources resources;
 
-    private ScanProductActivityModel model;
-    private ScanProductActivityPresenter presenter;
+    private ScanProductPresenter presenter;
 
     static final int VIBRATE_DURATION = 1000;
 
@@ -63,18 +59,16 @@ public class ScanProductActivity extends AppCompatActivity implements IScanProdu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_product);
 
-        model = new ScanProductActivityModel();
-        presenter = new ScanProductActivityPresenter(this, model);
+        presenter = new ScanProductPresenter(this);
 
-        context = ScanProductActivity.this;
-        resources = context.getResources();
+        context = getApplicationContext();
 
         setQRCodeScanner();
     }
 
     void setQRCodeScanner() {
         IntentIntegrator qrCodeScanner = new IntentIntegrator(this);
-        qrCodeScanner.setPrompt(resources.getString(R.string.ScanProductActivity_scan_qr_code));
+        qrCodeScanner.setPrompt(getString(R.string.ScanProductActivity_scan_qr_code));
         qrCodeScanner.setOrientationLocked(true);
         qrCodeScanner.setBeepEnabled(true);
         qrCodeScanner.setCameraId(0);
@@ -97,7 +91,7 @@ public class ScanProductActivity extends AppCompatActivity implements IScanProdu
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
@@ -105,7 +99,7 @@ public class ScanProductActivity extends AppCompatActivity implements IScanProdu
 
     @Override
     public void showErrorProductNotFound() {
-        Toast.makeText(context, resources.getString(R.string.ScanProductActivity_product_not_found), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.ScanProductActivity_product_not_found), Toast.LENGTH_LONG).show();
     }
 
     @Override

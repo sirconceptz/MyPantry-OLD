@@ -25,32 +25,41 @@
         </group>
         <group>
                 <item
+                    android:id="@+id/filter_name"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_name"/>
                 <item
+                    android:id="@+id/filter_expiration_date"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_expiration_date"/>
                 <item
+                    android:id="@+id/filter_production_date"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_production_date"/>
                 <item
+                    android:id="@+id/filter_product_type"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_product_type"/>
                 <item
+                    android:id="@+id/filter_volume"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_volume"/>
                 <item
+                    android:id="@+id/filter_weight"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_weight"/>
                 <item
+                    android:id="@+id/filter_taste"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_taste"/>
                 <item
+                    android:id="@+id/filter_product_features"
                     android:icon="@drawable/ic_check_box_false"
                     android:title="@string/ProductDetailsActivity_product_features" />
         </group>
         <group>
                 <item
+                    android:id="@+id/filter_clear"
                     android:icon="@drawable/ic_clear"
                     android:title="@string/MyPantryActivity_clear_filters" />
         </group>

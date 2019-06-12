@@ -35,7 +35,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IFilterDialogListener;
+import com.hermanowicz.pantry.filter.FilterModel;
+import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,24 +60,25 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
 
     private Context context;
     private Resources resources;
-    private IFilterDialogListener dialogListener;
+    private FilterDialogListener dialogListener;
     private String filterTypeOfProduct, filterProductFeatures, selectedProductType;
     private String[] typeOfProductArray, productFeaturesArray;
     private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
     private boolean isTypeOfProductTouched;
 
-    public TypeOfProductFilterDialog(String filterTypeOfProduct, String filterProductFeatures) {
-        this.filterTypeOfProduct = filterTypeOfProduct;
-        this.filterProductFeatures = filterProductFeatures;
+    public TypeOfProductFilterDialog(FilterModel filterProduct) {
+        this.filterTypeOfProduct = filterProduct.getTypeOfProduct();
+        this.filterProductFeatures = filterProduct.getProductFeatures();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Activity activity = getActivity();
-        assert activity != null;
-        context = activity.getApplicationContext();
-        resources = context.getResources();
+        if (activity != null) {
+            context = activity.getApplicationContext();
+            resources = context.getResources();
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
@@ -151,12 +153,12 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         });
 
         builder.setView(view)
-                .setTitle(resources.getString(R.string.ProductDetailsActivity_product_type))
-                .setNegativeButton(resources.getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.ProductDetailsActivity_product_type))
+                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(resources.getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
                     if (String.valueOf(spinnerTypeOfProduct.getSelectedItem()).equals(typeOfProductArray[0]))
-                        dialogListener.clearFilterTypeOfProduct();
+                        dialogListener.setFilterTypeOfProduct(null, null);
                     else{
                         filterTypeOfProduct = String.valueOf(spinnerTypeOfProduct.getSelectedItem());
                         filterProductFeatures = null;
@@ -172,98 +174,61 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (IFilterDialogListener) context;
+            dialogListener = (FilterDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
     }
 
     private void updateProductFeaturesSpinnerAndSelectTypeOfProduct() {
-        try {
+        if(filterTypeOfProduct != null) {
             if (filterTypeOfProduct.equals(typeOfProductArray[1])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(1, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[2])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_ready_meals_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_ready_meals_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(2, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[3])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_vegetables_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vegetables_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(3, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[4])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_fruits_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_fruits_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(4, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[5])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_herbs_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_herbs_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(5, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[6])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_liqueurs_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_liqueurs_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(6, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[7])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_wines_type_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_wines_type_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(7, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[8])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_mushrooms_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_mushrooms_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(8, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[9])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_vinegars_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vinegars_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(9, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             } else if (filterTypeOfProduct.equals(typeOfProductArray[10])) {
                 productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_other_products_array);
                 productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_other_products_array, android.R.layout.simple_spinner_item);
-                productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-                productFeaturesAdapter.notifyDataSetChanged();
                 spinnerTypeOfProduct.setSelection(10, false);
-                spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
             }
-        } catch (NullPointerException e) {
+            productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerProductFeatures.setAdapter(productFeaturesAdapter);
+            spinnerTypeOfProduct.setBackgroundColor(Color.rgb(200, 255, 200));
+            }
+        else{
             productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_choose_array);
-            spinnerTypeOfProduct.setSelection(0, false);
             spinnerTypeOfProduct.setBackgroundColor(Color.TRANSPARENT);
         }
     }
@@ -294,6 +259,5 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
 
         productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerProductFeatures.setAdapter(productFeaturesAdapter);
-        productFeaturesAdapter.notifyDataSetChanged();
     }
 }

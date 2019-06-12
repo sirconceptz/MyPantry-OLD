@@ -19,7 +19,6 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -36,9 +35,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.hermanowicz.pantry.BuildConfig;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.IPrintQRCodesActivityView;
-import com.hermanowicz.pantry.models.PrintQRCodesActivityModel;
-import com.hermanowicz.pantry.presenters.PrintQRCodesActivityPresenter;
+import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
+import com.hermanowicz.pantry.presenters.PrintQRCodesPresenter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +57,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
  * @version 1.0
  * @since   1.0
  */
-public class PrintQRCodesActivity extends AppCompatActivity implements IPrintQRCodesActivityView {
+public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -69,8 +67,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements IPrintQRC
     static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
 
     private Context context;
-    private Resources resources;
-    private PrintQRCodesActivityPresenter presenter;
+    private PrintQRCodesPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,13 +78,11 @@ public class PrintQRCodesActivity extends AppCompatActivity implements IPrintQRC
         ButterKnife.bind(this);
 
         context = PrintQRCodesActivity.this;
-        resources = context.getResources();
         ArrayList<String> textToQRCodeArray = getIntent().getStringArrayListExtra("text_to_qr_code");
         ArrayList<String> namesOfProductsArray = getIntent().getStringArrayListExtra("names_of_products");
         ArrayList<String> expirationDatesArray = getIntent().getStringArrayListExtra("expiration_dates");
 
-        PrintQRCodesActivityModel model = new PrintQRCodesActivityModel();
-        presenter = new PrintQRCodesActivityPresenter(this, model);
+        presenter = new PrintQRCodesPresenter(this);
 
         presenter.setTextToQRCodeArray(textToQRCodeArray);
         presenter.setNamesOfProductsArray(namesOfProductsArray);
@@ -96,12 +91,12 @@ public class PrintQRCodesActivity extends AppCompatActivity implements IPrintQRC
         presenter.showQRCodeImage();
 
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setTitle(resources.getString(R.string.PrintQRCodesActivity_print_qr_codes));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.PrintQRCodesActivity_print_qr_codes));
     }
 
     @Override
     public void showPermissionsError() {
-        Toast.makeText(context, resources.getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -163,7 +158,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements IPrintQRC
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
