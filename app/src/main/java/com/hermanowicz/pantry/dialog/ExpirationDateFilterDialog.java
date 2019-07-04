@@ -111,7 +111,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
             } else {
                 DateHelper date = new DateHelper(filterExpirationDateSince);
                 year = date.getYearFromDate();
-                month = date.getMonthFromDate();
+                month = date.getMonthFromDate()-1;
                 day = date.getDayFromDate();
             }
             DatePickerDialog dialog = new DatePickerDialog(
@@ -131,7 +131,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
             } else {
                 DateHelper date = new DateHelper(filterExpirationDateFor);
                 year = date.getYearFromDate();
-                month = date.getMonthFromDate();
+                month = date.getMonthFromDate()-1;
                 day = date.getDayFromDate();
             }
 
@@ -146,19 +146,19 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
         });
 
         expirationDateSinceListener = (datePicker, year, month, day) -> {
-            calendar.set(year, month-1, day);
+            calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
             edittextExpirationDateSince.setText(dateHelper.getDateInLocalFormat());
-            filterExpirationDateSince = dateFormat.format(date);
+            filterExpirationDateSince = dateHelper.getDateInSqlFormat();
         };
 
         expirationDateForListener = (datePicker, year, month, day) -> {
-            calendar.set(year, month-1, day);
+            calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
             edittextExpirationDateFor.setText(dateHelper.getDateInLocalFormat());
-            filterExpirationDateFor = dateFormat.format(date);
+            filterExpirationDateFor = dateHelper.getDateInSqlFormat();
         };
 
         btnClear.setOnClickListener(view12 -> {

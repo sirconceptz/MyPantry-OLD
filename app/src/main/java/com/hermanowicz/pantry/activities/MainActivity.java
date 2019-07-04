@@ -28,7 +28,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.MainActivityView;
+import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenters.MainPresenter;
 
 import butterknife.BindView;
@@ -43,7 +43,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity implements MainActivityView {
+public class MainActivity extends AppCompatActivity implements MainView {
 
     @BindView(R.id.adBanner)
     AdView adView;
@@ -90,28 +90,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void onNavigationToMyPantryActivity() {
         Intent scanProductActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
         startActivity(scanProductActivityIntent);
-        finish();
     }
 
     @Override
     public void onNavigationToScanProductActivity() {
         Intent scanProductActivityIntent = new Intent(MainActivity.this, ScanProductActivity.class);
         startActivity(scanProductActivityIntent);
-        finish();
     }
 
     @Override
     public void onNavigationToNewProductActivity() {
         Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
         startActivity(newProductActivityIntent);
-        finish();
     }
 
     @Override
     public void onNavigationToAppSettingsActivity() {
         Intent appSettingsActivityIntent = new Intent(MainActivity.this, AppSettingsActivity.class);
         startActivity(appSettingsActivityIntent);
-        finish();
     }
 
     @Override

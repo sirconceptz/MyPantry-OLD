@@ -18,13 +18,15 @@
 package com.hermanowicz.pantry.utils;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateHelper {
 
     private Calendar calendar = Calendar.getInstance();
-    private final DateFormat dateFormat = DateFormat.getDateInstance();
+    private final DateFormat localDateFormat = DateFormat.getDateInstance();
+    private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String[] dateArray;
 
     public DateHelper(String date){
@@ -47,9 +49,19 @@ public class DateHelper {
 
     public String getDateInLocalFormat() {
         if (dateArray.length >= 2){
-            calendar.set(Integer.parseInt(dateArray[0]), Integer.parseInt(dateArray[1]), Integer.parseInt(dateArray[2]));
+            calendar.set(Integer.parseInt(dateArray[0]), Integer.parseInt(dateArray[1])-1, Integer.parseInt(dateArray[2]));
             Date date = calendar.getTime();
-            return dateFormat.format(date);
+            return localDateFormat.format(date);
+        }
+        else
+            return "-";
+    }
+
+    public String getDateInSqlFormat() {
+        if (dateArray.length >= 2){
+            calendar.set(Integer.parseInt(dateArray[0]), Integer.parseInt(dateArray[1])-1, Integer.parseInt(dateArray[2]));
+            Date date = calendar.getTime();
+            return sqlDateFormat.format(date);
         }
         else
             return "-";

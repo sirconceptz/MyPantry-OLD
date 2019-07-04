@@ -111,7 +111,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             } else {
                 DateHelper date = new DateHelper(filterProductionDateSince);
                 year = date.getYearFromDate();
-                month = date.getMonthFromDate();
+                month = date.getMonthFromDate()-1;
                 day = date.getDayFromDate();
             }
             DatePickerDialog dialog = new DatePickerDialog(
@@ -131,7 +131,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             } else {
                 DateHelper date = new DateHelper(filterProductionDateFor);
                 year = date.getYearFromDate();
-                month = date.getMonthFromDate();
+                month = date.getMonthFromDate()-1;
                 day = date.getDayFromDate();
             }
 
@@ -146,19 +146,19 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
         });
 
         productionDateSinceListener = (datePicker, year, month, day) -> {
-            calendar.set(year, month-1, day);
+            calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
             edittextProductionDateSince.setText(dateHelper.getDateInLocalFormat());
-            filterProductionDateSince = dateFormat.format(date);
+            filterProductionDateSince = dateHelper.getDateInSqlFormat();
         };
 
         productionDateForListener = (datePicker, year, month, day) -> {
-            calendar.set(year, month-1, day);
+            calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
             edittextProductionDateFor.setText(dateHelper.getDateInLocalFormat());
-            filterProductionDateFor = dateFormat.format(date);
+            filterProductionDateFor = dateHelper.getDateInSqlFormat();
         };
 
         btnClear.setOnClickListener(view12 -> {

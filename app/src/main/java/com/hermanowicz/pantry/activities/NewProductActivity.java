@@ -305,7 +305,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
                 .putStringArrayListExtra("names_of_products", namesOfProductsList);
 
         startActivity(printQRCodesActivityIntent);
-        finish();
     }
 
     @Override
@@ -378,6 +377,5 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        finish();
     }
 }

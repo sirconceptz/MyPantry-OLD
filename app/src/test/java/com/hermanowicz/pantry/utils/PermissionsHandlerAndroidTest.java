@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.utils;
 
-public interface MainActivityView {
-    void onNavigationToMyPantryActivity();
+import org.junit.jupiter.api.Test;
 
-    void onNavigationToScanProductActivity();
+class PermissionsHandlerAndroidTest {
 
-    void onNavigationToNewProductActivity();
+    @Test
+    void checkHasPermission() {
+    }
 
-    void onNavigationToAppSettingsActivity();
 }

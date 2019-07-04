@@ -158,7 +158,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                             .putExtra("product_id", productList.get(position).getId())
                             .putExtra("hash_code", productList.get(position).getHashCode());
                     MyPantryActivity.this.startActivity(productDetailsActivityIntent);
-                    MyPantryActivity.this.finish();
                 }
             }
 
@@ -288,7 +287,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        finish();
     }
 
     @Override

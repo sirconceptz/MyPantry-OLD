@@ -112,13 +112,11 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
             vibrator.vibrate(VIBRATE_DURATION);
         }
         startActivity(productDetailsIntent);
-        finish();
     }
 
     @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        finish();
     }
 }

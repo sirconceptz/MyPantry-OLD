@@ -7,13 +7,6 @@
 
 package crl.android.pdfwriter;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import crl.android.pdfwriter.R;
-
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -21,6 +14,13 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import crl.android.pdfwriter.R;
 
 public class PDFWriterDemo extends Activity {
 	
@@ -55,7 +55,7 @@ public class PDFWriterDemo extends Activity {
         mPDFWriter.addTextAsHex(70, 50, 12, "68656c6c6f20776f726c6420286173206865782921");
         mPDFWriter.setFont(StandardFonts.SUBTYPE, StandardFonts.COURIER, StandardFonts.WIN_ANSI_ENCODING);
         mPDFWriter.addRawContent("0 0 0 rg\n");
-        mPDFWriter.addText(30, 90, 10, "© CRL", Transformation.DEGREES_270_ROTATION);
+        mPDFWriter.addText(30, 90, 10, "ï¿½ CRL", Transformation.DEGREES_270_ROTATION);
         
         mPDFWriter.newPage();
         mPDFWriter.addRawContent("[] 0 d\n");

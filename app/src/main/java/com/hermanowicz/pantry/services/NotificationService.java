@@ -81,15 +81,15 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(@NonNull Intent intent) {
-        Context context                 = getApplicationContext();
-        SharedPreferences myPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        productName                     = intent.getStringExtra("PRODUCT_NAME");
-        int               productID     = intent.getIntExtra("PRODUCT_ID", 0);
+        Context context = getApplicationContext();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        productName = intent.getStringExtra("PRODUCT_NAME");
+        int productID = intent.getIntExtra("PRODUCT_ID", 0);
         daysToNotification = 3;
-        daysToNotification = myPreferences.getInt(
+        daysToNotification = preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.utils.Notification.NOTIFICATION_DEFAULT_DAYS);
 
-        if (myPreferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
+        if (preferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
                 true)) {
             String channelId = "my_channel_" + productID;
             NotificationManager notificationManager = (NotificationManager)
@@ -129,10 +129,10 @@ public class NotificationService extends IntentService {
             assert notificationManager != null;
             notificationManager.notify(productID, notificationCompat);
         }
-        if (myPreferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS,
+        if (preferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS,
                 true)) {
             HashMap<String, String> params = new HashMap<String, String>();
-            params.put("to_email_address", myPreferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
+            params.put("to_email_address", preferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
             params.put("subject", getString(R.string.Notifications_title));
             params.put("message", createStatement());
             String url = URL_API + API_MAIL_FILE;

@@ -129,16 +129,14 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     @Override
     public void navigateToNewProductActivity() {
-        Intent newProductActivityIntent = new Intent(context, MainActivity.class);
+        Intent newProductActivityIntent = new Intent(context, NewProductActivity.class);
         startActivity(newProductActivityIntent);
-        finish();
     }
 
     @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        finish();
     }
 
     @OnClick(R.id.button_printQRCodes)

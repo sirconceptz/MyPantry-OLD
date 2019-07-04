@@ -41,10 +41,10 @@ public class PrintQRData {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
 
-        for (int counter = 0; counter < productsList.size(); counter++) {
+        for (Product product : productsList) {
             try {
-                jsonObject.put("product_id", productsList.get(counter).getId());
-                jsonObject.put("hash_code", productsList.get(counter).hashCode());
+                jsonObject.put("product_id", product.getId());
+                jsonObject.put("hash_code", product.hashCode());
                 textToQRCodeList.add(jsonObject.toString());
             } catch (JSONException e) {
                Log.e("json", e.toString());
@@ -55,10 +55,9 @@ public class PrintQRData {
 
     public static ArrayList<String> getNamesOfProductsList(List<Product> productsList) {
         ArrayList<String> namesOfProductsList = new ArrayList<>();
-        String productName;
 
-        for (int counter = 0; counter < productsList.size(); counter++) {
-            productName = productsList.get(counter).getName();
+        for (Product product : productsList) {
+            String productName = product.getName();
             if (productName.length() > 15) {
                 namesOfProductsList.add(productName.substring(0, 14) + ".");
             } else {
@@ -71,8 +70,8 @@ public class PrintQRData {
     public static ArrayList<String> getExpirationDatesList(List<Product> productsList) {
         ArrayList<String> expirationDatesList = new ArrayList<>();
 
-        for (int counter = 0; counter < productsList.size(); counter++) {
-            expirationDatesList.add(productsList.get(counter).getExpirationDate());
+        for (Product product : productsList) {
+            expirationDatesList.add(product.getExpirationDate());
         }
         return expirationDatesList;
     }

@@ -38,7 +38,7 @@
         android:icon="@drawable/ic_new_product_shortcut">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.activities.NewProductActivity"
+            android:targetClass="com.hermanowicz.pantry.activities.NewProductActivityTest"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
 </shortcuts>

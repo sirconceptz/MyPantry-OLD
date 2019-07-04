@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.utils;
 
 import com.hermanowicz.pantry.db.Product;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -28,36 +29,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PrintQRDataTest {
 
-    private List<Product> mProductList = new ArrayList<>();
+    private List<Product> productList = new ArrayList<>();
+    private String date1 = "1990-01-01";
+    private String date2 = "2000-02-02";
+    private String date3 = "2005-03-05";
+    private String name1 = "Strawberry";
+    private String name2 = "Apple";
+    private String name3 = "Banana";
 
-    @Test
-    void getTextToQRCodeList() {
-        String date1 = "1990-01-01";
-        String date2 = "2000-02-02";
-        String date3 = "2005-03-05";
-        String name1 = "Strawberry";
-        String name2 = "Apple";
-        String name3 = "Banana";
-
+    @BeforeEach
+    void setUp()
+    {
+        productList = new ArrayList<>();
         Product product = new Product();
-        product.setId(0);
         product.setName(name1);
         product.setExpirationDate(date1);
-        mProductList.add(product);
+        productList.add(product);
 
         product = new Product();
-        product.setId(1);
         product.setName(name2);
         product.setExpirationDate(date2);
-        mProductList.add(product);
+        productList.add(product);
 
         product = new Product();
-        product.setId(2);
         product.setName(name3);
         product.setExpirationDate(date3);
-        mProductList.add(product);
+        productList.add(product);
+    }
 
-        ArrayList<String> textToQRCodeList = PrintQRData.getTextToQRCodeList(mProductList);
+    @Test
+    void canIGetCorrectTextToQRCodeList() {
+        ArrayList<String> textToQRCodeList = PrintQRData.getTextToQRCodeList(productList);
         assertEquals(3, textToQRCodeList.size());
         System.out.println(textToQRCodeList.get(0));
         System.out.println(textToQRCodeList.get(1));
@@ -65,70 +67,28 @@ class PrintQRDataTest {
     }
 
     @Test
-    void getNamesOfProductsList() {
-        String date1 = "1990-01-01";
-        String date2 = "2000-02-02";
-        String date3 = "2005-03-05";
-        String name1 = "Strawberry";
-        String name2 = "Apple";
-        String name3 = "Banana";
+    void canIGetCorrectNamesOfProductsList() {
+        ArrayList<String> namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
 
-        Product product = new Product();
-        product.setId(0);
-        product.setName(name1);
-        product.setExpirationDate(date1);
-        mProductList.add(product);
+        assertEquals(name1, namesOfProductsList.get(0));
+        assertEquals(name2, namesOfProductsList.get(1));
+        assertEquals(name3, namesOfProductsList.get(2));
 
-        product = new Product();
-        product.setId(1);
-        product.setName(name2);
-        product.setExpirationDate(date2);
-        mProductList.add(product);
-
-        product = new Product();
-        product.setId(2);
-        product.setName(name3);
-        product.setExpirationDate(date3);
-        mProductList.add(product);
-
-        ArrayList<String> namesOfProductsList = PrintQRData.getNamesOfProductsList(mProductList);
-
-        assertEquals("Strawberry", namesOfProductsList.get(0));
-        assertEquals("Apple", namesOfProductsList.get(1));
-        assertEquals("Banana", namesOfProductsList.get(2));
+        System.out.println(name1 + " " + namesOfProductsList.get(0));
+        System.out.println(name2 + " " + namesOfProductsList.get(1));
+        System.out.println(name3 + " " + namesOfProductsList.get(2));
     }
 
     @Test
-    void getExpirationDatesList() {
-        String date1 = "1990-01-01";
-        String date2 = "2000-02-02";
-        String date3 = "2005-03-05";
-        String name1 = "Strawberry";
-        String name2 = "Apple";
-        String name3 = "Banana";
+    void canIGetCorrectExpirationDatesList() {
+        ArrayList<String> expirationDatesOfProducts = PrintQRData.getExpirationDatesList(productList);
 
-        Product product = new Product();
-        product.setId(0);
-        product.setName(name1);
-        product.setExpirationDate(date1);
-        mProductList.add(product);
+        assertEquals(date1, expirationDatesOfProducts.get(0));
+        assertEquals(date2, expirationDatesOfProducts.get(1));
+        assertEquals(date3, expirationDatesOfProducts.get(2));
 
-        product = new Product();
-        product.setId(1);
-        product.setName(name2);
-        product.setExpirationDate(date2);
-        mProductList.add(product);
-
-        product = new Product();
-        product.setId(2);
-        product.setName(name3);
-        product.setExpirationDate(date3);
-        mProductList.add(product);
-
-        ArrayList<String> expirationDatesOfProducts = PrintQRData.getExpirationDatesList(mProductList);
-
-        assertEquals("1990-01-01", expirationDatesOfProducts.get(0));
-        assertEquals("2000-02-02", expirationDatesOfProducts.get(1));
-        assertEquals("2005-03-05", expirationDatesOfProducts.get(2));
+        System.out.println(date1 + " " + expirationDatesOfProducts.get(0));
+        System.out.println(date2 + " " + expirationDatesOfProducts.get(1));
+        System.out.println(date3 + " " + expirationDatesOfProducts.get(2));
     }
 }

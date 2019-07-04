@@ -15,25 +15,14 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.presenters;
+package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.interfaces.MainActivityView;
+public interface MainView {
+    void onNavigationToMyPantryActivity();
 
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+    void onNavigationToScanProductActivity();
 
-class MainPresenterTest {
+    void onNavigationToNewProductActivity();
 
-    @Mock
-    private MainActivityView mMainActivityView;
-
-    @Mock
-    private MainPresenter mMainPresenter;
-
-    @Before
-    public void setupMocksAndView() {
-        MockitoAnnotations.initMocks(this);
-    }
-
+    void onNavigationToAppSettingsActivity();
 }

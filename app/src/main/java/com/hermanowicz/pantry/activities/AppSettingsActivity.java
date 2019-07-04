@@ -202,7 +202,6 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        finish();
     }
 
     @Override

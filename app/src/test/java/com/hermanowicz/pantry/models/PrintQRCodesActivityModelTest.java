@@ -20,10 +20,10 @@ package com.hermanowicz.pantry.models;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-class PrintQRCodesActivityModelTest {
+public class PrintQRCodesActivityModelTest {
 
     @Mock
-    private PrintQRCodesModel mPrintQRCodesActivityModel;
+    private PrintQRCodesModel printQRCodesActivityModel;
 
     @Test
     void setTextToQRCodeArray() {

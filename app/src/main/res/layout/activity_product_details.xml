@@ -22,7 +22,7 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.NewProductActivity">
+    tools:context=".activities.NewProductActivityTest">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

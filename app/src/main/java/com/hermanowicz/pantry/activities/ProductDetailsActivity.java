@@ -180,14 +180,12 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
 
         startActivity(printQRCodesActivityIntent);
-        finish();
     }
 
     @Override
     public void navigateToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
-        finish();
     }
 
     @Override

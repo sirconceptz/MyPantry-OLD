@@ -17,13 +17,13 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import com.hermanowicz.pantry.interfaces.MainActivityView;
+import com.hermanowicz.pantry.interfaces.MainView;
 
 public class MainPresenter {
 
-    private MainActivityView view;
+    private MainView view;
 
-    public MainPresenter(MainActivityView view) {
+    public MainPresenter(MainView view) {
         this.view = view;
     }
 
