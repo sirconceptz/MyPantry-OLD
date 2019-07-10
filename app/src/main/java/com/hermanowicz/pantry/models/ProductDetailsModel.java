@@ -40,14 +40,16 @@ public class ProductDetailsModel {
     }
 
     public boolean compareHashCode() {
-        boolean result;
-        result = hashCode.equals(product.getHashCode());
-        return result;
+        return hashCode.equals(product.getHashCode());
     }
 
     public List<Product> getProductList(){
         List<Product> productList = new ArrayList<>();
         productList.add(product);
         return productList;
+    }
+
+    public boolean productIsNull(){
+        return product == null;
     }
 }

@@ -28,8 +28,9 @@ import java.util.List;
 public class ScanProductModel {
 
     public List<Integer> decodeScanResult(String scanResult) {
-        List<Integer> decodedQRCodeAsList = new ArrayList<>();
+        List<Integer> decodedQRCodeAsList = null;
         try {
+            decodedQRCodeAsList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(scanResult);
             decodedQRCodeAsList.add(jsonObject.getInt("product_id"));
             decodedQRCodeAsList.add(jsonObject.getInt("hash_code"));

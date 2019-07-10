@@ -51,4 +51,7 @@ public interface ProductsDao {
 
     @Query("DELETE FROM products")
     void clearDb();
+
+    @Query("SELECT id FROM products ORDER BY id DESC")
+    int getIdOfLastProduct();
 }

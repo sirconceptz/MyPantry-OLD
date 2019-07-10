@@ -5,7 +5,6 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import androidx.room.Room;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -13,9 +12,11 @@ import androidx.test.runner.AndroidJUnit4;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activities.MainActivity;
 import com.hermanowicz.pantry.activities.NewProductActivity;
+import com.hermanowicz.pantry.activities.PrintQRCodesActivity;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class NewProductActivityTest {
 
     private EditText    name, expirationDate, productionDate, quantity, composition, healingProperties,
                         dosage, volume, weight;
-    private Spinner     typeOfProduct, productFeatures;
+    private Spinner     typeOfProduct;
     private RadioButton isSweet;
     private Button      addProduct;
     private Product     product;
@@ -59,7 +60,6 @@ public class NewProductActivityTest {
         name = activity.findViewById(R.id.edittext_name);
         expirationDate = activity.findViewById(R.id.edittext_expirationDate);
         typeOfProduct = activity.findViewById(R.id.spinner_productType);
-        productFeatures = activity.findViewById(R.id.spinner_productFeatures);
         productionDate = activity.findViewById(R.id.edittext_productionDate);
         quantity = activity.findViewById(R.id.edittext_quantity);
         composition = activity.findViewById(R.id.edittext_composition);
@@ -136,9 +136,6 @@ public class NewProductActivityTest {
 
     @Test
     public void addingTheProductShouldNavigateToPrintQRDetailsActivity(){
-        ProductDb productDb = Room.inMemoryDatabaseBuilder(activity.getApplicationContext(),
-                ProductDb.class).allowMainThreadQueries().build();
-
         activity.runOnUiThread(() -> {
             name.requestFocus();
             name.setText(product.getName());
@@ -165,6 +162,7 @@ public class NewProductActivityTest {
             addProduct.performClick();
         });
         onView(withText(R.string.NewProductActivity_products_added_successful)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView())))).check(matches(isDisplayed()));
+        intended(hasComponent(PrintQRCodesActivity.class.getName()));
     }
 
     private String getDateInLocalFormat(String dateToConvert){
@@ -174,5 +172,10 @@ public class NewProductActivityTest {
         calendar.set(Integer.parseInt(dateArray[0]), Integer.parseInt(dateArray[1])-1, Integer.parseInt(dateArray[2]));
         Date date = calendar.getTime();
         return localDateFormat.format(date);
+    }
+
+    @After
+    public void tearDown(){
+        ProductDb.getInstance(activity.getApplicationContext()).productsDao().clearDb();
     }
 }

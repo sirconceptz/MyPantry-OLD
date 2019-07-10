@@ -64,13 +64,16 @@ public class AppSettingsActivityTest {
 
     @Test
     public void onClickSaveNewSettingsShouldBeSaved(){
-        daysToNotification.setText("7");
-        hourOfNotification.setValue(15);
-        emailAddress.setText("email@address.com");
-        pushNotifications.setChecked(false);
-        emailNotifications.setChecked(true);
+        activity.runOnUiThread(() -> {
+            daysToNotification.setText("7");
+            hourOfNotification.setValue(15);
+            emailAddress.setText("email@address.com");
+            pushNotifications.setChecked(false);
+            emailNotifications.setChecked(true);
 
-        activity.runOnUiThread(() -> saveSettings.performClick());
+            saveSettings.performClick();
+
+        });
         onView(withText(R.string.AppSettingsActivity_settings_saved_successful)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView())))).check(matches(isDisplayed()));
 
         activity.finish();

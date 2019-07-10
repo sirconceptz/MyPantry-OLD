@@ -106,7 +106,7 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
     public void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList) {
         Intent productDetailsIntent = new Intent(context, ProductDetailsActivity.class);
         productDetailsIntent.putExtra("product_id", decodedScanResultAsList.get(0));
-        productDetailsIntent.putExtra("hash_code", decodedScanResultAsList.get(1));
+        productDetailsIntent.putExtra("hash_code", String.valueOf(decodedScanResultAsList.get(1)));
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null) {
             vibrator.vibrate(VIBRATE_DURATION);

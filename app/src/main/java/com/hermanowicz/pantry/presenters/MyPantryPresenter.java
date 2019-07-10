@@ -81,7 +81,7 @@ public class MyPantryPresenter {
         ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
         List<Product> productList = model.getSelectProductList();
 
-        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList);
+        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList, 0);
         namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
         expirationDatesList = PrintQRData.getExpirationDatesList(productList);
 

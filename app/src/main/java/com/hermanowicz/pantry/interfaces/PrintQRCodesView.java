@@ -28,7 +28,5 @@ public interface PrintQRCodesView {
 
     void sendPDFByEmail();
 
-    void navigateToNewProductActivity();
-
     void navigateToMainActivity();
 }

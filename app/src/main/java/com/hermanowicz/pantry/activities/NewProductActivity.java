@@ -68,7 +68,7 @@ import butterknife.OnClick;
 /**
  * <h1>NewProductActivity</h1>
  * Activity to add a new product. User can add a new product to the database.
- * In new product user can choose a type of product, tasteGroup, name, production and expiration dates,
+ * In new product user can choose a type of product, taste, name, production and expiration dates,
  * composition, volume, weight and for specific products attributes like healing properties
  * or dosage. Product can have a sugar and a salt (checkbox). User can add more like 1 item after
  * giving quantity. After inserting a new product to database user will be asked (in different
@@ -233,7 +233,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         product.setWeight(Integer.parseInt(weight.getText().toString()));
         product.setHasSugar(hasSugar.isChecked());
         product.setHasSalt(hasSalt.isChecked());
-        product.setTaste(String.valueOf(taste.getText()));
+        presenter.setTaste(taste);
         presenter.setQuantity(quantity.getText().toString());
         presenter.addProducts(product);
     }

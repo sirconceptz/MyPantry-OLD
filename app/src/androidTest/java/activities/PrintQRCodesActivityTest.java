@@ -13,7 +13,6 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activities.MainActivity;
-import com.hermanowicz.pantry.activities.NewProductActivity;
 import com.hermanowicz.pantry.activities.PrintQRCodesActivity;
 
 import org.junit.Before;
@@ -84,10 +83,10 @@ public class PrintQRCodesActivityTest {
     }
 
     @Test
-    public void onClickSkipButtonShouldNavigateToNewProductActivity(){
+    public void onClickSkipButtonShouldNavigateToMainActivity(){
         assertNotNull(skip);
         activity.runOnUiThread(() -> skip.performClick());
-        intended(hasComponent(NewProductActivity.class.getName()));
+        intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test

@@ -18,6 +18,7 @@
 package com.hermanowicz.pantry.models;
 
 import android.content.res.Resources;
+import android.widget.RadioButton;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
@@ -32,6 +33,7 @@ public class NewProductModel {
     private ProductDb productDb;
     private String expirationDate = "-";
     private String productionDate = "-";
+    private String taste;
     private int quantity;
 
     public NewProductModel(Resources resources, ProductDb productDb) {
@@ -42,12 +44,17 @@ public class NewProductModel {
     public List<Product> buildProductsList(Product product) {
         List<Product> productsList = new ArrayList<>();
         for (int counter = 1; counter <= quantity; counter++) {
+            product.setTaste(taste);
             product.setExpirationDate(expirationDate);
             product.setProductionDate(productionDate);
             product.setHashCode(String.valueOf(product.hashCode()));
             productsList.add(product);
         }
         return productsList;
+    }
+
+    public int getIdOfLastProductInDb() {
+        return productDb.productsDao().getIdOfLastProduct();
     }
 
     public void addProducts(List<Product> products){
@@ -60,6 +67,14 @@ public class NewProductModel {
 
     public void setProductionDate(int year, int month, int day) {
         this.productionDate = year + "-" + month + "-" + day;
+    }
+
+    public void setTaste(RadioButton selectedTasteButton){
+        String[] tasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
+        if(selectedTasteButton == null)
+            this.taste = tasteArray[0];
+        else
+            this.taste = selectedTasteButton.getText().toString();
     }
 
     public void parseQuantityProducts(String quantity) {
@@ -99,7 +114,7 @@ public class NewProductModel {
         return statementToShow;
     }
 
-    public boolean isProductNameValid(Product product) {
+    public boolean isProductNameNotValid(Product product) {
         boolean correctProductName = false;
         if (product.getName().length() > 0)
             correctProductName = true;

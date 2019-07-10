@@ -83,7 +83,7 @@ public class PrintQRCodesPresenter {
     }
 
     public void onClickSkipButton() {
-        view.navigateToNewProductActivity();
+        view.navigateToMainActivity();
     }
 
     public void navigateToMainActivity() {

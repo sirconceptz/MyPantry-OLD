@@ -91,7 +91,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     private Context context;
     private ProductDb productDb;
     private Product selectedProduct;
-    private int productID;
+    private int productId;
     private String hashCode;
 
     private ProductDetailsPresenter presenter;
@@ -113,21 +113,21 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         getDataFromIntent();
 
-        context = ProductDetailsActivity.this;
+        context = getApplicationContext();
 
         productDb = ProductDb.getInstance(context);
-        selectedProduct = productDb.productsDao().getProductById(productID);
+        selectedProduct = productDb.productsDao().getProductById(productId);
 
         setSupportActionBar(toolbar);
 
         presenter.setProduct(selectedProduct);
-        presenter.setHashCode(String.valueOf(hashCode));
+        presenter.setHashCode(hashCode);
         presenter.showProductDetails();
     }
 
     private void getDataFromIntent() {
         Intent myPantryActivityIntent = getIntent();
-        productID = myPantryActivityIntent.getIntExtra("product_id", 0);
+        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
         hashCode = myPantryActivityIntent.getStringExtra("hash_code");
     }
 

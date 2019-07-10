@@ -309,7 +309,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 .putStringArrayListExtra("expiration_dates", expirationDatesList)
                 .putStringArrayListExtra("names_of_products", namesOfProductsList);
         startActivity(printQRCodesActivityIntent);
-        finish();
     }
 
     @Override

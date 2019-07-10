@@ -37,14 +37,18 @@ import java.util.List;
  * @since   1.0
  */
 public class PrintQRData {
-    public static ArrayList<String> getTextToQRCodeList(List<Product> productsList) {
+    public static ArrayList<String> getTextToQRCodeList(List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
-
-        for (Product product : productsList) {
+        int productId;
+        for (int counter = productList.size() - 1; counter >= 0; counter--) {
             try {
-                jsonObject.put("product_id", product.getId());
-                jsonObject.put("hash_code", product.hashCode());
+                if (productList.get(counter).getId() == 0)
+                    productId = idOfLastProductInDb - counter;
+                else
+                    productId = productList.get(counter).getId();
+                jsonObject.put("product_id", productId);
+                jsonObject.put("hash_code", productList.get(counter).getHashCode());
                 textToQRCodeList.add(jsonObject.toString());
             } catch (JSONException e) {
                Log.e("json", e.toString());

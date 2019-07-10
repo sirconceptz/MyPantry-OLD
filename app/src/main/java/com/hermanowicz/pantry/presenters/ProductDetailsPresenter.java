@@ -43,7 +43,10 @@ public class ProductDetailsPresenter {
     }
 
     public void showProductDetails() {
-        if (model.compareHashCode()) {
+        if (model.productIsNull()) {
+            view.showErrorWrongData();
+            view.navigateToMyPantryActivity();
+        } else if(model.compareHashCode()) {
             Product product = model.getProduct();
             view.showProductDetails(product);
         } else {
@@ -52,8 +55,8 @@ public class ProductDetailsPresenter {
         }
     }
 
-    public void deleteProduct(int productID) {
-        view.onDeletedProduct(productID);
+    public void deleteProduct(int productId) {
+        view.onDeletedProduct(productId);
         view.navigateToMyPantryActivity();
     }
 
@@ -61,7 +64,7 @@ public class ProductDetailsPresenter {
         ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
         List<Product> productList = model.getProductList();
 
-        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList);
+        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList, 0);
         namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
         expirationDatesList = PrintQRData.getExpirationDatesList(productList);
 

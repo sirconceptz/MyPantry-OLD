@@ -33,7 +33,7 @@ public class ScanProductPresenter {
 
     public void onScanResult(String scanResult) {
         List<Integer> decodedQRCodeAsList = model.decodeScanResult(scanResult);
-        if (decodedQRCodeAsList == null)
+        if (decodedQRCodeAsList.size() > 1)
             view.navigateToProductDetailsActivity(decodedQRCodeAsList);
         else {
             view.showErrorProductNotFound();

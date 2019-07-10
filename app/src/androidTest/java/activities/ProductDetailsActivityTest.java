@@ -48,32 +48,32 @@ public class ProductDetailsActivityTest {
 
     private ProductDetailsActivity activity;
 
-    private Product product;
+    private Product product = ProductModelTest.getTestProduct();
     private Toolbar toolbar;
     private TextView productType, productFeatures, productionDate, expirationDate, volume, weight,
                      taste, hasSugar, hasSalt, composition, healingProperties, dosage;
 
     @Rule
     public IntentsTestRule<ProductDetailsActivity> activityRule = new IntentsTestRule<>
-            (ProductDetailsActivity.class, false, false);
+            (ProductDetailsActivity.class);
 
     @Before
     public void setUp() {
         activity = activityRule.getActivity();
-        product = ProductModelTest.getTestProduct();
         List<Product> productList = new ArrayList<>();
+        productList.add(product);
 
-        Intent intent = new Intent();
-        intent.putExtra("product_id", product.getId());
-        intent.putExtra("hash_code", product.getHashCode());
-        activityRule.launchActivity(intent);
+        Intent intent = new Intent()
+                .putExtra("product_id", 1)
+                .putExtra("hash_code", product.getHashCode());
 
-        ProductDb productDb = Room.inMemoryDatabaseBuilder(activity.getApplicationContext(),
+        ProductDb productDb = Room.inMemoryDatabaseBuilder(activity,
                 ProductDb.class).allowMainThreadQueries().build();
 
-        productList.add(product);
         productDb.productsDao().clearDb();
         productDb.productsDao().insertProductsToDB(productList);
+
+        activityRule.launchActivity(intent);
 
         toolbar = activity.findViewById(R.id.toolbar);
         productType = activity.findViewById(R.id.text_productTypeValue);

@@ -18,6 +18,7 @@
 package com.hermanowicz.pantry.presenters;
 
 import android.content.res.Resources;
+import android.widget.RadioButton;
 
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
@@ -64,22 +65,29 @@ public class NewProductPresenter {
         view.showProductionDate(dateFormat.format(date));
     }
 
+    public void setTaste(RadioButton selectedTasteButton){
+        model.setTaste(selectedTasteButton);
+    }
+
     public void setQuantity(String quantity){
         model.parseQuantityProducts(quantity);
     }
 
     public void addProducts(Product product) {
-        if (model.isProductNameValid(product))
+        if (model.isProductNameNotValid(product))
             view.showErrorNameNotSet();
         else if (!model.isTypeOfProductValid(product))
             view.showErrorCategoryNotSelected();
         else {
             List<Product> products = model.buildProductsList(product);
+
             model.addProducts(products);
             view.onProductsAdd(products);
+
+            int idOfLastProductInDb = model.getIdOfLastProductInDb();
             ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
 
-            textToQRCodeList = PrintQRData.getTextToQRCodeList(products);
+            textToQRCodeList = PrintQRData.getTextToQRCodeList(products, idOfLastProductInDb);
             namesOfProductsList = PrintQRData.getNamesOfProductsList(products);
             expirationDatesList = PrintQRData.getExpirationDatesList(products);
 
@@ -93,13 +101,11 @@ public class NewProductPresenter {
     }
 
     public int[] getExpirationDateArray() {
-        int[] expirationDateArray = model.getExpirationDateArray();
-        return expirationDateArray;
+        return model.getExpirationDateArray();
     }
 
     public int[] getProductionDateArray() {
-        int[] productionDateArray = model.getProductionDateArray();
-        return productionDateArray;
+        return model.getProductionDateArray();
     }
 
     public void navigateToMainActivity() {
