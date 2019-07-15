@@ -1,19 +1,39 @@
+/*
+ * Copyright (c) 2019
+ * Mateusz Hermanowicz - All rights reserved.
+ * My Pantry
+ * https://www.mypantry.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package activities;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.UiDevice;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activities.MainActivity;
 import com.hermanowicz.pantry.activities.PrintQRCodesActivity;
+import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.utils.PrintQRData;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,6 +42,9 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+
+import models.ProductModelTest;
 
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -33,65 +56,77 @@ public class PrintQRCodesActivityTest {
 
     private PrintQRCodesActivity activity;
 
-    private ImageView qrCodeImage;
     private Button printQrCodes, sendPdfByEmail, skip;
     private UiDevice uiDevice;
+    private Product product = ProductModelTest.getTestProduct1();
+
+    @Rule
+    public GrantPermissionRule readPermissionRule =
+            GrantPermissionRule.grant(Manifest.permission.READ_EXTERNAL_STORAGE);
+
+    @Rule
+    public GrantPermissionRule writePermissionRule =
+            GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
     @Rule
     public IntentsTestRule<PrintQRCodesActivity>
-            activityRule = new IntentsTestRule<>(PrintQRCodesActivity.class,
-            false, false);
+            activityRule = new IntentsTestRule<PrintQRCodesActivity>(PrintQRCodesActivity.class){
+
+        @Override
+        protected Intent getActivityIntent() {
+            Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            List<Product> productList = new ArrayList<>();
+            productList.add(product);
+
+            ArrayList<String> textToQrCode = PrintQRData.getTextToQRCodeList(productList, 0);
+            ArrayList<String> namesOfProducts = PrintQRData.getNamesOfProductsList(productList);
+            ArrayList<String> expirationDates = PrintQRData.getExpirationDatesList(productList);
+
+            return new Intent(targetContext, PrintQRCodesActivity.class)
+                    .putStringArrayListExtra("text_to_qr_code", textToQrCode)
+                    .putStringArrayListExtra("names_of_products", namesOfProducts)
+                    .putStringArrayListExtra("expiration_dates", expirationDates);
+        }
+    };
 
     @Before
     public void setUp() {
-        Intent intent = new Intent();
-        ArrayList<String> textToQrCode = new ArrayList<>();
-        ArrayList<String> namesOfProducts = new ArrayList<>();
-        ArrayList<String> expirationDates = new ArrayList<>();
-
-        textToQrCode.add("{\"product_id\":5,\"hash_code\":123456789}");
-        namesOfProducts.add("Raspberry juice");
-        expirationDates.add("2020-05-14");
-
-        intent.putStringArrayListExtra("text_to_qr_code", textToQrCode);
-        intent.putStringArrayListExtra("names_of_products", namesOfProducts);
-        intent.putStringArrayListExtra("expiration_dates", expirationDates);
-        activityRule.launchActivity(intent);
         activity = activityRule.getActivity();
         uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
 
-        qrCodeImage = activity.findViewById(R.id.image_qrCode);
         printQrCodes = activity.findViewById(R.id.button_printQRCodes);
         sendPdfByEmail = activity.findViewById(R.id.button_sendPdfByEmail);
         skip = activity.findViewById(R.id.button_skip);
     }
 
     @Test
-    public void onClickPrintQRCodesShouldCheckPermissionsAndCreateAndSaveFileAndOpenTheFile(){
+    public void onClickPrintQRCodesShouldCheckPermissionsAndCreateAndSaveFileAndOpenTheFile() throws InterruptedException {
         assertNotNull(printQrCodes);
         activity.runOnUiThread(() -> printQrCodes.performClick());
+        Thread.sleep(5000);
         uiDevice.pressBack();
         File pdfFile = new File(Environment.getExternalStorageDirectory(), "qrcodes-mypantry.pdf");
         assertTrue(pdfFile.exists());
     }
 
     @Test
-    public void onClickSendByEmailShouldCreateChooserIntent(){
+    public void onClickSendByEmailShouldCreateChooserIntent() throws InterruptedException {
         assertNotNull(sendPdfByEmail);
         activity.runOnUiThread(() -> sendPdfByEmail.performClick());
+        Thread.sleep(5000);
         uiDevice.pressBack();
     }
 
     @Test
-    public void onClickSkipButtonShouldNavigateToMainActivity(){
+    public void onClickSkipButtonShouldNavigateToMainActivity() throws InterruptedException {
         assertNotNull(skip);
         activity.runOnUiThread(() -> skip.performClick());
         intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
-    public void onPressedBackNavigateToMainActivity(){
-        Espresso.pressBack();
+    public void onPressedBackNavigateToMainActivity() throws InterruptedException {
+        uiDevice.pressBack();
         intended(hasComponent(MainActivity.class.getName()));
     }
 }

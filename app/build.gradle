@@ -25,8 +25,8 @@ android {
         applicationId "com.hermanowicz.pantry"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 8
-        versionName "1.2.3"
+        versionCode 9
+        versionName "1.2.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testOptions.unitTests.includeAndroidResources = true
         multiDexEnabled true
@@ -101,15 +101,23 @@ dependencies {
     testImplementation 'androidx.test:rules:1.2.0'
     testImplementation 'org.robolectric:robolectric:4.3'
     testImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.3.2"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:5.3.2"
-    testImplementation "org.mockito:mockito-all:1.10.19"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.2'
+    testImplementation 'org.mockito:mockito-all:1.10.19'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-intents:3.2.0'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    androidTestImplementation ("com.android.support.test.espresso:espresso-contrib:2.2.2") {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
+        exclude group: 'com.android.support', module: 'design'
+        exclude module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+    annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
 }

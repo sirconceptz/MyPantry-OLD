@@ -59,7 +59,7 @@ class PrintQRDataTest {
 
     @Test
     void canIGetCorrectTextToQRCodeList() {
-        ArrayList<String> textToQRCodeList = PrintQRData.getTextToQRCodeList(productList);
+        ArrayList<String> textToQRCodeList = PrintQRData.getTextToQRCodeList(productList, 0);
         assertEquals(3, textToQRCodeList.size());
         System.out.println(textToQRCodeList.get(0));
         System.out.println(textToQRCodeList.get(1));

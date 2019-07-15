@@ -68,7 +68,6 @@ public class ProductsAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-
         TextView nameTv = viewHolder.nameTv;
         TextView volumeTv = viewHolder.volumeTv;
         TextView weightTv = viewHolder.weightTv;
