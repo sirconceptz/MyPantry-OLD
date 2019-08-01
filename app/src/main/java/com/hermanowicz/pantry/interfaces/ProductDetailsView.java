@@ -30,5 +30,7 @@ public interface ProductDetailsView {
 
     void onPrintQRCode(ArrayList<String> textToQRCodeArray, ArrayList<String> namesOfProductsArray, ArrayList<String> expirationDatesArray);
 
+    void navigateToEditProductActivity(int productId);
+
     void navigateToMyPantryActivity();
 }

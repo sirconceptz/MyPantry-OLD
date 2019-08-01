@@ -22,6 +22,7 @@
     <string name="title_activity_app_settings">Application settings</string>
     <string name="title_activity_print_qrcodes">Print QR Codes</string>
     <string name="title_activity_product_details">Product details</string>
+    <string name="title_activity_edit_product">Edit product</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">My pantry</string>
     <string name="MainActivity_scan_product_button">Scan the product</string>
@@ -53,6 +54,10 @@
     <string name="NewProductActivity_quantity_value" translatable="false">1</string>
     <string name="NewProductActivity_volume_value" translatable="false">0</string>
     <string name="NewProductActivity_weight_value" translatable="false">0</string>
+    <!--EditProductActivity-->
+    <string name="EditProductActivity_save_product">Save product</string>
+    <string name="EditProductActivity_cancel">Cancel</string>
+    <string name="EditProductActivity_product_was_updated">Product was updated.</string>
     <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_name">Name</string>
     <string name="ProductDetailsActivity_quantity">Quantity</string>
@@ -175,6 +180,7 @@
     <string name="ProductDetailsActivity_yes">Yes</string>
     <string name="ProductDetailsActivity_no">No</string>
     <string name="ProductDetailsActivity_product_has_been_removed">The product has been removed.</string>
+    <string name="ProductDetailsActivity_edit_product">Edit product</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Print QR codes</string>
     <string name="PrintQRCodesActivity_skip">Skip</string>

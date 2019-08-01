@@ -44,7 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.ProductModelTest;
+import models.ProductTestModel;
 
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -58,7 +58,7 @@ public class PrintQRCodesActivityTest {
 
     private Button printQrCodes, sendPdfByEmail, skip;
     private UiDevice uiDevice;
-    private Product product = ProductModelTest.getTestProduct1();
+    private Product product = ProductTestModel.getTestProduct1();
 
     @Rule
     public GrantPermissionRule readPermissionRule =
@@ -103,7 +103,7 @@ public class PrintQRCodesActivityTest {
     public void onClickPrintQRCodesShouldCheckPermissionsAndCreateAndSaveFileAndOpenTheFile() throws InterruptedException {
         assertNotNull(printQrCodes);
         activity.runOnUiThread(() -> printQrCodes.performClick());
-        Thread.sleep(5000);
+        Thread.sleep(3000);
         uiDevice.pressBack();
         File pdfFile = new File(Environment.getExternalStorageDirectory(), "qrcodes-mypantry.pdf");
         assertTrue(pdfFile.exists());
@@ -113,19 +113,19 @@ public class PrintQRCodesActivityTest {
     public void onClickSendByEmailShouldCreateChooserIntent() throws InterruptedException {
         assertNotNull(sendPdfByEmail);
         activity.runOnUiThread(() -> sendPdfByEmail.performClick());
-        Thread.sleep(5000);
+        Thread.sleep(2000);
         uiDevice.pressBack();
     }
 
     @Test
-    public void onClickSkipButtonShouldNavigateToMainActivity() throws InterruptedException {
+    public void onClickSkipButtonShouldNavigateToMainActivity() {
         assertNotNull(skip);
         activity.runOnUiThread(() -> skip.performClick());
         intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
-    public void onPressedBackNavigateToMainActivity() throws InterruptedException {
+    public void onPressedBackNavigateToMainActivity() {
         uiDevice.pressBack();
         intended(hasComponent(MainActivity.class.getName()));
     }

@@ -89,7 +89,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     AdView adView;
 
     private Context context;
-    private ProductDb productDb;
     private Product selectedProduct;
     private int productId;
     private String hashCode;
@@ -115,8 +114,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         context = getApplicationContext();
 
-        productDb = ProductDb.getInstance(context);
-        selectedProduct = productDb.productsDao().getProductById(productId);
+        selectedProduct = ProductDb.getInstance(context).productsDao().getProductById(productId);
 
         setSupportActionBar(toolbar);
 
@@ -141,6 +139,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         presenter.printQRCode();
     }
 
+    @OnClick(R.id.button_editProduct)
+    void onClickEditProductButton() {
+        presenter.editProduct(productId);
+    }
+
     @Override
     public void showProductDetails(Product product) {
         Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
@@ -148,6 +151,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         productFeatures.setText(product.getProductFeatures());
         DateHelper dateHelper = new DateHelper(product.getExpirationDate());
         expirationDate.setText(dateHelper.getDateInLocalFormat());
+        dateHelper = new DateHelper(product.getProductionDate());
         productionDate.setText(dateHelper.getDateInLocalFormat());
         composition.setText(product.getComposition());
         healingProperties.setText(product.getHealingProperties());
@@ -166,7 +170,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @Override
     public void onDeletedProduct(int productID) {
-        productDb.productsDao().deleteProductById(productID);
+        ProductDb.getInstance(context).productsDao().deleteProductById(productID);
         Notification.cancelNotification(context, selectedProduct);
         Toast.makeText(context, getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
     }
@@ -180,6 +184,13 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         printQRCodesActivityIntent.putStringArrayListExtra("names_of_products", namesOfProductsList);
 
         startActivity(printQRCodesActivityIntent);
+    }
+
+    @Override
+    public void navigateToEditProductActivity(int productId) {
+        Intent editProductActivityIntent = new Intent(context, EditProductActivity.class)
+                .putExtra("product_id", productId);
+        startActivity(editProductActivityIntent);
     }
 
     @Override

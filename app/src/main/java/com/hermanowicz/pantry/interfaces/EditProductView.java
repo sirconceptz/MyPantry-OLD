@@ -15,23 +15,16 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.models;
+package com.hermanowicz.pantry.interfaces;
 
-import org.junit.Assert;
-import org.junit.Test;
+import com.hermanowicz.pantry.db.Product;
 
-import java.util.List;
+public interface EditProductView {
+    void setSpinnerSelections(int typeOfProductPosition, int productFeaturesPosition);
 
-public class ScanProductModelTest {
+    void showProductData(Product product);
 
-    private ScanProductModel model = new ScanProductModel();
+    void onSavedProduct();
 
-    @Test
-    public void decodeScanResult() {
-        String happyScenario = "{\"product_id\":5,\"hash_code\":123456789}";
-        List<Integer> decodedScan = model.decodeScanResult(happyScenario);
-
-        Assert.assertEquals(5, (int) decodedScan.get(0));
-        Assert.assertEquals(123456789, (int) decodedScan.get(1));
-    }
+    void navigateToMyPantryActivity();
 }

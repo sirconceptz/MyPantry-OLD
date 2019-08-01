@@ -15,45 +15,17 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.models;
+package com.hermanowicz.pantry.interfaces;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+public interface ProductDataView {
 
-public class PrintQRCodesActivityModelTest {
+    void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);
 
-    @Mock
-    private PrintQRCodesModel printQRCodesActivityModel;
+    void showExpirationDate(String date);
 
-    @Test
-    void setTextToQRCodeArray() {
-    }
+    void showProductionDate(String date);
 
-    @Test
-    void setNamesOfProductsArray() {
-    }
+    void showErrorNameNotSet();
 
-    @Test
-    void setExpirationDatesArray() {
-    }
-
-    @Test
-    void setActivity() {
-    }
-
-    @Test
-    void checkWritePermission() {
-    }
-
-    @Test
-    void requestWritePermission() {
-    }
-
-    @Test
-    void generateQRCode() {
-    }
-
-    @Test
-    void createAndSavePDF() {
-    }
+    void showErrorCategoryNotSelected();
 }

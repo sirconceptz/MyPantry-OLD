@@ -43,7 +43,7 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import models.ProductModelTest;
+import models.ProductTestModel;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -88,7 +88,7 @@ public class NewProductActivityTest {
         weight = activity.findViewById(R.id.edittext_weight);
         isSweet = activity.findViewById(R.id.radiobtn_isSweet);
         addProduct = activity.findViewById(R.id.button_addProduct);
-        product = ProductModelTest.getTestProduct1();
+        product = ProductTestModel.getTestProduct1();
     }
 
     @Test

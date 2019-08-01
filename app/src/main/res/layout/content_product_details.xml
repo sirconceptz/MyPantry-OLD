@@ -354,11 +354,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginTop="64dp"
             android:layout_marginEnd="16dp"
             android:text="@string/PrintQRCodesActivity_print_qr_codes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_productDosageLabel" />
+
+        <Button
+            android:id="@+id/button_editProduct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="64dp"
+            android:layout_marginEnd="16dp"
+            android:text="@string/ProductDetailsActivity_edit_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/button_printQRCode" />
 
         <Button
             android:id="@+id/button_deleteProduct"
@@ -369,7 +380,7 @@
             android:layout_marginEnd="16dp"
             android:text="@string/ProductDetailsActivity_delete_product"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button_printQRCode" />
+            app:layout_constraintTop_toTopOf="@+id/button_editProduct" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

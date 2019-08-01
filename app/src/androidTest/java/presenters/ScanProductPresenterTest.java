@@ -39,14 +39,13 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.ProductModelTest;
+import models.ProductTestModel;
 
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
 @RunWith(AndroidJUnit4.class)
 public class ScanProductPresenterTest {
-    private ProductDb productDb;
 
     private ScanProductActivity activity;
     private ScanProductPresenter presenter;
@@ -68,11 +67,11 @@ public class ScanProductPresenterTest {
 
     @Test
     public void onCorrectScanResultShouldNavigateToProductDetailsActivity() {
-        productDb = Room.inMemoryDatabaseBuilder(activity.getApplicationContext(),
+        ProductDb productDb = Room.inMemoryDatabaseBuilder(activity.getApplicationContext(),
                 ProductDb.class).allowMainThreadQueries().build();
         List<Product> productList = new ArrayList<>();
 
-        productList.add(ProductModelTest.getTestProduct1());
+        productList.add(ProductTestModel.getTestProduct1());
         productDb.productsDao().insertProductsToDB(productList);
         productList = productDb.productsDao().getAllProductsAsList();
 

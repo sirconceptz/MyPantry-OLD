@@ -19,7 +19,7 @@ package models;
 
 import com.hermanowicz.pantry.db.Product;
 
-public class ProductModelTest {
+public class ProductTestModel {
 
     public static Product getTestProduct1(){
         Product product = new Product();

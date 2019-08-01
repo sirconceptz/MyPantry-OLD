@@ -24,6 +24,7 @@
     <string name="title_activity_app_settings">Ustawienia aplikacji</string>
     <string name="title_activity_print_qrcodes">Drukuj kody QR</string>
     <string name="title_activity_product_details">Szczegóły produktu</string>
+    <string name="title_activity_edit_product">Edytuj produkt</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Moja spiżarnia</string>
     <string name="MainActivity_scan_product_button">Skanuj produkt</string>
@@ -52,6 +53,10 @@
     <string name="NewProductActivity_products_added_successful">Produkty zostały dodane pomyślnie do bazy produktów.</string>
     <string name="NewProductActivity_product_type">Typ produktu</string>
     <string name="NewProductActivity_product_features">Cechy produktu</string>
+    <!--EditProductActivity-->
+    <string name="EditProductActivity_save_product">Zapisz produkt</string>
+    <string name="EditProductActivity_cancel">Anuluj</string>
+    <string name="EditProductActivity_product_was_updated">Produkt został zaktualizowany.</string>
     <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_name">Nazwa produktu</string>
     <string name="ProductDetailsActivity_quantity">Ilość</string>
@@ -174,6 +179,7 @@
     <string name="ProductDetailsActivity_yes">Tak</string>
     <string name="ProductDetailsActivity_no">Nie</string>
     <string name="ProductDetailsActivity_product_has_been_removed">Produkt został usunięty.</string>
+    <string name="ProductDetailsActivity_edit_product">Edytuj produkt</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Drukuj kody QR</string>
     <string name="PrintQRCodesActivity_skip">Pomiń</string>

@@ -71,6 +71,10 @@ public class ProductDetailsPresenter {
         view.onPrintQRCode(textToQRCodeList, namesOfProductsList, expirationDatesList);
     }
 
+    public void editProduct(int productId){
+        view.navigateToEditProductActivity(productId);
+    }
+
     public void navigateToMyPantryActivity() {
         view.navigateToMyPantryActivity();
     }
