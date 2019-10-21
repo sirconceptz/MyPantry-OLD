@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +44,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends AppCompatActivity implements MainView{
 
     @BindView(R.id.adBanner)
     AdView adView;
@@ -63,7 +64,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        presenter = new MainPresenter(this);
+        presenter = new MainPresenter(this, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+
+        //presenter.checkUserIsLogged();
     }
 
     @OnClick(R.id.button_myPantry)
@@ -87,9 +90,15 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
+    public void onNavigationToWelcomeScreen() {
+        Intent welcomeScreenActivityIntent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
+        startActivity(welcomeScreenActivityIntent);
+    }
+
+    @Override
     public void onNavigationToMyPantryActivity() {
-        Intent scanProductActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
-        startActivity(scanProductActivityIntent);
+        Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
+        startActivity(myPantryActivityIntent);
     }
 
     @Override

@@ -103,7 +103,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     private Context context;
     private ProductDb productDb;
     private SharedPreferences sharedPreferences;
-    private ActionMode mActionMode;
+    private ActionMode actionMode;
 
     private MyPantryPresenter presenter;
 
@@ -167,8 +167,8 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                     presenter.clearSelectList();
                     presenter.setIsMultiSelect(true);
 
-                    if (mActionMode == null) {
-                        mActionMode = startActionMode(mActionModeCallback);
+                    if (actionMode == null) {
+                        actionMode = startActionMode(actionModeCallback);
                     }
                 }
                 multiSelect(position);
@@ -193,13 +193,13 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     private void multiSelect(int position) {
         if(!presenter.getIsMultiSelect())
-            toolbar.startActionMode(mActionModeCallback);
-        if (mActionMode != null) {
+            toolbar.startActionMode(actionModeCallback);
+        if (actionMode != null) {
             presenter.addMultiSelectProduct(position);
             if(presenter.getSelectList().size() == 0)
-                mActionMode.finish();
+                actionMode.finish();
             else
-                mActionMode.setTitle(String.valueOf(presenter.getSelectList().size()));
+                actionMode.setTitle(String.valueOf(presenter.getSelectList().size()));
         }
         updateSelectsRecyclerViewAdapter();
     }
@@ -375,7 +375,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     @Override
     public void onDeleteProducts() {
         presenter.deleteSelectedProducts();
-        mActionMode.finish();
+        actionMode.finish();
     }
 
     @Override
@@ -399,7 +399,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         return super.onOptionsItemSelected(item);
     }
 
-    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
@@ -428,7 +428,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
-            mActionMode = null;
+            actionMode = null;
             presenter.setIsMultiSelect(false);
             presenter.clearSelectList();
             updateSelectsRecyclerViewAdapter();

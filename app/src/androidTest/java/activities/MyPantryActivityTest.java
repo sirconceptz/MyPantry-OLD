@@ -30,9 +30,10 @@ import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.activities.EditProductActivity;
 import com.hermanowicz.pantry.activities.MainActivity;
 import com.hermanowicz.pantry.activities.MyPantryActivity;
 import com.hermanowicz.pantry.activities.ProductDetailsActivity;
@@ -64,7 +65,7 @@ import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-//Tests MyPantryActivity, ProductDetailActivity
+//Tests MyPantryActivity, ProductDetailActivity, EditProductActivity
 
 @RunWith(AndroidJUnit4.class)
 public class MyPantryActivityTest {
@@ -101,6 +102,45 @@ public class MyPantryActivityTest {
                 .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 
         intended(hasComponent(ProductDetailsActivity.class.getName()));
+        ProductDb.getInstance(activity).productsDao().clearDb();
+    }
+
+    @Test
+    public void onClickOnEditProductInProductDetailsShouldNavigateToEditProductActivity() throws InterruptedException {
+        insertTestProductsToDbAndRestartActivity();
+
+        List<Product> productList = ProductDb.getInstance(activity).productsDao()
+                .getAllProductsAsList();
+
+        onView(withId(R.id.recyclerview_products))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        Thread.sleep(1000);
+        intended(hasComponent(ProductDetailsActivity.class.getName()));
+        onView(withId(R.id.button_editProduct)).check(matches(isDisplayed()))
+                .perform(click());
+        intended(hasComponent(EditProductActivity.class.getName()));
+
+        onView(withId(R.id.edittext_name))
+                .check(matches(withText(productList.get(0).getName())));
+        onView(withId(R.id.spinner_productType))
+                .check(matches(withText(productList.get(0).getTypeOfProduct())));
+        onView(withId(R.id.spinner_productFeatures))
+                .check(matches(withText(productList.get(0).getProductFeatures())));
+        onView(withId(R.id.edittext_expirationDate))
+                .check(matches(withText(productList.get(0).getExpirationDate())));
+        onView(withId(R.id.edittext_productionDate))
+                .check(matches(withText(productList.get(0).getProductionDate())));
+        onView(withId(R.id.edittext_composition))
+                .check(matches(withText(productList.get(0).getComposition())));
+        onView(withId(R.id.edittext_healingProperties))
+                .check(matches(withText(productList.get(0).getHealingProperties())));
+        onView(withId(R.id.edittext_dosage))
+                .check(matches(withText(productList.get(0).getDosage())));
+        onView(withId(R.id.edittext_volume))
+                .check(matches(withText(productList.get(0).getVolume())));
+        onView(withId(R.id.edittext_weight))
+                .check(matches(withText(productList.get(0).getWeight())));
+
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
 
@@ -182,6 +222,7 @@ public class MyPantryActivityTest {
     }
 
     private void insertTestProductsToDbAndRestartActivity() {
+        ProductDb.getInstance(activity).productsDao().clearDb();
         List<Product> productList = new ArrayList<>();
         for (int counter = 0; 3 > counter; counter++) {
             productList.add(ProductTestModel.getTestProduct1());
@@ -194,7 +235,7 @@ public class MyPantryActivityTest {
     }
 
     public int getCountFromRecyclerView(@IdRes int RecyclerViewId) {
-        Matcher matcher = new TypeSafeMatcher<View>() {
+        Matcher<View> matcher = new TypeSafeMatcher<View>() {
             @Override
             public void describeTo(org.hamcrest.Description description) {
             }

@@ -56,6 +56,10 @@
     <string name="EditProductActivity_save_product">Save product</string>
     <string name="EditProductActivity_cancel">Cancel</string>
     <string name="EditProductActivity_product_was_updated">Product was updated.</string>
+    <!--ProductExchange-->
+    <string name="ProductExchange_product_exchange">Product exchange</string>
+    <string name="ProductExchange_send">Send</string>
+    <string name="ProductExchange_receive">Receive</string>
     <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_name">Name</string>
     <string name="ProductDetailsActivity_quantity">Quantity</string>
@@ -179,6 +183,7 @@
     <string name="ProductDetailsActivity_no">No</string>
     <string name="ProductDetailsActivity_product_has_been_removed">The product has been removed.</string>
     <string name="ProductDetailsActivity_edit_product">Edit product</string>
+    <string name="ProductDetailsActivity_send_product_by_nfc">Send product via NFC</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Print QR codes</string>
     <string name="PrintQRCodesActivity_skip">Skip</string>
@@ -196,6 +201,15 @@
     <string name="AppSettingsActivity_settings_saved_successful">Settings are saved successful.</string>
     <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
     <string name="AppSettingsActivity_do_you_want_to_clear_db">Are you sure you want to clear the product database?</string>
+    <string name="AppSettingsActivity_version">Version</string>
+    <!--RegistrationActivity-->
+    <string name="RegisterActivity_register">Register</string>
+    <string name="RegisterActivity_email">Email</string>
+    <string name="RegisterActivity_password">Password</string>
+    <string name="RegisterActivity_passwordConfirmation">Password (confirmation)</string>
+    <string name="RegisterActivity_registerHint"> </string>
+    <string name="RegisterActivity_accountCorrectRegistered"> </string>
+    <string name="RegisterActivity_errorWrongEmail"> </string>
     <!--Notifications-->
     <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% is overdue. You have less than %DAYS% days to make it before this date.</string>
@@ -208,5 +222,4 @@
     <string name="Errors_set_correct_quantity">Give the correct quantity</string>
     <string name="Errors_product_name_is_required">Name of product is required</string>
     <string name="Errors_expiration_date_is_required">Expiration date is required</string>
-    <string name="AppSettingsActivity_version">Version</string>
 </resources>

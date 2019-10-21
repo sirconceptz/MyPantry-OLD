@@ -358,7 +358,7 @@
             android:layout_marginEnd="16dp"
             android:text="@string/PrintQRCodesActivity_print_qr_codes"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_productDosageLabel" />
+            app:layout_constraintTop_toTopOf="@+id/text_productDosageValue" />
 
         <Button
             android:id="@+id/button_editProduct"

@@ -77,11 +77,11 @@ public class EditProductPresenter {
     }
 
     public void setExpirationDate(int year, int month, int day) {
-        model.setExpirationDate(model.formatDate(year, month, day));
+        model.setExpirationDate(model.formatDate(year, month+1, day));
     }
 
     public void setProductionDate(int year, int month, int day) {
-        model.setProductionDate(model.formatDate(year, month, day));
+        model.setProductionDate(model.formatDate(year, month+1, day));
     }
 
     public void showExpirationDate(int day, int month, int year) {

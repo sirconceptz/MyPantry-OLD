@@ -62,10 +62,12 @@ public class NewProductModel {
     }
 
     public void setExpirationDate(int year, int month, int day) {
+        month = month + 1;
         this.expirationDate = year + "-" + month + "-" + day;
     }
 
     public void setProductionDate(int year, int month, int day) {
+        month = month + 1;
         this.productionDate = year + "-" + month + "-" + day;
     }
 

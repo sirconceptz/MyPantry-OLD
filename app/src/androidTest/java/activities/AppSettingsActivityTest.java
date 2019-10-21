@@ -26,7 +26,7 @@ import android.widget.TextView;
 import androidx.room.Room;
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.hermanowicz.pantry.BuildConfig;
 import com.hermanowicz.pantry.R;
@@ -49,6 +49,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -99,7 +100,7 @@ public class AppSettingsActivityTest {
         assertEquals("7", daysToNotification.getText().toString());
         assertEquals(15, hourOfNotification.getValue());
         assertTrue(emailNotifications.isChecked());
-        assertTrue(!pushNotifications.isChecked());
+        assertFalse(pushNotifications.isChecked());
         assertTrue(emailNotifications.isEnabled());
         assertEquals("email@address.com", emailAddress.getText().toString());
     }

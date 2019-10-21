@@ -15,18 +15,12 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.models;
 
-public interface MainView {
+public class RegistrationModel {
 
-    void onNavigationToWelcomeScreen();
-
-    void onNavigationToMyPantryActivity();
-
-    void onNavigationToScanProductActivity();
-
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
-
+    public boolean registerAccount(){
+        boolean correctRegistered = true;
+        return correctRegistered;
+    }
 }

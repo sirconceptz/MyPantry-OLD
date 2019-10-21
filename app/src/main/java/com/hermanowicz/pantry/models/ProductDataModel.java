@@ -120,6 +120,7 @@ public class ProductDataModel {
         for(int counter = 0; stringArray.length > counter; counter++){
             expirationDateArray[counter] = Integer.parseInt(stringArray[counter]);
         }
+        expirationDateArray[1]=expirationDateArray[1]-1;
         return expirationDateArray;
     }
 
@@ -129,6 +130,7 @@ public class ProductDataModel {
         for (int counter = 0; stringArray.length > counter; counter++) {
             productionDateArray[counter] = Integer.parseInt(stringArray[counter]);
         }
+        productionDateArray[1]=productionDateArray[1]-1;
         return productionDateArray;
     }
 

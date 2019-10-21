@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.presenters;
 
-public interface MainView {
+import com.hermanowicz.pantry.interfaces.WelcomeScreenView;
 
-    void onNavigationToWelcomeScreen();
+public class WelcomeScreenPresenter {
 
-    void onNavigationToMyPantryActivity();
+    private WelcomeScreenView view;
 
-    void onNavigationToScanProductActivity();
+    public void onLoginButtonClick(){
+        view.onLogin();
+    }
 
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
-
+    public void onRegisterButtonClick(){
+        view.onRegister();
+    }
 }

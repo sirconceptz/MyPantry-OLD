@@ -17,14 +17,24 @@
 
 package com.hermanowicz.pantry.presenters;
 
+import android.content.SharedPreferences;
+
 import com.hermanowicz.pantry.interfaces.MainView;
+import com.hermanowicz.pantry.models.User;
 
 public class MainPresenter {
 
     private MainView view;
+    private User userModel;
 
-    public MainPresenter(MainView view) {
+    public MainPresenter(MainView view, SharedPreferences preferences) {
         this.view = view;
+        this.userModel = new User(preferences);
+    }
+
+    public void checkUserIsLogged(){
+        if(!userModel.userIsLogged())
+            view.onNavigationToWelcomeScreen();
     }
 
     public void navigateToMyPantryActivity() {

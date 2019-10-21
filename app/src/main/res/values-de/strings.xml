@@ -57,6 +57,10 @@
     <string name="EditProductActivity_save_product">Produkt speichern</string>
     <string name="EditProductActivity_cancel">Stornieren</string>
     <string name="EditProductActivity_product_was_updated">Produkt wurde aktualisiert.</string>
+    <!--ProductExchange-->
+    <string name="ProductExchange_product_exchange">Produktaustausch</string>
+    <string name="ProductExchange_send">Senden</string>
+    <string name="ProductExchange_receive">Erhalten</string>
     <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_name">Produktname</string>
     <string name="ProductDetailsActivity_quantity">Anzahl</string>
@@ -180,6 +184,7 @@
     <string name="ProductDetailsActivity_no">Nein</string>
     <string name="ProductDetailsActivity_product_has_been_removed">Das Produkt wurde entfernt.</string>
     <string name="ProductDetailsActivity_edit_product">Produkt bearbeiten</string>
+    <string name="ProductDetailsActivity_send_product_by_nfc">Produkt per NFC senden</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">QR-Codes drucken</string>
     <string name="PrintQRCodesActivity_skip">überspringen</string>
@@ -197,6 +202,15 @@
     <string name="AppSettingsActivity_settings_saved_successful">Die Einstellungen wurden erfolgreich gespeichert. </string>
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
     <string name="AppSettingsActivity_do_you_want_to_clear_db">Möchten Sie die Produktdatenbank wirklich löschen?</string>
+    <string name="AppSettingsActivity_version">Version</string>
+    <!--RegistrationActivity-->
+    <string name="RegisterActivity_register">Registrieren</string>
+    <string name="RegisterActivity_email">Email</string>
+    <string name="RegisterActivity_password">Passwort</string>
+    <string name="RegisterActivity_passwordConfirmation">Passwort Bestätigung</string>
+    <string name="RegisterActivity_registerHint"> </string>
+    <string name="RegisterActivity_accountCorrectRegistered"> </string>
+    <string name="RegisterActivity_errorWrongEmail"> </string>
     <!--Notifications-->
     <string name="Notifications_title">[Meine Speisekammer] Das Produkt wird bald verfallen.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% läuft bald ab. Sie haben noch %DAYS% Tage bis zu diesem Datum.</string>
@@ -207,7 +221,6 @@
     <string name="Errors_permission_is_needed_to_save_the_file">Zum Erstellen einer Datei ist eine Berechtigung erforderlich</string>
     <string name="Errors_category_not_selected">Kategorie wurde nicht ausgewählt</string>
     <string name="Errors_set_correct_quantity">Geben Sie die richtige Menge an</string>
-    <string name="Errors_product_name_is_required">Nazwa produktu jest wymagana</string>
-    <string name="Errors_expiration_date_is_required">Data przydatności produktu jest wymagana</string>
-    <string name="AppSettingsActivity_version">Version</string>
+    <string name="Errors_product_name_is_required">Der Produktname ist erforderlich</string>
+    <string name="Errors_expiration_date_is_required">Das Verfallsdatum des Produkts ist erforderlich</string>
 </resources>

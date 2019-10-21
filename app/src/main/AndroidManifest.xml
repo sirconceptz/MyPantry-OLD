@@ -120,6 +120,18 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activities.MainActivity" />
 
+        <activity android:name=".activities.RegistrationActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/ProductExchange_receive"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.MainActivity"/>
+
+        <activity android:name=".activities.WelcomeScreenActivity"
+            android:screenOrientation="portrait"
+            android:label=""
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activities.MainActivity"/>
+
         <service
             android:name=".services.NotificationService"
             android:exported="false">

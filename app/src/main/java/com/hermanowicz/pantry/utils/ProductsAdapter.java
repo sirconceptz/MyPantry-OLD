@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hermanowicz.pantry.R;
@@ -101,14 +102,14 @@ public class ProductsAdapter extends
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS));
         Date dayOfNotification = calendar.getTime();
         if (multiSelectList.contains(productList.get(position))) {
-            viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_product_selected));
+            viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_product_selected));
         }
         else{
             if (dayOfNotification.after(expirationDateDt)){
-                viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_expired_products));
+                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_expired_products));
             }
             else{
-                viewHolder.itemView.setBackgroundColor(resources.getColor(R.color.background_material));
+                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_material));
             }
         }
     }

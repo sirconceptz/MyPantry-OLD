@@ -20,7 +20,7 @@ package activities;
 import android.widget.Button;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activities.AppSettingsActivity;

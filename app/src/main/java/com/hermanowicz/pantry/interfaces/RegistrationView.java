@@ -17,16 +17,8 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MainView {
+public interface RegistrationView {
+    void accountCorrectRegistered();
 
-    void onNavigationToWelcomeScreen();
-
-    void onNavigationToMyPantryActivity();
-
-    void onNavigationToScanProductActivity();
-
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
-
+    void showErrorWrongEmail();
 }

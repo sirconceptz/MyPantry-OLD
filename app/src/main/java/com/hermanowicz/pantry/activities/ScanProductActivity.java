@@ -19,7 +19,9 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -102,15 +104,15 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         Toast.makeText(context, getString(R.string.ScanProductActivity_product_not_found), Toast.LENGTH_LONG).show();
     }
 
+
     @Override
     public void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList) {
         Intent productDetailsIntent = new Intent(context, ProductDetailsActivity.class);
         productDetailsIntent.putExtra("product_id", decodedScanResultAsList.get(0));
         productDetailsIntent.putExtra("hash_code", String.valueOf(decodedScanResultAsList.get(1)));
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator != null) {
-            vibrator.vibrate(VIBRATE_DURATION);
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && vibrator != null)
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
         startActivity(productDetailsIntent);
     }
 

@@ -18,8 +18,8 @@
 package dialog;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.hermanowicz.pantry.activities.AppSettingsActivity;
 import com.hermanowicz.pantry.dialog.ClearDbDialog;

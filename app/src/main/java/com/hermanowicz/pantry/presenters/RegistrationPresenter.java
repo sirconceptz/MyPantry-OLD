@@ -15,18 +15,24 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.presenters;
 
-public interface MainView {
+import com.hermanowicz.pantry.interfaces.RegistrationView;
+import com.hermanowicz.pantry.models.RegistrationModel;
 
-    void onNavigationToWelcomeScreen();
+public class RegistrationPresenter {
 
-    void onNavigationToMyPantryActivity();
+    private RegistrationView view;
+    private RegistrationModel model = new RegistrationModel();
 
-    void onNavigationToScanProductActivity();
+    public RegistrationPresenter(RegistrationView view){
+        this.view = view;
+    }
 
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
-
+    public void RegisterAccount(){
+        if (model.registerAccount())
+            view.accountCorrectRegistered();
+        else
+            view.showErrorWrongEmail();
+    }
 }

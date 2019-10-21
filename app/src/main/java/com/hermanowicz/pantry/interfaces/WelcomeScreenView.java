@@ -17,16 +17,11 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MainView {
+public interface WelcomeScreenView {
 
-    void onNavigationToWelcomeScreen();
+    void onLogin();
 
-    void onNavigationToMyPantryActivity();
+    void onRegister();
 
-    void onNavigationToScanProductActivity();
-
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
-
+    void onNavigationToMainActivity();
 }

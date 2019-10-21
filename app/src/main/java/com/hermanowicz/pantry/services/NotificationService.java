@@ -33,6 +33,7 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -117,7 +118,7 @@ public class NotificationService extends IntentService {
             builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.ic_launcher_round));
             builder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-            builder.setLights(getResources().getColor(R.color.color_primary), 500, 1000);
+            builder.setLights(ContextCompat.getColor(context, R.color.color_primary), 500, 1000);
             builder.setAutoCancel(true);
             Intent notifyIntent = new Intent(context, MyPantryActivity.class);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK

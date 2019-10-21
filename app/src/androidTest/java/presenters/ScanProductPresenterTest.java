@@ -21,8 +21,8 @@ import android.Manifest;
 
 import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.hermanowicz.pantry.activities.MainActivity;
 import com.hermanowicz.pantry.activities.ProductDetailsActivity;
