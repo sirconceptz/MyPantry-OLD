@@ -32,6 +32,10 @@ public class MainPresenter {
         this.userModel = new User(preferences);
     }
 
+    public void showLoginDialog(){
+        view.showLoginDialog();
+    }
+
     public void checkUserIsLogged(){
         if(!userModel.userIsLogged())
             view.onNavigationToWelcomeScreen();

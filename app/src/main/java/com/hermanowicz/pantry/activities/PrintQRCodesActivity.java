@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.hermanowicz.pantry.BuildConfig;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
 import com.hermanowicz.pantry.presenters.PrintQRCodesPresenter;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,6 +74,8 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_qrcodes);
 

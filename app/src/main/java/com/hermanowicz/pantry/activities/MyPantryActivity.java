@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
@@ -66,6 +67,7 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
 import com.hermanowicz.pantry.presenters.MyPantryPresenter;
 import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.Orientation;
 import com.hermanowicz.pantry.utils.ProductsAdapter;
 import com.hermanowicz.pantry.utils.RecyclerProductClickListener;
 
@@ -110,6 +112,8 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_pantry_drawer_layout);
 

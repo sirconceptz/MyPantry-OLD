@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -40,10 +41,11 @@ import androidx.appcompat.widget.Toolbar;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.dialog.ClearDbDialog;
-import com.hermanowicz.pantry.interfaces.AppSettingsDialogListener;
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
+import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.presenters.AppSettingsPresenter;
 import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +60,7 @@ import butterknife.OnClick;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView, AppSettingsDialogListener {
+public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView, DialogListener {
 
     private Context context;
     private SharedPreferences preferences;
@@ -83,6 +85,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_settings);
 
@@ -213,7 +217,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     }
 
     @Override
-    public void onPositiveClickClearDatabase() {
+    public void onPositiveClick() {
         presenter.clearDatabase();
     }
 }

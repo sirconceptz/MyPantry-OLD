@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ import com.hermanowicz.pantry.interfaces.ProductDetailsView;
 import com.hermanowicz.pantry.presenters.ProductDetailsPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -98,6 +100,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_details);
 

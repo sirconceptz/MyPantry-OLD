@@ -18,8 +18,10 @@
 package com.hermanowicz.pantry.activities;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,9 +30,14 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenters.MainPresenter;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +51,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity implements MainView{
+public class MainActivity extends AppCompatActivity implements MainView, DialogListener {
 
     @BindView(R.id.adBanner)
     AdView adView;
@@ -54,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements MainView{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -66,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
         presenter = new MainPresenter(this, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
 
+        //presenter.showLoginDialog();
         //presenter.checkUserIsLogged();
     }
 
@@ -87,6 +97,19 @@ public class MainActivity extends AppCompatActivity implements MainView{
     @OnClick(R.id.button_appSettings)
     void onClickAppSettingsButton() {
         presenter.navigateToAppSettingsActivity();
+    }
+
+    @Override
+    public void showLoginDialog() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, 9001);
+
     }
 
     @Override
@@ -135,5 +158,10 @@ public class MainActivity extends AppCompatActivity implements MainView{
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onPositiveClick() {
+        Toast.makeText(getApplicationContext(), "DZIALA", Toast.LENGTH_LONG).show();
     }
 }

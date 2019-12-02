@@ -17,18 +17,6 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MainView {
-
-    void showLoginDialog();
-
-    void onNavigationToWelcomeScreen();
-
-    void onNavigationToMyPantryActivity();
-
-    void onNavigationToScanProductActivity();
-
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToAppSettingsActivity();
-
+public interface DialogListener {
+    void onPositiveClick();
 }

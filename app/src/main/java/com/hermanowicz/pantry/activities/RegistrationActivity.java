@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,6 +32,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.RegistrationView;
 import com.hermanowicz.pantry.presenters.RegistrationPresenter;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import java.util.Objects;
 
@@ -55,6 +57,8 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 

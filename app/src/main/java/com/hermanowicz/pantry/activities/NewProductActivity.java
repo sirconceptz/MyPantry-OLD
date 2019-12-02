@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.activities;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -55,6 +56,7 @@ import com.hermanowicz.pantry.interfaces.NewProductView;
 import com.hermanowicz.pantry.presenters.NewProductPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Notification;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -129,6 +131,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
 

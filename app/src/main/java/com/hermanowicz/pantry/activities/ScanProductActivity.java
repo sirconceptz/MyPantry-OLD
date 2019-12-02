@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -36,6 +37,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.ScanProductView;
 import com.hermanowicz.pantry.presenters.ScanProductPresenter;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import java.util.List;
 
@@ -58,6 +60,8 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_product);
 

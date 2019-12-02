@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.activities;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -53,6 +54,7 @@ import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.presenters.EditProductPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import java.util.Date;
 import java.util.Objects;
@@ -121,6 +123,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     protected void onCreate(@Nullable Bundle savedInstantState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstantState);
         setContentView(R.layout.activity_edit_product);
         ButterKnife.bind(this);

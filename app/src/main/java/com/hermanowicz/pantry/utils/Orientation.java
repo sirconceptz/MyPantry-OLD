@@ -15,8 +15,16 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.utils;
 
-public interface AppSettingsDialogListener {
-    void onPositiveClickClearDatabase();
+import android.app.Activity;
+import android.content.res.Configuration;
+
+public class Orientation {
+
+    public static boolean isTablet (Activity activity) {
+        return ((activity.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE);
+    }
 }

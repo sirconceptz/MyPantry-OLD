@@ -18,6 +18,7 @@
 package com.hermanowicz.pantry.activities;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.dialog.LoginDialog;
 import com.hermanowicz.pantry.interfaces.WelcomeScreenView;
 import com.hermanowicz.pantry.presenters.WelcomeScreenPresenter;
+import com.hermanowicz.pantry.utils.Orientation;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,6 +42,8 @@ public class WelcomeScreenActivity extends AppCompatActivity implements WelcomeS
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
 

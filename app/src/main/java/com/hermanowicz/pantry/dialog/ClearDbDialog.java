@@ -29,7 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.AppSettingsDialogListener;
+import com.hermanowicz.pantry.interfaces.DialogListener;
 
 /**
  * <h1>DeleteProductDialog</h1>
@@ -41,7 +41,7 @@ import com.hermanowicz.pantry.interfaces.AppSettingsDialogListener;
  */
 public class ClearDbDialog extends AppCompatDialogFragment {
 
-    private AppSettingsDialogListener dialogListener;
+    private DialogListener dialogListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class ClearDbDialog extends AppCompatDialogFragment {
                 .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.AppSettingsActivity_clear_database), (dialog, which) -> {
-                    dialogListener.onPositiveClickClearDatabase();
+                    dialogListener.onPositiveClick();
                 });
         return builder.create();
     }
@@ -67,7 +67,7 @@ public class ClearDbDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            dialogListener = (AppSettingsDialogListener) context;
+            dialogListener = (DialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString());
         }
