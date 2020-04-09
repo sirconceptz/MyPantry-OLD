@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -143,7 +143,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         presenter.setProduct(productId);
 
         expirationDate.setOnClickListener(v -> {
-            if (expirationDate.length() < 1) {
+            if (expirationDate.length() <= 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(1);
@@ -169,7 +169,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         };
 
         productionDate.setOnClickListener(v -> {
-            if (productionDate.length() < 1) {
+            if (productionDate.length() <= 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);

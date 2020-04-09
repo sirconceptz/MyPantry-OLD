@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -81,12 +81,14 @@ public class NewProductModel {
 
     public void parseQuantityProducts(String quantity) {
         try {
-            this.quantity = Integer.valueOf(quantity);
+            this.quantity = Integer.parseInt(quantity);
         } catch (NumberFormatException e) {
             this.quantity = 1;
         }
         if (this.quantity < 1)
             this.quantity = 1;
+        if (this.quantity > 1000)
+            this.quantity = 1000;
     }
 
     public int[] getExpirationDateArray() {

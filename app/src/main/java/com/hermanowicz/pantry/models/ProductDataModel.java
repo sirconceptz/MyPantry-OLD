@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -117,10 +117,12 @@ public class ProductDataModel {
     public int[] getExpirationDateArray() {
         String[] stringArray = expirationDate.split("-");
         int[] expirationDateArray = new int[stringArray.length];
-        for(int counter = 0; stringArray.length > counter; counter++){
-            expirationDateArray[counter] = Integer.parseInt(stringArray[counter]);
+        if (stringArray.length > 1) {
+            for (int counter = 0; stringArray.length > counter; counter++) {
+                expirationDateArray[counter] = Integer.parseInt(stringArray[counter]);
+            }
+            expirationDateArray[1] = expirationDateArray[1] - 1;
         }
-        expirationDateArray[1]=expirationDateArray[1]-1;
         return expirationDateArray;
     }
 

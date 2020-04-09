@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2019
+  ~ Copyright (c) 2020
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -17,7 +17,7 @@
 <resources>
     <string name="app_name">My Pantry</string>
     <string name="title_activity_my_pantry">My Pantry</string>
-    <string name="title_activity_scan_the_product">Scan the product</string>
+    <string name="title_activity_scan_the_product">Scan the product\'s QR code</string>
     <string name="title_activity_new_product">New Product</string>
     <string name="title_activity_app_settings">Application settings</string>
     <string name="title_activity_print_qrcodes">Print QR Codes</string>
@@ -25,7 +25,7 @@
     <string name="title_activity_edit_product">Edit product</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">My pantry</string>
-    <string name="MainActivity_scan_product_button">Scan the product</string>
+    <string name="MainActivity_scan_product_button">Scan the product\'s QR code</string>
     <string name="MainActivity_new_product_button">New product</string>
     <string name="MainActivity_app_settings">Application settings</string>
     <string name="MainActivity_close_app_button">Close application</string>
