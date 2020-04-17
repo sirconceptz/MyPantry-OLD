@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -18,6 +18,8 @@
 package com.hermanowicz.pantry.interfaces;
 
 public interface AppSettingsView {
+    void setScanCamera (int selectedCamera);
+
     void setDaysBeforeExpirationDate(int daysBeforeExpirationDate);
 
     void setCheckbox_pushNotification(boolean isPushNotificationsAllowed);

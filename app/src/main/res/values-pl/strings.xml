@@ -191,6 +191,7 @@
     <string name="PrintQRCodesActivity_send_pdf_via_email">Wyślij plik PDF jako email</string>
     <string name="PrintQRCodesActivity_email_with_pdf_subject">[Moja Spiżarnia] PDF z kodami QR do wydrukowania</string>
     <!--AppSettingsActivity-->
+    <string name="AppSettingsActivity_which_camera_to_scan_products">Która kamera ma być używana do skanowania produktów?</string>
     <string name="AppSettingsActivity_notifications_send_by">Wyślij powiadomienia o utracie terminu przydatności produktu</string>
     <string name="AppSettingsActivity_hour_of_notification">O której godzinie chcesz otrzymać powiadomienia?</string>
     <string name="AppSettingsActivity_notifications_push">przez powiadomienia</string>
@@ -203,6 +204,10 @@
     <string name="AppSettingsActivity_database_is_clear">Baza danych została wyczyszczona.</string>
     <string name="AppSettingsActivity_do_you_want_to_clear_db">Czy jesteś pewien, że chcesz wyczyścićbazę danych?</string>
     <string name="AppSettingsActivity_version">Wersja</string>
+    <string-array name="AppSettingsActivity_camera_to_scan">
+        <item>Tylna kamera</item>
+        <item>Przednia kamera</item>
+    </string-array>
     <!--RegistrationActivity-->
     <string name="RegisterActivity_register">Zarejestruj się</string>
     <string name="RegisterActivity_email">Email</string>

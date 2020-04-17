@@ -190,6 +190,7 @@
     <string name="PrintQRCodesActivity_send_pdf_via_email">Send a PDF file by e-mail</string>
     <string name="PrintQRCodesActivity_email_with_pdf_subject">[My Pantry] PDF with QR codes for printing</string>
     <!--AppSettingsActivity-->
+    <string name="AppSettingsActivity_which_camera_to_scan_products">Which camera will be used to scan products?</string>
     <string name="AppSettingsActivity_notifications_send_by">Send notifications about expirations date of product</string>
     <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notifications?</string>
     <string name="AppSettingsActivity_notifications_push">via push notications</string>
@@ -202,6 +203,10 @@
     <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
     <string name="AppSettingsActivity_do_you_want_to_clear_db">Are you sure you want to clear the product database?</string>
     <string name="AppSettingsActivity_version">Version</string>
+    <string-array name="AppSettingsActivity_camera_to_scan">
+        <item>Rear camera</item>
+        <item>Front camera</item>
+    </string-array>
     <!--RegistrationActivity-->
     <string name="RegisterActivity_register">Register</string>
     <string name="RegisterActivity_email">Email</string>

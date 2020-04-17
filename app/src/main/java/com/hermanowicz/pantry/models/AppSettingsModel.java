@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 public class AppSettingsModel {
 
+    private static final String PREFERENCES_SELECTED_SCAN_CAMERA = "SCAN_CAMERA";
     private static final String PREFERENCES_EMAIL_ADDRESS = "EMAIL_ADDRESS";
     private static final String PREFERENCES_EMAIL_NOTIFICATIONS = "EMAIL_NOTIFICATIONS?";
     private static final String PREFERENCES_PUSH_NOTIFICATIONS = "PUSH_NOTIFICATIONS?";
@@ -36,13 +37,14 @@ public class AppSettingsModel {
     private static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
 
     private SharedPreferences preferences;
-    private int daysBeforeExpirationDate, hourOfNotifications;
+    private int selectedCamera, daysBeforeExpirationDate, hourOfNotifications;
     private boolean emailNotificationsAllowed, pushNotificationsAllowed;
     private String emailAddress;
 
     public AppSettingsModel(SharedPreferences preferences) {
         this.preferences = preferences;
 
+        this.selectedCamera = preferences.getInt(PREFERENCES_SELECTED_SCAN_CAMERA, 0); //0 - Rear camera, 1 - Front camera
         this.daysBeforeExpirationDate = preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS);
         this.hourOfNotifications = preferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS,
@@ -52,6 +54,14 @@ public class AppSettingsModel {
         this.pushNotificationsAllowed = preferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
                 true);
         this.emailAddress = preferences.getString(PREFERENCES_EMAIL_ADDRESS, "");
+    }
+
+    public int getSelectedCamera() {
+        return selectedCamera;
+    }
+
+    public void setSelectedCamera(int selectedCamera) {
+        this.selectedCamera = selectedCamera;
     }
 
     public int getDaysBeforeExpirationDate() {
@@ -119,6 +129,7 @@ public class AppSettingsModel {
     public void saveSettings() {
         SharedPreferences.Editor preferenceEditor = preferences.edit();
 
+        preferenceEditor.putInt(PREFERENCES_SELECTED_SCAN_CAMERA, selectedCamera);
         preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, daysBeforeExpirationDate);
         preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, pushNotificationsAllowed);
         preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotifications);

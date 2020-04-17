@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -18,6 +18,7 @@
 package presenters;
 
 import android.Manifest;
+import android.preference.PreferenceManager;
 
 import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -62,7 +63,7 @@ public class ScanProductPresenterTest {
     @Before
     public void setUp(){
         activity = activityTestRule.getActivity();
-        presenter = new ScanProductPresenter(activity);
+        presenter = new ScanProductPresenter(activity, PreferenceManager.getDefaultSharedPreferences(activity));
     }
 
     @Test

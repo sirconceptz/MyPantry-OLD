@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,7 +17,10 @@
 
 package com.hermanowicz.pantry.presenters;
 
+import android.content.SharedPreferences;
+
 import com.hermanowicz.pantry.interfaces.ScanProductView;
+import com.hermanowicz.pantry.models.AppSettingsModel;
 import com.hermanowicz.pantry.models.ScanProductModel;
 
 import java.util.List;
@@ -26,9 +29,11 @@ public class ScanProductPresenter {
 
     private ScanProductView view;
     private ScanProductModel model = new ScanProductModel();
+    private AppSettingsModel appSettingsModel;
 
-    public ScanProductPresenter(ScanProductView view) {
+    public ScanProductPresenter(ScanProductView view, SharedPreferences sharedPreferences) {
         this.view = view;
+        this.appSettingsModel = new AppSettingsModel(sharedPreferences);
     }
 
     public void onScanResult(String scanResult) {
@@ -39,6 +44,10 @@ public class ScanProductPresenter {
             view.showErrorProductNotFound();
             view.navigateToMainActivity();
         }
+    }
+
+    public int getSelectedCamera(){
+        return appSettingsModel.getSelectedCamera();
     }
 
     public void showErrorProductNotFound() {

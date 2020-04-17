@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -65,19 +66,20 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_product);
 
-        presenter = new ScanProductPresenter(this);
-
         context = getApplicationContext();
+
+        presenter = new ScanProductPresenter(this, PreferenceManager.getDefaultSharedPreferences(context));
 
         setQRCodeScanner();
     }
 
     void setQRCodeScanner() {
+        int cameraId = presenter.getSelectedCamera(); //0 - Rear camera, 1 - Front camera
         IntentIntegrator qrCodeScanner = new IntentIntegrator(this);
         qrCodeScanner.setPrompt(getString(R.string.ScanProductActivity_scan_qr_code));
         qrCodeScanner.setOrientationLocked(true);
         qrCodeScanner.setBeepEnabled(true);
-        qrCodeScanner.setCameraId(0);
+        qrCodeScanner.setCameraId(cameraId);
         qrCodeScanner.initiateScan();
     }
 

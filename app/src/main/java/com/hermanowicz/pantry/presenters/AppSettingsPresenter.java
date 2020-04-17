@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -32,6 +32,10 @@ public class AppSettingsPresenter {
         this.model = new AppSettingsModel(preferences);
     }
 
+    public void setSelectedScanCamera(int selectedScanCamera) {
+        model.setSelectedCamera(selectedScanCamera);
+    }
+
     public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
         model.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
     }
@@ -60,12 +64,14 @@ public class AppSettingsPresenter {
     }
 
     public void loadSettings() {
+        int selectedCamera = model.getSelectedCamera();
         int daysBeforeExpirationDate = model.getDaysBeforeExpirationDate();
         boolean pushNotificationsAllowed = model.isPushNotificationsAllowed();
         boolean emailNotificationsAllowed = model.isEmailNotificationsAllowed();
         int hourOfNotifications = model.getHourOfNotifications();
         String emailAddress = model.getEmailAddress();
 
+        view.setScanCamera(selectedCamera);
         view.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
         view.setCheckbox_pushNotification(pushNotificationsAllowed);
         view.setCheckbox_emailNotification(emailNotificationsAllowed);

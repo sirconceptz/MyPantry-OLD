@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -29,6 +29,7 @@ import android.view.KeyEvent;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,6 +68,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     private AppSettingsPresenter presenter;
 
+    @BindView(R.id.spinner_cameraSelector)
+    Spinner cameraSelector;
     @BindView(R.id.edittext_daysToNotification)
     EditText daysBeforeExpirationDate;
     @BindView(R.id.toolbar)
@@ -133,12 +136,14 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @OnClick(R.id.button_saveSettings)
     void onClickSaveSettingsButton() {
+        int selectedScanCamera = cameraSelector.getSelectedItemPosition();
         int daysToNotification = Integer.parseInt(daysBeforeExpirationDate.getText().toString());
         boolean isEmailNotificationsAllowed = notificationsByEmail.isChecked();
         boolean isPushNotificationsAllowed = notificationsByPush.isChecked();
         int hourOfNotifications = this.hourOfNotifications.getValue();
         String emailAddress = this.emailAddress.getText().toString();
 
+        presenter.setSelectedScanCamera(selectedScanCamera);
         presenter.setDaysBeforeExpirationDate(daysToNotification);
         presenter.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
         presenter.setIsPushNotificationsAllowed(isPushNotificationsAllowed);
@@ -146,6 +151,11 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         presenter.setEmailAddress(emailAddress);
 
         presenter.saveSettings();
+    }
+
+    @Override
+    public void setScanCamera(int selectedCamera) {
+        this.cameraSelector.setSelection(selectedCamera);
     }
 
     @Override
