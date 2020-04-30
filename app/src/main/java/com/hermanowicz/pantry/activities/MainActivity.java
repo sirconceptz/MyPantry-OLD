@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -30,14 +30,12 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenters.MainPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements MainView, DialogL
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
@@ -97,25 +95,6 @@ public class MainActivity extends AppCompatActivity implements MainView, DialogL
     @OnClick(R.id.button_appSettings)
     void onClickAppSettingsButton() {
         presenter.navigateToAppSettingsActivity();
-    }
-
-    @Override
-    public void showLoginDialog() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, 9001);
-
-    }
-
-    @Override
-    public void onNavigationToWelcomeScreen() {
-        Intent welcomeScreenActivityIntent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
-        startActivity(welcomeScreenActivityIntent);
     }
 
     @Override

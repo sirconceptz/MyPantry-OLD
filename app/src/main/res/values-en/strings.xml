@@ -190,6 +190,7 @@
     <string name="PrintQRCodesActivity_send_pdf_via_email">Send a PDF file by e-mail</string>
     <string name="PrintQRCodesActivity_email_with_pdf_subject">[My Pantry] PDF with QR codes for printing</string>
     <!--AppSettingsActivity-->
+    <string name="AppSettingsActivity_which_theme_user_prefer">Choose application mode (day/night)</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Which camera will be used to scan products?</string>
     <string name="AppSettingsActivity_notifications_send_by">Send notifications about expirations date of product</string>
     <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notifications?</string>
@@ -206,6 +207,11 @@
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rear camera</item>
         <item>Front camera</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_darkmodeSelector">
+        <item>Automatic</item>
+        <item>Day</item>
+        <item>Night</item>
     </string-array>
     <!--RegistrationActivity-->
     <string name="RegisterActivity_register">Register</string>

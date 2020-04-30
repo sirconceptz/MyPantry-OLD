@@ -18,6 +18,8 @@
 package com.hermanowicz.pantry.interfaces;
 
 public interface AppSettingsView {
+    void setSelectedTheme(int selectedTheme);
+
     void setScanCamera (int selectedCamera);
 
     void setDaysBeforeExpirationDate(int daysBeforeExpirationDate);

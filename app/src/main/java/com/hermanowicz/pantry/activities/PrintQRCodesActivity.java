@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -39,6 +39,7 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
 import com.hermanowicz.pantry.presenters.PrintQRCodesPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);

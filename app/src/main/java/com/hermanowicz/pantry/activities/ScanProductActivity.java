@@ -39,6 +39,7 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.interfaces.ScanProductView;
 import com.hermanowicz.pantry.presenters.ScanProductPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 import java.util.List;
 
@@ -60,7 +61,7 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);

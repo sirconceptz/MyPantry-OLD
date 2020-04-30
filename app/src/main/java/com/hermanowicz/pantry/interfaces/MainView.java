@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -18,10 +18,6 @@
 package com.hermanowicz.pantry.interfaces;
 
 public interface MainView {
-
-    void showLoginDialog();
-
-    void onNavigationToWelcomeScreen();
 
     void onNavigationToMyPantryActivity();
 

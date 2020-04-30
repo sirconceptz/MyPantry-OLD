@@ -191,6 +191,7 @@
     <string name="PrintQRCodesActivity_send_pdf_via_email">Senden Sie eine PDF-Datei per E-Mail</string>
     <string name="PrintQRCodesActivity_email_with_pdf_subject">[Meine Speisekammer] PDF mit QR-Codes zum Ausdruckent</string>
     <!--AppSettingsActivity-->
+    <string name="AppSettingsActivity_which_theme_user_prefer">Wählen Sie den Anwendungsmodus (Täglich/Nacht)</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Mit welcher Kamera kann ich Produkte scannen?</string>
     <string name="AppSettingsActivity_notifications_send_by">Benachrichtigungen über den Verlust des Verfallsdatums des Produkts senden</string>
     <string name="AppSettingsActivity_hour_of_notification">Wann möchten Sie benachrichtigt werden?</string>
@@ -204,6 +205,15 @@
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
     <string name="AppSettingsActivity_do_you_want_to_clear_db">Möchten Sie die Produktdatenbank wirklich löschen?</string>
     <string name="AppSettingsActivity_version">Version</string>
+    <string-array name="AppSettingsActivity_camera_to_scan">
+        <item>Rückkamera</item>
+        <item>Front-Kamera</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_darkmodeSelector">
+        <item>Automatisch</item>
+        <item>Täglich</item>
+        <item>Nacht</item>
+    </string-array>
     <!--RegistrationActivity-->
     <string name="RegisterActivity_register">Registrieren</string>
     <string name="RegisterActivity_email">Email</string>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -30,15 +30,6 @@ public class MainPresenter {
     public MainPresenter(MainView view, SharedPreferences preferences) {
         this.view = view;
         this.userModel = new User(preferences);
-    }
-
-    public void showLoginDialog(){
-        view.showLoginDialog();
-    }
-
-    public void checkUserIsLogged(){
-        if(!userModel.userIsLogged())
-            view.onNavigationToWelcomeScreen();
     }
 
     public void navigateToMyPantryActivity() {

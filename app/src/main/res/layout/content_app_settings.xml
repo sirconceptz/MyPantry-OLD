@@ -32,15 +32,36 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/textView_whichCameraToScanProducts"
+            android:id="@+id/textView_darkmode"
             android:textColor="@color/text_color"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="64dp"
-            android:text="@string/AppSettingsActivity_which_camera_to_scan_products"
+            android:text="@string/AppSettingsActivity_which_theme_user_prefer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/spinner_appThemeSelector"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:entries="@array/AppSettingsActivity_darkmodeSelector"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView_whichCameraToScanProducts"
+            android:textColor="@color/text_color"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:text="@string/AppSettingsActivity_which_camera_to_scan_products"
+            app:layout_constraintStart_toStartOf="@+id/textView_darkmode"
+            app:layout_constraintTop_toTopOf="@+id/textView_darkmode" />
 
         <Spinner
             android:id="@+id/spinner_cameraSelector"
@@ -49,8 +70,9 @@
             android:layout_marginTop="64dp"
             android:entries="@array/AppSettingsActivity_camera_to_scan"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="@color/text_color"
+            app:layout_constraintEnd_toEndOf="@+id/spinner_appThemeSelector"
+            app:layout_constraintTop_toTopOf="@+id/spinner_appThemeSelector" />
 
         <TextView
             android:id="@+id/textview_howManyDaysToExpirationDate"

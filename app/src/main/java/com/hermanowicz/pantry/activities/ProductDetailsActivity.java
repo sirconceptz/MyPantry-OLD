@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -42,6 +42,7 @@ import com.hermanowicz.pantry.presenters.ProductDetailsPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -99,7 +100,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);

@@ -55,6 +55,7 @@ import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.presenters.EditProductPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 import java.util.Date;
 import java.util.Objects;
@@ -122,7 +123,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstantState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstantState);

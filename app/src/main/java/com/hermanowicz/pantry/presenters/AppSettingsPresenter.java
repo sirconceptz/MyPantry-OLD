@@ -32,6 +32,10 @@ public class AppSettingsPresenter {
         this.model = new AppSettingsModel(preferences);
     }
 
+    public void setSelectedTheme(int selectedTheme){
+        model.setSelectedTheme(selectedTheme);
+    }
+
     public void setSelectedScanCamera(int selectedScanCamera) {
         model.setSelectedCamera(selectedScanCamera);
     }
@@ -64,6 +68,7 @@ public class AppSettingsPresenter {
     }
 
     public void loadSettings() {
+        int selectedTheme = model.getSelectedAppTheme();
         int selectedCamera = model.getSelectedCamera();
         int daysBeforeExpirationDate = model.getDaysBeforeExpirationDate();
         boolean pushNotificationsAllowed = model.isPushNotificationsAllowed();
@@ -71,6 +76,7 @@ public class AppSettingsPresenter {
         int hourOfNotifications = model.getHourOfNotifications();
         String emailAddress = model.getEmailAddress();
 
+        view.setSelectedTheme(selectedTheme);
         view.setScanCamera(selectedCamera);
         view.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
         view.setCheckbox_pushNotification(pushNotificationsAllowed);

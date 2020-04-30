@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 public class AppSettingsModel {
 
+    private static final String PREFERENCES_SELECTED_APP_THEME = "SELECTED_APPLICATION_THEME";
     private static final String PREFERENCES_SELECTED_SCAN_CAMERA = "SCAN_CAMERA";
     private static final String PREFERENCES_EMAIL_ADDRESS = "EMAIL_ADDRESS";
     private static final String PREFERENCES_EMAIL_NOTIFICATIONS = "EMAIL_NOTIFICATIONS?";
@@ -37,13 +38,14 @@ public class AppSettingsModel {
     private static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
 
     private SharedPreferences preferences;
-    private int selectedCamera, daysBeforeExpirationDate, hourOfNotifications;
+    private int selectedAppTheme, selectedCamera, daysBeforeExpirationDate, hourOfNotifications;
     private boolean emailNotificationsAllowed, pushNotificationsAllowed;
     private String emailAddress;
 
     public AppSettingsModel(SharedPreferences preferences) {
         this.preferences = preferences;
 
+        this.selectedAppTheme = preferences.getInt(PREFERENCES_SELECTED_APP_THEME, 0); //0 - Auto, 1 - Day, 2 - Night
         this.selectedCamera = preferences.getInt(PREFERENCES_SELECTED_SCAN_CAMERA, 0); //0 - Rear camera, 1 - Front camera
         this.daysBeforeExpirationDate = preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS);
@@ -54,6 +56,14 @@ public class AppSettingsModel {
         this.pushNotificationsAllowed = preferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
                 true);
         this.emailAddress = preferences.getString(PREFERENCES_EMAIL_ADDRESS, "");
+    }
+
+    public int getSelectedAppTheme(){
+        return selectedAppTheme;
+    }
+
+    public void setSelectedTheme(int selectedAppTheme){
+        this.selectedAppTheme = selectedAppTheme;
     }
 
     public int getSelectedCamera() {
@@ -129,6 +139,7 @@ public class AppSettingsModel {
     public void saveSettings() {
         SharedPreferences.Editor preferenceEditor = preferences.edit();
 
+        preferenceEditor.putInt(PREFERENCES_SELECTED_APP_THEME, selectedAppTheme);
         preferenceEditor.putInt(PREFERENCES_SELECTED_SCAN_CAMERA, selectedCamera);
         preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, daysBeforeExpirationDate);
         preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, pushNotificationsAllowed);

@@ -47,6 +47,7 @@ import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.presenters.AppSettingsPresenter;
 import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +69,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     private AppSettingsPresenter presenter;
 
+    @BindView(R.id.spinner_appThemeSelector)
+    Spinner appThemeSelector;
     @BindView(R.id.spinner_cameraSelector)
     Spinner cameraSelector;
     @BindView(R.id.edittext_daysToNotification)
@@ -87,7 +90,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
@@ -136,6 +139,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @OnClick(R.id.button_saveSettings)
     void onClickSaveSettingsButton() {
+        int selectedTheme = appThemeSelector.getSelectedItemPosition();
         int selectedScanCamera = cameraSelector.getSelectedItemPosition();
         int daysToNotification = Integer.parseInt(daysBeforeExpirationDate.getText().toString());
         boolean isEmailNotificationsAllowed = notificationsByEmail.isChecked();
@@ -143,6 +147,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         int hourOfNotifications = this.hourOfNotifications.getValue();
         String emailAddress = this.emailAddress.getText().toString();
 
+        presenter.setSelectedTheme(selectedTheme);
         presenter.setSelectedScanCamera(selectedScanCamera);
         presenter.setDaysBeforeExpirationDate(daysToNotification);
         presenter.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
@@ -151,6 +156,11 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         presenter.setEmailAddress(emailAddress);
 
         presenter.saveSettings();
+    }
+
+    @Override
+    public void setSelectedTheme(int selectedTheme) {
+        this.appThemeSelector.setSelection(selectedTheme);
     }
 
     @Override
