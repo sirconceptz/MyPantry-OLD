@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,9 +17,13 @@
 
 package com.hermanowicz.pantry.presenters;
 
+import android.content.res.Resources;
+
 import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
-import com.hermanowicz.pantry.models.ProductDetailsModel;
+import com.hermanowicz.pantry.models.GroupProducts;
+import com.hermanowicz.pantry.models.ProductDataModel;
 import com.hermanowicz.pantry.utils.PrintQRData;
 
 import java.util.ArrayList;
@@ -28,27 +32,24 @@ import java.util.List;
 public class ProductDetailsPresenter {
 
     private ProductDetailsView view;
-    private ProductDetailsModel model = new ProductDetailsModel();
+    private ProductDataModel model;
 
-    public ProductDetailsPresenter(ProductDetailsView view) {
+    public ProductDetailsPresenter(ProductDetailsView view, ProductDb db, Resources resources) {
         this.view = view;
+        this.model = new ProductDataModel(db, resources);
     }
 
-    public void setProduct(Product product) {
-        model.setProduct(product);
+    public void setProductList(int productId) {
+        model.setProductList(productId);
     }
 
-    public void setHashCode(String hashCode) {
-        model.setHashCode(hashCode);
-    }
-
-    public void showProductDetails() {
-        if (model.productIsNull()) {
+    public void showProductDetails(String hashCode) {
+        if (model.isProductListEmpty()) {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
-        } else if(model.compareHashCode()) {
-            Product product = model.getProduct();
-            view.showProductDetails(product);
+        } else if(model.isCorrectHashCode(hashCode)) {
+            GroupProducts groupProducts = model.getGroupProducts();
+            view.showProductDetails(groupProducts);
         } else {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
@@ -56,7 +57,8 @@ public class ProductDetailsPresenter {
     }
 
     public void deleteProduct(int productId) {
-        view.onDeletedProduct(productId);
+        //Todo: Zrobić model.deleteSimilarProducts(productId);
+        view.onDeletedProduct();
         view.navigateToMyPantryActivity();
     }
 

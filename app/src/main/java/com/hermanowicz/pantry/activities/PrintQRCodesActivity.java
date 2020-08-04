@@ -60,6 +60,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
  * @version 1.0
  * @since   1.0
  */
+
 public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesView {
 
     @BindView(R.id.toolbar)

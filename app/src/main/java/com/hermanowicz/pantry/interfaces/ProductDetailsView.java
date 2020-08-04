@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,16 +17,16 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.models.GroupProducts;
 
 import java.util.ArrayList;
 
 public interface ProductDetailsView {
-    void showProductDetails(Product product);
+    void showProductDetails(GroupProducts groupProducts);
 
     void showErrorWrongData();
 
-    void onDeletedProduct(int productID);
+    void onDeletedProduct();
 
     void onPrintQRCode(ArrayList<String> textToQRCodeArray, ArrayList<String> namesOfProductsArray, ArrayList<String> expirationDatesArray);
 

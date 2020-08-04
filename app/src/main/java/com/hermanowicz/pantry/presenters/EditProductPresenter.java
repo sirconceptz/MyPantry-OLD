@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -20,10 +20,10 @@ package com.hermanowicz.pantry.presenters;
 import android.content.res.Resources;
 import android.widget.RadioButton;
 
-import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
+import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.models.ProductDataModel;
 
 import java.text.DateFormat;
@@ -47,30 +47,30 @@ public class EditProductPresenter {
     }
 
     public void setProduct(int productId){
-        model.setProduct(productId);
-        Product product = model.getProduct();
+        model.setProductList(productId);
+        GroupProducts groupProducts = model.getGroupProducts();
         int productTypeSpinnerPosition = model.getProductTypeSpinnerPosition();
         int productFeaturesSpinnerPosition = model.getProductFeaturesSpinnerPosition(productTypeSpinnerPosition);
         view.setSpinnerSelections(productTypeSpinnerPosition, productFeaturesSpinnerPosition);
-        view.showProductData(product);
+        view.showProductData(groupProducts);
     }
 
-    public Product getProduct(){
-        return model.getProduct();
+    public GroupProducts getGroupProducts(){
+        return model.getGroupProducts();
     }
 
     public void setTaste(RadioButton selectedTasteButton){
         model.setTaste(selectedTasteButton);
     }
 
-    public void saveProduct(Product product){
-        if(model.isProductNameNotValid(product)){
+    public void saveProduct(GroupProducts groupProducts){
+        if(model.isProductNameNotValid(groupProducts.getProduct())){
             productDataView.showErrorNameNotSet();
         }
-        else if (!model.isTypeOfProductValid(product))
+        else if (!model.isTypeOfProductValid(groupProducts.getProduct()))
             productDataView.showErrorCategoryNotSelected();
         else {
-            model.updateProduct(product);
+            model.updateDatabase(groupProducts);
             view.onSavedProduct();
             view.navigateToMyPantryActivity();
         }

@@ -33,16 +33,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
+import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.presenters.ProductDetailsPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
-import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.Orientation;
 import com.hermanowicz.pantry.utils.ThemeMode;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -64,6 +64,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.text_quantityValue)
+    TextView quantity;
     @BindView(R.id.text_productTypeValue)
     TextView typeOfProduct;
     @BindView(R.id.text_productFeaturesValue)
@@ -92,7 +94,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     AdView adView;
 
     private Context context;
-    private Product selectedProduct;
     private int productId;
     private String hashCode;
 
@@ -108,24 +109,19 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         ButterKnife.bind(this);
 
-        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
-
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        presenter = new ProductDetailsPresenter(this);
+        context = getApplicationContext();
+
+        presenter = new ProductDetailsPresenter(this, ProductDb.getInstance(context), getResources());
 
         getDataFromIntent();
 
-        context = getApplicationContext();
-
-        selectedProduct = ProductDb.getInstance(context).productsDao().getProductById(productId);
-
         setSupportActionBar(toolbar);
 
-        presenter.setProduct(selectedProduct);
-        presenter.setHashCode(hashCode);
-        presenter.showProductDetails();
+        presenter.setProductList(productId);
+        presenter.showProductDetails(hashCode);
     }
 
     private void getDataFromIntent() {
@@ -136,7 +132,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     @OnClick(R.id.button_deleteProduct)
     void onClickDeleteProductButton() {
-        presenter.deleteProduct(selectedProduct.getId());
+        presenter.deleteProduct(productId);
     }
 
     @OnClick(R.id.button_printQRCode)
@@ -150,22 +146,23 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void showProductDetails(Product product) {
-        Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
-        typeOfProduct.setText(product.getTypeOfProduct());
-        productFeatures.setText(product.getProductFeatures());
-        DateHelper dateHelper = new DateHelper(product.getExpirationDate());
+    public void showProductDetails(@NotNull GroupProducts groupProducts) {
+        DateHelper dateHelper = new DateHelper(groupProducts.getProduct().getExpirationDate());
+        Objects.requireNonNull(getSupportActionBar()).setTitle(groupProducts.getProduct().getName());
+        typeOfProduct.setText(groupProducts.getProduct().getTypeOfProduct());
+        quantity.setText(String.valueOf(groupProducts.getQuantity()));
+        productFeatures.setText(groupProducts.getProduct().getProductFeatures());
         expirationDate.setText(dateHelper.getDateInLocalFormat());
-        dateHelper = new DateHelper(product.getProductionDate());
+        dateHelper = new DateHelper(groupProducts.getProduct().getProductionDate());
         productionDate.setText(dateHelper.getDateInLocalFormat());
-        composition.setText(product.getComposition());
-        healingProperties.setText(product.getHealingProperties());
-        dosage.setText(product.getDosage());
-        volume.setText(String.format("%s%s", product.getVolume(), getString(R.string.ProductDetailsActivity_volume_unit)));
-        weight.setText(String.format("%s%s", product.getWeight(), getString(R.string.ProductDetailsActivity_weight_unit)));
-        taste.setText(product.getTaste());
-        if (product.getHasSugar()) hasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
-        if (product.getHasSalt()) hasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
+        composition.setText(groupProducts.getProduct().getComposition());
+        healingProperties.setText(groupProducts.getProduct().getHealingProperties());
+        dosage.setText(groupProducts.getProduct().getDosage());
+        volume.setText(String.format("%s%s", groupProducts.getProduct().getVolume(), getString(R.string.ProductDetailsActivity_volume_unit)));
+        weight.setText(String.format("%s%s", groupProducts.getProduct().getWeight(), getString(R.string.ProductDetailsActivity_weight_unit)));
+        taste.setText(groupProducts.getProduct().getTaste());
+        if (groupProducts.getProduct().getHasSugar()) hasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (groupProducts.getProduct().getHasSalt()) hasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
     }
 
     @Override
@@ -174,9 +171,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void onDeletedProduct(int productID) {
-        ProductDb.getInstance(context).productsDao().deleteProductById(productID);
-        Notification.cancelNotification(context, selectedProduct);
+    public void onDeletedProduct() {
         Toast.makeText(context, getString(R.string.ProductDetailsActivity_product_has_been_removed), Toast.LENGTH_LONG).show();
     }
 

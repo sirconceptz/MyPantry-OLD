@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -36,6 +36,7 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
+
 public class PrintQRData {
     public static ArrayList<String> getTextToQRCodeList(List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();

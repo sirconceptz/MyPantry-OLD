@@ -18,7 +18,6 @@
 package com.hermanowicz.pantry.interfaces;
 
 public interface MainView {
-
     void onNavigationToMyPantryActivity();
 
     void onNavigationToScanProductActivity();
@@ -26,5 +25,4 @@ public interface MainView {
     void onNavigationToNewProductActivity();
 
     void onNavigationToAppSettingsActivity();
-
 }

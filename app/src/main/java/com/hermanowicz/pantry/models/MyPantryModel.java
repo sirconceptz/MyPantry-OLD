@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -22,6 +22,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 
@@ -35,15 +36,67 @@ public class MyPantryModel {
     private FilterModel filterProduct = new FilterModel();
     private Filter filter;
     private List<Product> productList;
-    private List<Product> selectProductList = new ArrayList<>();
+    private List<Product> selectedProductList = new ArrayList<>();
+    private List<GroupProducts> groupProductsList = new ArrayList<>();
     private boolean isMultiSelect = false;
+    private ProductDatabaseOperations productDatabaseOperations;
+
+    public MyPantryModel(ProductDb db){
+        productDatabaseOperations = new ProductDatabaseOperations(db);
+    }
+
+    private void groupProducts(List<Product> productList){
+        List<GroupProducts> toAddGroupProductsList = new ArrayList<>();
+        List<GroupProducts> toRemoveGroupProductsList = new ArrayList<>();
+
+        for (Product product: productList){
+            boolean productOnList = false;
+            GroupProducts testedGroupProducts = new GroupProducts(product, 1);
+            for (GroupProducts groupProducts : groupProductsList) {
+                if (groupProducts.getProduct().getName().equals(product.getName())
+                        && groupProducts.getProduct().getExpirationDate().equals(product.getExpirationDate())
+                        && groupProducts.getProduct().getProductFeatures().equals(product.getProductFeatures())
+                        && groupProducts.getProduct().getComposition().equals(product.getComposition())
+                        && groupProducts.getProduct().getHealingProperties().equals(product.getHealingProperties())
+                        && groupProducts.getProduct().getDosage().equals(product.getDosage())
+                        && groupProducts.getProduct().getVolume() == product.getVolume()
+                        && groupProducts.getProduct().getWeight() == product.getWeight()
+                        && groupProducts.getProduct().getTypeOfProduct().equals(product.getTypeOfProduct())
+                        && groupProducts.getProduct().getProductFeatures().equals(product.getProductFeatures())
+                        && groupProducts.getProduct().getHasSalt() == product.getHasSalt()
+                        && groupProducts.getProduct().getHasSugar() == product.getHasSugar()
+                        && groupProducts.getProduct().getTaste().equals(product.getTaste())) {
+                    productOnList = true;
+                    testedGroupProducts = groupProducts;
+                    break;
+                }
+            }
+            if(productOnList) {
+                toRemoveGroupProductsList.add(testedGroupProducts);
+                testedGroupProducts.setQuantity(testedGroupProducts.getQuantity() + 1);
+                toAddGroupProductsList.add(testedGroupProducts);
+            }
+            else {
+                GroupProducts newGroupProduct = new GroupProducts(product, 1);
+                toAddGroupProductsList.add(newGroupProduct);
+            }
+            groupProductsList.removeAll(toRemoveGroupProductsList);
+            groupProductsList.addAll(toAddGroupProductsList);
+            toAddGroupProductsList.clear();
+            toRemoveGroupProductsList.clear();
+        }
+    }
+
+    public void deleteSelectedProducts(){
+        productDatabaseOperations.deleteProductsFromList(getAllSelectedProductList());
+    }
 
     public LiveData<List<Product>> getProductLiveData() {
         return productLiveData;
     }
 
-    public List<Product> getProductList(){
-        return productList;
+    public List<GroupProducts> getGroupProductsList(){
+        return groupProductsList;
     }
 
     public void setIsMultiSelect(boolean state){
@@ -54,28 +107,48 @@ public class MyPantryModel {
         return this.isMultiSelect;
     }
 
-    public List<Product> getSelectProductList(){
-        return selectProductList;
+    public List<Product> getGroupsSelectedProductList(){
+        return selectedProductList;
+    }
+
+    public List<Product> getAllSelectedProductList(){
+        List<Product> productList = new ArrayList<>();
+        for (Product product : selectedProductList){
+            List<Product> similarProducts = productDatabaseOperations.getSimilarProductsList(product);
+            productList.addAll(similarProducts);
+        }
+        return productList;
     }
 
     public void clearSelectList(){
-        this.selectProductList = new ArrayList<>();
+        this.selectedProductList = new ArrayList<>();
     }
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
+        groupProductsList.clear();
         filter = new Filter(this.productList);
+        groupProducts(productList);
     }
 
-    public void setProductLiveData(LiveData<List<Product>> productLiveData) {
-        this.productLiveData = productLiveData;
+    public void setAllProductsList(){
+        this.productList = productDatabaseOperations.getAllProducts();
+        groupProducts(productList);
+    }
+
+    public List<Product> getProductList(){
+        return this.productList;
+    }
+
+    public void setProductsLiveData(){
+        this.productLiveData = productDatabaseOperations.getProductLiveData();
     }
 
     public void addMultiSelect(int position) {
-        if (selectProductList.contains(productList.get(position)))
-            selectProductList.remove(productList.get(position));
+        if (selectedProductList.contains(productList.get(position)))
+            selectedProductList.remove(productList.get(position));
         else
-            selectProductList.add(productList.get(position));
+            selectedProductList.add(productList.get(position));
     }
 
     public void clearFilters(){

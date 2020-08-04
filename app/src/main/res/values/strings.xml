@@ -237,5 +237,4 @@
     <string name="Errors_expiration_date_is_required">Expiration date is required</string>
     <!--AdMobSettings-->
     <string name="banner_ad_unit_id" translatable="false">ca-app-pub-4025776034769422/4404129112</string>
-    <string name="admob_ad_id" translatable="false">ca-app-pub-4025776034769422~3797748160</string>
 </resources>

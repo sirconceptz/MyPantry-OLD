@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -33,6 +33,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  * @version 1.0
  * @since   1.0
  */
+
 @Database(entities = {Product.class}, version = 1)
 public abstract class ProductDb extends RoomDatabase {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -19,37 +19,28 @@ package com.hermanowicz.pantry.models;
 
 import com.hermanowicz.pantry.db.Product;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ProductDetailsModel {
-
+public final class GroupProducts {
     private Product product;
-    private String hashCode;
+    private int quantity;
+
+    public GroupProducts(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setProduct(Product product){
         this.product = product;
     }
 
-    public void setHashCode(String hashCode) {
-        this.hashCode = hashCode;
-    }
-
-    public boolean compareHashCode() {
-        return hashCode.equals(product.getHashCode());
-    }
-
-    public List<Product> getProductList(){
-        List<Product> productList = new ArrayList<>();
-        productList.add(product);
-        return productList;
-    }
-
-    public boolean productIsNull(){
-        return product == null;
+    void setQuantity(int quantity){
+        this.quantity = quantity;
     }
 }

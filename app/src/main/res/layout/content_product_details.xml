@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2019
+  ~ Copyright (c) 2020
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -27,42 +27,66 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
         <TextView
-            android:id="@+id/text_productTypeLabel"
+            android:id="@+id/text_quantityLabel"
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="64dp"
-            android:text="@string/ProductDetailsActivity_product_type"
+            android:text="@string/ProductDetailsActivity_quantity"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_productTypeValue"
+            android:id="@+id/text_quantityValue"
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="110dp"
+            android:layout_marginStart="130dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="16dp"
             android:text=""
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/text_productTypeLabel"
+            app:layout_constraintStart_toEndOf="@+id/text_quantityLabel"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_productTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/ProductDetailsActivity_product_type"
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/text_quantityLabel"
+            app:layout_constraintTop_toTopOf="@+id/text_quantityLabel" />
+
+        <TextView
+            android:id="@+id/text_productTypeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:text=""
+            android:textColor="@color/text_color"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_quantityValue"
+            app:layout_constraintTop_toTopOf="@id/text_quantityValue" />
 
         <TextView
             android:id="@+id/text_productFeaturesLabel"
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_product_features"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productTypeLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productTypeLabel" />
 
         <TextView
@@ -84,11 +108,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_production_date"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productFeaturesLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productFeaturesLabel" />
 
         <TextView
@@ -110,11 +133,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_expiration_date"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productProductionDateLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productProductionDateLabel" />
 
         <TextView
@@ -122,7 +144,6 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text=""
@@ -136,11 +157,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_volume"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productExpirationDateLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productExpirationDateLabel" />
 
         <TextView
@@ -148,7 +168,6 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text="@string/ProductDetailsActivity_no"
@@ -162,11 +181,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_weight"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productVolumeLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productVolumeLabel" />
 
         <TextView
@@ -174,7 +192,6 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text="@string/ProductDetailsActivity_no"
@@ -188,11 +205,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_taste"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productWeightLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productWeightLabel" />
 
         <TextView
@@ -200,7 +216,6 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text=""
@@ -214,11 +229,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_has_sugar"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productTasteLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productTasteLabel" />
 
         <TextView
@@ -226,7 +240,6 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text="@string/ProductDetailsActivity_no"
@@ -240,11 +253,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_has_salt"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productHasSugarLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productHasSugarLabel" />
 
         <TextView
@@ -252,7 +264,6 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:text="@string/ProductDetailsActivity_no"
@@ -266,11 +277,10 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/ProductDetailsActivity_composition"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productHasSaltLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productHasSaltLabel" />
 
         <TextView
@@ -293,13 +303,12 @@
         <TextView
             android:id="@+id/text_productHealingPropertiesLabel"
             android:textColor="@color/text_color"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="112dp"
+            android:layout_marginTop="110dp"
             android:text="@string/ProductDetailsActivity_healing_properties"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productCompositionLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productCompositionLabel" />
 
         <TextView
@@ -307,7 +316,7 @@
             android:textColor="@color/text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="112dp"
+            android:layout_marginTop="110dp"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
             android:ellipsize="none"
@@ -324,12 +333,11 @@
             android:textColor="@color/text_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginTop="64dp"
             android:layout_marginEnd="16dp"
             android:text="@string/ProductDetailsActivity_dosage"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_productHealingPropertiesLabel"
             app:layout_constraintTop_toTopOf="@+id/text_productHealingPropertiesLabel" />
 
         <TextView

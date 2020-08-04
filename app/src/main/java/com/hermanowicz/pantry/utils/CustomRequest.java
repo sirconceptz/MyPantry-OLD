@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -39,6 +39,7 @@ import java.util.Map;
  * @version 1.0
  * @since   1.0
  */
+
 public class CustomRequest extends Request<JSONObject> {
 
     private Listener<JSONObject> listener;
@@ -56,9 +57,7 @@ public class CustomRequest extends Request<JSONObject> {
                     HttpHeaderParser.parseCharset(response.headers));
             return Response.success(new JSONObject(jsonString),
                     HttpHeaderParser.parseCacheHeaders(response));
-        } catch (UnsupportedEncodingException e) {
-            return Response.error(new ParseError(e));
-        } catch (JSONException e) {
+        } catch (UnsupportedEncodingException | JSONException e) {
             return Response.error(new ParseError(e));
         }
     }

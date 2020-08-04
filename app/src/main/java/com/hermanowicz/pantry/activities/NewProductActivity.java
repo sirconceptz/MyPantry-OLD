@@ -48,7 +48,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
@@ -81,6 +80,7 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
+
 public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductView {
 
     @BindView(R.id.toolbar)
@@ -159,7 +159,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             } else {
                 int[] expirationDateArray = presenter.getExpirationDateArray();
                 year = expirationDateArray[0];
-                month = expirationDateArray[1];
+                month = expirationDateArray[1]-1;
                 day = expirationDateArray[2];
             }
             DatePickerDialog dialog = new DatePickerDialog(
@@ -185,7 +185,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             } else {
                 int[] productionDateArray = presenter.getProductionDateArray();
                 year = productionDateArray[0];
-                month = productionDateArray[1];
+                month = productionDateArray[1]-1;
                 day = productionDateArray[2];
             }
             DatePickerDialog dialog = new DatePickerDialog(
@@ -260,8 +260,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         resources = context.getResources();
 
         setSupportActionBar(toolbar);
-
-        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);

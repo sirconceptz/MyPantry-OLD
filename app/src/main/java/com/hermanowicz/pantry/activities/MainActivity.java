@@ -20,8 +20,6 @@ package com.hermanowicz.pantry.activities;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +29,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenters.MainPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
@@ -49,7 +46,8 @@ import butterknife.OnClick;
  * @version 1.0
  * @since   1.0
  */
-public class MainActivity extends AppCompatActivity implements MainView, DialogListener {
+
+public class MainActivity extends AppCompatActivity implements MainView {
 
     @BindView(R.id.adBanner)
     AdView adView;
@@ -61,20 +59,17 @@ public class MainActivity extends AppCompatActivity implements MainView, DialogL
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
 
-        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        presenter = new MainPresenter(this, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
-
-        //presenter.showLoginDialog();
-        //presenter.checkUserIsLogged();
+        presenter = new MainPresenter(this);
     }
 
     @OnClick(R.id.button_myPantry)
@@ -137,10 +132,5 @@ public class MainActivity extends AppCompatActivity implements MainView, DialogL
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public void onPositiveClick() {
-        Toast.makeText(getApplicationContext(), "DZIALA", Toast.LENGTH_LONG).show();
     }
 }

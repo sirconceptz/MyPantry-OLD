@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -28,6 +28,7 @@ import androidx.room.PrimaryKey;
  * @version 1.0
  * @since   1.0
  */
+
 @Entity(tableName = "products")
 public class Product {
 

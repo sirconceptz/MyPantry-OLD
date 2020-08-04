@@ -24,41 +24,78 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDataModel {
 
-    private ProductDb db;
+    //private ProductDb db;
+    private ProductDatabaseOperations productDatabaseOperations;
     private Resources resources;
-    private Product product;
     private String taste;
     private String productionDate = "-";
     private String expirationDate = "-";
+    private List<Product> productList = new ArrayList<>();
+    private int oldProductsQuantity;
 
     public ProductDataModel(ProductDb db, Resources resources){
-        this.db = db;
+        //this.db = db;
+        productDatabaseOperations = new ProductDatabaseOperations(db);
         this.resources = resources;
+    }
+
+    public void setProductList(int productId){
+        //Product product = getProductFromDb(productId);
+        Product product = productDatabaseOperations.getProductFromDb(productId);
+        expirationDate = product.getExpirationDate();
+        productionDate = product.getProductionDate();
+        productList = productDatabaseOperations.getSimilarProductsList(product);
+        //productList = getSimilarProductsList(product);
+        oldProductsQuantity = productList.size();
     }
 
     public String formatDate(int year, int month, int day) {
         return year + "-" + month + "-" + day;
     }
 
-    public void setProduct(int productId){
-        product = getProductFromDb(productId);
-        expirationDate = product.getExpirationDate();
-        productionDate = product.getProductionDate();
+    public List<Product> getProductList(){
+        return productList;
     }
 
-    public Product getProduct(){
-        return product;
+    //private Product getProductFromDb(int productId){
+    //    return db.productsDao().getProductById(productId);
+    //}
+
+    public boolean isProductListEmpty() {
+        return productList == null;
+    }
+
+    public boolean isCorrectHashCode(String hashCode) {
+        boolean isCorrectHashcode = false;
+        for (Product product : productList) {
+            if (product.getHashCode().equals(hashCode)) {
+                isCorrectHashcode = true;
+                break;
+            }
+        }
+        return isCorrectHashcode;
+    }
+
+    //public void deleteSimilarProducts(int productId){
+    //    Product productToDelete = db.productsDao().getProductById(productId);
+    //    List <Product> productsListToDelete = getSimilarProductsList(productToDelete);
+    //    db.productsDao().deleteProductsFromList(productsListToDelete);
+    //}
+
+    public GroupProducts getGroupProducts() {
+        return new GroupProducts(productList.get(0), productList.size());
     }
 
     public int getProductTypeSpinnerPosition(){
         String[] productTypesArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
         int selection = 0;
         for(int counter = 0; productTypesArray.length > counter; counter++){
-            if(product.getTypeOfProduct().equals(productTypesArray[counter]))
+            if(productList.get(0).getTypeOfProduct().equals(productTypesArray[counter]))
                 selection = counter;
         }
         return selection;
@@ -92,7 +129,7 @@ public class ProductDataModel {
             productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_other_products_array);
 
         for(int counter = 0; productFeaturesArray.length > counter; counter++){
-            if(product.getProductFeatures().equals(productFeaturesArray[counter]))
+            if(productList.get(0).getProductFeatures().equals(productFeaturesArray[counter]))
                 selection = counter;
         }
         return selection;
@@ -151,18 +188,91 @@ public class ProductDataModel {
         return correctTypeOfProduct;
     }
 
-    public void addProducts(List<Product> products){
-        db.productsDao().insertProductsToDB(products);
+//    private void addProducts(List<Product> productList){
+//        db.productsDao().insertProductsToDB(productList);
+//    }
+
+//    private void updateProducts(List<Product> productList){
+//        for(Product product : productList)
+//            db.productsDao().updateProduct(product);
+//    }
+
+//    private List<Product> getSimilarProductsList(Product testedProduct){
+//        List<Product> allProducts = db.productsDao().getAllProductsAsList();
+//        List<Product> productList = new ArrayList<>();
+//        for(Product singleProduct : allProducts){
+//            if(singleProduct.getName().equals(testedProduct.getName())
+//                    && singleProduct.getTypeOfProduct().equals(testedProduct.getTypeOfProduct())
+//                    && singleProduct.getProductFeatures().equals(testedProduct.getProductFeatures())
+//                    && singleProduct.getExpirationDate().equals(testedProduct.getExpirationDate())
+//                    && singleProduct.getProductionDate().equals(testedProduct.getProductionDate())
+//                    && singleProduct.getHealingProperties().equals(testedProduct.getHealingProperties())
+//                    && singleProduct.getComposition().equals(testedProduct.getComposition())
+//                    && singleProduct.getDosage().equals(testedProduct.getDosage())
+//                    && singleProduct.getWeight() == testedProduct.getWeight()
+//                    && singleProduct.getVolume() == testedProduct.getVolume()
+//                    && singleProduct.getHasSugar() == testedProduct.getHasSugar()
+//                    && singleProduct.getHasSalt() == testedProduct.getHasSalt()
+//                    && singleProduct.getTaste().equals(testedProduct.getTaste()))
+//                productList.add(singleProduct);
+//        }
+//        return productList;
+//    }
+
+    private void updateProductsQuantityInDb(int newProductsQuantity, GroupProducts groupProducts){
+        for(Product product : productList){
+            product.setName(groupProducts.getProduct().getName());
+            product.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
+            product.setProductFeatures(groupProducts.getProduct().getProductFeatures());
+            product.setHealingProperties(groupProducts.getProduct().getHealingProperties());
+            product.setComposition(groupProducts.getProduct().getComposition());
+            product.setDosage(groupProducts.getProduct().getDosage());
+            product.setWeight(groupProducts.getProduct().getWeight());
+            product.setVolume(groupProducts.getProduct().getVolume());
+            product.setHasSugar(groupProducts.getProduct().getHasSugar());
+            product.setHasSalt(groupProducts.getProduct().getHasSugar());
+            product.setProductionDate(productionDate);
+            product.setExpirationDate(expirationDate);
+            product.setTaste(taste);
+        }
+        //updateProducts(productList);
+        productDatabaseOperations.updateProducts(productList);
+        List<Product> newProductList = new ArrayList<>();
+        if(newProductsQuantity > oldProductsQuantity){
+            for(int newProductsCount = newProductsQuantity - oldProductsQuantity; newProductsCount > 0 ; newProductsCount--){
+                Product newProduct = new Product();
+                newProduct.setName(groupProducts.getProduct().getName());
+                newProduct.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
+                newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
+                newProduct.setExpirationDate(expirationDate);
+                newProduct.setProductionDate(productionDate);
+                newProduct.setVolume(groupProducts.getProduct().getVolume());
+                newProduct.setWeight(groupProducts.getProduct().getWeight());
+                newProduct.setComposition(groupProducts.getProduct().getComposition());
+                newProduct.setHealingProperties(groupProducts.getProduct().getHealingProperties());
+                newProduct.setDosage(groupProducts.getProduct().getDosage());
+                newProduct.setHasSugar(groupProducts.getProduct().getHasSugar());
+                newProduct.setHasSalt(groupProducts.getProduct().getHasSalt());
+                newProduct.setTaste(taste);
+                newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
+                newProductList.add(newProduct);
+            }
+            productDatabaseOperations.addProducts(newProductList);
+            //addProducts(newProductList);
+        }
+        if(oldProductsQuantity > newProductsQuantity){
+            List<Product> productListToRemove = new ArrayList<>();
+            int quantityToRemove = oldProductsQuantity - newProductsQuantity;
+            for(; quantityToRemove > 0; quantityToRemove--){
+                productListToRemove.add(productList.get(quantityToRemove-1));
+            }
+            productDatabaseOperations.deleteProductsFromList(productListToRemove);
+            //db.productsDao().deleteProductsFromList(productListToRemove);
+        }
     }
 
-    public void updateProduct(Product product){
-        product.setTaste(taste);
-        product.setProductionDate(productionDate);
-        product.setExpirationDate(expirationDate);
-        db.productsDao().updateProduct(product);
-    }
-
-    public Product getProductFromDb(int productId){
-        return db.productsDao().getProductById(productId);
+    public void updateDatabase(GroupProducts groupProducts){
+        int newProductsQuantity = groupProducts.getQuantity();
+        updateProductsQuantityInDb(newProductsQuantity, groupProducts);
     }
 }

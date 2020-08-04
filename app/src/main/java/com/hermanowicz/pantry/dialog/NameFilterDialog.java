@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -45,6 +45,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
+
 public class NameFilterDialog extends AppCompatDialogFragment {
 
     @BindView(R.id.name)

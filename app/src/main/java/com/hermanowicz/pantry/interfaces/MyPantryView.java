@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -16,8 +16,6 @@
  */
 
 package com.hermanowicz.pantry.interfaces;
-
-import androidx.lifecycle.LiveData;
 
 import com.hermanowicz.pantry.db.Product;
 
@@ -44,6 +42,4 @@ public interface MyPantryView {
     void onPrintProducts(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList);
 
     void onDeleteProducts(List<Product> productList);
-
-    LiveData<List<Product>> getProductLiveData();
 }

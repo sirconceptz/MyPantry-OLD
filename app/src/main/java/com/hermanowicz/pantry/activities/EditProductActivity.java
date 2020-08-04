@@ -46,12 +46,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
+import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.presenters.EditProductPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Orientation;
@@ -64,12 +64,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * <h1>EditProductActivity</h1>
+ * Activity for edit product details.
+ *
+ * @author  Mateusz Hermanowicz
+ * @version 1.0
+ * @since   1.3
+ */
+
 public class EditProductActivity extends AppCompatActivity implements EditProductView, ProductDataView {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.edittext_name)
     EditText name;
+    @BindView(R.id.edittext_quantity)
+    EditText quantity;
     @BindView(R.id.spinner_productType)
     Spinner productTypeSpinner;
     @BindView(R.id.spinner_productFeatures)
@@ -151,7 +162,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
             } else {
                 int[] expirationDateArray = presenter.getExpirationDateArray();
                 year = expirationDateArray[0];
-                month = expirationDateArray[1];
+                month = expirationDateArray[1]-1;
                 day = expirationDateArray[2];
             }
             DatePickerDialog dialog = new DatePickerDialog(
@@ -177,7 +188,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
             } else {
                 int[] productionDateArray = presenter.getProductionDateArray();
                 year = productionDateArray[0];
-                month = productionDateArray[1];
+                month = productionDateArray[1]-1;
                 day = productionDateArray[2];
             }
             DatePickerDialog dialog = new DatePickerDialog(
@@ -217,9 +228,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private void init(){
         context = EditProductActivity.this;
         resources = context.getResources();
-        presenter = new EditProductPresenter(this, this, ProductDb.getInstance(context),resources);
-
-        MobileAds.initialize(getApplicationContext(), getResources().getString(R.string.admob_ad_id));
+        presenter = new EditProductPresenter(this, this, ProductDb.getInstance(context), resources);
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -246,7 +255,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         int selectedTasteId = tasteGroup.getCheckedRadioButtonId();
         RadioButton taste = findViewById(selectedTasteId);
 
-        Product product = presenter.getProduct();
+        Product product = presenter.getGroupProducts().getProduct();
         product.setName(name.getText().toString());
         product.setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()));
         product.setProductFeatures(String.valueOf(productFeaturesSpinner.getSelectedItem()));
@@ -257,8 +266,9 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         product.setWeight(Integer.parseInt(weight.getText().toString()));
         product.setHasSugar(hasSugar.isChecked());
         product.setHasSalt(hasSalt.isChecked());
+        GroupProducts groupProducts = new GroupProducts(product, Integer.parseInt(quantity.getText().toString()));
         presenter.setTaste(taste);
-        presenter.saveProduct(product);
+        presenter.saveProduct(groupProducts);
     }
 
     @OnClick(R.id.button_cancel)
@@ -300,31 +310,32 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     }
 
     @Override
-    public void showProductData(Product product) {
-        DateHelper expirationDateString = new DateHelper(product.getExpirationDate());
-        DateHelper productionDateString = new DateHelper(product.getProductionDate());
+    public void showProductData(GroupProducts groupProducts) {
+        DateHelper expirationDateString = new DateHelper(groupProducts.getProduct().getExpirationDate());
+        DateHelper productionDateString = new DateHelper(groupProducts.getProduct().getProductionDate());
         String[] tasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
 
-        name.setText(product.getName());
+        name.setText(groupProducts.getProduct().getName());
+        quantity.setText(String.valueOf(groupProducts.getQuantity()));
         expirationDate.setText(expirationDateString.getDateInLocalFormat());
         productionDate.setText(productionDateString.getDateInLocalFormat());
-        composition.setText(product.getComposition());
-        healingProperties.setText(product.getHealingProperties());
-        dosage.setText(product.getDosage());
-        volume.setText(String.valueOf(product.getVolume()));
-        weight.setText(String.valueOf(product.getWeight()));
-        hasSugar.setChecked(product.getHasSugar());
-        hasSalt.setChecked(product.getHasSalt());
+        composition.setText(groupProducts.getProduct().getComposition());
+        healingProperties.setText(groupProducts.getProduct().getHealingProperties());
+        dosage.setText(groupProducts.getProduct().getDosage());
+        volume.setText(String.valueOf(groupProducts.getProduct().getVolume()));
+        weight.setText(String.valueOf(groupProducts.getProduct().getWeight()));
+        hasSugar.setChecked(groupProducts.getProduct().getHasSugar());
+        hasSalt.setChecked(groupProducts.getProduct().getHasSalt());
 
-        if(product.getTaste().equals(tasteArray[0]))
+        if(groupProducts.getProduct().getTaste().equals(tasteArray[0]))
             isSweet.setChecked(true);
-        else if(product.getTaste().equals(tasteArray[1]))
+        else if(groupProducts.getProduct().getTaste().equals(tasteArray[1]))
             isSour.setChecked(true);
-        else if(product.getTaste().equals(tasteArray[2]))
+        else if(groupProducts.getProduct().getTaste().equals(tasteArray[2]))
             isSweetAndSour.setChecked(true);
-        else if(product.getTaste().equals(tasteArray[3]))
+        else if(groupProducts.getProduct().getTaste().equals(tasteArray[3]))
             isSalty.setChecked(true);
-        else if(product.getTaste().equals(tasteArray[4]))
+        else if(groupProducts.getProduct().getTaste().equals(tasteArray[4]))
             isBitter.setChecked(true);
     }
 

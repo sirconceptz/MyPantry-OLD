@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.db;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -33,6 +34,7 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
+
 @Dao
 public interface ProductsDao {
     @Query("SELECT * FROM products WHERE id = (:id)")
@@ -49,6 +51,9 @@ public interface ProductsDao {
 
     @Query("DELETE FROM products WHERE id = (:id)")
     void deleteProductById(int id);
+
+    @Delete
+    void deleteProductsFromList(List<Product> product);
 
     @Query("DELETE FROM products")
     void clearDb();

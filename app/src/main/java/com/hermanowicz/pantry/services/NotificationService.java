@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -63,7 +63,7 @@ public class NotificationService extends IntentService {
     static final String DAYS_TAG = "%DAYS%";
     static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
     static final String URL_API = "https://www.mypantry.eu/api/";
-    static final String API_MAIL_FILE    = "mail.php";
+    static final String API_MAIL_FILE = "mail.php";
 
     private JsonObjectRequest request_json;
     private String productName;

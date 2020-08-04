@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.models.GroupProducts;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,7 +49,7 @@ public class ProductsAdapter extends
 
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
 
-    private List<Product> productList = new ArrayList<>();
+    private List<GroupProducts> productList = new ArrayList<>();
     private List<Product> multiSelectList = new ArrayList<>();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private SharedPreferences preferences;
@@ -57,7 +58,7 @@ public class ProductsAdapter extends
         this.preferences = preferences;
     }
 
-    public void setData(List<Product> newData){
+    public void setData(List<GroupProducts> newData){
         this.productList = newData;
         notifyDataSetChanged();
     }
@@ -70,21 +71,24 @@ public class ProductsAdapter extends
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         TextView nameTv = viewHolder.nameTv;
-        TextView volumeTv = viewHolder.volumeTv;
+        TextView quantity = viewHolder.quantityTv;
         TextView weightTv = viewHolder.weightTv;
+        TextView volumeTv = viewHolder.volumeTv;
         TextView expirationDateTv = viewHolder.expirationDateTv;
 
         Context context = nameTv.getContext();
         Resources resources = context.getResources();
-        final Product selectedProduct = productList.get(position);
+        final Product selectedProduct = productList.get(position).getProduct();
         Calendar calendar = Calendar.getInstance();
         Date expirationDateDt = calendar.getTime();
-        String volumeString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_volume), selectedProduct.getVolume(), resources.getString(R.string.ProductDetailsActivity_volume_unit));
+        String quantityString = String.format("%s: %s", resources.getString(R.string.ProductDetailsActivity_quantity), productList.get(position).getQuantity());
         String weightString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_weight), selectedProduct.getWeight(), resources.getString(R.string.ProductDetailsActivity_weight_unit));
+        String volumeString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_volume), selectedProduct.getVolume(), resources.getString(R.string.ProductDetailsActivity_volume_unit));
 
         nameTv.setText(selectedProduct.getShortName());
-        volumeTv.setText(volumeString);
+        quantity.setText(quantityString);
         weightTv.setText(weightString);
+        volumeTv.setText(volumeString);
         if(selectedProduct.getExpirationDate().length() > 1) {
             DateHelper dateHelper = new DateHelper(selectedProduct.getExpirationDate());
             expirationDateTv.setText(dateHelper.getDateInLocalFormat());
@@ -101,7 +105,7 @@ public class ProductsAdapter extends
         calendar.add(Calendar.DAY_OF_MONTH, preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS));
         Date dayOfNotification = calendar.getTime();
-        if (multiSelectList.contains(productList.get(position))) {
+        if (multiSelectList.contains(productList.get(position).getProduct())) {
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_product_selected));
         }
         else{
@@ -126,14 +130,16 @@ public class ProductsAdapter extends
         return holder;
     }
 
-   class ViewHolder extends RecyclerView.ViewHolder {
+   static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_productName)
         TextView nameTv;
-        @BindView(R.id.text_productVolume)
-        TextView volumeTv;
+        @BindView(R.id.text_productQuantity)
+        TextView quantityTv;
         @BindView(R.id.text_productWeight)
         TextView weightTv;
+        @BindView(R.id.text_productVolume)
+        TextView volumeTv;
         @BindView(R.id.text_expirationDateValue)
         TextView expirationDateTv;
 

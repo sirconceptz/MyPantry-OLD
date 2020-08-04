@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -42,6 +42,7 @@ import java.util.List;
  * @version 1.0
  * @since   1.0
  */
+
 public class Notification {
 
     public static final int NOTIFICATION_DEFAULT_HOUR = 12;
@@ -117,7 +118,7 @@ public class Notification {
     public static void cancelAllNotifications(@NonNull Context context) {
         ProductDb productDb = ProductDb.getInstance(context);
         List<Product> productsList = productDb.productsDao().getAllProductsAsList();
-        AlarmManager alarmManager    = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
+        AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         for(int i = 0; i < productsList.size(); i++){
             if(!productsList.get(i).getExpirationDate().equals("-")) {

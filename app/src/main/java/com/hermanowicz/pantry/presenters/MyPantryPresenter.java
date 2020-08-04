@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2020
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -20,9 +20,11 @@ package com.hermanowicz.pantry.presenters;
 import androidx.lifecycle.LiveData;
 
 import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
+import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.models.MyPantryModel;
 import com.hermanowicz.pantry.utils.PrintQRData;
 
@@ -32,10 +34,15 @@ import java.util.List;
 public class MyPantryPresenter {
 
     private MyPantryView view;
-    private MyPantryModel model = new MyPantryModel();
+    private MyPantryModel model;
 
-    public MyPantryPresenter(MyPantryView view) {
+    public MyPantryPresenter(MyPantryView view, ProductDb db) {
         this.view = view;
+        this.model = new MyPantryModel(db);
+    }
+
+    public void setAllProductsList(){
+        model.setAllProductsList();
     }
 
     public void setProductList(List<Product> productList) {
@@ -46,16 +53,16 @@ public class MyPantryPresenter {
         model.setProductList(productList);
     }
 
-    public List<Product> getProductList() {
-        return model.getProductList();
+    public List<GroupProducts> getGroupProductsList() {
+        return model.getGroupProductsList();
     }
 
-    public void clearSelectList() {
+    public void clearMultiSelectList() {
         model.clearSelectList();
     }
 
-    public List<Product> getSelectList() {
-        return model.getSelectProductList();
+    public List<Product> getGroupsProductsSelectList() {
+        return model.getGroupsSelectedProductList();
     }
 
     public void setIsMultiSelect(boolean state) {
@@ -72,14 +79,15 @@ public class MyPantryPresenter {
     }
 
     public void deleteSelectedProducts() {
-        List<Product> productList = model.getSelectProductList();
+        List<Product> productList = model.getAllSelectedProductList();
+        model.deleteSelectedProducts();
         view.onDeleteProducts(productList);
         clearFilters();
     }
 
     public void printSelectedProducts() {
         ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
-        List<Product> productList = model.getSelectProductList();
+        List<Product> productList = model.getAllSelectedProductList();
 
         textToQRCodeList = PrintQRData.getTextToQRCodeList(productList, 0);
         namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
@@ -91,22 +99,20 @@ public class MyPantryPresenter {
     public void clearFilters() {
         model.clearFilters();
         view.clearFilterIcons();
-        model.setProductLiveData(view.getProductLiveData());
+        model.setProductsLiveData();
         view.updateProductsRecyclerViewAdapter();
     }
 
-    public void setProductLiveData(LiveData<List<Product>> productLiveData) {
-        model.setProductLiveData(productLiveData);
+    public void setProductLiveData() {
+        model.setProductsLiveData();
     }
 
     public LiveData<List<Product>> getProductLiveData() {
-        LiveData<List<Product>> productLiveData = model.getProductLiveData();
-        return productLiveData;
+        return model.getProductLiveData();
     }
 
     public FilterModel getFilterProduct() {
-        FilterModel filterModel = model.getFilterProduct();
-        return filterModel;
+        return model.getFilterProduct();
     }
 
     public void setFilterName(String filterName) {
@@ -175,7 +181,6 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(7);
         }
-
         model.filterProductListByTaste(filterTaste);
         view.updateProductsRecyclerViewAdapter();
     }

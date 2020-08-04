@@ -40,14 +40,12 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
@@ -65,6 +63,7 @@ import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.interfaces.DeleteProductsDialogListener;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
+import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.presenters.MyPantryPresenter;
 import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.Orientation;
@@ -87,6 +86,7 @@ import butterknife.ButterKnife;
  * @version 1.0
  * @since   1.0
  */
+
 public class MyPantryActivity extends AppCompatActivity implements MyPantryView, FilterDialogListener, DeleteProductsDialogListener {
 
     @BindView(R.id.recyclerview_products)
@@ -104,7 +104,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     private ProductsAdapter adapterProductsRecyclerView;
     private Context context;
-    private ProductDb productDb;
     private SharedPreferences sharedPreferences;
     private ActionMode actionMode;
 
@@ -122,9 +121,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
         context = getApplicationContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        productDb = ProductDb.getInstance(context);
-
-        presenter = new MyPantryPresenter(this);
+        presenter = new MyPantryPresenter(this, ProductDb.getInstance(context));
 
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
@@ -132,21 +129,19 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             actionbar.setDisplayHomeAsUpEnabled(true);
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-
         initData();
     }
 
     private void initData() {
-        MobileAds.initialize(context, getResources().getString(R.string.admob_ad_id));
-
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
-        presenter.setProductLiveData(productDb.productsDao().getAllProductsAsLivedata());
+        presenter.setProductLiveData();
         presenter.getProductLiveData().observe(this, productList -> {
             presenter.setProductList(productList);
-            adapterProductsRecyclerView.setData(productList);
         });
+        presenter.setAllProductsList();
         adapterProductsRecyclerView = new ProductsAdapter(sharedPreferences);
+        adapterProductsRecyclerView.setData(presenter.getGroupProductsList());
         recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
         adapterProductsRecyclerView.notifyDataSetChanged();
         recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
@@ -158,10 +153,10 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 if (presenter.getIsMultiSelect())
                     multiSelect(position);
                 else {
-                    List<Product> productList = presenter.getProductList();
+                    List<GroupProducts> productList = presenter.getGroupProductsList();
                     Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class)
-                            .putExtra("product_id", productList.get(position).getId())
-                            .putExtra("hash_code", productList.get(position).getHashCode());
+                            .putExtra("product_id", productList.get(position).getProduct().getId())
+                            .putExtra("hash_code", productList.get(position).getProduct().getHashCode());
                     MyPantryActivity.this.startActivity(productDetailsActivityIntent);
                 }
             }
@@ -169,7 +164,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             @Override
             public void onItemLongClick(View view, int position) {
                 if (!presenter.getIsMultiSelect()) {
-                    presenter.clearSelectList();
+                    presenter.clearMultiSelectList();
                     presenter.setIsMultiSelect(true);
 
                     if (actionMode == null) {
@@ -179,8 +174,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 multiSelect(position);
             }
         }));
-
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
 
         navigationView.setNavigationItemSelectedListener(
                 menuItem -> {
@@ -201,10 +194,10 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             toolbar.startActionMode(actionModeCallback);
         if (actionMode != null) {
             presenter.addMultiSelectProduct(position);
-            if(presenter.getSelectList().size() == 0)
+            if(presenter.getGroupsProductsSelectList().size() == 0)
                 actionMode.finish();
             else
-                actionMode.setTitle(String.valueOf(presenter.getSelectList().size()));
+                actionMode.setTitle(String.valueOf(presenter.getGroupsProductsSelectList().size()));
         }
         updateSelectsRecyclerViewAdapter();
     }
@@ -296,14 +289,14 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public void updateSelectsRecyclerViewAdapter() {
-        adapterProductsRecyclerView.setMultiSelectList(presenter.getSelectList());
+        adapterProductsRecyclerView.setMultiSelectList(presenter.getGroupsProductsSelectList());
         adapterProductsRecyclerView.notifyDataSetChanged();
     }
 
     @Override
     public void updateProductsRecyclerViewAdapter() {
         presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
-        adapterProductsRecyclerView.setData(presenter.getProductList());
+        adapterProductsRecyclerView.setData(presenter.getGroupProductsList());
         adapterProductsRecyclerView.notifyDataSetChanged();
     }
 
@@ -319,61 +312,48 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     @Override
     public void onDeleteProducts(List<Product> productList) {
         for(Product product : productList) {
-            productDb.productsDao().deleteProductById(product.getId());
             Notification.cancelNotification(context, product);
         }
-    }
-
-    @Override
-    public LiveData<List<Product>> getProductLiveData() {
-        return productDb.productsDao().getAllProductsAsLivedata();
+        updateProductsRecyclerViewAdapter();
     }
 
     @Override
     public void setFilterName(String filterName) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterName(filterName);
     }
 
     @Override
     public void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
     }
 
     @Override
     public void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
     }
 
     @Override
     public void setFilterTypeOfProduct(String filterTypeOfProduct, String filterProductFeatures) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
     }
 
     @Override
     public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterVolume(filterVolumeSince, filterVolumeFor);
     }
 
     @Override
     public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterWeight(filterWeightSince, filterWeightFor);
     }
 
     @Override
     public void setFilterTaste(String filterTaste) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setFilterTaste(filterTaste);
     }
 
     @Override
     public void setProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt) {
-        presenter.setProductList(productDb.productsDao().getAllProductsAsList());
         presenter.setProductFeatures(filterHasSugar, filterHasSalt);
     }
 
@@ -435,7 +415,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         public void onDestroyActionMode(ActionMode mode) {
             actionMode = null;
             presenter.setIsMultiSelect(false);
-            presenter.clearSelectList();
+            presenter.clearMultiSelectList();
             updateSelectsRecyclerViewAdapter();
         }
     };
