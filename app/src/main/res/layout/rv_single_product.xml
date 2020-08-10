@@ -80,6 +80,28 @@
         android:textColor="@color/text_color" />
 
     <TextView
+        android:id="@+id/text_hasSugar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/MyPantryActivity_with_sugar"
+        android:visibility="invisible"
+        android:layout_marginStart="230dp"
+        android:layout_marginTop="74dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/text_color" />
+
+    <TextView
+        android:id="@+id/text_hasSalt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/MyPantryActivity_with_salt"
+        android:visibility="invisible"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="74dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/text_color" />
+
+    <TextView
         android:id="@+id/text_expirationDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

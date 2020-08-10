@@ -41,6 +41,8 @@
     <string name="MyPantryActivity_clear_filters">Clear filters</string>
     <string name="MyPantryActivity_delete_products">Delete products</string>
     <string name="MyPantryActivity_do_you_want_to_delete_products">Do you want to delete selected products?</string>
+    <string name="MyPantryActivity_with_sugar">+Sugar</string>
+    <string name="MyPantryActivity_with_salt">+Salt</string>
     <!--ScanProductActivity-->
     <string name="ScanProductActivity_scan_qr_code">Scan QR code of the product</string>
     <string name="ScanProductActivity_product_not_found">Product was not found.</string>

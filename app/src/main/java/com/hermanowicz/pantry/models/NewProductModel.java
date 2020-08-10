@@ -72,9 +72,8 @@ public class NewProductModel {
     }
 
     public void setTaste(RadioButton selectedTasteButton){
-        String[] tasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
         if(selectedTasteButton == null)
-            this.taste = tasteArray[0];
+            this.taste = "";
         else
             this.taste = selectedTasteButton.getText().toString();
     }

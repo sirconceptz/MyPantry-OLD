@@ -75,30 +75,36 @@ public class ProductsAdapter extends
         TextView weightTv = viewHolder.weightTv;
         TextView volumeTv = viewHolder.volumeTv;
         TextView expirationDateTv = viewHolder.expirationDateTv;
+        TextView hasSugar = viewHolder.hasSugar;
+        TextView hasSalt = viewHolder.hasSalt;
 
         Context context = nameTv.getContext();
         Resources resources = context.getResources();
-        final Product selectedProduct = productList.get(position).getProduct();
+        final Product product = productList.get(position).getProduct();
         Calendar calendar = Calendar.getInstance();
         Date expirationDateDt = calendar.getTime();
         String quantityString = String.format("%s: %s", resources.getString(R.string.ProductDetailsActivity_quantity), productList.get(position).getQuantity());
-        String weightString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_weight), selectedProduct.getWeight(), resources.getString(R.string.ProductDetailsActivity_weight_unit));
-        String volumeString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_volume), selectedProduct.getVolume(), resources.getString(R.string.ProductDetailsActivity_volume_unit));
+        String weightString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_weight), product.getWeight(), resources.getString(R.string.ProductDetailsActivity_weight_unit));
+        String volumeString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_volume), product.getVolume(), resources.getString(R.string.ProductDetailsActivity_volume_unit));
 
-        nameTv.setText(selectedProduct.getShortName());
+        nameTv.setText(product.getShortName());
         quantity.setText(quantityString);
         weightTv.setText(weightString);
         volumeTv.setText(volumeString);
-        if(selectedProduct.getExpirationDate().length() > 1) {
-            DateHelper dateHelper = new DateHelper(selectedProduct.getExpirationDate());
+        if(product.getHasSugar())
+            hasSugar.setVisibility(View.VISIBLE);
+        if(product.getHasSalt())
+            hasSalt.setVisibility(View.VISIBLE);
+        if(product.getExpirationDate().length() > 1) {
+            DateHelper dateHelper = new DateHelper(product.getExpirationDate());
             expirationDateTv.setText(dateHelper.getDateInLocalFormat());
         }
         else{
-            expirationDateTv.setText(selectedProduct.getExpirationDate());
+            expirationDateTv.setText(product.getExpirationDate());
         }
 
         try {
-            expirationDateDt = simpleDateFormat.parse(selectedProduct.getExpirationDate());
+            expirationDateDt = simpleDateFormat.parse(product.getExpirationDate());
         } catch (ParseException e) {
             Log.e("ProductsAdapter", e.toString());
         }
@@ -124,7 +130,7 @@ public class ProductsAdapter extends
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View productView = inflater.inflate(R.layout.recycler_view_products, parent, false);
+        View productView = inflater.inflate(R.layout.rv_single_product, parent, false);
         ViewHolder holder = new ViewHolder(productView);
 
         return holder;
@@ -142,6 +148,11 @@ public class ProductsAdapter extends
         TextView volumeTv;
         @BindView(R.id.text_expirationDateValue)
         TextView expirationDateTv;
+        @BindView(R.id.text_hasSugar)
+        TextView hasSugar;
+        @BindView(R.id.text_hasSalt)
+        TextView hasSalt;
+
 
         ViewHolder(View itemView) {
             super(itemView);
