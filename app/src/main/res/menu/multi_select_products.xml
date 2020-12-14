@@ -24,16 +24,16 @@
 
         android:icon="@drawable/ic_delete"
 
-        android:title="Usun"
+        android:title="@string/MyPantryActivity_delete_products"
 
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
     <item android:id="@+id/action_print"
 
         android:icon="@drawable/ic_print"
 
-        android:title="Drukuj"
+        android:title="@string/PrintQRCodesActivity_print_qr_codes"
 
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 
 </menu>

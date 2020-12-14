@@ -28,8 +28,8 @@ import java.util.ArrayList;
 
 public class PrintQRCodesPresenter {
 
-    private PrintQRCodesView view;
-    private PrintQRCodesModel model= new PrintQRCodesModel();
+    private final PrintQRCodesView view;
+    private final PrintQRCodesModel model= new PrintQRCodesModel();
 
     private ArrayList<String> textToQRCodeArray, namesOfProductsArray, expirationDatesArray;
 

@@ -73,8 +73,8 @@ public class ScanProductPresenterTest {
         List<Product> productList = new ArrayList<>();
 
         productList.add(ProductTestModel.getTestProduct1());
-        productDb.productsDao().insertProductsToDB(productList);
-        productList = productDb.productsDao().getAllProductsAsList();
+        productDb.productsDao().addProducts(productList);
+        productList = productDb.productsDao().getAllProductsList();
 
         String happyScenario = "{\"product_id\":" + productList.get(0).getId() + ",\"hash_code\":" + productList.get(0).getHashCode() + "}";
         activity.runOnUiThread(() -> presenter.onScanResult(happyScenario));

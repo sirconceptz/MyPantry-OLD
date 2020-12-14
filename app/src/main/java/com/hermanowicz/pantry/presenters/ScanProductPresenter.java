@@ -27,9 +27,9 @@ import java.util.List;
 
 public class ScanProductPresenter {
 
-    private ScanProductView view;
-    private ScanProductModel model = new ScanProductModel();
-    private AppSettingsModel appSettingsModel;
+    private final ScanProductView view;
+    private final ScanProductModel model = new ScanProductModel();
+    private final AppSettingsModel appSettingsModel;
 
     public ScanProductPresenter(ScanProductView view, SharedPreferences sharedPreferences) {
         this.view = view;
@@ -38,12 +38,19 @@ public class ScanProductPresenter {
 
     public void onScanResult(String scanResult) {
         List<Integer> decodedQRCodeAsList = model.decodeScanResult(scanResult);
-        if (decodedQRCodeAsList.size() > 1)
+        if (decodedQRCodeAsList.size() > 1) {
+            if (appSettingsModel.getScannerVibrationMode())
+                view.onVibration();
             view.navigateToProductDetailsActivity(decodedQRCodeAsList);
+        }
         else {
             view.showErrorProductNotFound();
             view.navigateToMainActivity();
         }
+    }
+
+    public void initQrScanner(){
+        view.setQrScanner(appSettingsModel.getScannerSoundMode());
     }
 
     public int getSelectedCamera(){

@@ -21,10 +21,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,11 +29,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.DialogWeightBinding;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>WeightFilterDialog</h1>
@@ -49,12 +46,7 @@ import butterknife.ButterKnife;
 
 public class WeightFilterDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.edittext_weightSince)
-    EditText edittextWeightSince;
-    @BindView(R.id.edittext_weightFor)
-    EditText edittextWeightFor;
-    @BindView(R.id.button_clear)
-    Button btnClear;
+    private DialogWeightBinding binding;
 
     private FilterDialogListener dialogListener;
     private int filterWeightSince, filterWeightFor; // state "-1" for disabled
@@ -64,40 +56,37 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
         this.filterWeightFor = filterProduct.getWeightFor();
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         Activity activity = getActivity();
-
+        assert activity != null;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        binding = DialogWeightBinding.inflate(activity.getLayoutInflater());
+        View view = binding.getRoot();
 
-        View view = layoutInflater.inflate(R.layout.dialog_weight, null);
+        if (filterWeightSince >= 0) binding.edittextWeightSince.setText(String.valueOf(filterWeightSince));
 
-        ButterKnife.bind(this, view);
-
-        if (filterWeightSince >= 0) edittextWeightSince.setText(String.valueOf(filterWeightSince));
-
-        if (filterWeightFor >= 0) edittextWeightFor.setText(String.valueOf(filterWeightFor));
+        if (filterWeightFor >= 0) binding.edittextWeightFor.setText(String.valueOf(filterWeightFor));
 
 
-        btnClear.setOnClickListener(view18 -> {
-            edittextWeightSince.setText("");
-            edittextWeightFor.setText("");
+        binding.buttonClear.setOnClickListener(view18 -> {
+            binding.edittextWeightSince.setText("");
+            binding.edittextWeightFor.setText("");
         });
         builder.setView(view)
-                .setTitle(getString(R.string.ProductDetailsActivity_weight))
-                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.Product_weight))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
                     try {
-                        filterWeightSince = Integer.valueOf(edittextWeightSince.getText().toString());
+                        filterWeightSince = Integer.parseInt(binding.edittextWeightSince.getText().toString());
                     } catch (NumberFormatException e) {
                         filterWeightSince = -1;
                     }
                     try {
-                        filterWeightFor = Integer.valueOf(edittextWeightFor.getText().toString());
+                        filterWeightFor = Integer.parseInt(binding.edittextWeightFor.getText().toString());
                     } catch (NumberFormatException e) {
                         filterWeightFor = -1;
                     }
@@ -105,7 +94,7 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
                         if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor) {
                             dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
                         } else {
-                            Toast.makeText(getContext(), getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), getString(R.string.Error_wrong_data), Toast.LENGTH_LONG).show();
                         }
                     }
                     else

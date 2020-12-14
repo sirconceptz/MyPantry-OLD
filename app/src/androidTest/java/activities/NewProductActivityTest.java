@@ -116,7 +116,7 @@ public class NewProductActivityTest {
             isSweet.setChecked(true);
             addProduct.performClick();
         });
-        onView(withId(R.id.edittext_name)).check(matches(hasErrorText(activity.getString(R.string.Errors_product_name_is_required))));
+        onView(withId(R.id.edittext_name)).check(matches(hasErrorText(activity.getString(R.string.Error_product_name_is_required))));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class NewProductActivityTest {
             isSweet.setChecked(true);
             addProduct.performClick();
         });
-        onView(withText(R.string.Errors_category_not_selected)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withText(R.string.Error_category_not_selected)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test

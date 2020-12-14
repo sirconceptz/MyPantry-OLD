@@ -29,9 +29,14 @@
         <item name="android:colorBackground" tools:ignore="PrivateResource">
             @color/background_material
         </item>
-        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
         <item name="actionModeStyle">@style/LStyled.ActionMode</item>
         <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <style name="AppThemeButton" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">20sp</item>
+        <item name="fontFamily">@font/proxima_nova_extra_condensed_bold</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -50,18 +55,30 @@
         <item name="android:colorBackground" tools:ignore="PrivateResource">
             @color/background_material
         </item>
-        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeDatePicker" parent="android:Theme.Holo.Light">
+    <style name="AppThemeTextView" parent="Widget.AppCompat.TextView">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
+        <item name="colorAccent">
+            @color/cast_libraries_material_featurehighlight_outer_highlight_default_color
+        </item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <item name="android:text">@color/text_color</item>
+        <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
+    </style>
+
+    <style name="AppThemeDatePicker" parent="android:Theme.Holo">
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+    <style name="CustomSpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColorPrimary">@color/text_color</item>
         <item name="android:textColor">@color/text_color</item>
+        <item name="android:background">@color/background_field</item>
     </style>
 
     <style name="LStyled.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
@@ -71,4 +88,21 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <style name="CustomEditText" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/round_edittext</item>
+        <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
+        <item name="android:textColorHint">@color/text_color</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="NavViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

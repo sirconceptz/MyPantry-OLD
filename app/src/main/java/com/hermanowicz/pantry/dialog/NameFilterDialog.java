@@ -21,21 +21,18 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.DialogNameBinding;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>NameFilterDialog</h1>
@@ -48,10 +45,7 @@ import butterknife.ButterKnife;
 
 public class NameFilterDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.name)
-    EditText edittextName;
-    @BindView(R.id.button_clear)
-    Button btnClear;
+    private DialogNameBinding binding;
 
     private FilterDialogListener dialogListener;
     private String filterName;
@@ -60,30 +54,26 @@ public class NameFilterDialog extends AppCompatDialogFragment {
         this.filterName = filterProduct.getName();
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Activity activity = getActivity();
-
+        assert activity != null;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        binding = DialogNameBinding.inflate(activity.getLayoutInflater());
+        View view = binding.getRoot();
 
-        View view = layoutInflater.inflate(R.layout.dialog_name, null);
+        if (filterName != null) binding.nameValue.setText(filterName);
 
-        ButterKnife.bind(this, view);
-
-        if (filterName != null) edittextName.setText(filterName);
-
-        btnClear.setOnClickListener(view1 -> {
-            edittextName.setText("");
-        });
+        binding.buttonClear.setOnClickListener(view1 -> binding.nameValue.setText(""));
 
         builder.setView(view)
-                .setTitle(getString(R.string.ProductDetailsActivity_name))
-                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.Product_name))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    filterName = edittextName.getText().toString();
+                    filterName = binding.nameValue.getText().toString();
                     if (!filterName.equals("")) {
                         dialogListener.setFilterName(filterName);
                     } else {

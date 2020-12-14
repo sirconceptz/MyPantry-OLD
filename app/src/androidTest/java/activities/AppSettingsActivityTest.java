@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.room.Room;
@@ -58,9 +59,10 @@ public class AppSettingsActivityTest {
     private AppSettingsActivity activity;
 
     private EditText daysToNotification, emailAddress;
+    private Spinner appThemeSelector, cameraSelector;
     private NumberPicker hourOfNotification;
     private CheckBox emailNotifications, pushNotifications;
-    private Button saveSettings, clearDatabase;
+    private Button saveSettings, clearProductDatabase;
     private TextView appVersion;
 
     @Rule
@@ -70,19 +72,27 @@ public class AppSettingsActivityTest {
     @Before
     public void setUp() {
         activity = activityRule.getActivity();
+        appThemeSelector = activity.findViewById(R.id.spinner_appThemeSelector);
+        cameraSelector = activity.findViewById(R.id.spinner_cameraSelector);
         daysToNotification = activity.findViewById(R.id.edittext_daysToNotification);
         hourOfNotification = activity.findViewById(R.id.numberpicker_hourOfNotification);
         emailNotifications = activity.findViewById(R.id.checkbox_emailNotifications);
         pushNotifications = activity.findViewById(R.id.checkbox_pushNotifications);
         emailAddress = activity.findViewById(R.id.edittext_emailAddress);
         saveSettings = activity.findViewById(R.id.button_saveSettings);
-        clearDatabase = activity.findViewById(R.id.button_clearDatabase);
-        appVersion = activity.findViewById(R.id.textView_version);
+        clearProductDatabase = activity.findViewById(R.id.button_clear_product_database);
+        appVersion = activity.findViewById(R.id.appVersion);
     }
 
     @Test
     public void onClickSaveNewSettingsShouldBeSaved(){
+        String[] cameraAvailableModes, appThemeAvailableModes;
+        cameraAvailableModes = activity.getResources().getStringArray(R.id.spinner_cameraSelector);
+        appThemeAvailableModes = activity.getResources().getStringArray(R.id.spinner_appThemeSelector);
+
         activity.runOnUiThread(() -> {
+            appThemeSelector.setId(1);
+            cameraSelector.setId(1);
             daysToNotification.setText("7");
             hourOfNotification.setValue(15);
             emailAddress.setText("email@address.com");
@@ -97,6 +107,8 @@ public class AppSettingsActivityTest {
         activity.finish();
         activity = activityRule.getActivity();
 
+        assertEquals(appThemeAvailableModes[1], appThemeSelector.getSelectedItem().toString());
+        assertEquals(cameraAvailableModes[1], cameraSelector.getSelectedItem().toString());
         assertEquals("7", daysToNotification.getText().toString());
         assertEquals(15, hourOfNotification.getValue());
         assertTrue(emailNotifications.isChecked());
@@ -111,7 +123,7 @@ public class AppSettingsActivityTest {
                 ProductDb.class).allowMainThreadQueries().build();
 
         activity.runOnUiThread(() -> activity.onDatabaseClear());
-        assertEquals(0, productDb.productsDao().getAllProductsAsList().size());
+        assertEquals(0, productDb.productsDao().getAllProductsList().size());
     }
 
     @Test

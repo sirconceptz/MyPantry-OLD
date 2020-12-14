@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.hermanowicz.pantry.models.AppSettingsModel;
 
 public class ThemeMode {
-
     public static int getThemeMode (Activity activity) {
         AppSettingsModel model = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(activity));
         if(model.getSelectedAppTheme() == 0){

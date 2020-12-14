@@ -34,7 +34,7 @@
         <item name="android:colorButtonNormal" tools:ignore="PrivateResource">
             @color/button_color
         </item>
-        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
         <item name="actionModeStyle">@style/LStyled.ActionMode</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
@@ -60,7 +60,7 @@
         <item name="android:colorButtonNormal" tools:ignore="PrivateResource">
             @color/button_color
         </item>
-        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+        <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -69,7 +69,7 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="mySpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
+    <style name="CustomSpinnerItemStyle" parent="@android:style/Widget.Holo.DropDownItem.Spinner">
         <item name="android:textColorPrimary">@color/text_color</item>
         <item name="android:textColor">@color/text_color</item>
     </style>
@@ -81,4 +81,21 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <style name="CustomEditText" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/round_edittext</item>
+        <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
+        <item name="android:textColorHint">@color/text_color</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="NavViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

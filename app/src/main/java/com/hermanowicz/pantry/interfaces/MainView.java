@@ -24,5 +24,7 @@ public interface MainView {
 
     void onNavigationToNewProductActivity();
 
+    void onNavigationToCategoriesActivity();
+
     void onNavigationToAppSettingsActivity();
 }

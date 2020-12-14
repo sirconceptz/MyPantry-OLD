@@ -30,7 +30,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:entries="@array/ProductDetailsActivity_taste_array"
+        android:entries="@array/Product_taste_array"
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,8 +43,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

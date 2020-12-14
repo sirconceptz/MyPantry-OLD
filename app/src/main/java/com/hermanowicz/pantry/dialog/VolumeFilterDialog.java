@@ -21,10 +21,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,11 +29,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.DialogVolumeBinding;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>VolumeFilterDialog</h1>
@@ -49,12 +46,7 @@ import butterknife.ButterKnife;
 
 public class VolumeFilterDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.edittext_volumeSince)
-    EditText edittextVolumeSince;
-    @BindView(R.id.edittext_volumeFor)
-    EditText edittextVolumeFor;
-    @BindView(R.id.button_clear)
-    Button btnClear;
+    private DialogVolumeBinding binding;
 
     private FilterDialogListener dialogListener;
     private int filterVolumeSince, filterVolumeFor; // state "-1" for disabled
@@ -64,38 +56,35 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
         this.filterVolumeFor = filterProduct.getVolumeFor();
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         Activity activity = getActivity();
-
+        assert activity != null;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        binding = DialogVolumeBinding.inflate(activity.getLayoutInflater());
+        View view = binding.getRoot();
 
-        View view = layoutInflater.inflate(R.layout.dialog_volume, null);
+        if (filterVolumeSince >= 0) binding.edittextVolumeSince.setText(String.valueOf(filterVolumeSince));
+        if (filterVolumeFor >= 0) binding.edittextVolumeFor.setText(String.valueOf(filterVolumeFor));
 
-        ButterKnife.bind(this, view);
-
-        if (filterVolumeSince >= 0) edittextVolumeSince.setText(String.valueOf(filterVolumeSince));
-        if (filterVolumeFor >= 0) edittextVolumeFor.setText(String.valueOf(filterVolumeFor));
-
-        btnClear.setOnClickListener(view18 -> {
-            edittextVolumeSince.setText("");
-            edittextVolumeFor.setText("");
+        binding.buttonClear.setOnClickListener(view18 -> {
+            binding.edittextVolumeSince.setText("");
+            binding.edittextVolumeFor.setText("");
         });
         builder.setView(view)
-                .setTitle(getString(R.string.ProductDetailsActivity_volume))
-                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.Product_volume))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
                     try {
-                        filterVolumeSince = Integer.valueOf(edittextVolumeSince.getText().toString());
+                        filterVolumeSince = Integer.parseInt(binding.edittextVolumeSince.getText().toString());
                     } catch (NumberFormatException e) {
                         filterVolumeSince = -1;
                     }
                     try {
-                        filterVolumeFor = Integer.valueOf(edittextVolumeFor.getText().toString());
+                        filterVolumeFor = Integer.parseInt(binding.edittextVolumeFor.getText().toString());
                     } catch (NumberFormatException e) {
                         filterVolumeFor = -1;
                     }
@@ -103,7 +92,7 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
                         if (filterVolumeSince < filterVolumeFor || filterVolumeSince == filterVolumeFor) {
                             dialogListener.setFilterVolume(filterVolumeSince, filterVolumeFor);
                         } else {
-                            Toast.makeText(getContext(), getString(R.string.Errors_wrong_data), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), getString(R.string.Error_wrong_data), Toast.LENGTH_LONG).show();
                         }
                     }
                     else

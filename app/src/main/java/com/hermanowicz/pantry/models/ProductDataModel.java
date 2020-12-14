@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.widget.RadioButton;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 
@@ -29,28 +30,28 @@ import java.util.List;
 
 public class ProductDataModel {
 
-    //private ProductDb db;
-    private ProductDatabaseOperations productDatabaseOperations;
-    private Resources resources;
+    private final DatabaseOperations databaseOperations;
+    private final Resources resources;
     private String taste;
     private String productionDate = "-";
     private String expirationDate = "-";
     private List<Product> productList = new ArrayList<>();
     private int oldProductsQuantity;
 
-    public ProductDataModel(ProductDb db, Resources resources){
-        //this.db = db;
-        productDatabaseOperations = new ProductDatabaseOperations(db);
+    public ProductDataModel(ProductDb productDb, CategoryDb categoryDb, Resources resources){
+        databaseOperations = new DatabaseOperations(productDb, categoryDb);
         this.resources = resources;
     }
 
+    public void deleteSimilarProducts(int productId){
+        databaseOperations.deleteSimilarProducts(productId);
+    }
+
     public void setProductList(int productId){
-        //Product product = getProductFromDb(productId);
-        Product product = productDatabaseOperations.getProductFromDb(productId);
+        Product product = databaseOperations.getProductFromDb(productId);
         expirationDate = product.getExpirationDate();
         productionDate = product.getProductionDate();
-        productList = productDatabaseOperations.getSimilarProductsList(product);
-        //productList = getSimilarProductsList(product);
+        productList = databaseOperations.getSimilarProductsList(product);
         oldProductsQuantity = productList.size();
     }
 
@@ -61,10 +62,6 @@ public class ProductDataModel {
     public List<Product> getProductList(){
         return productList;
     }
-
-    //private Product getProductFromDb(int productId){
-    //    return db.productsDao().getProductById(productId);
-    //}
 
     public boolean isProductListEmpty() {
         return productList == null;
@@ -81,18 +78,12 @@ public class ProductDataModel {
         return isCorrectHashcode;
     }
 
-    //public void deleteSimilarProducts(int productId){
-    //    Product productToDelete = db.productsDao().getProductById(productId);
-    //    List <Product> productsListToDelete = getSimilarProductsList(productToDelete);
-    //    db.productsDao().deleteProductsFromList(productsListToDelete);
-    //}
-
     public GroupProducts getGroupProducts() {
         return new GroupProducts(productList.get(0), productList.size());
     }
 
     public int getProductTypeSpinnerPosition(){
-        String[] productTypesArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+        String[] productTypesArray = resources.getStringArray(R.array.Product_type_of_product_array);
         int selection = 0;
         for(int counter = 0; productTypesArray.length > counter; counter++){
             if(productList.get(0).getTypeOfProduct().equals(productTypesArray[counter]))
@@ -108,25 +99,25 @@ public class ProductDataModel {
         if(productTypeSpinnerPosition == 1)
             productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
         else if(productTypeSpinnerPosition == 2)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_ready_meals_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_ready_meals_array);
         else if(productTypeSpinnerPosition == 3)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_vegetables_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_vegetables_array);
         else if(productTypeSpinnerPosition == 4)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_fruits_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_fruits_array);
         else if(productTypeSpinnerPosition == 5)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_herbs_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_herbs_array);
         else if(productTypeSpinnerPosition == 6)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_liqueurs_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_liqueurs_array);
         else if(productTypeSpinnerPosition == 7)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_wines_type_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_wines_type_array);
         else if(productTypeSpinnerPosition == 8)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_mushrooms_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_mushrooms_array);
         else if(productTypeSpinnerPosition == 9)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_vinegars_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_vinegars_array);
         else if(productTypeSpinnerPosition == 10)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_chemical_products_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_chemical_products_array);
         else
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_other_products_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_other_products_array);
 
         for(int counter = 0; productFeaturesArray.length > counter; counter++){
             if(productList.get(0).getProductFeatures().equals(productFeaturesArray[counter]))
@@ -136,7 +127,7 @@ public class ProductDataModel {
     }
 
     public void setTaste(RadioButton selectedTasteButton){
-        String[] tasteArray = resources.getStringArray(R.array.ProductDetailsActivity_taste_array);
+        String[] tasteArray = resources.getStringArray(R.array.Product_taste_array);
         if(selectedTasteButton == null)
             taste = tasteArray[0];
         else
@@ -181,43 +172,13 @@ public class ProductDataModel {
     }
 
     public boolean isTypeOfProductValid(Product product) {
-        String[] typeOfProductsArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+        String[] typeOfProductsArray = resources.getStringArray(R.array.Product_type_of_product_array);
         boolean correctTypeOfProduct = false;
         if (!product.getTypeOfProduct().equals(typeOfProductsArray[0]))
             correctTypeOfProduct = true;
         return correctTypeOfProduct;
     }
 
-//    private void addProducts(List<Product> productList){
-//        db.productsDao().insertProductsToDB(productList);
-//    }
-
-//    private void updateProducts(List<Product> productList){
-//        for(Product product : productList)
-//            db.productsDao().updateProduct(product);
-//    }
-
-//    private List<Product> getSimilarProductsList(Product testedProduct){
-//        List<Product> allProducts = db.productsDao().getAllProductsAsList();
-//        List<Product> productList = new ArrayList<>();
-//        for(Product singleProduct : allProducts){
-//            if(singleProduct.getName().equals(testedProduct.getName())
-//                    && singleProduct.getTypeOfProduct().equals(testedProduct.getTypeOfProduct())
-//                    && singleProduct.getProductFeatures().equals(testedProduct.getProductFeatures())
-//                    && singleProduct.getExpirationDate().equals(testedProduct.getExpirationDate())
-//                    && singleProduct.getProductionDate().equals(testedProduct.getProductionDate())
-//                    && singleProduct.getHealingProperties().equals(testedProduct.getHealingProperties())
-//                    && singleProduct.getComposition().equals(testedProduct.getComposition())
-//                    && singleProduct.getDosage().equals(testedProduct.getDosage())
-//                    && singleProduct.getWeight() == testedProduct.getWeight()
-//                    && singleProduct.getVolume() == testedProduct.getVolume()
-//                    && singleProduct.getHasSugar() == testedProduct.getHasSugar()
-//                    && singleProduct.getHasSalt() == testedProduct.getHasSalt()
-//                    && singleProduct.getTaste().equals(testedProduct.getTaste()))
-//                productList.add(singleProduct);
-//        }
-//        return productList;
-//    }
 
     private void updateProductsQuantityInDb(int newProductsQuantity, GroupProducts groupProducts){
         for(Product product : productList){
@@ -235,8 +196,7 @@ public class ProductDataModel {
             product.setExpirationDate(expirationDate);
             product.setTaste(taste);
         }
-        //updateProducts(productList);
-        productDatabaseOperations.updateProducts(productList);
+        databaseOperations.updateProducts(productList);
         List<Product> newProductList = new ArrayList<>();
         if(newProductsQuantity > oldProductsQuantity){
             for(int newProductsCount = newProductsQuantity - oldProductsQuantity; newProductsCount > 0 ; newProductsCount--){
@@ -257,8 +217,7 @@ public class ProductDataModel {
                 newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
                 newProductList.add(newProduct);
             }
-            productDatabaseOperations.addProducts(newProductList);
-            //addProducts(newProductList);
+            databaseOperations.addProducts(newProductList);
         }
         if(oldProductsQuantity > newProductsQuantity){
             List<Product> productListToRemove = new ArrayList<>();
@@ -266,13 +225,16 @@ public class ProductDataModel {
             for(; quantityToRemove > 0; quantityToRemove--){
                 productListToRemove.add(productList.get(quantityToRemove-1));
             }
-            productDatabaseOperations.deleteProductsFromList(productListToRemove);
-            //db.productsDao().deleteProductsFromList(productListToRemove);
+            databaseOperations.deleteProductsFromList(productListToRemove);
         }
     }
 
     public void updateDatabase(GroupProducts groupProducts){
         int newProductsQuantity = groupProducts.getQuantity();
         updateProductsQuantityInDb(newProductsQuantity, groupProducts);
+    }
+
+    public String[] getOwnCategoriesArray(){
+        return databaseOperations.getOwnCategoriesArray();
     }
 }

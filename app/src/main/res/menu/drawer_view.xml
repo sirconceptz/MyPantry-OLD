@@ -27,35 +27,35 @@
                 <item
                     android:id="@+id/filter_name"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_name"/>
+                    android:title="@string/Product_name"/>
                 <item
                     android:id="@+id/filter_expiration_date"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_expiration_date"/>
+                    android:title="@string/Product_expiration_date"/>
                 <item
                     android:id="@+id/filter_production_date"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_production_date"/>
+                    android:title="@string/Product_production_date"/>
                 <item
                     android:id="@+id/filter_product_type"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_product_type"/>
+                    android:title="@string/Product_type"/>
                 <item
                     android:id="@+id/filter_volume"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_volume"/>
+                    android:title="@string/Product_volume"/>
                 <item
                     android:id="@+id/filter_weight"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_weight"/>
+                    android:title="@string/Product_weight"/>
                 <item
                     android:id="@+id/filter_taste"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_taste"/>
+                    android:title="@string/Product_taste"/>
                 <item
                     android:id="@+id/filter_product_features"
                     android:icon="@drawable/ic_check_box_false"
-                    android:title="@string/ProductDetailsActivity_product_features" />
+                    android:title="@string/Product_category" />
         </group>
         <group>
                 <item

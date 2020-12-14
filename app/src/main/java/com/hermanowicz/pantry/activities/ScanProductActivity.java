@@ -55,7 +55,6 @@ import java.util.List;
 public class ScanProductActivity extends AppCompatActivity implements ScanProductView {
 
     private Context context;
-
     private ScanProductPresenter presenter;
 
     static final int VIBRATE_DURATION = 1000;
@@ -71,18 +70,7 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         context = getApplicationContext();
 
         presenter = new ScanProductPresenter(this, PreferenceManager.getDefaultSharedPreferences(context));
-
-        setQRCodeScanner();
-    }
-
-    void setQRCodeScanner() {
-        int cameraId = presenter.getSelectedCamera(); //0 - Rear camera, 1 - Front camera
-        IntentIntegrator qrCodeScanner = new IntentIntegrator(this);
-        qrCodeScanner.setPrompt(getString(R.string.ScanProductActivity_scan_qr_code));
-        qrCodeScanner.setOrientationLocked(true);
-        qrCodeScanner.setBeepEnabled(true);
-        qrCodeScanner.setCameraId(cameraId);
-        qrCodeScanner.initiateScan();
+        presenter.initQrScanner();
     }
 
     @Override
@@ -112,15 +100,29 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         Toast.makeText(context, getString(R.string.ScanProductActivity_product_not_found), Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onVibration() {
+        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && vibrator != null)
+            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
+    }
+
+    @Override
+    public void setQrScanner(boolean scannerSoundMode) {
+        int cameraId = presenter.getSelectedCamera(); //0 - Rear camera, 1 - Front camera
+        IntentIntegrator qrCodeScanner = new IntentIntegrator(this);
+        qrCodeScanner.setPrompt(getString(R.string.ScanProductActivity_scan_qr_code));
+        qrCodeScanner.setOrientationLocked(true);
+        qrCodeScanner.setBeepEnabled(scannerSoundMode);
+        qrCodeScanner.setCameraId(cameraId);
+        qrCodeScanner.initiateScan();
+    }
 
     @Override
     public void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList) {
         Intent productDetailsIntent = new Intent(context, ProductDetailsActivity.class);
         productDetailsIntent.putExtra("product_id", decodedScanResultAsList.get(0));
         productDetailsIntent.putExtra("hash_code", String.valueOf(decodedScanResultAsList.get(1)));
-        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && vibrator != null)
-            vibrator.vibrate(VibrationEffect.createOneShot(VIBRATE_DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
         startActivity(productDetailsIntent);
     }
 

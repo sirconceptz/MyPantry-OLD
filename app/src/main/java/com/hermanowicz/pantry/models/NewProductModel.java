@@ -22,23 +22,22 @@ import android.widget.RadioButton;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class NewProductModel {
 
-    private Resources resources;
-    private ProductDb productDb;
+    private final Resources resources;
     private String expirationDate = "-";
     private String productionDate = "-";
     private String taste;
     private int quantity;
+    private DatabaseOperations databaseOperations;
 
-    public NewProductModel(Resources resources, ProductDb productDb) {
+    public NewProductModel(Resources resources, DatabaseOperations databaseOperations) {
         this.resources = resources;
-        this.productDb = productDb;
+        this.databaseOperations = databaseOperations;
     }
 
     public List<Product> buildProductsList(Product product) {
@@ -54,11 +53,11 @@ public class NewProductModel {
     }
 
     public int getIdOfLastProductInDb() {
-        return productDb.productsDao().getIdOfLastProduct();
+        return databaseOperations.getIdOfLastProductInDb();
     }
 
-    public void addProducts(List<Product> products){
-        productDb.productsDao().insertProductsToDB(products);
+    public void addProducts(List<Product> productList){
+        databaseOperations.addProducts(productList);
     }
 
     public void setExpirationDate(int year, int month, int day) {
@@ -125,10 +124,14 @@ public class NewProductModel {
     }
 
     public boolean isTypeOfProductValid(Product product) {
-        String[] typeOfProductsArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+        String[] typeOfProductsArray = resources.getStringArray(R.array.Product_type_of_product_array);
         boolean correctTypeOfProduct = false;
         if (!product.getTypeOfProduct().equals(typeOfProductsArray[0]))
             correctTypeOfProduct = true;
         return correctTypeOfProduct;
+    }
+
+    public String[] getOwnCategoriesArray() {
+        return databaseOperations.getOwnCategoriesArray();
     }
 }

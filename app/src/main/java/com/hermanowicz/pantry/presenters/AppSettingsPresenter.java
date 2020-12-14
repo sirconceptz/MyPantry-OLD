@@ -24,8 +24,8 @@ import com.hermanowicz.pantry.models.AppSettingsModel;
 
 public class AppSettingsPresenter {
 
-    private AppSettingsView view;
-    private AppSettingsModel model;
+    private final AppSettingsView view;
+    private final AppSettingsModel model;
 
     public AppSettingsPresenter(AppSettingsView view, SharedPreferences preferences) {
         this.view = view;
@@ -38,6 +38,14 @@ public class AppSettingsPresenter {
 
     public void setSelectedScanCamera(int selectedScanCamera) {
         model.setSelectedCamera(selectedScanCamera);
+    }
+
+    public void setScannerVibrationMode(boolean vibrationMode) {
+        model.setScannerVibrationMode(vibrationMode);
+    }
+
+    public void setScannerSoundMode(boolean soundMode) {
+        model.setScannerSoundMode(soundMode);
     }
 
     public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
@@ -61,15 +69,14 @@ public class AppSettingsPresenter {
     }
 
     public void enableEmailCheckbox(String emailAddress) {
-        if (model.isValidEmail(emailAddress))
-            view.enableEmailCheckbox(true);
-        else
-            view.enableEmailCheckbox(false);
+        view.enableEmailCheckbox(model.isValidEmail(emailAddress));
     }
 
     public void loadSettings() {
         int selectedTheme = model.getSelectedAppTheme();
         int selectedCamera = model.getSelectedCamera();
+        boolean scannerVibrationMode = model.getScannerVibrationMode();
+        boolean scannerSoundMode = model.getScannerSoundMode();
         int daysBeforeExpirationDate = model.getDaysBeforeExpirationDate();
         boolean pushNotificationsAllowed = model.isPushNotificationsAllowed();
         boolean emailNotificationsAllowed = model.isEmailNotificationsAllowed();
@@ -78,9 +85,11 @@ public class AppSettingsPresenter {
 
         view.setSelectedTheme(selectedTheme);
         view.setScanCamera(selectedCamera);
+        view.setCheckboxScannerVibrationMode(scannerVibrationMode);
+        view.setCheckboxScannerSoundMode(scannerSoundMode);
         view.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
-        view.setCheckbox_pushNotification(pushNotificationsAllowed);
-        view.setCheckbox_emailNotification(emailNotificationsAllowed);
+        view.setCheckboxPushNotification(pushNotificationsAllowed);
+        view.setCheckboxEmailNotification(emailNotificationsAllowed);
         view.setHourOfNotifications(hourOfNotifications);
         view.setEmailAddress(emailAddress);
 

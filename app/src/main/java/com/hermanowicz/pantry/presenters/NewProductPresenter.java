@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.presenters;
 import android.content.res.Resources;
 import android.widget.RadioButton;
 
+import com.hermanowicz.pantry.db.Category;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.NewProductView;
@@ -34,15 +35,15 @@ import java.util.List;
 
 public class NewProductPresenter {
 
-    private NewProductView view;
-    private NewProductModel model;
+    private final NewProductView view;
+    private final NewProductModel model;
 
-    private Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
 
-    public NewProductPresenter(NewProductView view, Resources resources, ProductDb productDb) {
+    public NewProductPresenter(NewProductView view, NewProductModel model) {
         this.view = view;
-        this.model = new NewProductModel(resources, productDb);
+        this.model = model;
     }
 
     public void setExpirationDate(int year, int month, int day) {
@@ -98,6 +99,10 @@ public class NewProductPresenter {
 
     public void updateProductFeaturesAdapter(String typeOfProductSpinnerValue) {
         view.updateProductFeaturesAdapter(typeOfProductSpinnerValue);
+    }
+
+    public String[] getOwnCategoryArray(){
+        return model.getOwnCategoriesArray();
     }
 
     public int[] getExpirationDateArray() {

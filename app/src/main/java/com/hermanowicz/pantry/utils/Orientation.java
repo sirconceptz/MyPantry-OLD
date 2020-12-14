@@ -21,7 +21,6 @@ import android.app.Activity;
 import android.content.res.Configuration;
 
 public class Orientation {
-
     public static boolean isTablet (Activity activity) {
         return ((activity.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)

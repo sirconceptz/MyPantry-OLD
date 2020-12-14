@@ -41,18 +41,40 @@ public class DatabaseTest {
     private ProductsDao productsDao;
     private ProductDb productDb;
 
+    private CategoryDao categoryDao;
+    private CategoryDb categoryDb;
+
     @Before
     public void createDb() {
         Context context = RuntimeEnvironment.systemContext;
         productDb = Room.inMemoryDatabaseBuilder(context, ProductDb.class).allowMainThreadQueries().build();
+        categoryDb = Room.inMemoryDatabaseBuilder(context, CategoryDb.class).allowMainThreadQueries().build();
+
         productsDao = productDb.productsDao();
+        categoryDao = categoryDb.categoryDao();
+    }
+
+    @Test
+    public void canIWriteCategoryAndReadInList() {
+        categoryDao.clearDb();
+
+        List<Category> categoryList = categoryDao.getAllOwnCategories();
+        assertThat(categoryList.size(), equalTo(0));
+
+        Category category = new Category();
+        category.setName("Example name");
+        category.setName("Example description");
+        categoryDao.addCategory(category);
+
+        categoryList = categoryDao.getAllOwnCategories();
+        assertEquals(categoryList.size(), 1);
     }
 
     @Test
     public void canIWriteProductsAndReadInList() {
-        productDb.productsDao().clearDb();
+        productsDao.clearDb();
 
-        List<Product> productList = productsDao.getAllProductsAsList();
+        List<Product> productList = productsDao.getAllProductsList();
         assertThat(productList.size(), equalTo(0));
 
         for(int counter = 0; 3 > counter; counter++)
@@ -61,22 +83,31 @@ public class DatabaseTest {
 
             productList.add(product);
         }
-        productDb.productsDao().insertProductsToDB(productList);
+        productDb.productsDao().addProducts(productList);
 
-        productList = productsDao.getAllProductsAsList();
+        productList = productsDao.getAllProductsList();
         assertThat(productList.size(), equalTo(3));
     }
 
     @Test
-    public void canIClearDatabase() {
-        canIWriteProductsAndReadInList();
-        productDb.productsDao().clearDb();
-        int sizeOfDatabase = productDb.productsDao().getAllProductsAsList().size();
+    public void canIClearCategoryDatabase() {
+        canIWriteCategoryAndReadInList();
+        categoryDao.clearDb();
+        int sizeOfDatabase = categoryDao.getAllOwnCategories().size();
         assertEquals(0, sizeOfDatabase);
     }
 
-        @After
-    public void closeDb() throws IOException {
+    @Test
+    public void canIClearProductDatabase() {
+        canIWriteProductsAndReadInList();
+        productsDao.clearDb();
+        int sizeOfDatabase = productsDao.getAllProductsList().size();
+        assertEquals(0, sizeOfDatabase);
+    }
+
+    @After
+    public void closeDb() {
+        categoryDb.close();
         productDb.close();
     }
 }

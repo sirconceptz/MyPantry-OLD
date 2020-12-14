@@ -31,12 +31,12 @@ import java.util.List;
 
 public class ProductDetailsPresenter {
 
-    private ProductDetailsView view;
-    private ProductDataModel model;
+    private final ProductDetailsView view;
+    private final ProductDataModel model;
 
-    public ProductDetailsPresenter(ProductDetailsView view, ProductDb db, Resources resources) {
+    public ProductDetailsPresenter(ProductDetailsView view, ProductDataModel productDataModel) {
         this.view = view;
-        this.model = new ProductDataModel(db, resources);
+        this.model = productDataModel;
     }
 
     public void setProductList(int productId) {
@@ -57,7 +57,7 @@ public class ProductDetailsPresenter {
     }
 
     public void deleteProduct(int productId) {
-        //Todo: Zrobić model.deleteSimilarProducts(productId);
+        model.deleteSimilarProducts(productId);
         view.onDeletedProduct();
         view.navigateToMyPantryActivity();
     }

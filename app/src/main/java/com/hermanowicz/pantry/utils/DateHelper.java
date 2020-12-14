@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class DateHelper {
 
-    private Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
     private final DateFormat localDateFormat = DateFormat.getDateInstance();
     private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String[] dateArray;
@@ -36,15 +36,15 @@ public class DateHelper {
     }
 
     public int getDayFromDate(){
-        return Integer.valueOf(dateArray[2]);
+        return Integer.parseInt(dateArray[2]);
     }
 
     public int getMonthFromDate(){
-        return Integer.valueOf(dateArray[1]);
+        return Integer.parseInt(dateArray[1]);
     }
 
     public int getYearFromDate(){
-        return Integer.valueOf(dateArray[0]);
+        return Integer.parseInt(dateArray[0]);
     }
 
     public String getDateInLocalFormat() {
@@ -70,19 +70,16 @@ public class DateHelper {
     public static int getActualDay(int addDayToDate){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, addDayToDate);
-        int date = calendar.get(Calendar.DAY_OF_MONTH);
-        return date;
+        return calendar.get(Calendar.DAY_OF_MONTH);
     }
 
     public static int getActualMonth(){
         Calendar calendar = Calendar.getInstance();
-        int date = calendar.get(Calendar.MONTH);
-        return date;
+        return calendar.get(Calendar.MONTH);
     }
 
     public static int getActualYear(){
         Calendar calendar = Calendar.getInstance();
-        int date = calendar.get(Calendar.YEAR);
-        return date;
+        return calendar.get(Calendar.YEAR);
     }
 }

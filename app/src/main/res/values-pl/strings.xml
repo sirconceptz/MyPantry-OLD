@@ -21,24 +21,32 @@
     <string name="title_activity_my_pantry">Moja spiżarnia</string>
     <string name="title_activity_scan_the_product">Skanuj kod QR produktu</string>
     <string name="title_activity_new_product">Nowy produkt</string>
+    <string name="title_activity_own_categories">Własne kategorie produktów</string>
     <string name="title_activity_app_settings">Ustawienia aplikacji</string>
     <string name="title_activity_print_qrcodes">Drukuj kody QR</string>
     <string name="title_activity_product_details">Szczegóły produktu</string>
     <string name="title_activity_edit_product">Edytuj produkt</string>
+    <!--General-->
+    <string name="General_char_counter">Maksymalna ilość znaków</string>
+    <string name="General_press_back_agait_to_exit">Wciśnij przycisk powrotu ponownie, aby wyjść z aplikacji</string>
+    <string name="General_required">(Wymagane)</string>
+    <string name="General_not_required">(Nie wymagane)</string>
+    <string name="General_cancel">Anuluj</string>
+    <string name="General_author_label">Autor</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Moja spiżarnia</string>
     <string name="MainActivity_scan_product_button">Skanuj kod QR produktu</string>
     <string name="MainActivity_new_product_button">Nowy produkt</string>
+    <string name="MainActivity_own_categories">Własne kategorie produktów</string>
     <string name="MainActivity_app_settings">Ustawienia aplikacji</string>
     <string name="MainActivity_close_app_button">Zamknij aplikacje</string>
     <!--MyPantryActivity-->
-    <string name="MyPantryActivity_empty_pantry">Ojoj! Twoja spiżarnia jest pusta ;(</string>
+    <string name="MyPantryActivity_products_not_found">Ojoj! Nie znaleziono produktów ;(</string>
     <string name="MyPantryActivity_not_found">Nie znaleziono produktów</string>
     <string name="MyPantryActivity_clear">Wyczyść</string>
     <string name="MyPantryActivity_since">od</string>
     <string name="MyPantryActivity_for">do</string>
     <string name="MyPantryActivity_set">Ustaw</string>
-    <string name="MyPantryActivity_cancel">Anuluj</string>
     <string name="MyPantryActivity_clear_filters">Wyczyść filtry</string>
     <string name="MyPantryActivity_delete_products">Usuń produkty</string>
     <string name="MyPantryActivity_do_you_want_to_delete_products">Czy chcesz usunąć wybrane produkty?</string>
@@ -48,44 +56,49 @@
     <string name="ScanProductActivity_scan_qr_code">Skanuj kod QR produktu</string>
     <string name="ScanProductActivity_product_not_found">Produkt nie został znaleziony.</string>
     <!--NewProductActivity-->
-    <string name="NewProductActivity_required">(Wymagane)</string>
-    <string name="NewProductActivity_not_required">(Nie wymagane)</string>
     <string name="NewProductActivity_add_a_product">Dodaj produkt</string>
     <string name="NewProductActivity_product_added_successful">Produkt został dodany pomyślnie do bazy produktów.</string>
     <string name="NewProductActivity_products_added_successful">Produkty zostały dodane pomyślnie do bazy produktów.</string>
-    <string name="NewProductActivity_product_type">Typ produktu</string>
-    <string name="NewProductActivity_product_features">Cechy produktu</string>
+    <!--CategoriesActivity-->
+    <string name="CategoriesActivity_new_category">Nowa kategoria</string>
+    <string name="CategoriesActivity_category_name">Nazwa kategorii</string>
+    <string name="CategoriesActivity_save">Zapisz</string>
+    <string name="CategoriesActivity_no_categories_statement">Brak dodanych kategorii. Dodaj nową przyciskiem na górze ekranu.</string>
+    <!--CategoriesActivity-->
+    <string name="CategoryDetailsActivity_name">Nazwa kategorii</string>
+    <string name="CategoryDetailsActivity_description">Opis kategorii</string>
+    <string name="CategoryDetailsActivity_update_category">Zapisz zmiany</string>
+    <string name="CategoryDetailsActivity_delete_category">Usuń kategorię</string>
+    <string name="CategoryDetailsActivity_category_delete_warning">Czy jesteś pewien, że chcesz usunąć tą kategorię?</string>
+    <string name="CategoryDetailsActivity_category_was_saved">Kategoria została zapisana</string>
     <!--EditProductActivity-->
     <string name="EditProductActivity_save_product">Zapisz produkt</string>
     <string name="EditProductActivity_cancel">Anuluj</string>
     <string name="EditProductActivity_product_was_updated">Produkt został zaktualizowany.</string>
-    <!--ProductExchange-->
-    <string name="ProductExchange_product_exchange">Wymiana produktu</string>
-    <string name="ProductExchange_send">Wyślij</string>
-    <string name="ProductExchange_receive">Odbierz</string>
-    <!--ProductDetailsActivity-->
-    <string name="ProductDetailsActivity_name">Nazwa produktu</string>
-    <string name="ProductDetailsActivity_quantity">Ilość</string>
-    <string name="ProductDetailsActivity_expiration_date">Termin przydatności</string>
-    <string name="ProductDetailsActivity_production_date">Data produkcji</string>
-    <string name="ProductDetailsActivity_composition">Skład</string>
-    <string name="ProductDetailsActivity_has_sugar">Z cukrem?</string>
-    <string name="ProductDetailsActivity_has_salt">Z solą?</string>
-    <string name="ProductDetailsActivity_taste">Smak</string>
-    <string name="ProductDetailsActivity_sweet">Słodki</string>
-    <string name="ProductDetailsActivity_sour">Kwaśny</string>
-    <string name="ProductDetailsActivity_sweet_and_sour">Słodko-kwaśny</string>
-    <string name="ProductDetailsActivity_bitter">Gorzki</string>
-    <string name="ProductDetailsActivity_salty">Słony</string>
-    <string name="ProductDetailsActivity_weight">Waga</string>
-    <string name="ProductDetailsActivity_weight_unit">g</string>
-    <string name="ProductDetailsActivity_volume">Objętość</string>
-    <string name="ProductDetailsActivity_volume_unit">ml</string>
-    <string name="ProductDetailsActivity_healing_properties">Właściwości zdrowotne</string>
-    <string name="ProductDetailsActivity_dosage">Dawkowanie</string>
-    <string name="ProductDetailsActivity_product_type">Typ produktu</string>
-    <string-array name="ProductDetailsActivity_type_of_product_array">
+    <!--Product-->
+    <string name="Product_name">Nazwa produktu</string>
+    <string name="Product_quantity">Ilość</string>
+    <string name="Product_expiration_date">Termin przydatności</string>
+    <string name="Product_production_date">Data produkcji</string>
+    <string name="Product_composition">Skład</string>
+    <string name="Product_has_sugar">Z cukrem?</string>
+    <string name="Product_has_salt">Z solą?</string>
+    <string name="Product_taste">Smak</string>
+    <string name="Product_sweet">Słodki</string>
+    <string name="Product_sour">Kwaśny</string>
+    <string name="Product_sweet_and_sour">Słodko-kwaśny</string>
+    <string name="Product_bitter">Gorzki</string>
+    <string name="Product_salty">Słony</string>
+    <string name="Product_weight">Waga</string>
+    <string name="Product_weight_unit">g</string>
+    <string name="Product_volume">Objętość</string>
+    <string name="Product_volume_unit">ml</string>
+    <string name="Product_healing_properties">Właściwości zdrowotne</string>
+    <string name="Product_dosage">Dawkowanie</string>
+    <string name="Product_type">Typ produktu</string>
+    <string-array name="Product_type_of_product_array">
         <item>Wybierz</item>
+        <item>Własne kategorie</item>
         <item>Produkty sklepowe</item>
         <item>Gotowe dania</item>
         <item>Warzywa</item>
@@ -98,19 +111,19 @@
         <item>Produkty chemiczne</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_choose_array">
+    <string-array name="Product_choose_array">
         <item>Wybierz</item>
     </string-array>
-    <string name="ProductDetailsActivity_product_features">Cechy dodatkowe</string>
+    <string name="Product_category">Kategoria</string>
     <string-array name="ProductDetailsActivity_store_products_array">
         <item>Wybierz</item>
         <item>Produkty sklepowe</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_ready_meals_array">
+    <string-array name="Product_ready_meals_array">
         <item>Wybierz</item>
         <item>Dania gotowe</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_vegetables_array">
+    <string-array name="Product_vegetables_array">
         <item>Wybierz</item>
         <item>Konserwowe</item>
         <item>Sałatki</item>
@@ -119,7 +132,7 @@
         <item>Świeże</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_fruits_array">
+    <string-array name="Product_fruits_array">
         <item>Wybierz</item>
         <item>Dżemy</item>
         <item>Soki</item>
@@ -131,47 +144,47 @@
         <item>Świeże</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_herbs_array">
+    <string-array name="Product_herbs_array">
         <item>Wybierz</item>
         <item>Suszone</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_liqueurs_array">
+    <string-array name="Product_liqueurs_array">
         <item>Wybierz</item>
         <item>Nalewki</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_wines_type_array">
+    <string-array name="Product_wines_type_array">
         <item>Wybierz</item>
         <item>Wytrawne</item>
         <item>Pół wytrawne</item>
         <item>Pół słodkie</item>
         <item>Słodkie</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_mushrooms_array">
+    <string-array name="Product_mushrooms_array">
         <item>Wybierz</item>
         <item>Marynowane</item>
         <item>Solone</item>
         <item>Suszone</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_vinegars_array">
+    <string-array name="Product_vinegars_array">
         <item>Wybierz</item>
         <item>Jabłkowe</item>
         <item>Ziołowe</item>
         <item>Owocowe</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_chemical_products_array">
+    <string-array name="Product_chemical_products_array">
         <item>Wybierz</item>
         <item>Środki czystości</item>
         <item>Płyny</item>
         <item>Proszki</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_other_products_array">
+    <string-array name="Product_other_products_array">
         <item>Wybierz</item>
         <item>Inne</item>
     </string-array>
-    <string-array name="ProductDetailsActivity_taste_array">
+    <string-array name="Product_taste_array">
         <item>Wybierz</item>
         <item>Słodki</item>
         <item>Kwaśny</item>
@@ -179,6 +192,7 @@
         <item>Gorzki</item>
         <item>Słony</item>
     </string-array>
+    <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_not_selected">Nie wybrano</string>
     <string name="ProductDetailsActivity_delete_product">Usuń produkt</string>
     <string name="ProductDetailsActivity_filter">Filtruj</string>
@@ -195,6 +209,8 @@
     <!--AppSettingsActivity-->
     <string name="AppSettingsActivity_which_theme_user_prefer">Wybierz tryb aplikacji (dzienny/nocny)</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Która kamera ma być używana do skanowania produktów?</string>
+    <string name="AppSettingsActivity_scanner_vibration_mode">Wibracje podczas skanowania</string>
+    <string name="AppSettingsActivity_scanner_sound_mode">Dźwięk podczas skanowania</string>
     <string name="AppSettingsActivity_notifications_send_by">Wyślij powiadomienia o utracie terminu przydatności produktu</string>
     <string name="AppSettingsActivity_hour_of_notification">O której godzinie chcesz otrzymać powiadomienia?</string>
     <string name="AppSettingsActivity_notifications_push">przez powiadomienia</string>
@@ -216,24 +232,20 @@
         <item>Dzienny</item>
         <item>Nocny</item>
     </string-array>
-    <!--RegistrationActivity-->
-    <string name="RegisterActivity_register">Zarejestruj się</string>
-    <string name="RegisterActivity_email">Email</string>
-    <string name="RegisterActivity_password">Hasło</string>
-    <string name="RegisterActivity_passwordConfirmation">Hasło (potwierdzenie)</string>
-    <string name="RegisterActivity_registerHint"> </string>
-    <string name="RegisterActivity_accountCorrectRegistered"> </string>
-    <string name="RegisterActivity_errorWrongEmail"> </string>
     <!--Notifications-->
     <string name="Notifications_title">[Moja Spiżarnia] Produkt wkrótce się przeterminuje.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% wkrótce się przeterminuje. Zostało Ci mniej niż %DAYS% dni, aby zdążyć przed tą datą.</string>
-    <!--Errors-->
-    <string name="Errors_error">Błąd</string>
-    <string name="Errors_something_wrong">Coś poszło nie tak</string>
-    <string name="Errors_wrong_data">Błędne dane</string>
-    <string name="Errors_permission_is_needed_to_save_the_file">Pozwolenie jest wymagane do utworzenia pliku</string>
-    <string name="Errors_category_not_selected">Brak wybranej kategorii produktu</string>
-    <string name="Errors_set_correct_quantity">Podaj prawidłową ilość produktów</string>
-    <string name="Errors_product_name_is_required">Nazwa produktu jest wymagana</string>
-    <string name="Errors_expiration_date_is_required">Data przydatności produktu jest wymagana</string>
+    <!--Error-->
+    <string name="Error_error">Błąd</string>
+    <string name="Error_something_wrong">Coś poszło nie tak</string>
+    <string name="Error_wrong_data">Błędne dane</string>
+    <string name="Error_permission_is_needed_to_save_the_file">Pozwolenie jest wymagane do utworzenia pliku</string>
+    <string name="Error_category_not_selected">Brak wybranej kategorii produktu</string>
+    <string name="Error_set_correct_quantity">Podaj prawidłową ilość produktów</string>
+    <string name="Error_product_name_is_required">Nazwa produktu jest wymagana</string>
+    <string name="Error_expiration_date_is_required">Data przydatności produktu jest wymagana</string>
+    <string name="Error_wrong_category_data">Niepoprawne dane kategorii</string>
+    <string name="Error_char_counter">Nieprawidłowa wartość</string>
+    <!--Author-->
+    <string name="Author_contact_with_author">Kontakt z autorem</string>
 </resources>

@@ -42,7 +42,7 @@ import java.util.Map;
 
 public class CustomRequest extends Request<JSONObject> {
 
-    private Listener<JSONObject> listener;
+    private final Listener<JSONObject> listener;
 
     public CustomRequest(int method, String url, Map<String, String> params,
                          Listener<JSONObject> responseListener, ErrorListener errorListener) {

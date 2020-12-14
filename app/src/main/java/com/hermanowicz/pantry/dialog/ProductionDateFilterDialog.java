@@ -24,27 +24,24 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.DialogProductionDateBinding;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 import com.hermanowicz.pantry.utils.DateHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * <h1>ProductionDateFilterDialog</h1>
@@ -57,12 +54,7 @@ import butterknife.ButterKnife;
 
 public class ProductionDateFilterDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.edittext_productionDateSince)
-    EditText edittextProductionDateSince;
-    @BindView(R.id.edittext_productionDateFor)
-    EditText edittextProductionDateFor;
-    @BindView(R.id.button_clear)
-    Button btnClear;
+    private DialogProductionDateBinding binding;
 
     private Activity activity;
     private FilterDialogListener dialogListener;
@@ -78,34 +70,30 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
         this.filterProductionDateFor = filterProduct.getProductionDateFor();
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         activity = getActivity();
-
         dateFormat.setLenient(false);
-
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
-
-        View view = layoutInflater.inflate(R.layout.dialog_production_date, null);
-
-        ButterKnife.bind(this, view);
+        binding = DialogProductionDateBinding.inflate(activity.getLayoutInflater());
+        View view = binding.getRoot();
 
         if (filterProductionDateSince != null) {
             DateHelper date = new DateHelper(filterProductionDateSince);
-            edittextProductionDateSince.setText(date.getDateInLocalFormat());
+            binding.edittextProductionDateSince.setText(date.getDateInLocalFormat());
         }
         if (filterProductionDateFor != null) {
             DateHelper date = new DateHelper(filterProductionDateFor);
-            edittextProductionDateFor.setText(date.getDateInLocalFormat());
+            binding.edittextProductionDateFor.setText(date.getDateInLocalFormat());
         }
 
-        edittextProductionDateSince.setOnClickListener(v -> {
-            if (edittextProductionDateSince.length() < 1) {
+        binding.edittextProductionDateSince.setOnClickListener(v -> {
+            if (binding.edittextProductionDateSince.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -124,8 +112,8 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             dialog.show();
         });
 
-        edittextProductionDateFor.setOnClickListener(v -> {
-            if (edittextProductionDateFor.length() < 1) {
+        binding.edittextProductionDateFor.setOnClickListener(v -> {
+            if (binding.edittextProductionDateFor.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -150,7 +138,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
-            edittextProductionDateSince.setText(dateHelper.getDateInLocalFormat());
+            binding.edittextProductionDateSince.setText(dateHelper.getDateInLocalFormat());
             filterProductionDateSince = dateHelper.getDateInSqlFormat();
         };
 
@@ -158,25 +146,25 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
-            edittextProductionDateFor.setText(dateHelper.getDateInLocalFormat());
+            binding.edittextProductionDateFor.setText(dateHelper.getDateInLocalFormat());
             filterProductionDateFor = dateHelper.getDateInSqlFormat();
         };
 
-        btnClear.setOnClickListener(view12 -> {
-            edittextProductionDateSince.setText("");
-            edittextProductionDateFor.setText("");
+        binding.buttonClear.setOnClickListener(view12 -> {
+            binding.edittextProductionDateSince.setText("");
+            binding.edittextProductionDateFor.setText("");
             filterProductionDateSince = null;
             filterProductionDateFor = null;
         });
 
         builder.setView(view)
-                .setTitle(getString(R.string.ProductDetailsActivity_production_date))
-                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.Product_production_date))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (edittextProductionDateSince.length() < 1)
+                    if (binding.edittextProductionDateSince.length() < 1)
                         filterProductionDateSince = null;
-                    if (edittextProductionDateFor.length() < 1)
+                    if (binding.edittextProductionDateFor.length() < 1)
                         filterProductionDateFor = null;
                     dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
                 });

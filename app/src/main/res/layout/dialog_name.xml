@@ -24,17 +24,17 @@
     tools:context=".activities.MyPantryActivity">
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/nameValue"
+        style="@style/CustomEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="@string/ProductDetailsActivity_name"
+        android:hint="@string/Product_name"
         android:inputType="text"
         android:text=""
-        android:textColorHint="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,8 +47,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/nameValue" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

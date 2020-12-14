@@ -21,7 +21,7 @@ import com.hermanowicz.pantry.interfaces.MainView;
 
 public class MainPresenter {
 
-    private MainView view;
+    private final MainView view;
 
     public MainPresenter(MainView view) {
         this.view = view;
@@ -38,6 +38,8 @@ public class MainPresenter {
     public void navigateToNewProductActivity() {
         view.onNavigationToNewProductActivity();
     }
+
+    public void navigateToCategoriesActivity() { view.onNavigationToCategoriesActivity(); }
 
     public void navigateToAppSettingsActivity() {
         view.onNavigationToAppSettingsActivity();

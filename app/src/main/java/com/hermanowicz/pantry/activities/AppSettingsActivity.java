@@ -19,39 +19,35 @@ package com.hermanowicz.pantry.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
-import android.widget.CheckBox;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.ActivityAppSettingsBinding;
 import com.hermanowicz.pantry.db.ProductDb;
-import com.hermanowicz.pantry.dialog.ClearDbDialog;
+import com.hermanowicz.pantry.dialog.AuthorDialog;
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
-import com.hermanowicz.pantry.interfaces.DialogListener;
 import com.hermanowicz.pantry.presenters.AppSettingsPresenter;
 import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.Orientation;
 import com.hermanowicz.pantry.utils.ThemeMode;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * <h1>AppSettingsActivity</h1>
@@ -62,31 +58,17 @@ import butterknife.OnClick;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView, DialogListener {
+public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView {
+
+    private ActivityAppSettingsBinding binding;
 
     private Context context;
-    private SharedPreferences preferences;
-
     private AppSettingsPresenter presenter;
 
-    @BindView(R.id.spinner_appThemeSelector)
-    Spinner appThemeSelector;
-    @BindView(R.id.spinner_cameraSelector)
-    Spinner cameraSelector;
-    @BindView(R.id.edittext_daysToNotification)
-    EditText daysBeforeExpirationDate;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.checkbox_emailNotifications)
-    CheckBox notificationsByEmail;
-    @BindView(R.id.checkbox_pushNotifications)
-    CheckBox notificationsByPush;
-    @BindView(R.id.numberpicker_hourOfNotification)
-    NumberPicker hourOfNotifications;
-    @BindView(R.id.edittext_emailAddress)
-    EditText emailAddress;
-    @BindView(R.id.textView_version)
-    TextView appVersion;
+    private TextView appVersion, appAuthor;
+    private EditText emailAddress;
+    private Button saveSettings, clearProductDatabase;
+    private NumberPicker hourOfNotification;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,19 +76,37 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app_settings);
+        initView();
+        setListeners();
 
-        ButterKnife.bind(this);
+        presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(context));
+        presenter.loadSettings();
+    }
+
+    private void initView() {
+        binding = ActivityAppSettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         context = getApplicationContext();
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        setSupportActionBar(binding.toolbar);
 
-        setSupportActionBar(toolbar);
+        appVersion = binding.appVersion;
+        appAuthor = binding.appAuthor;
+        emailAddress = binding.edittextEmailAddress;
+        saveSettings = binding.buttonSaveSettings;
+        clearProductDatabase = binding.buttonClearProductDatabase;
+        hourOfNotification = binding.numberpickerHourOfNotification;
 
-        presenter = new AppSettingsPresenter(this, preferences);
+        appAuthor.setText(String.format("%s: %s", getString(R.string.General_author_label), getString(R.string.Author_name)));
 
         setNumberpickerSettings();
-        presenter.loadSettings();
+        setSpinnerAdapters();
+    }
+
+    private void setListeners() {
+        saveSettings.setOnClickListener(view -> onClickSaveSettingsButton());
+        clearProductDatabase.setOnClickListener(view -> onClickClearDatabaseButton());
+        appAuthor.setOnClickListener(view -> onClickAuthorLabel());
 
         emailAddress.addTextChangedListener(new TextWatcher() {
             @Override
@@ -119,36 +119,54 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
             @Override
             public void afterTextChanged(Editable s) {
-                String emailAddress = AppSettingsActivity.this.emailAddress.getText().toString();
+                String emailAddress = binding.edittextEmailAddress.getText().toString();
                 presenter.enableEmailCheckbox(emailAddress);
             }
         });
     }
 
-    void setNumberpickerSettings() {
-        hourOfNotifications.setMinValue(1);
-        hourOfNotifications.setMaxValue(24);
-        hourOfNotifications.setWrapSelectorWheel(false);
+    private void setNumberpickerSettings() {
+        hourOfNotification.setMinValue(1);
+        hourOfNotification.setMaxValue(24);
+        hourOfNotification.setWrapSelectorWheel(false);
     }
 
-    @OnClick(R.id.button_clearDatabase)
-    void onClickClearDatabaseButton() {
-        ClearDbDialog clearDbDialog = new ClearDbDialog();
-        clearDbDialog.show(getSupportFragmentManager(), "");
+    private void setSpinnerAdapters() {
+        ArrayAdapter<CharSequence> appThemeSelectorAdapter = ArrayAdapter.createFromResource(context, R.array.AppSettingsActivity_darkmodeSelector, R.layout.custom_spinner);
+        binding.spinnerAppThemeSelector.setAdapter(appThemeSelectorAdapter);
+        ArrayAdapter<CharSequence> cameraSelectorAdapter = ArrayAdapter.createFromResource(context, R.array.AppSettingsActivity_camera_to_scan, R.layout.custom_spinner);
+        binding.spinnerCameraSelector.setAdapter(cameraSelectorAdapter);
     }
 
-    @OnClick(R.id.button_saveSettings)
+    private void onClickClearDatabaseButton() {
+        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
+                .setMessage(R.string.AppSettingsActivity_clear_database)
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.clearDatabase())
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void onClickAuthorLabel() {
+        AuthorDialog authorDialog = new AuthorDialog();
+        authorDialog.show(getSupportFragmentManager(), "");
+    }
+
     void onClickSaveSettingsButton() {
-        int selectedTheme = appThemeSelector.getSelectedItemPosition();
-        int selectedScanCamera = cameraSelector.getSelectedItemPosition();
-        int daysToNotification = Integer.parseInt(daysBeforeExpirationDate.getText().toString());
-        boolean isEmailNotificationsAllowed = notificationsByEmail.isChecked();
-        boolean isPushNotificationsAllowed = notificationsByPush.isChecked();
-        int hourOfNotifications = this.hourOfNotifications.getValue();
-        String emailAddress = this.emailAddress.getText().toString();
+        int selectedTheme = binding.spinnerAppThemeSelector.getSelectedItemPosition();
+        int selectedScanCamera = binding.spinnerCameraSelector.getSelectedItemPosition();
+        boolean scannerVibrationMode = binding.checkboxScannerVibrationMode.isChecked();
+        boolean scannerSoundMode = binding.checkboxScannerSoundMode.isChecked();
+        int daysToNotification = Integer.parseInt(binding.edittextDaysToNotification.getText().toString());
+        boolean isEmailNotificationsAllowed = binding.checkboxEmailNotifications.isChecked();
+        boolean isPushNotificationsAllowed = binding.checkboxPushNotifications.isChecked();
+        int hourOfNotifications = binding.numberpickerHourOfNotification.getValue();
+        String emailAddress = binding.edittextEmailAddress.getText().toString();
 
         presenter.setSelectedTheme(selectedTheme);
         presenter.setSelectedScanCamera(selectedScanCamera);
+        presenter.setScannerVibrationMode(scannerVibrationMode);
+        presenter.setScannerSoundMode(scannerSoundMode);
         presenter.setDaysBeforeExpirationDate(daysToNotification);
         presenter.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
         presenter.setIsPushNotificationsAllowed(isPushNotificationsAllowed);
@@ -160,37 +178,47 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     public void setSelectedTheme(int selectedTheme) {
-        this.appThemeSelector.setSelection(selectedTheme);
+        binding.spinnerAppThemeSelector.setSelection(selectedTheme);
     }
 
     @Override
     public void setScanCamera(int selectedCamera) {
-        this.cameraSelector.setSelection(selectedCamera);
+        binding.spinnerCameraSelector.setSelection(selectedCamera);
+    }
+
+    @Override
+    public void setCheckboxScannerVibrationMode(boolean vibrationMode) {
+        binding.checkboxScannerVibrationMode.setChecked(vibrationMode);
+    }
+
+    @Override
+    public void setCheckboxScannerSoundMode(boolean soundMode) {
+        binding.checkboxScannerSoundMode.setChecked(soundMode);
     }
 
     @Override
     public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
-        this.daysBeforeExpirationDate.setText(String.valueOf(daysBeforeExpirationDate));
+        binding.edittextDaysToNotification.setText(String.valueOf(daysBeforeExpirationDate));
     }
 
     @Override
-    public void setCheckbox_pushNotification(boolean isPushNotificationsAllowed) {
-        notificationsByPush.setChecked(isPushNotificationsAllowed);
+    public void setCheckboxPushNotification(boolean isPushNotificationsAllowed) {
+        binding.checkboxPushNotifications.setChecked(isPushNotificationsAllowed);
     }
 
     @Override
-    public void setCheckbox_emailNotification(boolean isEmailNotificationsAllowed) {
-        notificationsByEmail.setChecked(isEmailNotificationsAllowed);
+    public void setCheckboxEmailNotification(boolean isEmailNotificationsAllowed) {
+        binding.checkboxEmailNotifications.setChecked(isEmailNotificationsAllowed);
     }
 
     @Override
     public void setEmailAddress(String emailAddress) {
-        this.emailAddress.setText(emailAddress);
+        binding.edittextEmailAddress.setText(emailAddress);
     }
 
     @Override
     public void setHourOfNotifications(int hourOfNotifications) {
-        this.hourOfNotifications.setValue(hourOfNotifications);
+        binding.numberpickerHourOfNotification.setValue(hourOfNotifications);
     }
 
     @Override
@@ -201,7 +229,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     public void enableEmailCheckbox(boolean isValidEmail) {
-        notificationsByEmail.setEnabled(isValidEmail);
+        binding.checkboxEmailNotifications.setEnabled(isValidEmail);
     }
 
     @Override
@@ -232,12 +260,8 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
+            finish();
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onPositiveClick() {
-        presenter.clearDatabase();
     }
 }

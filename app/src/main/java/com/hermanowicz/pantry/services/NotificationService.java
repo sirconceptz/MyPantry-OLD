@@ -62,6 +62,7 @@ public class NotificationService extends IntentService {
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
     static final String DAYS_TAG = "%DAYS%";
     static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
+    static final String PRODUCTS_QUANTITY = "%PRODUCTS_QUANTITY%";
     static final String URL_API = "https://www.mypantry.eu/api/";
     static final String API_MAIL_FILE = "mail.php";
 
@@ -73,7 +74,7 @@ public class NotificationService extends IntentService {
         super("NotificationService");
     }
 
-    private String createStatement(){
+    private String createStatementForSingleProduct(){
         String statement = getString(R.string.Notifications_statement);
         statement = statement.replace(DAYS_TAG, String.valueOf(daysToNotification));
         statement = statement.replace(PRODUCT_NAME_TAG, productName);
@@ -108,7 +109,7 @@ public class NotificationService extends IntentService {
                 assert notificationManager != null;
                 notificationManager.createNotificationChannel(mChannel);
             }
-            String notificationStatement = createStatement();
+            String notificationStatement = createStatementForSingleProduct();
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
             builder.setContentTitle(getString(R.string.Notifications_title));
@@ -132,15 +133,15 @@ public class NotificationService extends IntentService {
         }
         if (preferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS,
                 true)) {
-            HashMap<String, String> params = new HashMap<String, String>();
+            HashMap<String, String> params = new HashMap<>();
             params.put("to_email_address", preferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
             params.put("subject", getString(R.string.Notifications_title));
-            params.put("message", createStatement());
+            params.put("message", createStatementForSingleProduct());
             String url = URL_API + API_MAIL_FILE;
 
             request_json = new JsonObjectRequest(url, new JSONObject(params),
                     response -> {
-                    }, error -> VolleyLog.e(getString(R.string.Errors_error), error.getMessage()));
+                    }, error -> VolleyLog.e(getString(R.string.Error_error), error.getMessage()));
             EmailManager.getInstance().addEmailToRequestQueue(request_json);
         }
     }

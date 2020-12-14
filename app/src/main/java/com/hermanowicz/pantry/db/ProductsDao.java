@@ -38,28 +38,25 @@ import java.util.List;
 @Dao
 public interface ProductsDao {
     @Query("SELECT * FROM products WHERE id = (:id)")
-    Product getProductById(int id);
+    Product getProduct(int id);
 
     @Query("SELECT * FROM products ORDER BY expirationDate ASC")
-    LiveData<List<Product>> getAllProductsAsLivedata();
+    LiveData<List<Product>> getAllProductsLivedata();
 
     @Query("SELECT * FROM products ORDER BY expirationDate ASC")
-    List<Product> getAllProductsAsList();
+    List<Product> getAllProductsList();
 
     @Insert
-    void insertProductsToDB(List<Product> products);
-
-    @Query("DELETE FROM products WHERE id = (:id)")
-    void deleteProductById(int id);
+    void addProducts(List<Product> products);
 
     @Delete
-    void deleteProductsFromList(List<Product> product);
+    void deleteProducts(List<Product> product);
 
     @Query("DELETE FROM products")
     void clearDb();
 
     @Query("SELECT id FROM products ORDER BY id DESC")
-    int getIdOfLastProduct();
+    int getIdLastProduct();
 
     @Update
     void updateProduct(Product... products);

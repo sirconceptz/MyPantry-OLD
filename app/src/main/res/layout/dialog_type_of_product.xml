@@ -24,20 +24,20 @@
     tools:context=".activities.MyPantryActivity">
 
     <Spinner
-        android:id="@+id/spinner_typeOfProduct"
+        android:id="@+id/spinner_product_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:entries="@array/ProductDetailsActivity_type_of_product_array"
+        android:entries="@array/Product_type_of_product_array"
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/spinner_productFeatures"
+        android:id="@+id/spinner_productCategory"
         style="@style/Widget.AppCompat.Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_typeOfProduct" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_product_type" />
 
     <Button
         android:id="@+id/button_clear"
@@ -58,8 +58,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_productFeatures" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_productCategory" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

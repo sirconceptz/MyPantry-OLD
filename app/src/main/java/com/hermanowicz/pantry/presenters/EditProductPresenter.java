@@ -32,16 +32,15 @@ import java.util.Date;
 
 public class EditProductPresenter {
 
-    private EditProductView view;
-
-    private ProductDataModel model;
-    private ProductDataView productDataView;
+    private final EditProductView view;
+    private final ProductDataModel model;
+    private final ProductDataView productDataView;
 
     private Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
 
-    public EditProductPresenter(EditProductView view, ProductDataView productDataView, ProductDb db, Resources resources){
-        this.model = new ProductDataModel(db, resources);
+    public EditProductPresenter(EditProductView view, ProductDataView productDataView, ProductDataModel model){
+        this.model = model;
         this.view = view;
         this.productDataView = productDataView;
     }
@@ -106,6 +105,10 @@ public class EditProductPresenter {
 
     public int[] getProductionDateArray() {
         return model.getProductionDateArray();
+    }
+
+    public String[] getOwnCategoryArray(){
+        return model.getOwnCategoriesArray();
     }
 
     public void navigateToMyPantryActivity(){

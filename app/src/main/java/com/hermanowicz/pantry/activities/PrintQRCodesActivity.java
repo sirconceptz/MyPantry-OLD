@@ -25,17 +25,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.KeyEvent;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
 
 import com.hermanowicz.pantry.BuildConfig;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.ActivityPrintQrcodesBinding;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
 import com.hermanowicz.pantry.presenters.PrintQRCodesPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
@@ -44,10 +43,6 @@ import com.hermanowicz.pantry.utils.ThemeMode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
@@ -63,12 +58,9 @@ import static androidx.core.content.FileProvider.getUriForFile;
 
 public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesView {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.image_qrCode)
-    ImageView image_qrCode;
-
     static final String PDF_FILENAME = "qrcodes-mypantry.pdf";
+
+    private ActivityPrintQrcodesBinding binding;
 
     private Context context;
     private PrintQRCodesPresenter presenter;
@@ -79,14 +71,17 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_print_qrcodes);
-
-        ButterKnife.bind(this);
+        binding = ActivityPrintQrcodesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         context = PrintQRCodesActivity.this;
         ArrayList<String> textToQRCodeArray = getIntent().getStringArrayListExtra("text_to_qr_code");
         ArrayList<String> namesOfProductsArray = getIntent().getStringArrayListExtra("names_of_products");
         ArrayList<String> expirationDatesArray = getIntent().getStringArrayListExtra("expiration_dates");
+
+        binding.buttonPrintQRCodes.setOnClickListener(view -> presenter.onClickPrintQRCodes());
+        binding.buttonSendPdfByEmail.setOnClickListener(view -> presenter.onClickSendPdfByEmail());
+        binding.buttonSkip.setOnClickListener(view -> presenter.onClickSkipButton());
 
         presenter = new PrintQRCodesPresenter(this);
 
@@ -96,18 +91,18 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         presenter.setActivity(this);
         presenter.showQRCodeImage();
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.PrintQRCodesActivity_print_qr_codes));
     }
 
     @Override
     public void showPermissionsError() {
-        Toast.makeText(context, getString(R.string.Errors_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.Error_permission_is_needed_to_save_the_file), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showQRCodeImage(Bitmap qrCodeImage) {
-        image_qrCode.setImageBitmap(qrCodeImage);
+        binding.imageQrCode.setImageBitmap(qrCodeImage);
     }
 
     @Override
@@ -137,21 +132,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-    }
-
-    @OnClick(R.id.button_printQRCodes)
-    void onClickPrintQRCodesButton() {
-        presenter.onClickPrintQRCodes();
-    }
-
-    @OnClick(R.id.button_sendPdfByEmail)
-    void onClickSendPdfByEmailButton() {
-        presenter.onClickSendPdfByEmail();
-    }
-
-    @OnClick(R.id.button_skip)
-    void onClickSkipButton() {
-        presenter.onClickSkipButton();
     }
 
     @Override

@@ -49,6 +49,7 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import models.ProductTestModel;
 
@@ -83,15 +84,15 @@ public class MyPantryActivityTest {
     @Before
     public void setUp() {
         activity = activityRule.getActivity();
-        drawerLayout = activity.findViewById(R.id.my_pantry_drawer_layout);
-        emptyPantryStatement = activity.findViewById(R.id.text_emptyPantryStatement);
+        drawerLayout = activity.findViewById(R.id.drawer_layout);
+        emptyPantryStatement = activity.findViewById(R.id.text_statement);
     }
 
     @Test
     public void whenProductsInDbShowsProductsInRecyclerView() {
         insertTestProductsToDbAndRestartActivity();
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);
-        assertEquals(9, recyclerViewItems);
+        assertEquals(3, recyclerViewItems);
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
 
@@ -110,7 +111,7 @@ public class MyPantryActivityTest {
         insertTestProductsToDbAndRestartActivity();
 
         List<Product> productList = ProductDb.getInstance(activity).productsDao()
-                .getAllProductsAsList();
+                .getAllProductsList();
 
         onView(withId(R.id.recyclerview_products))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
@@ -124,7 +125,7 @@ public class MyPantryActivityTest {
                 .check(matches(withText(productList.get(0).getName())));
         onView(withId(R.id.spinner_productType))
                 .check(matches(withText(productList.get(0).getTypeOfProduct())));
-        onView(withId(R.id.spinner_productFeatures))
+        onView(withId(R.id.spinner_productCategory))
                 .check(matches(withText(productList.get(0).getProductFeatures())));
         onView(withId(R.id.edittext_expirationDate))
                 .check(matches(withText(productList.get(0).getExpirationDate())));
@@ -154,64 +155,64 @@ public class MyPantryActivityTest {
     @Test
     public void onSetNameFilterShouldShowProductsWithThisName() throws InterruptedException {
         insertTestProductsToDbAndRestartActivity();
-        onView(withId(R.id.my_pantry_drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.filter_name));
-        onView(withId(R.id.name)).perform(typeText(ProductTestModel.getTestProduct1().getName()));
+        onView(withId(R.id.nameValue)).perform(typeText(ProductTestModel.getTestProduct1().getName()));
         onView(withText(R.string.MyPantryActivity_set)).perform(click());
         Thread.sleep(300);
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);
-        assertEquals(3, recyclerViewItems);
+        assertEquals(1, recyclerViewItems);
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
 
     @Test
     public void onSetWeightFilterShouldShowProductsWithThisName() throws InterruptedException {
         insertTestProductsToDbAndRestartActivity();
-        onView(withId(R.id.my_pantry_drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.filter_weight));
         onView(withId(R.id.edittext_weightSince)).perform(typeText("1200"));
         onView(withText(R.string.MyPantryActivity_set)).perform(click());
         Thread.sleep(300);
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);
-        assertEquals(6, recyclerViewItems);
+        assertEquals(2, recyclerViewItems);
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
 
     @Test
     public void onSetVolumeFilterShouldShowProductsWithThisVolume() throws InterruptedException {
         insertTestProductsToDbAndRestartActivity();
-        onView(withId(R.id.my_pantry_drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.filter_volume));
         onView(withId(R.id.edittext_volumeSince)).perform(typeText("100"));
         onView(withId(R.id.edittext_volumeFor)).perform(typeText("700"));
         onView(withText(R.string.MyPantryActivity_set)).perform(click());
         Thread.sleep(300);
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);
-        assertEquals(6, recyclerViewItems);
+        assertEquals(2, recyclerViewItems);
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
 
     @Test
     public void onSetHasSugarFilterShouldShowProductsWithThisName() throws InterruptedException {
         insertTestProductsToDbAndRestartActivity();
-        onView(withId(R.id.my_pantry_drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.filter_product_features));
         onView(withId(R.id.checkbox_hasSugar)).perform(click());
         onView(withText(R.string.MyPantryActivity_set)).perform(click());
         Thread.sleep(300);
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);
-        assertEquals(3, recyclerViewItems);
+        assertEquals(1, recyclerViewItems);
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
 
     @Test
     public void whenDatabaseIsEmptyShowsEmptyPantryStatement() {
-        assertEquals(activity.getString(R.string.MyPantryActivity_empty_pantry), emptyPantryStatement.getText());
+        assertEquals(activity.getString(R.string.MyPantryActivity_products_not_found), emptyPantryStatement.getText());
     }
 
     @Test
     public void onClickedMenuIconDrawerLayoutIsOpen() {
-        onView(withId(R.id.my_pantry_drawer_layout)).perform(DrawerActions.open());
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         assertTrue(drawerLayout.isShown());
     }
 
@@ -229,7 +230,7 @@ public class MyPantryActivityTest {
             productList.add(ProductTestModel.getTestProduct2());
             productList.add(ProductTestModel.getTestProduct3());
         }
-        ProductDb.getInstance(activity).productsDao().insertProductsToDB(productList);
+        ProductDb.getInstance(activity).productsDao().addProducts(productList);
         activityRule.finishActivity();
         activityRule.launchActivity(new Intent());
     }
@@ -242,7 +243,7 @@ public class MyPantryActivityTest {
 
             @Override
             protected boolean matchesSafely(View item) {
-                count = ((RecyclerView) item).getAdapter().getItemCount();
+                count = Objects.requireNonNull(((RecyclerView) item).getAdapter()).getItemCount();
                 return true;
             }
         };

@@ -62,8 +62,8 @@ public class Product {
     }
 
     public String getShortName(){
-        if(name.length()>23)
-            return name.substring(0, 22) + "...";
+        if(name.length()>18)
+            return name.substring(0, 17) + "...";
         else
             return name;
     }

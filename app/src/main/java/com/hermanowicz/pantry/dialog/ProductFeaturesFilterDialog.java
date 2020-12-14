@@ -21,22 +21,19 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.DialogProductFeaturesBinding;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * <h1>ProductFeaturesFilterDialog</h1>
@@ -49,12 +46,7 @@ import butterknife.ButterKnife;
 
 public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
 
-    @BindView(R.id.checkbox_hasSugar)
-    CheckBox checkboxHasSugar;
-    @BindView(R.id.checkbox_hasSalt)
-    CheckBox checkboxHasSalt;
-    @BindView(R.id.button_clear)
-    Button btnClear;
+    private DialogProductFeaturesBinding binding;
 
     private FilterDialogListener dialogListener;
     private Filter.Set filterHasSugar;
@@ -65,42 +57,38 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
         this.filterHasSalt = filterProduct.getHasSalt();
     }
 
+    @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
         Activity activity = getActivity();
-
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        LayoutInflater layoutInflater = activity.getLayoutInflater();
-
-        View view = layoutInflater.inflate(R.layout.dialog_product_features, null);
-
-        ButterKnife.bind(this, view);
+        binding = DialogProductFeaturesBinding.inflate(activity.getLayoutInflater());
+        View view = binding.getRoot();
 
         if (filterHasSugar == Filter.Set.YES)
-            checkboxHasSugar.setChecked(true);
+            binding.checkboxHasSugar.setChecked(true);
 
         if (filterHasSalt == Filter.Set.YES)
-            checkboxHasSalt.setChecked(true);
+            binding.checkboxHasSalt.setChecked(true);
 
-        btnClear.setOnClickListener(view13 -> {
-            checkboxHasSugar.setChecked(false);
-            checkboxHasSalt.setChecked(false);
+        binding.buttonClear.setOnClickListener(view13 -> {
+            binding.checkboxHasSugar.setChecked(false);
+            binding.checkboxHasSalt.setChecked(false);
             filterHasSugar = Filter.Set.DISABLED;
             filterHasSalt = Filter.Set.DISABLED;
         });
 
-        checkboxHasSugar.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (checkboxHasSugar.isChecked())
+        binding.checkboxHasSugar.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (binding.checkboxHasSugar.isChecked())
                         filterHasSugar = Filter.Set.YES;
                     else
                         filterHasSugar = Filter.Set.NO;
                 }
         );
 
-        checkboxHasSalt.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (checkboxHasSalt.isChecked())
+        binding.checkboxHasSalt.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (binding.checkboxHasSalt.isChecked())
                         filterHasSalt = Filter.Set.YES;
                     else
                         filterHasSalt = Filter.Set.NO;
@@ -108,11 +96,10 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
         );
 
         builder.setView(view)
-                .setTitle(getString(R.string.ProductDetailsActivity_product_features))
-                .setNegativeButton(getString(R.string.MyPantryActivity_cancel), (dialog, which) -> {
+                .setTitle(getString(R.string.Product_category))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    dialogListener.setProductFeatures(filterHasSugar, filterHasSalt);});
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> dialogListener.setProductFeatures(filterHasSugar, filterHasSalt));
         return builder.create();
     }
 

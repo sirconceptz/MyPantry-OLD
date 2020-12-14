@@ -24,33 +24,31 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ActionMode;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.material.navigation.NavigationView;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.MyPantryDrawerLayoutBinding;
+import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
-import com.hermanowicz.pantry.dialog.DeleteProductsDialog;
 import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
 import com.hermanowicz.pantry.dialog.NameFilterDialog;
 import com.hermanowicz.pantry.dialog.ProductFeaturesFilterDialog;
@@ -64,18 +62,16 @@ import com.hermanowicz.pantry.interfaces.DeleteProductsDialogListener;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
 import com.hermanowicz.pantry.models.GroupProducts;
+import com.hermanowicz.pantry.models.MyPantryModel;
 import com.hermanowicz.pantry.presenters.MyPantryPresenter;
 import com.hermanowicz.pantry.utils.Notification;
 import com.hermanowicz.pantry.utils.Orientation;
 import com.hermanowicz.pantry.utils.ProductsAdapter;
-import com.hermanowicz.pantry.utils.RecyclerProductClickListener;
+import com.hermanowicz.pantry.utils.RecyclerClickListener;
 import com.hermanowicz.pantry.utils.ThemeMode;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * <h1>MyPantryActivity</h1>
@@ -89,23 +85,13 @@ import butterknife.ButterKnife;
 
 public class MyPantryActivity extends AppCompatActivity implements MyPantryView, FilterDialogListener, DeleteProductsDialogListener {
 
-    @BindView(R.id.recyclerview_products)
-    RecyclerView recyclerviewProducts;
-    @BindView(R.id.my_pantry_drawer_layout)
-    DrawerLayout drawerLayout;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-    @BindView(R.id.text_emptyPantryStatement)
-    TextView emptyPantryStatement;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.adBanner)
-    AdView adView;
+    private MyPantryDrawerLayoutBinding binding;
 
     private ProductsAdapter adapterProductsRecyclerView;
     private Context context;
     private SharedPreferences sharedPreferences;
     private ActionMode actionMode;
+    private AdView adView;
 
     private MyPantryPresenter presenter;
 
@@ -115,15 +101,14 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_pantry_drawer_layout);
-
-        ButterKnife.bind(this);
+        binding = MyPantryDrawerLayoutBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         context = getApplicationContext();
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        presenter = new MyPantryPresenter(this, ProductDb.getInstance(context));
+        presenter = new MyPantryPresenter(this, new MyPantryModel(ProductDb.getInstance(context), CategoryDb.getInstance(context)));
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.include.toolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
@@ -133,21 +118,22 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     }
 
     private void initData() {
+        adView = binding.include.adview;
+
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
         presenter.setProductLiveData();
-        presenter.getProductLiveData().observe(this, productList -> {
-            presenter.setProductList(productList);
-        });
+        presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
         presenter.setAllProductsList();
         adapterProductsRecyclerView = new ProductsAdapter(sharedPreferences);
         adapterProductsRecyclerView.setData(presenter.getGroupProductsList());
-        recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
+        binding.include.recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
         adapterProductsRecyclerView.notifyDataSetChanged();
-        recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
-        recyclerviewProducts.setHasFixedSize(true);
-        recyclerviewProducts.setItemAnimator(new DefaultItemAnimator());
-        recyclerviewProducts.addOnItemTouchListener(new RecyclerProductClickListener(this, recyclerviewProducts, new RecyclerProductClickListener.OnItemClickListener() {
+        binding.include.recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
+        binding.include.recyclerviewProducts.setHasFixedSize(true);
+        binding.include.recyclerviewProducts.setItemAnimator(new DefaultItemAnimator());
+        binding.include.recyclerviewProducts.addOnItemTouchListener(new RecyclerClickListener(this, binding.include.recyclerviewProducts, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 if (presenter.getIsMultiSelect())
@@ -157,13 +143,13 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                     Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class)
                             .putExtra("product_id", productList.get(position).getProduct().getId())
                             .putExtra("hash_code", productList.get(position).getProduct().getHashCode());
-                    MyPantryActivity.this.startActivity(productDetailsActivityIntent);
+                    startActivity(productDetailsActivityIntent);
                 }
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
-                if (!presenter.getIsMultiSelect()) {
+                /*if (!presenter.getIsMultiSelect()) {
                     presenter.clearMultiSelectList();
                     presenter.setIsMultiSelect(true);
 
@@ -171,11 +157,11 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                         actionMode = startActionMode(actionModeCallback);
                     }
                 }
-                multiSelect(position);
+                multiSelect(position);*/
             }
         }));
 
-        navigationView.setNavigationItemSelectedListener(
+        binding.navView.setNavigationItemSelectedListener(
                 menuItem -> {
                     int typeOfDialog = menuItem.getItemId();
                     if (typeOfDialog == R.id.filter_clear){
@@ -184,14 +170,14 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                     else{
                         presenter.openDialog(typeOfDialog);
                     }
-                    drawerLayout.closeDrawers();
+                    binding.drawerLayout.closeDrawers();
                     return true;
                 });
     }
 
     private void multiSelect(int position) {
         if(!presenter.getIsMultiSelect())
-            toolbar.startActionMode(actionModeCallback);
+            binding.include.toolbar.startActionMode(actionModeCallback);
         if (actionMode != null) {
             presenter.addMultiSelectProduct(position);
             if(presenter.getGroupsProductsSelectList().size() == 0)
@@ -222,6 +208,15 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             dialog = new ProductFeaturesFilterDialog(presenter.getFilterProduct());
         }
             return dialog;
+    }
+
+    public void showDialogDeleteProducts(){
+        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
+                .setMessage(R.string.MyPantryActivity_do_you_want_to_delete_products)
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.deleteSelectedProducts())
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     @Override
@@ -257,27 +252,27 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public void setFilterIcon(int position) {
-        navigationView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_true);
+        binding.navView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_true);
     }
 
     @Override
     public void clearFilterIcon(int position) {
-        navigationView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_false);
+        binding.navView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_false);
     }
 
     @Override
     public void showEmptyPantryStatement(boolean state) {
         if(state)
-            emptyPantryStatement.setText(getString(R.string.MyPantryActivity_empty_pantry));
+            binding.include.textStatement.setText(getString(R.string.MyPantryActivity_products_not_found));
         else
-            emptyPantryStatement.setText("");
+            binding.include.textStatement.setText("");
     }
 
     @Override
     public void clearFilterIcons() {
-        int sizeOfMenu = navigationView.getMenu().size();
+        int sizeOfMenu = binding.navView.getMenu().size();
         for (int i = 1; i < sizeOfMenu - 1; i++) {
-            navigationView.getMenu().getItem(i).setIcon(R.drawable.ic_check_box_false);
+            binding.navView.getMenu().getItem(i).setIcon(R.drawable.ic_check_box_false);
         }
     }
 
@@ -365,6 +360,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.new_item, menu);
         return true;
     }
 
@@ -373,8 +369,12 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                binding.drawerLayout.openDrawer(GravityCompat.START);
                 return true;
+            case R.id.action_new_item:
+                Intent intent = new Intent(this, NewProductActivity.class);
+                startActivity(intent);
+                finish();
             case R.id.action_print:
                 return true;
             case R.id.action_delete:
@@ -401,8 +401,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_delete:
-                    DeleteProductsDialog deleteProductsDialog = new DeleteProductsDialog();
-                    deleteProductsDialog.show(getSupportFragmentManager(), "");
+                    showDialogDeleteProducts();
                     return true;
                 case R.id.action_print:
                     presenter.printSelectedProducts();

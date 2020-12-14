@@ -21,6 +21,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
@@ -39,10 +40,10 @@ public class MyPantryModel {
     private List<Product> selectedProductList = new ArrayList<>();
     private List<GroupProducts> groupProductsList = new ArrayList<>();
     private boolean isMultiSelect = false;
-    private ProductDatabaseOperations productDatabaseOperations;
+    private DatabaseOperations databaseOperations;
 
-    public MyPantryModel(ProductDb db){
-        productDatabaseOperations = new ProductDatabaseOperations(db);
+    public MyPantryModel(ProductDb productDb, CategoryDb categoryDb){
+        databaseOperations = new DatabaseOperations(productDb, categoryDb);
     }
 
     private void groupProducts(List<Product> productList){
@@ -88,7 +89,7 @@ public class MyPantryModel {
     }
 
     public void deleteSelectedProducts(){
-        productDatabaseOperations.deleteProductsFromList(getAllSelectedProductList());
+        databaseOperations.deleteProductsFromList(getAllSelectedProductList());
     }
 
     public LiveData<List<Product>> getProductLiveData() {
@@ -114,7 +115,7 @@ public class MyPantryModel {
     public List<Product> getAllSelectedProductList(){
         List<Product> productList = new ArrayList<>();
         for (Product product : selectedProductList){
-            List<Product> similarProducts = productDatabaseOperations.getSimilarProductsList(product);
+            List<Product> similarProducts = databaseOperations.getSimilarProductsList(product);
             productList.addAll(similarProducts);
         }
         return productList;
@@ -132,7 +133,7 @@ public class MyPantryModel {
     }
 
     public void setAllProductsList(){
-        this.productList = productDatabaseOperations.getAllProducts();
+        this.productList = databaseOperations.getAllProducts();
         groupProducts(productList);
     }
 
@@ -141,7 +142,7 @@ public class MyPantryModel {
     }
 
     public void setProductsLiveData(){
-        this.productLiveData = productDatabaseOperations.getProductLiveData();
+        this.productLiveData = databaseOperations.getProductLiveData();
     }
 
     public void addMultiSelect(int position) {

@@ -20,9 +20,13 @@ package com.hermanowicz.pantry.interfaces;
 import java.util.List;
 
 public interface ScanProductView {
+    void setQrScanner(boolean scannerSoundMode);
+
     void navigateToProductDetailsActivity(List<Integer> decodedScanResults);
 
     void showErrorProductNotFound();
+
+    void onVibration();
 
     void navigateToMainActivity();
 }

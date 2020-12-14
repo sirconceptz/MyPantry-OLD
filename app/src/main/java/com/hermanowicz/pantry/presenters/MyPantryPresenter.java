@@ -33,12 +33,12 @@ import java.util.List;
 
 public class MyPantryPresenter {
 
-    private MyPantryView view;
-    private MyPantryModel model;
+    private final MyPantryView view;
+    private final MyPantryModel model;
 
-    public MyPantryPresenter(MyPantryView view, ProductDb db) {
+    public MyPantryPresenter(MyPantryView view, MyPantryModel model) {
         this.view = view;
-        this.model = new MyPantryModel(db);
+        this.model = model;
     }
 
     public void setAllProductsList(){
@@ -46,10 +46,7 @@ public class MyPantryPresenter {
     }
 
     public void setProductList(List<Product> productList) {
-        if (productList.size() == 0)
-            view.showEmptyPantryStatement(true);
-        else
-            view.showEmptyPantryStatement(false);
+        view.showEmptyPantryStatement(productList.size() == 0);
         model.setProductList(productList);
     }
 

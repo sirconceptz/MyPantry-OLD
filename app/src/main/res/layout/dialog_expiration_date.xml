@@ -25,6 +25,7 @@
 
     <EditText
         android:id="@+id/edittext_expirationDateSince"
+        style="@style/CustomEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -35,7 +36,6 @@
         android:layout_marginEnd="16dp"
         android:inputType="date"
         android:text=""
-        android:textColorHint="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,6 +43,7 @@
 
     <EditText
         android:id="@+id/edittext_expirationDateFor"
+        style="@style/CustomEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -53,7 +54,6 @@
         android:hint="@string/MyPantryActivity_for"
         android:inputType="date"
         android:text=""
-        android:textColorHint="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittext_expirationDateSince"
@@ -66,8 +66,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittext_expirationDateFor" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

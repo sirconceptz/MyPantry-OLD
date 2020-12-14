@@ -26,11 +26,14 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.receivers.NotificationBroadcastReceiver;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -55,9 +58,9 @@ public class Notification {
         Calendar calendar = Calendar.getInstance();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        calendar.set(Calendar.YEAR, Integer.valueOf(dateArray[0]));
-        calendar.set(Calendar.MONTH, (Integer.valueOf(dateArray[1]))-1);
-        calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(dateArray[2]));
+        calendar.set(Calendar.YEAR, Integer.parseInt(dateArray[0]));
+        calendar.set(Calendar.MONTH, (Integer.parseInt(dateArray[1]))-1);
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateArray[2]));
         calendar.set(Calendar.HOUR_OF_DAY, preferences.getInt(
                 PREFERENCES_HOUR_OF_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_HOUR));
         calendar.set(Calendar.MINUTE, 0);
@@ -68,8 +71,9 @@ public class Notification {
         return calendar;
     }
 
-    public static void createNotification(@NonNull Context context, @NonNull Product product) {
+    public static void createNotification(@NonNull Context context, @Nullable Product product) {
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
+        assert product != null;
         intent.putExtra("PRODUCT_NAME", product.getName());
         intent.putExtra("PRODUCT_ID", product.getId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, product.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -95,10 +99,13 @@ public class Notification {
 
     public static void createNotificationsForAllProducts(@NonNull Context context){
         ProductDb productDb = ProductDb.getInstance(context);
-        List<Product> productsList = productDb.productsDao().getAllProductsAsList();
+        List<Product> productsList = productDb.productsDao().getAllProductsList();
+
         for(int counter=0; counter < productsList.size(); counter++){
             Product selectedProduct = productsList.get(counter);
-            Notification.createNotification(context, selectedProduct);
+            String expirationDate = selectedProduct.getExpirationDate();
+            if (Date.valueOf(expirationDate).after(new Date(System.currentTimeMillis())))
+                Notification.createNotification(context, selectedProduct);
         }
     }
 
@@ -117,7 +124,7 @@ public class Notification {
 
     public static void cancelAllNotifications(@NonNull Context context) {
         ProductDb productDb = ProductDb.getInstance(context);
-        List<Product> productsList = productDb.productsDao().getAllProductsAsList();
+        List<Product> productsList = productDb.productsDao().getAllProductsList();
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         for(int i = 0; i < productsList.size(); i++){

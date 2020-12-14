@@ -35,9 +35,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,9 +47,13 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.ActivityNewProductBinding;
+import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.NewProductView;
+import com.hermanowicz.pantry.models.DatabaseOperations;
+import com.hermanowicz.pantry.models.NewProductModel;
 import com.hermanowicz.pantry.presenters.NewProductPresenter;
 import com.hermanowicz.pantry.utils.DateHelper;
 import com.hermanowicz.pantry.utils.Notification;
@@ -62,10 +64,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * <h1>NewProductActivity</h1>
@@ -83,49 +81,20 @@ import butterknife.OnClick;
 
 public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductView {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.edittext_name)
-    EditText name;
-    @BindView(R.id.spinner_productType)
-    Spinner productTypeSpinner;
-    @BindView(R.id.spinner_productFeatures)
-    Spinner productFeaturesSpinner;
-    @BindView(R.id.edittext_expirationDate)
-    EditText expirationDate;
-    @BindView(R.id.edittext_productionDate)
-    EditText productionDate;
-    @BindView(R.id.edittext_quantity)
-    EditText quantity;
-    @BindView(R.id.edittext_composition)
-    EditText composition;
-    @BindView(R.id.edittext_healingProperties)
-    EditText healingProperties;
-    @BindView(R.id.edittext_dosage)
-    EditText dosage;
-    @BindView(R.id.edittext_volume)
-    EditText volume;
-    @BindView(R.id.edittext_weight)
-    EditText weight;
-    @BindView(R.id.checkbox_hasSugar)
-    CheckBox hasSugar;
-    @BindView(R.id.checkbox_hasSalt)
-    CheckBox hasSalt;
-    @BindView(R.id.radiogroup_taste)
-    RadioGroup tasteGroup;
-    @BindView(R.id.text_volumeLabel)
-    TextView volumeLabel;
-    @BindView(R.id.text_weightLabel)
-    TextView weightLabel;
-    @BindView(R.id.adBanner)
-    AdView adView;
+    private ActivityNewProductBinding binding;
 
     private Context context;
     private Resources resources;
+
     private int day, month, year;
     private boolean isTypeOfProductTouched;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> typeOfProductAdapter, productFeaturesAdapter;
+    private ArrayAdapter<CharSequence> typeOfProductAdapter, productCategoryAdapter;
+
+    private Spinner productType, productCategory;
+    private EditText productName, productExpirationDate, productProductionDate, productComposition, productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
+    private CheckBox productHasSugar, productHasSalt;
+    private AdView adView;
 
     private NewProductPresenter presenter;
 
@@ -135,24 +104,43 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_product);
 
-        ButterKnife.bind(this);
+        initView();
+        setListeners();
 
-        init();
+        presenter = new NewProductPresenter(this, new NewProductModel(resources, new DatabaseOperations(ProductDb.getInstance(context), CategoryDb.getInstance(context))));
 
-        presenter = new NewProductPresenter(this, resources, ProductDb.getInstance(context));
+        typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
+        binding.productEdit.spinnerProductType.setAdapter(typeOfProductAdapter);
+        productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
+        binding.productEdit.spinnerProductCategory.setAdapter(productCategoryAdapter);
+    }
 
-        typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_type_of_product_array, android.R.layout.simple_spinner_item);
-        typeOfProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        productTypeSpinner.setAdapter(typeOfProductAdapter);
+    private void onClickAddProduct() {
+        int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
+        RadioButton taste = findViewById(selectedTasteId);
 
-        productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
-        productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        productFeaturesSpinner.setAdapter(productFeaturesAdapter);
+        Product product = new Product();
+        product.setName(productName.getText().toString());
+        product.setTypeOfProduct(String.valueOf(productType.getSelectedItem()));
+        product.setProductFeatures(String.valueOf(productCategory.getSelectedItem()));
+        product.setComposition(productComposition.getText().toString());
+        product.setHealingProperties(productHealingProperties.getText().toString());
+        product.setDosage(productDosage.getText().toString());
+        product.setVolume(Integer.parseInt(productVolume.getText().toString()));
+        product.setWeight(Integer.parseInt(productWeight.getText().toString()));
+        product.setHasSugar(productHasSugar.isChecked());
+        product.setHasSalt(productHasSalt.isChecked());
+        presenter.setTaste(taste);
+        presenter.setQuantity(productQuantity.getText().toString());
+        presenter.addProducts(product);
+    }
 
-        expirationDate.setOnClickListener(v -> {
-            if (expirationDate.length() < 1) {
+    private void setListeners() {
+        binding.buttonAddProduct.setOnClickListener(view -> onClickAddProduct());
+
+        productExpirationDate.setOnClickListener(v -> {
+            if (productExpirationDate.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(1);
@@ -177,8 +165,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             presenter.setExpirationDate(year, month, day);
         };
 
-        productionDate.setOnClickListener(v -> {
-            if (productionDate.length() < 1) {
+        productProductionDate.setOnClickListener(v -> {
+            if (productProductionDate.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -202,16 +190,16 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             presenter.setProductionDate(year, month, day);
         };
 
-        productTypeSpinner.setOnTouchListener((v, event) -> {
+        productType.setOnTouchListener((v, event) -> {
             isTypeOfProductTouched = true;
             return false;
         });
 
-        productTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+        productType.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if(isTypeOfProductTouched) {
-                    String typeOfProductValue = String.valueOf(productTypeSpinner.getSelectedItem());
+                    String typeOfProductValue = String.valueOf(productType.getSelectedItem());
                     presenter.updateProductFeaturesAdapter(typeOfProductValue);
                 }
             }
@@ -220,27 +208,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
-
-    @OnClick(R.id.button_addProduct)
-    void onClickAddProduct() {
-        int selectedTasteId = tasteGroup.getCheckedRadioButtonId();
-        RadioButton taste = findViewById(selectedTasteId);
-
-        Product product = new Product();
-        product.setName(name.getText().toString());
-        product.setTypeOfProduct(String.valueOf(productTypeSpinner.getSelectedItem()));
-        product.setProductFeatures(String.valueOf(productFeaturesSpinner.getSelectedItem()));
-        product.setComposition(composition.getText().toString());
-        product.setHealingProperties(healingProperties.getText().toString());
-        product.setDosage(dosage.getText().toString());
-        product.setVolume(Integer.parseInt(volume.getText().toString()));
-        product.setWeight(Integer.parseInt(weight.getText().toString()));
-        product.setHasSugar(hasSugar.isChecked());
-        product.setHasSalt(hasSalt.isChecked());
-        presenter.setTaste(taste);
-        presenter.setQuantity(quantity.getText().toString());
-        presenter.addProducts(product);
     }
 
     @Override
@@ -255,23 +222,42 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     public void onDateSet(@NonNull DatePicker view, int year, int month, int dayOfMonth) {
     }
 
-    private void init(){
+    private void initView(){
+        binding = ActivityNewProductBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         context = NewProductActivity.this;
         resources = context.getResources();
-
+        Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+
+        adView = binding.adview;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        volumeLabel.setText(String.format("%s (%s)", getString(R.string.ProductDetailsActivity_volume), getString(R.string.ProductDetailsActivity_volume_unit)));
+        binding.productEdit.textVolumeLabel.setText(String.format("%s (%s)", getString(R.string.Product_volume), getString(R.string.Product_volume_unit)));
 
-        weightLabel.setText(String.format("%s (%s)", getString(R.string.ProductDetailsActivity_weight), getString(R.string.ProductDetailsActivity_weight_unit)));
+        binding.productEdit.textWeightLabel.setText(String.format("%s (%s)", getString(R.string.Product_weight), getString(R.string.Product_weight_unit)));
 
-        name.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        composition.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        healingProperties.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        dosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        productName = binding.productEdit.edittextName;
+        productType = binding.productEdit.spinnerProductType;
+        productCategory = binding.productEdit.spinnerProductCategory;
+        productExpirationDate = binding.productEdit.edittextExpirationDate;
+        productProductionDate = binding.productEdit.edittextProductionDate;
+        productComposition = binding.productEdit.edittextComposition;
+        productHealingProperties = binding.productEdit.edittextHealingProperties;
+        productDosage = binding.productEdit.edittextDosage;
+        productVolume = binding.productEdit.edittextVolume;
+        productWeight = binding.productEdit.edittextWeight;
+        productHasSugar = binding.productEdit.checkboxHasSugar;
+        productHasSalt = binding.productEdit.checkboxHasSalt;
+        productQuantity = binding.productEdit.edittextQuantity;
+
+        binding.productEdit.edittextName.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        binding.productEdit.edittextComposition.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        binding.productEdit.edittextHealingProperties.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        binding.productEdit.edittextDosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
     }
 
     @Override
@@ -319,35 +305,36 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void updateProductFeaturesAdapter(String typeOfProductSpinnerValue) {
-        String[] productTypesArray = resources.getStringArray(R.array.ProductDetailsActivity_type_of_product_array);
+        String[] productTypesArray = resources.getStringArray(R.array.Product_type_of_product_array);
         if (typeOfProductSpinnerValue.equals(productTypesArray[0]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_choose_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[1]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getOwnCategoryArray());
         else if (typeOfProductSpinnerValue.equals(productTypesArray[2]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_ready_meals_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[3]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vegetables_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_ready_meals_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[4]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_fruits_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_vegetables_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[5]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_herbs_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_fruits_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[6]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_liqueurs_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_herbs_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[7]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_wines_type_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_liqueurs_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[8]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_mushrooms_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_wines_type_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[9]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_vinegars_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_mushrooms_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[10]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_chemical_products_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_vinegars_array, R.layout.custom_spinner);
         else if (typeOfProductSpinnerValue.equals(productTypesArray[11]))
-            productFeaturesAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_other_products_array, android.R.layout.simple_spinner_item);
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_chemical_products_array, R.layout.custom_spinner);
+        else if (typeOfProductSpinnerValue.equals(productTypesArray[12]))
+            productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_other_products_array, R.layout.custom_spinner);
 
-        productFeaturesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        productFeaturesAdapter.notifyDataSetChanged();
-        productFeaturesSpinner.setAdapter(productFeaturesAdapter);
+        productCategoryAdapter.notifyDataSetChanged();
+        binding.productEdit.spinnerProductCategory.setAdapter(productCategoryAdapter);
     }
 
     @Override
@@ -357,23 +344,23 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void showExpirationDate(String date) {
-        expirationDate.setText(date);
+        productExpirationDate.setText(date);
     }
 
     @Override
     public void showProductionDate(String date) {
-        productionDate.setText(date);
+        productProductionDate.setText(date);
     }
 
     @Override
     public void showErrorNameNotSet() {
-        name.setError(getString(R.string.Errors_product_name_is_required));
-        Toast.makeText(context, getString(R.string.Errors_product_name_is_required), Toast.LENGTH_LONG).show();
+        productName.setError(getString(R.string.Error_product_name_is_required));
+        Toast.makeText(context, getString(R.string.Error_product_name_is_required), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void showErrorCategoryNotSelected() {
-        Toast.makeText(context, getString(R.string.Errors_category_not_selected), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, getString(R.string.Error_category_not_selected), Toast.LENGTH_LONG).show();
     }
 
     @Override

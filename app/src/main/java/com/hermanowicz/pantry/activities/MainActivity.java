@@ -20,6 +20,8 @@ package com.hermanowicz.pantry.activities;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,14 +31,13 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.ActivityMainBinding;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenters.MainPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
 import com.hermanowicz.pantry.utils.ThemeMode;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import java.util.Objects;
 
 /**
  * <h1>MainActivity</h1>
@@ -49,10 +50,11 @@ import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements MainView {
 
-    @BindView(R.id.adBanner)
-    AdView adView;
-
+    private ActivityMainBinding binding;
     private MainPresenter presenter;
+
+    private long pressedTime;
+    private AdView adView;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,35 +63,24 @@ public class MainActivity extends AppCompatActivity implements MainView {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ButterKnife.bind(this);
+        setSupportActionBar(binding.toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
+        adView = binding.adview;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
         presenter = new MainPresenter(this);
-    }
 
-    @OnClick(R.id.button_myPantry)
-    void onClickMyPantryButton() {
-        presenter.navigateToMyPantryActivity();
-    }
-
-    @OnClick(R.id.button_scanProduct)
-    void onClickScanProductButton() {
-        presenter.navigateToScanProductActivity();
-    }
-
-    @OnClick(R.id.button_newProduct)
-    void onClickNewProductButton() {
-        presenter.navigateToNewProductActivity();
-    }
-
-    @OnClick(R.id.button_appSettings)
-    void onClickAppSettingsButton() {
-        presenter.navigateToAppSettingsActivity();
+        binding.buttonMyPantry.setOnClickListener(view -> presenter.navigateToMyPantryActivity());
+        binding.buttonScanProduct.setOnClickListener(view -> presenter.navigateToScanProductActivity());
+        binding.buttonNewProduct.setOnClickListener(view -> presenter.navigateToNewProductActivity());
+        binding.buttonOwnCategories.setOnClickListener(view -> presenter.navigateToCategoriesActivity());
+        binding.buttonAppSettings.setOnClickListener(view -> presenter.navigateToAppSettingsActivity());
     }
 
     @Override
@@ -108,6 +99,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void onNavigationToNewProductActivity() {
         Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
         startActivity(newProductActivityIntent);
+    }
+
+    @Override
+    public void onNavigationToCategoriesActivity() {
+        Intent categoriesActivity = new Intent(MainActivity.this, CategoriesActivity.class);
+        startActivity(categoriesActivity);
     }
 
     @Override
@@ -132,5 +129,18 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
+        if (pressedTime + 2000 > System.currentTimeMillis()) {
+            moveTaskToBack(true);
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.General_press_back_agait_to_exit), Toast.LENGTH_SHORT).show();
+        }
+        pressedTime = System.currentTimeMillis();
+        return false;
     }
 }

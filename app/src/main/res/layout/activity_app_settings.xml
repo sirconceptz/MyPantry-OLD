@@ -42,16 +42,252 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_app_settings" />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="64dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".activities.AppSettingsActivity"
+        tools:showIn="@layout/activity_app_settings">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView_darkmode"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="64dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_which_theme_user_prefer"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Spinner
+                android:id="@+id/spinner_appThemeSelector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:entries="@array/AppSettingsActivity_darkmodeSelector"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView_whichCameraToScanProducts"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_which_camera_to_scan_products"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/textView_darkmode"
+                app:layout_constraintTop_toBottomOf="@+id/textView_darkmode" />
+
+            <Spinner
+                android:id="@+id/spinner_cameraSelector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:entries="@array/AppSettingsActivity_camera_to_scan"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/spinner_appThemeSelector"
+                app:layout_constraintTop_toTopOf="@+id/spinner_appThemeSelector" />
+
+            <CheckBox
+                android:id="@+id/checkbox_scannerVibrationMode"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:layoutDirection="rtl"
+                android:text="@string/AppSettingsActivity_scanner_vibration_mode"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_whichCameraToScanProducts" />
+
+            <CheckBox
+                android:id="@+id/checkbox_scannerSoundMode"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:layoutDirection="rtl"
+                android:text="@string/AppSettingsActivity_scanner_sound_mode"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkbox_scannerVibrationMode" />
+
+            <TextView
+                android:id="@+id/textview_howManyDaysToExpirationDate"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/checkbox_scannerSoundMode"
+                app:layout_constraintTop_toBottomOf="@+id/checkbox_scannerSoundMode" />
+
+            <EditText
+                android:id="@+id/edittext_daysToNotification"
+                style="@style/CustomEditText"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textview_howManyDaysToExpirationDate"
+                tools:ignore="LabelFor, Autofill" />
+
+            <TextView
+                android:id="@+id/textview_hourOfNotifications"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_hour_of_notification"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/textview_howManyDaysToExpirationDate"
+                app:layout_constraintTop_toBottomOf="@+id/textview_howManyDaysToExpirationDate" />
+
+            <NumberPicker
+                android:id="@+id/numberpicker_hourOfNotification"
+                android:layout_width="70dp"
+                android:layout_height="170dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textview_howManyDaysToExpirationDate" />
+
+            <TextView
+                android:id="@+id/textView_typesOfNotifications"
+                android:layout_width="250dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="64dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_notifications_send_by"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/textview_hourOfNotifications"
+                app:layout_constraintTop_toBottomOf="@+id/textview_hourOfNotifications" />
+
+            <CheckBox
+                android:id="@+id/checkbox_emailNotifications"
+                android:layout_width="200dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_notifications_email"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView_typesOfNotifications" />
+
+            <CheckBox
+                android:id="@+id/checkbox_pushNotifications"
+                android:layout_width="200dp"
+                android:layout_height="45dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_notifications_push"
+                android:textColor="@color/text_color"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/checkbox_emailNotifications"
+                app:layout_constraintTop_toBottomOf="@+id/checkbox_emailNotifications" />
+
+            <EditText
+                android:id="@+id/edittext_emailAddress"
+                style="@style/CustomEditText"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="@string/AppSettingsActivity_give_email_adress"
+                android:inputType="textEmailAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkbox_pushNotifications"
+                tools:ignore="Autofill" />
+
+            <Button
+                android:id="@+id/button_saveSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_save_settings"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edittext_emailAddress" />
+
+            <Button
+                android:id="@+id/button_clear_product_database"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                android:text="@string/AppSettingsActivity_clear_database"
+                android:textSize="20sp"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintTop_toBottomOf="@+id/button_saveSettings" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <TextView
-        android:id="@+id/textView_version"
+        android:id="@+id/app_author"
         android:textColor="@color/text_color"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/AppSettingsActivity_version"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        android:text=""
+        app:layout_constraintStart_toStartOf="@id/appVersion"
+        app:layout_constraintBottom_toTopOf="@id/appVersion" />
+
+    <TextView
+        android:id="@+id/appVersion"
+        android:textColor="@color/text_color"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        android:text=""
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

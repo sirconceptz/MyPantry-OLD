@@ -36,10 +36,12 @@ public class AppSettingsModel {
     private static final String PREFERENCES_PUSH_NOTIFICATIONS = "PUSH_NOTIFICATIONS?";
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
     private static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
+    private static final String PREFERENCES_VIBRATION_MODE = "VIBRATION_ON_SCANNER?";
+    private static final String PREFERENCES_SOUND_MODE = "SOUND_ON_SCANNER?";
 
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
     private int selectedAppTheme, selectedCamera, daysBeforeExpirationDate, hourOfNotifications;
-    private boolean emailNotificationsAllowed, pushNotificationsAllowed;
+    private boolean emailNotificationsAllowed, pushNotificationsAllowed, scannerVibrationMode, scannerSoundMode;
     private String emailAddress;
 
     public AppSettingsModel(SharedPreferences preferences) {
@@ -47,6 +49,8 @@ public class AppSettingsModel {
 
         this.selectedAppTheme = preferences.getInt(PREFERENCES_SELECTED_APP_THEME, 0); //0 - Auto, 1 - Day, 2 - Night
         this.selectedCamera = preferences.getInt(PREFERENCES_SELECTED_SCAN_CAMERA, 0); //0 - Rear camera, 1 - Front camera
+        this.scannerVibrationMode = preferences.getBoolean(PREFERENCES_VIBRATION_MODE, true);
+        this.scannerSoundMode = preferences.getBoolean(PREFERENCES_SOUND_MODE, true);
         this.daysBeforeExpirationDate = preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS);
         this.hourOfNotifications = preferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS,
@@ -72,6 +76,22 @@ public class AppSettingsModel {
 
     public void setSelectedCamera(int selectedCamera) {
         this.selectedCamera = selectedCamera;
+    }
+
+    public boolean getScannerVibrationMode() {
+        return scannerVibrationMode;
+    }
+
+    public void setScannerVibrationMode(Boolean vibrationMode) {
+        this.scannerVibrationMode = vibrationMode;
+    }
+
+    public boolean getScannerSoundMode() {
+        return scannerSoundMode;
+    }
+
+    public void setScannerSoundMode(Boolean soundMode) {
+        this.scannerSoundMode = soundMode;
     }
 
     public int getDaysBeforeExpirationDate() {
@@ -144,6 +164,8 @@ public class AppSettingsModel {
         preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, daysBeforeExpirationDate);
         preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, pushNotificationsAllowed);
         preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotifications);
+        preferenceEditor.putBoolean(PREFERENCES_VIBRATION_MODE, scannerVibrationMode);
+        preferenceEditor.putBoolean(PREFERENCES_SOUND_MODE, scannerSoundMode);
 
         if (isValidEmail(emailAddress)) {
             preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, emailNotificationsAllowed);

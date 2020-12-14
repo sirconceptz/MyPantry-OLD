@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.RvSingleProductBinding;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.models.GroupProducts;
 
@@ -40,19 +41,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.Objects;
 
 public class ProductsAdapter extends
         RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
+
+    private RvSingleProductBinding binding;
 
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
 
     private List<GroupProducts> productList = new ArrayList<>();
     private List<Product> multiSelectList = new ArrayList<>();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private SharedPreferences preferences;
+    private final SharedPreferences preferences;
 
     public ProductsAdapter(SharedPreferences preferences) {
         this.preferences = preferences;
@@ -70,22 +71,22 @@ public class ProductsAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        TextView nameTv = viewHolder.nameTv;
-        TextView quantity = viewHolder.quantityTv;
-        TextView weightTv = viewHolder.weightTv;
-        TextView volumeTv = viewHolder.volumeTv;
-        TextView expirationDateTv = viewHolder.expirationDateTv;
-        TextView hasSugar = viewHolder.hasSugar;
-        TextView hasSalt = viewHolder.hasSalt;
+        TextView nameTv = binding.textProductName;
+        TextView quantity = binding.textProductQuantity;
+        TextView weightTv = binding.textProductWeight;
+        TextView volumeTv = binding.textProductVolume;
+        TextView expirationDateTv = binding.textExpirationDateValue;
+        TextView hasSugar = binding.textHasSugar;
+        TextView hasSalt = binding.textHasSalt;
 
         Context context = nameTv.getContext();
         Resources resources = context.getResources();
         final Product product = productList.get(position).getProduct();
         Calendar calendar = Calendar.getInstance();
         Date expirationDateDt = calendar.getTime();
-        String quantityString = String.format("%s: %s", resources.getString(R.string.ProductDetailsActivity_quantity), productList.get(position).getQuantity());
-        String weightString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_weight), product.getWeight(), resources.getString(R.string.ProductDetailsActivity_weight_unit));
-        String volumeString = String.format("%s: %s%s", resources.getString(R.string.ProductDetailsActivity_volume), product.getVolume(), resources.getString(R.string.ProductDetailsActivity_volume_unit));
+        String quantityString = String.format("%s: %s", resources.getString(R.string.Product_quantity), productList.get(position).getQuantity());
+        String weightString = String.format("%s: %s%s", resources.getString(R.string.Product_weight), product.getWeight(), resources.getString(R.string.Product_weight_unit));
+        String volumeString = String.format("%s: %s%s", resources.getString(R.string.Product_volume), product.getVolume(), resources.getString(R.string.Product_volume_unit));
 
         nameTv.setText(product.getShortName());
         quantity.setText(quantityString);
@@ -115,11 +116,10 @@ public class ProductsAdapter extends
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_product_selected));
         }
         else{
-            if (dayOfNotification.after(expirationDateDt)){
-                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_expired_products));
-            }
-            else{
+            if (dayOfNotification.before(expirationDateDt) || product.getExpirationDate().equals("-")) {
                 viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_material));
+            } else {
+                viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_expired_products));
             }
         }
     }
@@ -128,35 +128,17 @@ public class ProductsAdapter extends
     @Override
     public ProductsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
 
-        View productView = inflater.inflate(R.layout.rv_single_product, parent, false);
-        ViewHolder holder = new ViewHolder(productView);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        binding = RvSingleProductBinding.inflate(layoutInflater, parent, false);
 
-        return holder;
+        return new ViewHolder(binding.getRoot());
     }
 
    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.text_productName)
-        TextView nameTv;
-        @BindView(R.id.text_productQuantity)
-        TextView quantityTv;
-        @BindView(R.id.text_productWeight)
-        TextView weightTv;
-        @BindView(R.id.text_productVolume)
-        TextView volumeTv;
-        @BindView(R.id.text_expirationDateValue)
-        TextView expirationDateTv;
-        @BindView(R.id.text_hasSugar)
-        TextView hasSugar;
-        @BindView(R.id.text_hasSalt)
-        TextView hasSalt;
-
-
         ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
         }
     }
 

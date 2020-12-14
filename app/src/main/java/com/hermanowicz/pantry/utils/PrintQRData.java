@@ -38,6 +38,7 @@ import java.util.List;
  */
 
 public class PrintQRData {
+
     public static ArrayList<String> getTextToQRCodeList(List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
