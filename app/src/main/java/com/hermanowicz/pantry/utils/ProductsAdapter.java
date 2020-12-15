@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class ProductsAdapter extends
         RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
@@ -59,12 +58,12 @@ public class ProductsAdapter extends
         this.preferences = preferences;
     }
 
-    public void setData(List<GroupProducts> newData){
+    public void setData(@NonNull List<GroupProducts> newData){
         this.productList = newData;
         notifyDataSetChanged();
     }
 
-    public void setMultiSelectList(List<Product> multiSelectList){
+    public void setMultiSelectList(@NonNull List<Product> multiSelectList){
         this.multiSelectList = multiSelectList;
         notifyDataSetChanged();
     }

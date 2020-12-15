@@ -17,10 +17,10 @@
 
 package com.hermanowicz.pantry.presenters;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
@@ -36,7 +36,7 @@ public class MyPantryPresenter {
     private final MyPantryView view;
     private final MyPantryModel model;
 
-    public MyPantryPresenter(MyPantryView view, MyPantryModel model) {
+    public MyPantryPresenter(@NonNull MyPantryView view, @NonNull MyPantryModel model) {
         this.view = view;
         this.model = model;
     }
@@ -45,8 +45,8 @@ public class MyPantryPresenter {
         model.setAllProductsList();
     }
 
-    public void setProductList(List<Product> productList) {
-        view.showEmptyPantryStatement(productList.size() == 0);
+    public void setProductList(@NonNull List<Product> productList) {
+        view.showProductsNotFound(productList.size() == 0);
         model.setProductList(productList);
     }
 

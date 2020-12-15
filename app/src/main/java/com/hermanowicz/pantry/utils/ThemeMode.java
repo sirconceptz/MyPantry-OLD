@@ -20,12 +20,13 @@ package com.hermanowicz.pantry.utils;
 import android.app.Activity;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.hermanowicz.pantry.models.AppSettingsModel;
 
 public class ThemeMode {
-    public static int getThemeMode (Activity activity) {
+    public static int getThemeMode (@NonNull Activity activity) {
         AppSettingsModel model = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(activity));
         if(model.getSelectedAppTheme() == 0){
             return AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;

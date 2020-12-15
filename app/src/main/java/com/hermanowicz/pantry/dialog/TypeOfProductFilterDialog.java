@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -51,7 +53,8 @@ import org.jetbrains.annotations.NotNull;
 public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
 
     private DialogTypeOfProductBinding binding;
-
+    private Activity activity;
+    private View view;
     private Context context;
     private Resources resources;
     private CategoryDb categoryDb;
@@ -62,36 +65,62 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     private ArrayAdapter<CharSequence> productCategoryAdapter;
     private boolean isTypeOfProductTouched;
 
+    private Spinner productType, productCategory;
+    private Button clearBtn;
+
     public TypeOfProductFilterDialog(FilterModel filterProduct) {
         this.filterTypeOfProduct = filterProduct.getTypeOfProduct();
-        this.filterProductFeatures = filterProduct.getProductFeatures();
+        this.filterProductFeatures = filterProduct.getProductCategory();
     }
 
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Activity activity = getActivity();
-        if (activity != null) {
-            context = activity.getApplicationContext();
-            resources = context.getResources();
-            categoryDb = CategoryDb.getInstance(context);
-        }
+        initView();
+        setListeners();
 
-        assert activity != null;
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        binding = DialogTypeOfProductBinding.inflate(activity.getLayoutInflater());
-        View view = binding.getRoot();
+        builder.setView(view)
+                .setTitle(getString(R.string.Product_type))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
+                })
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    if (String.valueOf(productType.getSelectedItem()).equals(productTypeArray[0]))
+                        dialogListener.setFilterTypeOfProduct(null, null);
+                    else{
+                        filterTypeOfProduct = String.valueOf(productType.getSelectedItem());
+                        filterProductFeatures = null;
+                        if (!String.valueOf(productCategory.getSelectedItem()).equals(productCategoryArray[0]))
+                            filterProductFeatures = String.valueOf(productCategory.getSelectedItem());
+                        dialogListener.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
+                    }
+                });
+        return builder.create();
+    }
 
-        selectedProductType = String.valueOf(binding.spinnerProductType.getSelectedItem());
+    private void initView() {
+        activity = getActivity();
+        context = activity.getApplicationContext();
+        resources = context.getResources();
+        categoryDb = CategoryDb.getInstance(context);
+
+        binding = DialogTypeOfProductBinding.inflate(activity.getLayoutInflater());
+        view = binding.getRoot();
+
+        productType = binding.spinnerProductType;
+        productCategory = binding.spinnerProductCategory;
+        clearBtn = binding.buttonClear;
+
+        selectedProductType = String.valueOf(productType.getSelectedItem());
         productTypeArray = resources.getStringArray(R.array.Product_type_of_product_array);
         productCategoryArray = resources.getStringArray(R.array.Product_choose_array);
 
         typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
-        binding.spinnerProductType.setAdapter(typeOfProductAdapter);
+        productType.setAdapter(typeOfProductAdapter);
 
         productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
-        binding.spinnerProductCategory.setAdapter(productCategoryAdapter);
+        productCategory.setAdapter(productCategoryAdapter);
 
         updateProductFeaturesSpinnerAndSelectTypeOfProduct();
 
@@ -99,32 +128,34 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
             try {
                 for (int i = 0; i < productCategoryArray.length; i++)
                     if (productCategoryArray[i].equals(filterProductFeatures)) {
-                        binding.spinnerProductCategory.setSelection(i);
-                        binding.spinnerProductCategory.setBackgroundColor(Color.rgb(200, 255, 200));
+                        productCategory.setSelection(i);
+                        productCategory.setBackgroundColor(Color.rgb(200, 255, 200));
                     }
             } catch (NullPointerException e) {
-                binding.spinnerProductCategory.setBackgroundColor(Color.TRANSPARENT);
+                productCategory.setBackgroundColor(Color.TRANSPARENT);
             }
         }
+    }
 
-        binding.buttonClear.setOnClickListener(view1 -> {
-            binding.spinnerProductType.setSelection(0, false);
-            binding.spinnerProductType.setBackgroundColor(Color.TRANSPARENT);
+    private void setListeners() {
+        clearBtn.setOnClickListener(view1 -> {
+            productType.setSelection(0, false);
+            productType.setBackgroundColor(Color.TRANSPARENT);
             filterTypeOfProduct = null;
-            binding.spinnerProductCategory.setSelection(0, false);
-            binding.spinnerProductCategory.setBackgroundColor(Color.TRANSPARENT);
+            productCategory.setSelection(0, false);
+            productCategory.setBackgroundColor(Color.TRANSPARENT);
             filterProductFeatures = null;
         });
 
-        binding.spinnerProductType.setOnTouchListener((v, event) -> {
+        productType.setOnTouchListener((v, event) -> {
             isTypeOfProductTouched = true;
             return false;
         });
-        binding.spinnerProductType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        productType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 if (isTypeOfProductTouched) {
-                    selectedProductType = String.valueOf(binding.spinnerProductType.getSelectedItem());
+                    selectedProductType = String.valueOf(productType.getSelectedItem());
                     productTypeArray = resources.getStringArray(R.array.Product_type_of_product_array);
                     updateProductFeaturesSpinner();
                 }
@@ -135,7 +166,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
             }
         });
 
-        binding.spinnerProductCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        productCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
             }
@@ -144,33 +175,6 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-
-        builder.setView(view)
-                .setTitle(getString(R.string.Product_type))
-                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
-                })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (String.valueOf(binding.spinnerProductType.getSelectedItem()).equals(productTypeArray[0]))
-                        dialogListener.setFilterTypeOfProduct(null, null);
-                    else{
-                        filterTypeOfProduct = String.valueOf(binding.spinnerProductType.getSelectedItem());
-                        filterProductFeatures = null;
-                        if (!String.valueOf(binding.spinnerProductCategory.getSelectedItem()).equals(productCategoryArray[0]))
-                            filterProductFeatures = String.valueOf(binding.spinnerProductCategory.getSelectedItem());
-                        dialogListener.setFilterTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
-                    }
-                });
-        return builder.create();
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            dialogListener = (FilterDialogListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString());
-        }
     }
 
     private void updateProductFeaturesSpinnerAndSelectTypeOfProduct() {
@@ -178,54 +182,54 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
             if (filterTypeOfProduct.equals(productTypeArray[1])) {
                 String[] categoryArray = categoryDb.categoryDao().getAllCategoriesArray();
                 productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, categoryArray);
-                binding.spinnerProductType.setSelection(1, false);
+                productType.setSelection(1, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[2])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(2, false);
+                productType.setSelection(2, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[3])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_ready_meals_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(3, false);
+                productType.setSelection(3, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[4])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_vegetables_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(4, false);
+                productType.setSelection(4, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[5])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_fruits_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(5, false);
+                productType.setSelection(5, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[6])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_herbs_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(6, false);
+                productType.setSelection(6, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[7])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_liqueurs_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(7, false);
+                productType.setSelection(7, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[8])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_wines_type_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(8, false);
+                productType.setSelection(8, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[9])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_mushrooms_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(9, false);
+                productType.setSelection(9, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[10])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_vinegars_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(10, false);
+                productType.setSelection(10, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[11])) {
                 productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_other_products_array, R.layout.custom_spinner);
-                binding.spinnerProductType.setSelection(11, false);
+                productType.setSelection(11, false);
             }
-            binding.spinnerProductCategory.setAdapter(productCategoryAdapter);
-            binding.spinnerProductType.setBackgroundColor(Color.rgb(200, 255, 200));
-            }
+            productCategory.setAdapter(productCategoryAdapter);
+            productType.setBackgroundColor(Color.rgb(200, 255, 200));
+        }
         else{
             productCategoryArray = resources.getStringArray(R.array.Product_choose_array);
-            binding.spinnerProductType.setBackgroundColor(Color.TRANSPARENT);
+            productType.setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
@@ -255,6 +259,16 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         else if (selectedProductType.equals(productTypeArray[11]))
             productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_other_products_array, R.layout.custom_spinner);
 
-        binding.spinnerProductCategory.setAdapter(productCategoryAdapter);
+        productCategory.setAdapter(productCategoryAdapter);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            dialogListener = (FilterDialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString());
+        }
     }
 }

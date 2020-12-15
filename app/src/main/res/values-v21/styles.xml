@@ -65,7 +65,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeDatePicker" parent="android:Theme.Holo">
+    <style name="AppThemeDatePicker" parent="android:Theme.Holo.Light">
         <item name="android:layout_gravity">center</item>
     </style>
 

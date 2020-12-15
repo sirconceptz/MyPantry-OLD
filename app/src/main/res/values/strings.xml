@@ -82,6 +82,7 @@
     <string name="Product_expiration_date">Expiration date</string>
     <string name="Product_production_date">Production date</string>
     <string name="Product_composition">Composition</string>
+    <string name="Product_features">Product features</string>
     <string name="Product_has_sugar">Has a sugar?</string>
     <string name="Product_has_salt">Has a salt?</string>
     <string name="Product_taste">Taste</string>

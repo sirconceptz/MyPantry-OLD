@@ -17,13 +17,14 @@
 
 package com.hermanowicz.pantry.models;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
-import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 
@@ -33,20 +34,20 @@ import java.util.List;
 public class MyPantryModel {
 
     private LiveData<List<Product>> productLiveData;
-    private MutableLiveData<FilterModel> product = new MutableLiveData<>();
+    private final MutableLiveData<FilterModel> product = new MutableLiveData<>();
     private FilterModel filterProduct = new FilterModel();
     private Filter filter;
     private List<Product> productList;
-    private List<Product> selectedProductList = new ArrayList<>();
-    private List<GroupProducts> groupProductsList = new ArrayList<>();
+    private List<Product> selectedProductsGroupList = new ArrayList<>();
+    private final List<GroupProducts> groupProductsList = new ArrayList<>();
     private boolean isMultiSelect = false;
-    private DatabaseOperations databaseOperations;
+    private final DatabaseOperations databaseOperations;
 
-    public MyPantryModel(ProductDb productDb, CategoryDb categoryDb){
-        databaseOperations = new DatabaseOperations(productDb, categoryDb);
+    public MyPantryModel(Context context){
+        databaseOperations = new DatabaseOperations(context);
     }
 
-    private void groupProducts(List<Product> productList){
+    private void groupProducts(@NonNull List<Product> productList){
         List<GroupProducts> toAddGroupProductsList = new ArrayList<>();
         List<GroupProducts> toRemoveGroupProductsList = new ArrayList<>();
 
@@ -89,7 +90,7 @@ public class MyPantryModel {
     }
 
     public void deleteSelectedProducts(){
-        databaseOperations.deleteProductsFromList(getAllSelectedProductList());
+        databaseOperations.deleteProducts(getAllSelectedProductList());
     }
 
     public LiveData<List<Product>> getProductLiveData() {
@@ -109,12 +110,12 @@ public class MyPantryModel {
     }
 
     public List<Product> getGroupsSelectedProductList(){
-        return selectedProductList;
+        return selectedProductsGroupList;
     }
 
     public List<Product> getAllSelectedProductList(){
         List<Product> productList = new ArrayList<>();
-        for (Product product : selectedProductList){
+        for (Product product : selectedProductsGroupList){
             List<Product> similarProducts = databaseOperations.getSimilarProductsList(product);
             productList.addAll(similarProducts);
         }
@@ -122,7 +123,7 @@ public class MyPantryModel {
     }
 
     public void clearSelectList(){
-        this.selectedProductList = new ArrayList<>();
+        this.selectedProductsGroupList = new ArrayList<>();
     }
 
     public void setProductList(List<Product> productList) {
@@ -146,10 +147,10 @@ public class MyPantryModel {
     }
 
     public void addMultiSelect(int position) {
-        if (selectedProductList.contains(productList.get(position)))
-            selectedProductList.remove(productList.get(position));
+        if (selectedProductsGroupList.contains(groupProductsList.get(position).getProduct()))
+            selectedProductsGroupList.remove(groupProductsList.get(position).getProduct());
         else
-            selectedProductList.add(productList.get(position));
+            selectedProductsGroupList.add(groupProductsList.get(position).getProduct());
     }
 
     public void clearFilters(){
@@ -162,9 +163,9 @@ public class MyPantryModel {
         product.setValue(filterProduct);
     }
 
-    public void filterProductListByTypeOfProduct(String fltrTypeOfProduct, String fltrProductFeatures) {
+    public void filterProductListByTypeOfProduct(String fltrTypeOfProduct, String fltrProductCategory) {
         filterProduct.setTypeOfProduct(fltrTypeOfProduct);
-        filterProduct.setProductFeatures(fltrProductFeatures);
+        filterProduct.setProductCategory(fltrProductCategory);
         productLiveData = Transformations.switchMap(product, filter::filterByProduct);
         product.setValue(filterProduct);
     }

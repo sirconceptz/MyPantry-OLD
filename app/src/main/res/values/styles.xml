@@ -71,7 +71,7 @@
         <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
     </style>
 
-    <style name="AppThemeDatePicker" parent="android:Theme.Holo">
+    <style name="AppThemeDatePicker" parent="android:Theme.Holo.Light">
         <item name="android:layout_gravity">center</item>
     </style>
 
@@ -98,7 +98,7 @@
         <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
         <item name="android:textColorHint">@color/text_color</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">4dp</item>
     </style>
 
     <style name="NavViewStyle" parent="android:Widget.TextView">

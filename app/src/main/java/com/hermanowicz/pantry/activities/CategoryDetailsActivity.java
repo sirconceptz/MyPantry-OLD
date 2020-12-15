@@ -1,27 +1,31 @@
 package com.hermanowicz.pantry.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityCategoryDetailsBinding;
 import com.hermanowicz.pantry.db.Category;
-import com.hermanowicz.pantry.db.CategoryDb;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.CategoryDetailsView;
 import com.hermanowicz.pantry.models.CategoryModel;
 import com.hermanowicz.pantry.models.DatabaseOperations;
 import com.hermanowicz.pantry.presenters.CategoryDetailsPresenter;
+import com.hermanowicz.pantry.utils.Orientation;
+import com.hermanowicz.pantry.utils.ThemeMode;
 
 public class CategoryDetailsActivity extends AppCompatActivity implements CategoryDetailsView {
 
@@ -30,28 +34,42 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     private Context context;
     private int categoryId;
 
+    private TextView categoryName, categoryDescription, nameCharCounter, descriptionCharCounter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
+        if(Orientation.isTablet(this))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
+        initView();
+        setListeners();
+    }
+
+    private void initView() {
         context = getApplicationContext();
         binding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        Toolbar toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
 
-        binding.buttonUpdateCategory.setOnClickListener(view -> onClickUpdateCategory());
-        binding.buttonDeleteCategory.setOnClickListener(view -> onClickDeleteCategory());
-
-        initListeners();
+        categoryName = binding.categoryName;
+        categoryDescription = binding.categoryDescription;
+        nameCharCounter = binding.nameCharCounter;
+        descriptionCharCounter = binding.descriptionCharCounter;
 
         Intent categoryIntent = getIntent();
         categoryId = categoryIntent.getIntExtra("category_id", 0);
-        DatabaseOperations databaseOperations = new DatabaseOperations(ProductDb.getInstance(context), CategoryDb.getInstance(this));
+        DatabaseOperations databaseOperations = new DatabaseOperations(context);
         presenter = new CategoryDetailsPresenter(this, new CategoryModel(databaseOperations));
         presenter.setCategoryId(categoryId);
     }
 
-    private void initListeners(){
+    private void setListeners(){
+        binding.buttonUpdateCategory.setOnClickListener(view -> onClickUpdateCategory());
+        binding.buttonDeleteCategory.setOnClickListener(view -> onClickDeleteCategory());
+
         binding.categoryName.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -85,8 +103,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
     private void onClickUpdateCategory(){
         Category category = presenter.getCategory(categoryId);
-        category.setName(binding.categoryName.getText().toString());
-        category.setDescription(binding.categoryDescription.getText().toString());
+        category.setName(categoryName.getText().toString());
+        category.setDescription(categoryDescription.getText().toString());
         presenter.updateCategory(category);
     }
 
@@ -111,28 +129,28 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
     @Override
     public void showCategoryDetails(Category category) {
-        binding.categoryName.setText(category.getName());
-        binding.categoryDescription.setText(category.getDescription());
+        categoryName.setText(category.getName());
+        categoryDescription.setText(category.getDescription());
     }
 
     @Override
     public void showCategoryNameError() {
-        binding.categoryName.setError(getText(R.string.Error_char_counter));
+        categoryName.setError(getText(R.string.Error_char_counter));
     }
 
     @Override
     public void showCategoryDescriptionError() {
-        binding.categoryDescription.setError(getText(R.string.Error_char_counter));
+        categoryDescription.setError(getText(R.string.Error_char_counter));
     }
 
     @Override
     public void updateNameCharCounter(int charCounter, int maxChar) {
-        binding.nameCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
+        nameCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override
     public void updateDescriptionCharCounter(int charCounter, int maxChar) {
-        binding.descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
+        descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override

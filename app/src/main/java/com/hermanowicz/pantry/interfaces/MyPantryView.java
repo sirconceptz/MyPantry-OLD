@@ -29,7 +29,7 @@ public interface MyPantryView {
 
     void clearFilterIcon(int position);
 
-    void showEmptyPantryStatement(boolean state);
+    void showProductsNotFound(boolean state);
 
     void clearFilterIcons();
 

@@ -17,6 +17,8 @@
 
 package com.hermanowicz.pantry.utils;
 
+import androidx.annotation.NonNull;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,7 +31,7 @@ public class DateHelper {
     private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String[] dateArray;
 
-    public DateHelper(String date){
+    public DateHelper(@NonNull String date){
         dateArray = date.split("\\.");
         if(dateArray.length < 2)
             dateArray = date.split("-");

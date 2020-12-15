@@ -66,7 +66,6 @@ public class NotificationService extends IntentService {
     static final String URL_API = "https://www.mypantry.eu/api/";
     static final String API_MAIL_FILE = "mail.php";
 
-    private JsonObjectRequest request_json;
     private String productName;
     private int daysToNotification;
 
@@ -74,7 +73,7 @@ public class NotificationService extends IntentService {
         super("NotificationService");
     }
 
-    private String createStatementForSingleProduct(){
+    private String createStatement(){
         String statement = getString(R.string.Notifications_statement);
         statement = statement.replace(DAYS_TAG, String.valueOf(daysToNotification));
         statement = statement.replace(PRODUCT_NAME_TAG, productName);
@@ -109,7 +108,7 @@ public class NotificationService extends IntentService {
                 assert notificationManager != null;
                 notificationManager.createNotificationChannel(mChannel);
             }
-            String notificationStatement = createStatementForSingleProduct();
+            String notificationStatement = createStatement();
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
             builder.setContentTitle(getString(R.string.Notifications_title));
@@ -136,10 +135,10 @@ public class NotificationService extends IntentService {
             HashMap<String, String> params = new HashMap<>();
             params.put("to_email_address", preferences.getString(PREFERENCES_EMAIL_ADDRESS, ""));
             params.put("subject", getString(R.string.Notifications_title));
-            params.put("message", createStatementForSingleProduct());
+            params.put("message", createStatement());
             String url = URL_API + API_MAIL_FILE;
 
-            request_json = new JsonObjectRequest(url, new JSONObject(params),
+            JsonObjectRequest request_json = new JsonObjectRequest(url, new JSONObject(params),
                     response -> {
                     }, error -> VolleyLog.e(getString(R.string.Error_error), error.getMessage()));
             EmailManager.getInstance().addEmailToRequestQueue(request_json);

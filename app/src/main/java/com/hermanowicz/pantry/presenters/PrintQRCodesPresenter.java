@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.presenters;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
@@ -51,19 +52,19 @@ public class PrintQRCodesPresenter {
         return result;
     }
 
-    public void setTextToQRCodeArray(ArrayList<String> textToQRCodeArray) {
+    public void setTextToQRCodeArray(@NonNull ArrayList<String> textToQRCodeArray) {
         this.textToQRCodeArray = textToQRCodeArray;
     }
 
-    public void setNamesOfProductsArray(ArrayList<String> namesOfProductsArray) {
+    public void setNamesOfProductsArray(@NonNull ArrayList<String> namesOfProductsArray) {
         this.namesOfProductsArray = namesOfProductsArray;
     }
 
-    public void setExpirationDatesArray(ArrayList<String> expirationDatesArray) {
+    public void setExpirationDatesArray(@NonNull ArrayList<String> expirationDatesArray) {
         this.expirationDatesArray = expirationDatesArray;
     }
 
-    public void setActivity(AppCompatActivity activity) {
+    public void setActivity(@NonNull AppCompatActivity activity) {
         model.setActivity(activity);
     }
 

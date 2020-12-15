@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -49,9 +51,14 @@ import org.jetbrains.annotations.NotNull;
 public class TasteFilterDialog extends AppCompatDialogFragment {
 
     private DialogTasteBinding binding;
-
+    private Activity activity;
+    private View view;
     private FilterDialogListener dialogListener;
     private String filterTaste;
+    private String[] tasteArray;
+
+    private Spinner productTaste;
+    private Button clearBtn;
 
     public TasteFilterDialog(FilterModel filterProduct) {
         this.filterTaste = filterProduct.getTaste();
@@ -60,47 +67,10 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Activity activity = getActivity();
-        assert activity != null;
+        initView();
+        setListeners();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
-
-        binding = DialogTasteBinding.inflate(activity.getLayoutInflater());
-        View view = binding.getRoot();
-
-        String[] tasteArray = getResources().getStringArray(R.array.Product_taste_array);
-
-        ArrayAdapter<CharSequence> tasteAdapter = ArrayAdapter.createFromResource(getContext(), R.array.Product_taste_array, R.layout.custom_spinner);
-        binding.spinnerTaste.setAdapter(tasteAdapter);
-
-        try {
-            for (int i = 1; i < tasteArray.length; i++) {
-                if (filterTaste.equals(tasteArray[i])) {
-                    binding.spinnerTaste.setSelection(i);
-                    binding.spinnerTaste.setBackgroundColor(Color.rgb(200, 255, 200));
-                }
-            }
-        } catch (NullPointerException e) {
-            binding.spinnerTaste.setSelection(0);
-            binding.spinnerTaste.setBackgroundColor(Color.TRANSPARENT);
-        }
-
-        filterTaste = String.valueOf(binding.spinnerTaste.getSelectedItem());
-
-        binding.buttonClear.setOnClickListener(view14 -> {
-            binding.spinnerTaste.setSelection(0);
-            binding.spinnerTaste.setBackgroundColor(Color.TRANSPARENT);
-            filterTaste = null;
-        });
-
-        binding.spinnerTaste.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
 
         builder.setView(view)
                 .setTitle(getString(R.string.Product_taste))
@@ -112,6 +82,52 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
                     dialogListener.setFilterTaste(filterTaste);
                 });
         return builder.create();
+    }
+
+    private void initView() {
+        activity = getActivity();
+        binding = DialogTasteBinding.inflate(activity.getLayoutInflater());
+        view = binding.getRoot();
+
+        productTaste = binding.spinnerTaste;
+        clearBtn = binding.buttonClear;
+
+        tasteArray = getResources().getStringArray(R.array.Product_taste_array);
+
+        ArrayAdapter<CharSequence> tasteAdapter = ArrayAdapter.createFromResource(getContext(), R.array.Product_taste_array, R.layout.custom_spinner);
+        productTaste.setAdapter(tasteAdapter);
+
+        try {
+            for (int i = 1; i < tasteArray.length; i++) {
+                if (filterTaste.equals(tasteArray[i])) {
+                    productTaste.setSelection(i);
+                    productTaste.setBackgroundColor(Color.rgb(200, 255, 200));
+                }
+            }
+        } catch (NullPointerException e) {
+            productTaste.setSelection(0);
+            productTaste.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        filterTaste = String.valueOf(productTaste.getSelectedItem());
+    }
+
+    private void setListeners() {
+        productTaste.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+        clearBtn.setOnClickListener(view14 -> {
+            binding.spinnerTaste.setSelection(0);
+            binding.spinnerTaste.setBackgroundColor(Color.TRANSPARENT);
+            filterTaste = null;
+        });
     }
 
     @Override

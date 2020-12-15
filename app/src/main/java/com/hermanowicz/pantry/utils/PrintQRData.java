@@ -19,6 +19,8 @@ package com.hermanowicz.pantry.utils;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.db.Product;
 
 import org.json.JSONException;
@@ -39,7 +41,7 @@ import java.util.List;
 
 public class PrintQRData {
 
-    public static ArrayList<String> getTextToQRCodeList(List<Product> productList, int idOfLastProductInDb) {
+    public static ArrayList<String> getTextToQRCodeList(@NonNull List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
         int productId;
@@ -59,7 +61,7 @@ public class PrintQRData {
         return textToQRCodeList;
     }
 
-    public static ArrayList<String> getNamesOfProductsList(List<Product> productsList) {
+    public static ArrayList<String> getNamesOfProductsList(@NonNull List<Product> productsList) {
         ArrayList<String> namesOfProductsList = new ArrayList<>();
 
         for (Product product : productsList) {
@@ -73,7 +75,7 @@ public class PrintQRData {
         return namesOfProductsList;
     }
 
-    public static ArrayList<String> getExpirationDatesList(List<Product> productsList) {
+    public static ArrayList<String> getExpirationDatesList(@NonNull List<Product> productsList) {
         ArrayList<String> expirationDatesList = new ArrayList<>();
 
         for (Product product : productsList) {

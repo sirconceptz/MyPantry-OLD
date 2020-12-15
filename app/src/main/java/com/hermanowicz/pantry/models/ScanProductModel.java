@@ -19,6 +19,8 @@ package com.hermanowicz.pantry.models;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +29,7 @@ import java.util.List;
 
 public class ScanProductModel {
 
-    public List<Integer> decodeScanResult(String scanResult) {
+    public List<Integer> decodeScanResult(@NonNull String scanResult) {
         List<Integer> decodedQRCodeAsList = null;
         try {
             decodedQRCodeAsList = new ArrayList<>();

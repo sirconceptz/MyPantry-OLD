@@ -17,10 +17,9 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import android.content.res.Resources;
+import androidx.annotation.NonNull;
 
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
 import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.models.ProductDataModel;
@@ -34,7 +33,7 @@ public class ProductDetailsPresenter {
     private final ProductDetailsView view;
     private final ProductDataModel model;
 
-    public ProductDetailsPresenter(ProductDetailsView view, ProductDataModel productDataModel) {
+    public ProductDetailsPresenter(@NonNull ProductDetailsView view, @NonNull ProductDataModel productDataModel) {
         this.view = view;
         this.model = productDataModel;
     }
@@ -43,7 +42,7 @@ public class ProductDetailsPresenter {
         model.setProductList(productId);
     }
 
-    public void showProductDetails(String hashCode) {
+    public void showProductDetails(@NonNull String hashCode) {
         if (model.isProductListEmpty()) {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();

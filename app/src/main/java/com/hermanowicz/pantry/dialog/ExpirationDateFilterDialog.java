@@ -25,6 +25,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -55,8 +57,8 @@ import java.util.Date;
 public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
 
     private DialogExpirationDateBinding binding;
-
     private Activity activity;
+    private View view;
     private FilterDialogListener dialogListener;
     private Calendar calendar;
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -64,6 +66,9 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
     private String filterExpirationDateFor;
     private DatePickerDialog.OnDateSetListener expirationDateSinceListener, expirationDateForListener;
     private int year, month, day;
+
+    private EditText expirationDateSince, expirationDateFor;
+    private Button clearBtn;
 
     public ExpirationDateFilterDialog(FilterModel filterProduct) {
         this.filterExpirationDateSince = filterProduct.getExpirationDateSince();
@@ -73,28 +78,51 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        initView();
+        setListeners();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
+
+        builder.setView(view)
+                .setTitle(getString(R.string.Product_expiration_date))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
+                })
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    if (binding.edittextExpirationDateSince.length() < 1)
+                        filterExpirationDateSince = null;
+                    if (binding.edittextExpirationDateFor.length() < 1)
+                        filterExpirationDateFor = null;
+                    dialogListener.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
+                });
+        return builder.create();
+    }
+
+    private void initView() {
         activity = getActivity();
+        binding = DialogExpirationDateBinding.inflate(activity.getLayoutInflater());
+        view = binding.getRoot();
+
         dateFormat.setLenient(false);
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
-
-        binding = DialogExpirationDateBinding.inflate(activity.getLayoutInflater());
-
-        View view = binding.getRoot();
+        expirationDateSince = binding.edittextExpirationDateSince;
+        expirationDateFor = binding.edittextExpirationDateFor;
+        clearBtn = binding.buttonClear;
 
         if (filterExpirationDateSince != null) {
             DateHelper date = new DateHelper(filterExpirationDateSince);
-            binding.edittextExpirationDateSince.setText(date.getDateInLocalFormat());
+            expirationDateSince.setText(date.getDateInLocalFormat());
         }
         if (filterExpirationDateFor != null) {
             DateHelper date = new DateHelper(filterExpirationDateFor);
-            binding.edittextExpirationDateFor.setText(date.getDateInLocalFormat());
+            expirationDateFor.setText(date.getDateInLocalFormat());
         }
+    }
 
-        binding.edittextExpirationDateSince.setOnClickListener(v -> {
-            if (binding.edittextExpirationDateSince.length() < 1) {
+    private void setListeners() {
+        expirationDateSince.setOnClickListener(v -> {
+            if (expirationDateSince.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -113,8 +141,8 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
             dialog.show();
         });
 
-        binding.edittextExpirationDateFor.setOnClickListener(v -> {
-            if (binding.edittextExpirationDateFor.length() < 1) {
+        expirationDateFor.setOnClickListener(v -> {
+            if (expirationDateFor.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -139,7 +167,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
-            binding.edittextExpirationDateSince.setText(dateHelper.getDateInLocalFormat());
+            expirationDateSince.setText(dateHelper.getDateInLocalFormat());
             filterExpirationDateSince = dateHelper.getDateInSqlFormat();
         };
 
@@ -147,29 +175,16 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
-            binding.edittextExpirationDateFor.setText(dateHelper.getDateInLocalFormat());
+            expirationDateFor.setText(dateHelper.getDateInLocalFormat());
             filterExpirationDateFor = dateHelper.getDateInSqlFormat();
         };
 
-        binding.buttonClear.setOnClickListener(view12 -> {
-            binding.edittextExpirationDateSince.setText("");
-            binding.edittextExpirationDateFor.setText("");
+        clearBtn.setOnClickListener(view12 -> {
+            expirationDateSince.setText("");
+            expirationDateFor.setText("");
             filterExpirationDateSince = null;
             filterExpirationDateFor = null;
         });
-
-        builder.setView(view)
-                .setTitle(getString(R.string.Product_expiration_date))
-                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
-                })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (binding.edittextExpirationDateSince.length() < 1)
-                        filterExpirationDateSince = null;
-                    if (binding.edittextExpirationDateFor.length() < 1)
-                        filterExpirationDateFor = null;
-                    dialogListener.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
-                });
-        return builder.create();
     }
 
     @Override

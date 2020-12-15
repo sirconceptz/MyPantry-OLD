@@ -81,6 +81,7 @@
     <string name="Product_expiration_date">Ablaufdatum</string>
     <string name="Product_production_date">Herstellungsdatum</string>
     <string name="Product_composition">Zusammensetzung</string>
+    <string name="Product_features">Produktmerkmale</string>
     <string name="Product_has_sugar">Mit Zucker?</string>
     <string name="Product_has_salt">Mit salz?</string>
     <string name="Product_taste">Geschmack</string>

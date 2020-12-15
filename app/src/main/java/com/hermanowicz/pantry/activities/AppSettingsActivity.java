@@ -28,8 +28,10 @@ import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityAppSettingsBinding;
@@ -61,12 +64,13 @@ import com.hermanowicz.pantry.utils.ThemeMode;
 public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView {
 
     private ActivityAppSettingsBinding binding;
-
-    private Context context;
     private AppSettingsPresenter presenter;
+    private Context context;
 
     private TextView appVersion, appAuthor;
-    private EditText emailAddress;
+    private Spinner themeSelector, cameraSelector;
+    private CheckBox vibrationMode, soundMode, pushNotifications, emailNotifications;
+    private EditText daysToNofitication, emailAddress;
     private Button saveSettings, clearProductDatabase;
     private NumberPicker hourOfNotification;
 
@@ -78,9 +82,6 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
-
-        presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(context));
-        presenter.loadSettings();
     }
 
     private void initView() {
@@ -88,10 +89,17 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
-        setSupportActionBar(binding.toolbar);
 
+        Toolbar toolbar = binding.toolbar;
         appVersion = binding.appVersion;
         appAuthor = binding.appAuthor;
+        themeSelector = binding.spinnerAppThemeSelector;
+        cameraSelector = binding.spinnerCameraSelector;
+        vibrationMode = binding.checkboxScannerVibrationMode;
+        soundMode = binding.checkboxScannerSoundMode;
+        daysToNofitication = binding.edittextDaysToNotification;
+        pushNotifications = binding.checkboxPushNotifications;
+        emailNotifications = binding.checkboxEmailNotifications;
         emailAddress = binding.edittextEmailAddress;
         saveSettings = binding.buttonSaveSettings;
         clearProductDatabase = binding.buttonClearProductDatabase;
@@ -99,8 +107,12 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
         appAuthor.setText(String.format("%s: %s", getString(R.string.General_author_label), getString(R.string.Author_name)));
 
+        setSupportActionBar(toolbar);
         setNumberpickerSettings();
         setSpinnerAdapters();
+
+        presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(context));
+        presenter.loadSettings();
     }
 
     private void setListeners() {
@@ -153,72 +165,62 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     }
 
     void onClickSaveSettingsButton() {
-        int selectedTheme = binding.spinnerAppThemeSelector.getSelectedItemPosition();
-        int selectedScanCamera = binding.spinnerCameraSelector.getSelectedItemPosition();
-        boolean scannerVibrationMode = binding.checkboxScannerVibrationMode.isChecked();
-        boolean scannerSoundMode = binding.checkboxScannerSoundMode.isChecked();
-        int daysToNotification = Integer.parseInt(binding.edittextDaysToNotification.getText().toString());
-        boolean isEmailNotificationsAllowed = binding.checkboxEmailNotifications.isChecked();
-        boolean isPushNotificationsAllowed = binding.checkboxPushNotifications.isChecked();
-        int hourOfNotifications = binding.numberpickerHourOfNotification.getValue();
-        String emailAddress = binding.edittextEmailAddress.getText().toString();
-
-        presenter.setSelectedTheme(selectedTheme);
-        presenter.setSelectedScanCamera(selectedScanCamera);
-        presenter.setScannerVibrationMode(scannerVibrationMode);
-        presenter.setScannerSoundMode(scannerSoundMode);
-        presenter.setDaysBeforeExpirationDate(daysToNotification);
-        presenter.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
-        presenter.setIsPushNotificationsAllowed(isPushNotificationsAllowed);
-        presenter.setHourOfNotifications(hourOfNotifications);
-        presenter.setEmailAddress(emailAddress);
+        presenter.setSelectedTheme(themeSelector.getSelectedItemPosition());
+        presenter.setSelectedScanCamera(cameraSelector.getSelectedItemPosition());
+        presenter.setScannerVibrationMode(vibrationMode.isChecked());
+        presenter.setScannerSoundMode(soundMode.isChecked());
+        presenter.setDaysBeforeExpirationDate(Integer.parseInt(daysToNofitication.getText().toString()));
+        presenter.setIsEmailNotificationsAllowed(emailNotifications.isChecked());
+        presenter.setIsPushNotificationsAllowed(pushNotifications.isChecked());
+        presenter.setHourOfNotifications(hourOfNotification.getValue());
+        presenter.setEmailAddress(emailAddress.getText().toString());
 
         presenter.saveSettings();
     }
 
     @Override
     public void setSelectedTheme(int selectedTheme) {
-        binding.spinnerAppThemeSelector.setSelection(selectedTheme);
+        themeSelector.setSelection(selectedTheme);
     }
 
     @Override
     public void setScanCamera(int selectedCamera) {
-        binding.spinnerCameraSelector.setSelection(selectedCamera);
+        cameraSelector.setSelection(selectedCamera);
     }
 
     @Override
-    public void setCheckboxScannerVibrationMode(boolean vibrationMode) {
-        binding.checkboxScannerVibrationMode.setChecked(vibrationMode);
+    public void setCheckboxScannerVibrationMode(boolean mode) {
+        vibrationMode.setChecked(mode);
     }
 
     @Override
-    public void setCheckboxScannerSoundMode(boolean soundMode) {
-        binding.checkboxScannerSoundMode.setChecked(soundMode);
+    public void setCheckboxScannerSoundMode(boolean mode) {
+        soundMode.setChecked(mode);
     }
 
     @Override
-    public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
-        binding.edittextDaysToNotification.setText(String.valueOf(daysBeforeExpirationDate));
+    public void setDaysBeforeExpirationDate(int days) {
+        daysToNofitication.setText(String.valueOf(days));
     }
 
     @Override
-    public void setCheckboxPushNotification(boolean isPushNotificationsAllowed) {
-        binding.checkboxPushNotifications.setChecked(isPushNotificationsAllowed);
+    public void setCheckboxPushNotification(boolean mode) {
+        pushNotifications.setChecked(mode);
     }
 
     @Override
-    public void setCheckboxEmailNotification(boolean isEmailNotificationsAllowed) {
-        binding.checkboxEmailNotifications.setChecked(isEmailNotificationsAllowed);
+    public void setCheckboxEmailNotification(boolean mode) {
+        emailNotifications.setChecked(mode);
     }
 
     @Override
-    public void setEmailAddress(String emailAddress) {
-        binding.edittextEmailAddress.setText(emailAddress);
+    public void setEmailAddress(String address) {
+        emailAddress.setText(address);
     }
 
     @Override
-    public void setHourOfNotifications(int hourOfNotifications) {
-        binding.numberpickerHourOfNotification.setValue(hourOfNotifications);
+    public void setHourOfNotifications(int hour) {
+        hourOfNotification.setValue(hour);
     }
 
     @Override
@@ -229,7 +231,7 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
 
     @Override
     public void enableEmailCheckbox(boolean isValidEmail) {
-        binding.checkboxEmailNotifications.setEnabled(isValidEmail);
+        emailNotifications.setEnabled(isValidEmail);
     }
 
     @Override

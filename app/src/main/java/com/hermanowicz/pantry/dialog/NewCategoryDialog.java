@@ -17,8 +17,6 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogNewCategoryBinding;
 import com.hermanowicz.pantry.db.Category;
-import com.hermanowicz.pantry.db.CategoryDb;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.DialogCategoryListener;
 import com.hermanowicz.pantry.interfaces.NewCategoryView;
 import com.hermanowicz.pantry.models.CategoryModel;
@@ -30,24 +28,19 @@ import org.jetbrains.annotations.NotNull;
 public class NewCategoryDialog extends AppCompatDialogFragment implements NewCategoryView {
 
     private DialogNewCategoryBinding binding;
+    private NewCategoryPresenter presenter;
+    private Activity activity;
+    private View view;
     private DialogCategoryListener dialogListener;
     private EditText categoryName, categoryDescription;
     private TextView nameCharCounter, descriptionCharCounter;
 
-    private Activity activity;
-    private NewCategoryPresenter presenter;
 
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         initView();
         initListeners();
-
-        DatabaseOperations databaseOperations = new DatabaseOperations(ProductDb.getInstance(getContext()), CategoryDb.getInstance(getContext()));
-        presenter = new NewCategoryPresenter(this, new CategoryModel(databaseOperations));
-        presenter.initCharCounters();
-
-        View view = binding.getRoot();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
         builder.setView(view)
@@ -56,26 +49,27 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
                 })
                 .setPositiveButton(getString(R.string.CategoriesActivity_save), (dialog, which) -> {
                     Category category = new Category();
-                    category.setName(binding.nameValue.getText().toString());
-                    category.setDescription(binding.descriptionValue.getText().toString());
+                    category.setName(categoryName.getText().toString());
+                    category.setDescription(categoryDescription.getText().toString());
                     presenter.onPressAddCategory(category);
                 });
-
-
         return builder.create();
     }
 
     private void initView() {
         activity = getActivity();
-
-        assert activity != null;
         binding = DialogNewCategoryBinding.inflate(activity.getLayoutInflater());
 
         categoryName = binding.nameValue;
         categoryDescription = binding.descriptionValue;
-
         nameCharCounter = binding.nameCharCounter;
         descriptionCharCounter = binding.descriptionCharCounter;
+
+        DatabaseOperations databaseOperations = new DatabaseOperations(activity.getApplicationContext());
+        presenter = new NewCategoryPresenter(this, new CategoryModel(databaseOperations));
+        presenter.initCharCounters();
+
+        view = binding.getRoot();
     }
 
     private void initListeners(){

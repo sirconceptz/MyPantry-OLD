@@ -62,11 +62,11 @@ public class FilterModel {
         this.typeOfProduct = typeOfProduct;
     }
 
-    public String getProductFeatures() {
+    public String getProductCategory() {
         return productFeatures;
     }
 
-    public void setProductFeatures(String productFeatures) {
+    public void setProductCategory(String productFeatures) {
         this.productFeatures = productFeatures;
     }
 

@@ -8,14 +8,17 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -24,7 +27,6 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityCategoriesBinding;
 import com.hermanowicz.pantry.db.Category;
 import com.hermanowicz.pantry.db.CategoryDb;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.dialog.NewCategoryDialog;
 import com.hermanowicz.pantry.interfaces.CategoryView;
 import com.hermanowicz.pantry.interfaces.DialogCategoryListener;
@@ -50,11 +52,13 @@ import java.util.List;
 public class CategoriesActivity extends AppCompatActivity implements DialogCategoryListener, CategoryView {
 
     private ActivityCategoriesBinding binding;
-
-    private CategoriesAdapter categoriesAdapter;
     private CategoryPresenter presenter;
     private Context context;
+    private final CategoriesAdapter categoriesAdapter = new CategoriesAdapter();
+
     private AdView adView;
+    private RecyclerView categoryRecyclerView;
+    private TextView statement;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,33 +67,43 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
+        initView();
+        setListeners();
+    }
+
+    private void initView() {
         binding = ActivityCategoriesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         context = getApplicationContext();
-        setSupportActionBar(binding.toolbar);
 
+        Toolbar toolbar = binding.toolbar;
         adView = binding.adview;
+        categoryRecyclerView = binding.recyclerviewCategories;
+        statement = binding.textStatement;
 
+        setSupportActionBar(toolbar);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        categoriesAdapter = new CategoriesAdapter();
-
-        DatabaseOperations databaseOperations = new DatabaseOperations(ProductDb.getInstance(this), CategoryDb.getInstance(this));
+        DatabaseOperations databaseOperations = new DatabaseOperations(context);
         presenter = new CategoryPresenter(this, new CategoryModel(databaseOperations));
         presenter.updateCategoryList();
 
-        binding.recyclerviewCategories.setAdapter(categoriesAdapter);
-        binding.recyclerviewCategories.setLayoutManager(new LinearLayoutManager(context));
-        binding.recyclerviewCategories.setHasFixedSize(true);
-        binding.recyclerviewCategories.setItemAnimator(new DefaultItemAnimator());
-        binding.recyclerviewCategories.addOnItemTouchListener(new RecyclerClickListener(this, binding.recyclerviewCategories, new RecyclerClickListener.OnItemClickListener() {
+        categoryRecyclerView.setAdapter(categoriesAdapter);
+        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        categoryRecyclerView.setHasFixedSize(true);
+        categoryRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void setListeners() {
+        categoryRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this, binding.recyclerviewCategories, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                    List<Category> categoryList = CategoryDb.getInstance(context).categoryDao().getAllOwnCategories();
-                    Intent intent = new Intent(context, CategoryDetailsActivity.class)
-                            .putExtra("category_id", categoryList.get(position).getId());
-                    startActivity(intent);
+                List<Category> categoryList = CategoryDb.getInstance(context).categoryDao().getAllOwnCategories();
+                Intent intent = new Intent(context, CategoryDetailsActivity.class)
+                        .putExtra("category_id", categoryList.get(position).getId());
+                startActivity(intent);
             }
 
             @Override
@@ -99,13 +113,13 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.new_item, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_new_item) {
@@ -124,11 +138,11 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
 
     @Override
     public void showEmptyCategoryListStatement() {
-        binding.textStatement.setVisibility(View.VISIBLE);
+        statement.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void updateCategoryList(List<Category> categoryList) {
+    public void updateCategoryList(@NonNull List<Category> categoryList) {
         categoriesAdapter.setData(categoryList);
         categoriesAdapter.notifyDataSetChanged();
     }
@@ -156,5 +170,23 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+        super.onDestroy();
     }
 }

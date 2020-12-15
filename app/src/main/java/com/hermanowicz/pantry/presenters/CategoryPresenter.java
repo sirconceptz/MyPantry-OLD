@@ -1,5 +1,7 @@
 package com.hermanowicz.pantry.presenters;
 
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.db.Category;
 import com.hermanowicz.pantry.interfaces.CategoryView;
 import com.hermanowicz.pantry.models.CategoryModel;
@@ -11,7 +13,7 @@ public class CategoryPresenter {
     private final CategoryView view;
     private final CategoryModel model;
 
-    public CategoryPresenter (CategoryView view, CategoryModel model){
+    public CategoryPresenter (@NonNull CategoryView view, @NonNull CategoryModel model){
         this.view = view;
         this.model = model;
     }

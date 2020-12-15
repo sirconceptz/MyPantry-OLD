@@ -87,8 +87,8 @@ public class Filter {
         if(filterProduct.getTypeOfProduct() != null)
                 isTypeOfProductValid = typeOfProduct.equals(filterProduct.getTypeOfProduct());
 
-        if(filterProduct.getProductFeatures() != null)
-            isProductFeaturesValid = productFeatures.equals(filterProduct.getProductFeatures());
+        if(filterProduct.getProductCategory() != null)
+            isProductFeaturesValid = productFeatures.equals(filterProduct.getProductCategory());
 
         isTypeOfProductAndProductFeaturesValid = isTypeOfProductValid && isProductFeaturesValid;
         return isTypeOfProductAndProductFeaturesValid;

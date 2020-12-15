@@ -19,6 +19,8 @@ package com.hermanowicz.pantry.presenters;
 
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.interfaces.ScanProductView;
 import com.hermanowicz.pantry.models.AppSettingsModel;
 import com.hermanowicz.pantry.models.ScanProductModel;
@@ -31,12 +33,12 @@ public class ScanProductPresenter {
     private final ScanProductModel model = new ScanProductModel();
     private final AppSettingsModel appSettingsModel;
 
-    public ScanProductPresenter(ScanProductView view, SharedPreferences sharedPreferences) {
+    public ScanProductPresenter(@NonNull ScanProductView view, @NonNull SharedPreferences sharedPreferences) {
         this.view = view;
         this.appSettingsModel = new AppSettingsModel(sharedPreferences);
     }
 
-    public void onScanResult(String scanResult) {
+    public void onScanResult(@NonNull String scanResult) {
         List<Integer> decodedQRCodeAsList = model.decodeScanResult(scanResult);
         if (decodedQRCodeAsList.size() > 1) {
             if (appSettingsModel.getScannerVibrationMode())

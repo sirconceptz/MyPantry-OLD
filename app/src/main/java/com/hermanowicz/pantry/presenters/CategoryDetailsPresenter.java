@@ -1,5 +1,7 @@
 package com.hermanowicz.pantry.presenters;
 
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.db.Category;
 import com.hermanowicz.pantry.interfaces.CategoryDetailsView;
 import com.hermanowicz.pantry.models.CategoryModel;
@@ -9,7 +11,7 @@ public class CategoryDetailsPresenter {
     private final CategoryModel model;
     private final CategoryDetailsView view;
 
-    public CategoryDetailsPresenter (CategoryDetailsView view, CategoryModel model) {
+    public CategoryDetailsPresenter (@NonNull CategoryDetailsView view, @NonNull CategoryModel model) {
         this.model = model;
         this.view = view;
     }
@@ -28,7 +30,7 @@ public class CategoryDetailsPresenter {
         view.navigateToCategoriesActivity();
     }
 
-    public void updateCategory(Category category) {
+    public void updateCategory(@NonNull Category category) {
         if(model.isCategoryNameNotCorrect(category.getName()) || model.isCategoryDescriptionNotCorrect(category.getDescription()))
             view.showErrorOnUpdateProduct();
         else {
@@ -38,13 +40,13 @@ public class CategoryDetailsPresenter {
         }
     }
 
-    public void isCategoryNameCorrect(String categoryName) {
+    public void isCategoryNameCorrect(@NonNull String categoryName) {
         if(model.isCategoryNameNotCorrect(categoryName))
             view.showCategoryNameError();
         view.updateNameCharCounter(categoryName.length(), model.MAX_CHAR_CATEGORY_NAME);
     }
 
-    public void isCategoryDescriptionCorrect(String categoryDescription) {
+    public void isCategoryDescriptionCorrect(@NonNull String categoryDescription) {
         if(model.isCategoryDescriptionNotCorrect(categoryDescription))
             view.showCategoryDescriptionError();
         view.updateDescriptionCharCounter(categoryDescription.length(), model.MAX_CHAR_CATEGORY_DESCRIPTION);

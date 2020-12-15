@@ -22,6 +22,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,9 +49,13 @@ import org.jetbrains.annotations.NotNull;
 public class WeightFilterDialog extends AppCompatDialogFragment {
 
     private DialogWeightBinding binding;
-
+    private Activity activity;
+    private View view;
     private FilterDialogListener dialogListener;
     private int filterWeightSince, filterWeightFor; // state "-1" for disabled
+
+    private EditText weightSince, weightFor;
+    private Button clearBtn;
 
     public WeightFilterDialog(FilterModel filterProduct) {
         this.filterWeightSince = filterProduct.getWeightSince();
@@ -59,48 +65,59 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Activity activity = getActivity();
-        assert activity != null;
+        initView();
+        setListeners();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
-        binding = DialogWeightBinding.inflate(activity.getLayoutInflater());
-        View view = binding.getRoot();
-
-        if (filterWeightSince >= 0) binding.edittextWeightSince.setText(String.valueOf(filterWeightSince));
-
-        if (filterWeightFor >= 0) binding.edittextWeightFor.setText(String.valueOf(filterWeightFor));
-
-
-        binding.buttonClear.setOnClickListener(view18 -> {
-            binding.edittextWeightSince.setText("");
-            binding.edittextWeightFor.setText("");
-        });
         builder.setView(view)
                 .setTitle(getString(R.string.Product_weight))
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    try {
-                        filterWeightSince = Integer.parseInt(binding.edittextWeightSince.getText().toString());
-                    } catch (NumberFormatException e) {
-                        filterWeightSince = -1;
-                    }
-                    try {
-                        filterWeightFor = Integer.parseInt(binding.edittextWeightFor.getText().toString());
-                    } catch (NumberFormatException e) {
-                        filterWeightFor = -1;
-                    }
-                    if (filterWeightSince >= 0 && filterWeightFor >= 0) {
-                        if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor) {
-                            dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
-                        } else {
-                            Toast.makeText(getContext(), getString(R.string.Error_wrong_data), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    else
-                        dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
-                });
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> onClickPositiveButton());
         return builder.create();
+    }
+
+    private void initView() {
+        activity = getActivity();
+        binding = DialogWeightBinding.inflate(activity.getLayoutInflater());
+        view = binding.getRoot();
+
+        weightSince = binding.edittextWeightSince;
+        weightFor = binding.edittextWeightFor;
+        clearBtn = binding.buttonClear;
+
+        if (filterWeightSince >= 0) weightSince.setText(String.valueOf(filterWeightSince));
+        if (filterWeightFor >= 0) weightFor.setText(String.valueOf(filterWeightFor));
+    }
+
+    private void setListeners() {
+        clearBtn.setOnClickListener(view18 -> {
+            weightSince.setText("");
+            weightFor.setText("");
+        });
+    }
+
+    private void onClickPositiveButton() {
+        try {
+            filterWeightSince = Integer.parseInt(weightSince.getText().toString());
+        } catch (NumberFormatException e) {
+            filterWeightSince = -1;
+        }
+        try {
+            filterWeightFor = Integer.parseInt(weightFor.getText().toString());
+        } catch (NumberFormatException e) {
+            filterWeightFor = -1;
+        }
+        if (filterWeightSince >= 0 && filterWeightFor >= 0) {
+            if (filterWeightSince < filterWeightFor || filterWeightSince == filterWeightFor) {
+                dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
+            } else {
+                Toast.makeText(getContext(), getString(R.string.Error_wrong_data), Toast.LENGTH_LONG).show();
+            }
+        }
+        else
+            dialogListener.setFilterWeight(filterWeightSince, filterWeightFor);
     }
 
     @Override

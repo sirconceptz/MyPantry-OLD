@@ -45,9 +45,7 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityEditProductBinding;
-import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.models.GroupProducts;
@@ -72,12 +70,11 @@ import java.util.Objects;
 public class EditProductActivity extends AppCompatActivity implements EditProductView, ProductDataView {
 
     private ActivityEditProductBinding binding;
-
+    private EditProductPresenter presenter;
     private Context context;
     private Resources resources;
-    private int productId;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> productTypeAdapter, productCategoryAdapter;
+    private ArrayAdapter<CharSequence> productCategoryAdapter;
     private int day, month, year;
     private boolean isTypeOfProductTouched;
 
@@ -85,10 +82,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private EditText productName, productExpirationDate, productProductionDate, productComposition, productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
     private CheckBox productHasSugar, productHasSalt;
     private RadioButton productIsSweet, productIsSour, productIsSweetAndSour, productIsBitter, productIsSalty;
-
     private AdView adView;
-
-    private EditProductPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstantState) {
@@ -96,98 +90,17 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstantState);
-        binding = ActivityEditProductBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        getDataFromIntent();
         initView();
-
-        binding.buttonSaveProduct.setOnClickListener(view -> onClickSaveProductButton());
-        binding.buttonCancel.setOnClickListener(view -> onClickCancelButton());
-
-        productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
-        binding.productEdit.spinnerProductType.setAdapter(productTypeAdapter);
-
-        productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
-        binding.productEdit.spinnerProductCategory.setAdapter(productCategoryAdapter);
-
-        presenter.setProduct(productId);
-
-        binding.productEdit.edittextExpirationDate.setOnClickListener(v -> {
-            if (binding.productEdit.edittextExpirationDate.length() <= 1) {
-                year = DateHelper.getActualYear();
-                month = DateHelper.getActualMonth();
-                day = DateHelper.getActualDay(1);
-            } else {
-                int[] expirationDateArray = presenter.getExpirationDateArray();
-                year = expirationDateArray[0];
-                month = expirationDateArray[1]-1;
-                day = expirationDateArray[2];
-            }
-            DatePickerDialog dialog = new DatePickerDialog(
-                    context,
-                    R.style.AppThemeDatePicker,
-                    expirationDateListener,
-                    year, month, day);
-            dialog.getDatePicker().setMinDate(new Date().getTime());
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
-        });
-
-        expirationDateListener = (datePicker, year, month, day) -> {
-            presenter.showExpirationDate(day, month, year);
-            presenter.setExpirationDate(year, month, day);
-        };
-
-        binding.productEdit.edittextProductionDate.setOnClickListener(v -> {
-            if (binding.productEdit.edittextProductionDate.length() <= 1) {
-                year = DateHelper.getActualYear();
-                month = DateHelper.getActualMonth();
-                day = DateHelper.getActualDay(0);
-            } else {
-                int[] productionDateArray = presenter.getProductionDateArray();
-                year = productionDateArray[0];
-                month = productionDateArray[1]-1;
-                day = productionDateArray[2];
-            }
-            DatePickerDialog dialog = new DatePickerDialog(
-                    context,
-                    R.style.AppThemeDatePicker,
-                    productionDateListener,
-                    year, month, day);
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.show();
-        });
-
-        productionDateListener = (datePicker, year, month, day) -> {
-            presenter.showProductionDate(day, month, year);
-            presenter.setProductionDate(year, month, day);
-        };
-
-        binding.productEdit.spinnerProductType.setOnTouchListener((v, event) -> {
-            isTypeOfProductTouched = true;
-            return false;
-        });
-
-        binding.productEdit.spinnerProductType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                if(isTypeOfProductTouched) {
-                    String typeOfProductValue = String.valueOf(binding.productEdit.spinnerProductType.getSelectedItem());
-                    presenter.updateProductFeaturesAdapter(typeOfProductValue);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        setListeners();
     }
 
     private void initView(){
+        binding = ActivityEditProductBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         context = EditProductActivity.this;
         resources = context.getResources();
-        ProductDataModel model = new ProductDataModel(ProductDb.getInstance(context), CategoryDb.getInstance(context), resources);
+        ProductDataModel model = new ProductDataModel(context, resources);
         presenter = new EditProductPresenter(this, this, model);
 
         adView = binding.adview;
@@ -224,14 +137,94 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productComposition.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         productHealingProperties.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         productDosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-    }
 
-    private void getDataFromIntent() {
         Intent myPantryActivityIntent = getIntent();
-        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
+        int productId = myPantryActivityIntent.getIntExtra("product_id", 1);
+
+        ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
+        binding.productEdit.spinnerProductType.setAdapter(productTypeAdapter);
+
+        productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
+        binding.productEdit.spinnerProductCategory.setAdapter(productCategoryAdapter);
+        presenter.setProduct(productId);
     }
 
-    void onClickSaveProductButton(){
+    private void setListeners() {
+        binding.buttonSaveProduct.setOnClickListener(view -> onClickSaveProductButton());
+        binding.buttonCancel.setOnClickListener(view -> onClickCancelButton());
+
+        productExpirationDate.setOnClickListener(v -> {
+            if (productExpirationDate.length() <= 1) {
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(1);
+            } else {
+                int[] expirationDateArray = presenter.getExpirationDateArray();
+                year = expirationDateArray[0];
+                month = expirationDateArray[1]-1;
+                day = expirationDateArray[2];
+            }
+            DatePickerDialog dialog = new DatePickerDialog(
+                    context,
+                    R.style.AppThemeDatePicker,
+                    expirationDateListener,
+                    year, month, day);
+            dialog.getDatePicker().setMinDate(new Date().getTime());
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+        });
+
+        expirationDateListener = (datePicker, year, month, day) -> {
+            presenter.showExpirationDate(day, month, year);
+            presenter.setExpirationDate(year, month, day);
+        };
+
+        productProductionDate.setOnClickListener(v -> {
+            if (productProductionDate.length() <= 1) {
+                year = DateHelper.getActualYear();
+                month = DateHelper.getActualMonth();
+                day = DateHelper.getActualDay(0);
+            } else {
+                int[] productionDateArray = presenter.getProductionDateArray();
+                year = productionDateArray[0];
+                month = productionDateArray[1]-1;
+                day = productionDateArray[2];
+            }
+            DatePickerDialog dialog = new DatePickerDialog(
+                    context,
+                    R.style.AppThemeDatePicker,
+                    productionDateListener,
+                    year, month, day);
+            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.show();
+        });
+
+        productionDateListener = (datePicker, year, month, day) -> {
+            presenter.showProductionDate(day, month, year);
+            presenter.setProductionDate(year, month, day);
+        };
+
+        productType.setOnTouchListener((v, event) -> {
+            isTypeOfProductTouched = true;
+            return false;
+        });
+
+        productType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if(isTypeOfProductTouched) {
+                    String typeOfProductValue = String.valueOf(productType.getSelectedItem());
+                    presenter.updateProductFeaturesAdapter(typeOfProductValue);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    private void onClickSaveProductButton(){
         int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
         RadioButton taste = findViewById(selectedTasteId);
 
@@ -251,34 +244,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         presenter.saveProduct(groupProducts);
     }
 
-    void onClickCancelButton(){
+    private void onClickCancelButton(){
         presenter.navigateToMyPantryActivity();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMyPantryActivity();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adView.resume();
-    }
-
-    @Override
-    public void onPause() {
-        adView.pause();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        adView.destroy();
-        super.onDestroy();
     }
 
     @Override
@@ -380,5 +347,31 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     public void showErrorCategoryNotSelected() {
         Toast.makeText(context, getString(R.string.Error_category_not_selected), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMyPantryActivity();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+        super.onDestroy();
     }
 }

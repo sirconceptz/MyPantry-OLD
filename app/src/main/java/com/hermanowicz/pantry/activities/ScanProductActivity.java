@@ -36,6 +36,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.databinding.ActivityScanProductBinding;
 import com.hermanowicz.pantry.interfaces.ScanProductView;
 import com.hermanowicz.pantry.presenters.ScanProductPresenter;
 import com.hermanowicz.pantry.utils.Orientation;
@@ -54,6 +55,7 @@ import java.util.List;
 
 public class ScanProductActivity extends AppCompatActivity implements ScanProductView {
 
+    private ActivityScanProductBinding binding;
     private Context context;
     private ScanProductPresenter presenter;
 
@@ -65,7 +67,12 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scan_product);
+        initView();
+    }
+
+    private void initView() {
+        binding = ActivityScanProductBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         context = getApplicationContext();
 

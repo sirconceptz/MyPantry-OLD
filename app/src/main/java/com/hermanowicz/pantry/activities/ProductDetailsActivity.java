@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,8 +36,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding;
-import com.hermanowicz.pantry.db.CategoryDb;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
 import com.hermanowicz.pantry.models.GroupProducts;
 import com.hermanowicz.pantry.models.ProductDataModel;
@@ -61,13 +61,16 @@ import java.util.Objects;
 public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView {
 
     private ActivityProductDetailsBinding binding;
-
+    private ProductDetailsPresenter presenter;
     private Context context;
     private int productId;
-    private String hashCode;
+
+    private TextView productType, productCategory, productExpirationDate,
+            productProductionDate, productComposition, productHealingProperties, productDosage,
+            productVolume, productWeight, productQuantity, productHasSugar, productHasSalt, taste;
+    private Button deleteProduct, printQrCode, editProduct;
     private AdView adView;
 
-    private ProductDetailsPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,61 +80,72 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
-
-        presenter = new ProductDetailsPresenter(this, new ProductDataModel(ProductDb.getInstance(context), CategoryDb.getInstance(context), getResources()));
-
-        getDataFromIntent();
-
-        presenter.setProductList(productId);
-        presenter.showProductDetails(hashCode);
-
-    }
+            }
 
     private void initView() {
         binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        context = getApplicationContext();
+
+        Toolbar toolbar = binding.toolbar;
+        productType = binding.textProductTypeValue;
+        productCategory = binding.textProductCategoryValue;
+        productExpirationDate = binding.textProductExpirationDateValue;
+        productProductionDate = binding.textProductProductionDateValue;
+        productComposition = binding.textProductCompositionValue;
+        productHealingProperties = binding.textProductHealingPropertiesValue;
+        productDosage = binding.textProductDosageValue;
+        productVolume = binding.textProductVolumeValue;
+        productWeight = binding.textProductWeightValue;
+        productQuantity = binding.textQuantityValue;
+        productHasSugar = binding.textProductHasSugarValue;
+        productHasSalt = binding.textProductHasSaltValue;
+        taste = binding.textProductTasteValue;
+        deleteProduct = binding.buttonDeleteProduct;
+        printQrCode = binding.buttonPrintQRCode;
+        editProduct = binding.buttonEditProduct;
         adView = binding.adview;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        context = getApplicationContext();
-
-        Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
+
+        presenter = new ProductDetailsPresenter(this, new ProductDataModel(context, getResources()));
+
+        Intent myPantryActivityIntent = getIntent();
+        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
+        String hashCode = myPantryActivityIntent.getStringExtra("hash_code");
+
+        presenter.setProductList(productId);
+        presenter.showProductDetails(hashCode);
     }
 
     private void setListeners() {
-        binding.buttonDeleteProduct.setOnClickListener(view -> presenter.deleteProduct(productId));
-        binding.buttonPrintQRCode.setOnClickListener(view -> presenter.printQRCode());
-        binding.buttonEditProduct.setOnClickListener(view -> presenter.editProduct(productId));
-    }
-
-    private void getDataFromIntent() {
-        Intent myPantryActivityIntent = getIntent();
-        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
-        hashCode = myPantryActivityIntent.getStringExtra("hash_code");
+        deleteProduct.setOnClickListener(view -> presenter.deleteProduct(productId));
+        printQrCode.setOnClickListener(view -> presenter.printQRCode());
+        editProduct.setOnClickListener(view -> presenter.editProduct(productId));
     }
 
     @Override
     public void showProductDetails(@NotNull GroupProducts groupProducts) {
         DateHelper dateHelper = new DateHelper(groupProducts.getProduct().getExpirationDate());
         Objects.requireNonNull(getSupportActionBar()).setTitle(groupProducts.getProduct().getName());
-        binding.textProductTypeValue.setText(groupProducts.getProduct().getTypeOfProduct());
-        binding.textQuantityValue.setText(String.valueOf(groupProducts.getQuantity()));
-        binding.textProductFeaturesValue.setText(groupProducts.getProduct().getProductFeatures());
-        binding.textProductExpirationDateValue.setText(dateHelper.getDateInLocalFormat());
+        productType.setText(groupProducts.getProduct().getTypeOfProduct());
+        productQuantity.setText(String.valueOf(groupProducts.getQuantity()));
+        productCategory.setText(groupProducts.getProduct().getProductFeatures());
+        productExpirationDate.setText(dateHelper.getDateInLocalFormat());
         dateHelper = new DateHelper(groupProducts.getProduct().getProductionDate());
-        binding.textProductProductionDateValue.setText(dateHelper.getDateInLocalFormat());
-        binding.textProductCompositionValue.setText(groupProducts.getProduct().getComposition());
-        binding.textProductHealingPropertiesValue.setText(groupProducts.getProduct().getHealingProperties());
-        binding.textProductDosageValue.setText(groupProducts.getProduct().getDosage());
-        binding.textProductVolumeValue.setText(String.format("%s%s", groupProducts.getProduct().getVolume(), getString(R.string.Product_volume_unit)));
-        binding.textProductWeightValue.setText(String.format("%s%s", groupProducts.getProduct().getWeight(), getString(R.string.Product_weight_unit)));
-        binding.textProductTasteValue.setText(groupProducts.getProduct().getTaste());
-        if (groupProducts.getProduct().getHasSugar()) binding.textProductHasSugarValue.setText(getString(R.string.ProductDetailsActivity_yes));
-        if (groupProducts.getProduct().getHasSalt()) binding.textProductHasSaltValue.setText(getString(R.string.ProductDetailsActivity_yes));
+        productProductionDate.setText(dateHelper.getDateInLocalFormat());
+        productComposition.setText(groupProducts.getProduct().getComposition());
+        productHealingProperties.setText(groupProducts.getProduct().getHealingProperties());
+        productDosage.setText(groupProducts.getProduct().getDosage());
+        productVolume.setText(String.format("%s%s", groupProducts.getProduct().getVolume(), getString(R.string.Product_volume_unit)));
+        productWeight.setText(String.format("%s%s", groupProducts.getProduct().getWeight(), getString(R.string.Product_weight_unit)));
+        taste.setText(groupProducts.getProduct().getTaste());
+        if (groupProducts.getProduct().getHasSugar()) productHasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (groupProducts.getProduct().getHasSalt()) productHasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
     }
 
     @Override
@@ -145,7 +159,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void onPrintQRCode(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
+    public void onPrintQRCode(@NonNull ArrayList<String> textToQRCodeList, @NonNull ArrayList<String> namesOfProductsList, @NonNull ArrayList<String> expirationDatesList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class);
 
         printQRCodesActivityIntent.putStringArrayListExtra("text_to_qr_code", textToQRCodeList);

@@ -17,12 +17,12 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import android.content.res.Resources;
 import android.widget.RadioButton;
 
-import com.hermanowicz.pantry.db.Category;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.interfaces.NewProductView;
 import com.hermanowicz.pantry.models.NewProductModel;
 import com.hermanowicz.pantry.utils.PrintQRData;
@@ -41,7 +41,7 @@ public class NewProductPresenter {
     private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
 
-    public NewProductPresenter(NewProductView view, NewProductModel model) {
+    public NewProductPresenter(@NonNull NewProductView view, @NonNull NewProductModel model) {
         this.view = view;
         this.model = model;
     }
@@ -66,21 +66,21 @@ public class NewProductPresenter {
         view.showProductionDate(dateFormat.format(date));
     }
 
-    public void setTaste(RadioButton selectedTasteButton){
+    public void setTaste(@Nullable RadioButton selectedTasteButton){
         model.setTaste(selectedTasteButton);
     }
 
-    public void setQuantity(String quantity){
+    public void setQuantity(@NonNull String quantity){
         model.parseQuantityProducts(quantity);
     }
 
-    public void addProducts(Product product) {
+    public void addProducts(@NonNull Product product) {
         if (model.isProductNameNotValid(product))
             view.showErrorNameNotSet();
         else if (!model.isTypeOfProductValid(product))
             view.showErrorCategoryNotSelected();
         else {
-            List<Product> products = model.buildProductsList(product);
+            List<Product> products = model.createProductsList(product);
 
             model.addProducts(products);
             view.onProductsAdd(products);
@@ -97,7 +97,7 @@ public class NewProductPresenter {
         }
     }
 
-    public void updateProductFeaturesAdapter(String typeOfProductSpinnerValue) {
+    public void updateProductFeaturesAdapter(@NonNull String typeOfProductSpinnerValue) {
         view.updateProductFeaturesAdapter(typeOfProductSpinnerValue);
     }
 

@@ -19,6 +19,7 @@ package com.hermanowicz.pantry.utils;
 
 import android.content.pm.PackageManager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -27,12 +28,12 @@ import com.hermanowicz.pantry.interfaces.PermissionHandler;
 
 public class PermissionsHandlerAndroid implements PermissionHandler {
     @Override
-    public boolean checkHasPermission(AppCompatActivity activity, String permission) {
+    public boolean checkHasPermission(@NonNull AppCompatActivity activity, @NonNull String permission) {
         return ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
-    public void requestPermission(AppCompatActivity activity, String[] permissions, int requestCode) {
+    public void requestPermission(@NonNull AppCompatActivity activity, @NonNull String[] permissions, int requestCode) {
         ActivityCompat.requestPermissions(activity, permissions, requestCode);
     }
 }

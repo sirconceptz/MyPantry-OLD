@@ -17,13 +17,15 @@
 
 package com.hermanowicz.pantry.models;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.widget.RadioButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +40,8 @@ public class ProductDataModel {
     private List<Product> productList = new ArrayList<>();
     private int oldProductsQuantity;
 
-    public ProductDataModel(ProductDb productDb, CategoryDb categoryDb, Resources resources){
-        databaseOperations = new DatabaseOperations(productDb, categoryDb);
+    public ProductDataModel(Context context, Resources resources){
+        databaseOperations = new DatabaseOperations(context);
         this.resources = resources;
     }
 
@@ -67,7 +69,7 @@ public class ProductDataModel {
         return productList == null;
     }
 
-    public boolean isCorrectHashCode(String hashCode) {
+    public boolean isCorrectHashCode(@NonNull String hashCode) {
         boolean isCorrectHashcode = false;
         for (Product product : productList) {
             if (product.getHashCode().equals(hashCode)) {
@@ -126,7 +128,7 @@ public class ProductDataModel {
         return selection;
     }
 
-    public void setTaste(RadioButton selectedTasteButton){
+    public void setTaste(@Nullable RadioButton selectedTasteButton){
         String[] tasteArray = resources.getStringArray(R.array.Product_taste_array);
         if(selectedTasteButton == null)
             taste = tasteArray[0];
@@ -134,11 +136,11 @@ public class ProductDataModel {
             taste = selectedTasteButton.getText().toString();
     }
 
-    public void setExpirationDate(String date){
+    public void setExpirationDate(@NonNull String date){
         this.expirationDate = date;
     }
 
-    public void setProductionDate(String date){
+    public void setProductionDate(@NonNull String date){
         this.productionDate = date;
     }
 
@@ -164,14 +166,14 @@ public class ProductDataModel {
         return productionDateArray;
     }
 
-    public boolean isProductNameNotValid(Product product) {
+    public boolean isProductNameNotValid(@NonNull Product product) {
         boolean correctProductName = false;
         if (product.getName().length() > 0)
             correctProductName = true;
         return !correctProductName;
     }
 
-    public boolean isTypeOfProductValid(Product product) {
+    public boolean isTypeOfProductValid(@NonNull Product product) {
         String[] typeOfProductsArray = resources.getStringArray(R.array.Product_type_of_product_array);
         boolean correctTypeOfProduct = false;
         if (!product.getTypeOfProduct().equals(typeOfProductsArray[0]))
@@ -180,7 +182,7 @@ public class ProductDataModel {
     }
 
 
-    private void updateProductsQuantityInDb(int newProductsQuantity, GroupProducts groupProducts){
+    private void updateProductsQuantityInDb(int newProductsQuantity, @NonNull GroupProducts groupProducts){
         for(Product product : productList){
             product.setName(groupProducts.getProduct().getName());
             product.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
@@ -225,11 +227,11 @@ public class ProductDataModel {
             for(; quantityToRemove > 0; quantityToRemove--){
                 productListToRemove.add(productList.get(quantityToRemove-1));
             }
-            databaseOperations.deleteProductsFromList(productListToRemove);
+            databaseOperations.deleteProducts(productListToRemove);
         }
     }
 
-    public void updateDatabase(GroupProducts groupProducts){
+    public void updateDatabase(@NonNull GroupProducts groupProducts){
         int newProductsQuantity = groupProducts.getQuantity();
         updateProductsQuantityInDb(newProductsQuantity, groupProducts);
     }

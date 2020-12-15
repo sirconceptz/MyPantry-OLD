@@ -42,8 +42,8 @@ class FilterModelTest {
     @Test
     void canIGetCorrectProductFeatures() {
         String productFeatures = "Juice";
-        filterProduct.setProductFeatures(productFeatures);
-        assertEquals(productFeatures, filterProduct.getProductFeatures());
+        filterProduct.setProductCategory(productFeatures);
+        assertEquals(productFeatures, filterProduct.getProductCategory());
     }
 
     @Test

@@ -25,6 +25,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -55,8 +57,8 @@ import java.util.Date;
 public class ProductionDateFilterDialog extends AppCompatDialogFragment {
 
     private DialogProductionDateBinding binding;
-
     private Activity activity;
+    private View view;
     private FilterDialogListener dialogListener;
     private Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -64,6 +66,9 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
     private String filterProductionDateFor;
     private DatePickerDialog.OnDateSetListener productionDateSinceListener, productionDateForListener;
     private int year, month, day;
+
+    private EditText productionDateSince, productionDateFor;
+    private Button clearBtn;
 
     public ProductionDateFilterDialog(FilterModel filterProduct) {
         this.filterProductionDateSince = filterProduct.getProductionDateSince();
@@ -73,27 +78,50 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        initView();
+        setListeners();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
+
+        builder.setView(view)
+                .setTitle(getString(R.string.Product_production_date))
+                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
+                })
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
+                    if (binding.edittextProductionDateSince.length() < 1)
+                        filterProductionDateSince = null;
+                    if (binding.edittextProductionDateFor.length() < 1)
+                        filterProductionDateFor = null;
+                    dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
+                });
+        return builder.create();
+    }
+
+    private void initView() {
         activity = getActivity();
         dateFormat.setLenient(false);
         calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
-
         binding = DialogProductionDateBinding.inflate(activity.getLayoutInflater());
-        View view = binding.getRoot();
+        view = binding.getRoot();
+
+        productionDateSince = binding.edittextProductionDateSince;
+        productionDateFor = binding.edittextProductionDateFor;
 
         if (filterProductionDateSince != null) {
             DateHelper date = new DateHelper(filterProductionDateSince);
-            binding.edittextProductionDateSince.setText(date.getDateInLocalFormat());
+            productionDateSince.setText(date.getDateInLocalFormat());
         }
         if (filterProductionDateFor != null) {
             DateHelper date = new DateHelper(filterProductionDateFor);
-            binding.edittextProductionDateFor.setText(date.getDateInLocalFormat());
+            productionDateFor.setText(date.getDateInLocalFormat());
         }
+    }
 
-        binding.edittextProductionDateSince.setOnClickListener(v -> {
-            if (binding.edittextProductionDateSince.length() < 1) {
+    private void setListeners() {
+        productionDateSince.setOnClickListener(v -> {
+            if (productionDateSince.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -112,8 +140,8 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             dialog.show();
         });
 
-        binding.edittextProductionDateFor.setOnClickListener(v -> {
-            if (binding.edittextProductionDateFor.length() < 1) {
+        productionDateFor.setOnClickListener(v -> {
+            if (productionDateFor.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
                 day = DateHelper.getActualDay(0);
@@ -138,7 +166,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
-            binding.edittextProductionDateSince.setText(dateHelper.getDateInLocalFormat());
+            productionDateSince.setText(dateHelper.getDateInLocalFormat());
             filterProductionDateSince = dateHelper.getDateInSqlFormat();
         };
 
@@ -146,29 +174,16 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
-            binding.edittextProductionDateFor.setText(dateHelper.getDateInLocalFormat());
+            productionDateFor.setText(dateHelper.getDateInLocalFormat());
             filterProductionDateFor = dateHelper.getDateInSqlFormat();
         };
 
-        binding.buttonClear.setOnClickListener(view12 -> {
-            binding.edittextProductionDateSince.setText("");
-            binding.edittextProductionDateFor.setText("");
+        clearBtn.setOnClickListener(view12 -> {
+            productionDateSince.setText("");
+            productionDateFor.setText("");
             filterProductionDateSince = null;
             filterProductionDateFor = null;
         });
-
-        builder.setView(view)
-                .setTitle(getString(R.string.Product_production_date))
-                .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
-                })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (binding.edittextProductionDateSince.length() < 1)
-                        filterProductionDateSince = null;
-                    if (binding.edittextProductionDateFor.length() < 1)
-                        filterProductionDateFor = null;
-                    dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
-                });
-        return builder.create();
     }
 
     @Override

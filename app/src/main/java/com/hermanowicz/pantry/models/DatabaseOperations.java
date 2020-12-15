@@ -17,6 +17,9 @@
 
 package com.hermanowicz.pantry.models;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
 import com.hermanowicz.pantry.db.Category;
@@ -32,9 +35,9 @@ public class DatabaseOperations {
     private final ProductDb productDb;
     private final CategoryDb categoryDb;
 
-    public DatabaseOperations(ProductDb productDb, CategoryDb categoryDb){
-        this.productDb = productDb;
-        this.categoryDb = categoryDb;
+    public DatabaseOperations(Context context){
+        this.productDb = ProductDb.getInstance(context);
+        this.categoryDb = CategoryDb.getInstance(context);
     }
 
     public int getIdOfLastProductInDb(){
@@ -59,20 +62,20 @@ public class DatabaseOperations {
         productDb.productsDao().deleteProducts(productsListToDelete);
     }
 
-    public void deleteProductsFromList(List<Product> productList){
+    public void deleteProducts(@NonNull List<Product> productList){
         productDb.productsDao().deleteProducts(productList);
     }
 
-    public void addProducts(List<Product> productList){
+    public void addProducts(@NonNull List<Product> productList){
         productDb.productsDao().addProducts(productList);
     }
 
-    public void updateProducts(List<Product> productList){
+    public void updateProducts(@NonNull List<Product> productList){
         for(Product product : productList)
             productDb.productsDao().updateProduct(product);
     }
 
-    public List<Product> getSimilarProductsList(Product testedProduct){
+    public List<Product> getSimilarProductsList(@NonNull Product testedProduct){
         List<Product> allProducts = productDb.productsDao().getAllProductsList();
         List<Product> productList = new ArrayList<>();
         for(Product singleProduct : allProducts){
@@ -102,7 +105,7 @@ public class DatabaseOperations {
         return categoryDb.categoryDao().getAllOwnCategories();
     }
 
-    public void addCategory(Category category) {
+    public void addCategory(@NonNull Category category) {
         categoryDb.categoryDao().addCategory(category);
     }
 

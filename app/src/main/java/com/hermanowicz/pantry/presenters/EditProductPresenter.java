@@ -17,10 +17,10 @@
 
 package com.hermanowicz.pantry.presenters;
 
-import android.content.res.Resources;
 import android.widget.RadioButton;
 
-import com.hermanowicz.pantry.db.ProductDb;
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.models.GroupProducts;
@@ -36,10 +36,10 @@ public class EditProductPresenter {
     private final ProductDataModel model;
     private final ProductDataView productDataView;
 
-    private Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
 
-    public EditProductPresenter(EditProductView view, ProductDataView productDataView, ProductDataModel model){
+    public EditProductPresenter(@NonNull EditProductView view, @NonNull ProductDataView productDataView, @NonNull ProductDataModel model){
         this.model = model;
         this.view = view;
         this.productDataView = productDataView;
@@ -58,11 +58,11 @@ public class EditProductPresenter {
         return model.getGroupProducts();
     }
 
-    public void setTaste(RadioButton selectedTasteButton){
+    public void setTaste(@NonNull RadioButton selectedTasteButton){
         model.setTaste(selectedTasteButton);
     }
 
-    public void saveProduct(GroupProducts groupProducts){
+    public void saveProduct(@NonNull GroupProducts groupProducts){
         if(model.isProductNameNotValid(groupProducts.getProduct())){
             productDataView.showErrorNameNotSet();
         }

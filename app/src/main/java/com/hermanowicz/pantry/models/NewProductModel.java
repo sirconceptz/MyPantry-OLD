@@ -20,6 +20,9 @@ package com.hermanowicz.pantry.models;
 import android.content.res.Resources;
 import android.widget.RadioButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.Product;
 
@@ -33,14 +36,14 @@ public class NewProductModel {
     private String productionDate = "-";
     private String taste;
     private int quantity;
-    private DatabaseOperations databaseOperations;
+    private final DatabaseOperations databaseOperations;
 
-    public NewProductModel(Resources resources, DatabaseOperations databaseOperations) {
+    public NewProductModel(@NonNull Resources resources, @NonNull DatabaseOperations databaseOperations) {
         this.resources = resources;
         this.databaseOperations = databaseOperations;
     }
 
-    public List<Product> buildProductsList(Product product) {
+    public List<Product> createProductsList(@NonNull Product product) {
         List<Product> productsList = new ArrayList<>();
         for (int counter = 1; counter <= quantity; counter++) {
             product.setTaste(taste);
@@ -56,7 +59,7 @@ public class NewProductModel {
         return databaseOperations.getIdOfLastProductInDb();
     }
 
-    public void addProducts(List<Product> productList){
+    public void addProducts(@NonNull List<Product> productList){
         databaseOperations.addProducts(productList);
     }
 
@@ -70,14 +73,14 @@ public class NewProductModel {
         this.productionDate = year + "-" + month + "-" + day;
     }
 
-    public void setTaste(RadioButton selectedTasteButton){
+    public void setTaste(@Nullable RadioButton selectedTasteButton){
         if(selectedTasteButton == null)
             this.taste = "";
         else
             this.taste = selectedTasteButton.getText().toString();
     }
 
-    public void parseQuantityProducts(String quantity) {
+    public void parseQuantityProducts(@NonNull String quantity) {
         try {
             this.quantity = Integer.parseInt(quantity);
         } catch (NumberFormatException e) {
@@ -116,14 +119,14 @@ public class NewProductModel {
         return statementToShow;
     }
 
-    public boolean isProductNameNotValid(Product product) {
+    public boolean isProductNameNotValid(@NonNull Product product) {
         boolean correctProductName = false;
         if (product.getName().length() > 0)
             correctProductName = true;
         return !correctProductName;
     }
 
-    public boolean isTypeOfProductValid(Product product) {
+    public boolean isTypeOfProductValid(@NonNull Product product) {
         String[] typeOfProductsArray = resources.getStringArray(R.array.Product_type_of_product_array);
         boolean correctTypeOfProduct = false;
         if (!product.getTypeOfProduct().equals(typeOfProductsArray[0]))

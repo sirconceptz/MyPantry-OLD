@@ -22,6 +22,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -46,9 +48,13 @@ import org.jetbrains.annotations.NotNull;
 public class NameFilterDialog extends AppCompatDialogFragment {
 
     private DialogNameBinding binding;
-
+    private Activity activity;
+    private View view;
     private FilterDialogListener dialogListener;
     private String filterName;
+
+    private EditText name;
+    private Button clearBtn;
 
     public NameFilterDialog(FilterModel filterProduct) {
         this.filterName = filterProduct.getName();
@@ -57,23 +63,17 @@ public class NameFilterDialog extends AppCompatDialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Activity activity = getActivity();
-        assert activity != null;
+        initView();
+        setListeners();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
-
-        binding = DialogNameBinding.inflate(activity.getLayoutInflater());
-        View view = binding.getRoot();
-
-        if (filterName != null) binding.nameValue.setText(filterName);
-
-        binding.buttonClear.setOnClickListener(view1 -> binding.nameValue.setText(""));
 
         builder.setView(view)
                 .setTitle(getString(R.string.Product_name))
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    filterName = binding.nameValue.getText().toString();
+                    filterName = name.getText().toString();
                     if (!filterName.equals("")) {
                         dialogListener.setFilterName(filterName);
                     } else {
@@ -81,6 +81,21 @@ public class NameFilterDialog extends AppCompatDialogFragment {
                     }
                 });
         return builder.create();
+    }
+
+    private void initView() {
+        activity = getActivity();
+        binding = DialogNameBinding.inflate(activity.getLayoutInflater());
+        view = binding.getRoot();
+
+        name = binding.nameValue;
+        clearBtn = binding.buttonClear;
+
+        if (filterName != null) name.setText(filterName);
+    }
+
+    private void setListeners() {
+        clearBtn.setOnClickListener(view1 -> name.setText(""));
     }
 
     @Override

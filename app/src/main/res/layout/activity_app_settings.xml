@@ -93,14 +93,13 @@
 
             <Spinner
                 android:id="@+id/spinner_cameraSelector"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="64dp"
                 android:entries="@array/AppSettingsActivity_camera_to_scan"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="@+id/spinner_appThemeSelector"
-                app:layout_constraintTop_toTopOf="@+id/spinner_appThemeSelector" />
+                app:layout_constraintTop_toTopOf="@+id/textView_whichCameraToScanProducts" />
 
             <CheckBox
                 android:id="@+id/checkbox_scannerVibrationMode"
@@ -253,7 +252,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/AppSettingsActivity_clear_database"
@@ -271,7 +270,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         android:text=""
         app:layout_constraintStart_toStartOf="@id/appVersion"
@@ -284,7 +283,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         android:text=""
         app:layout_constraintStart_toStartOf="parent"

@@ -119,7 +119,7 @@
                 ads:layout_constraintTop_toTopOf="@+id/text_productTypeLabel" />
 
             <TextView
-                android:id="@+id/text_productFeaturesValue"
+                android:id="@+id/text_product_category_value"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -157,8 +157,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productFeaturesValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productFeaturesValue" />
+                ads:layout_constraintStart_toStartOf="@+id/text_product_category_value"
+                ads:layout_constraintTop_toTopOf="@+id/text_product_category_value" />
 
             <TextView
                 android:id="@+id/text_productExpirationDateLabel"
@@ -411,41 +411,42 @@
                 android:id="@+id/button_printQRCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="64dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/PrintQRCodesActivity_print_qr_codes"
                 ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toTopOf="@+id/text_productDosageValue" />
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintTop_toBottomOf="@+id/text_productDosageValue" />
 
             <Button
                 android:id="@+id/button_editProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="64dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_edit_product"
                 ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toTopOf="@+id/button_printQRCode" />
+                ads:layout_constraintTop_toBottomOf="@+id/button_printQRCode" />
 
             <Button
                 android:id="@+id/button_deleteProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="64dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_delete_product"
                 ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toTopOf="@+id/button_editProduct" />
+                ads:layout_constraintTop_toBottomOf="@+id/button_editProduct" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

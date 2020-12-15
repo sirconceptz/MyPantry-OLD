@@ -19,6 +19,8 @@ package com.hermanowicz.pantry.presenters;
 
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
 import com.hermanowicz.pantry.models.AppSettingsModel;
 
@@ -27,7 +29,7 @@ public class AppSettingsPresenter {
     private final AppSettingsView view;
     private final AppSettingsModel model;
 
-    public AppSettingsPresenter(AppSettingsView view, SharedPreferences preferences) {
+    public AppSettingsPresenter(@NonNull AppSettingsView view, @NonNull SharedPreferences preferences) {
         this.view = view;
         this.model = new AppSettingsModel(preferences);
     }

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
@@ -20,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 public class AuthorDialog extends AppCompatDialogFragment {
 
     private DialogAuthorBinding binding;
+    private Activity activity;
+    private View view;
     private ImageView linkedInProfile, facebookProfile;
 
     public static AuthorDialog newInstance(int title) {
@@ -33,11 +34,8 @@ public class AuthorDialog extends AppCompatDialogFragment {
     @NotNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Activity activity = getActivity();
-        assert activity != null;
-
-        binding = DialogAuthorBinding.inflate(activity.getLayoutInflater());
-        View view = binding.getRoot();
+        initView();
+        setListeners();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
 
@@ -46,13 +44,14 @@ public class AuthorDialog extends AppCompatDialogFragment {
                 .setPositiveButton(getString(R.string.General_cancel), (dialog, which) -> {
                 });
 
-        initView();
-        setListeners();
-
         return builder.create();
     }
 
     private void initView() {
+        activity = getActivity();
+        assert activity != null;
+        binding = DialogAuthorBinding.inflate(activity.getLayoutInflater());
+        view = binding.getRoot();
         linkedInProfile = binding.linkedIn;
         facebookProfile = binding.facebook;
     }

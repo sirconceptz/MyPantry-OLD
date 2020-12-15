@@ -17,13 +17,15 @@
 
 package com.hermanowicz.pantry.presenters;
 
+import androidx.annotation.NonNull;
+
 import com.hermanowicz.pantry.interfaces.MainView;
 
 public class MainPresenter {
 
     private final MainView view;
 
-    public MainPresenter(MainView view) {
+    public MainPresenter(@NonNull MainView view) {
         this.view = view;
     }
 

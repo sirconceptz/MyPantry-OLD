@@ -26,6 +26,7 @@ import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.BarcodeFormat;
@@ -51,19 +52,19 @@ public class PrintQRCodesModel {
     private ArrayList<String> expirationDatesArray;
     private AppCompatActivity activity;
 
-    public void setTextToQRCodeArray(ArrayList<String> textToQRCodeArray) {
+    public void setTextToQRCodeArray(@NonNull ArrayList<String> textToQRCodeArray) {
         this.textToQRCodeArray = textToQRCodeArray;
     }
 
-    public void setNamesOfProductsArray(ArrayList<String> namesOfProductsArray) {
+    public void setNamesOfProductsArray(@NonNull ArrayList<String> namesOfProductsArray) {
         this.namesOfProductsArray = namesOfProductsArray;
     }
 
-    public void setExpirationDatesArray(ArrayList<String> expirationDatesArray) {
+    public void setExpirationDatesArray(@NonNull ArrayList<String> expirationDatesArray) {
         this.expirationDatesArray = expirationDatesArray;
     }
 
-    public void setActivity(AppCompatActivity activity) {
+    public void setActivity(@NonNull AppCompatActivity activity) {
         this.activity = activity;
     }
 
@@ -78,7 +79,7 @@ public class PrintQRCodesModel {
                 23);
     }
 
-    public Bitmap generateQRCode(String textToQrCode) {
+    public Bitmap generateQRCode(@NonNull String textToQrCode) {
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = null;

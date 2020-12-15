@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,17 +39,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.material.navigation.NavigationView;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.MyPantryDrawerLayoutBinding;
-import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
-import com.hermanowicz.pantry.db.ProductDb;
 import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
 import com.hermanowicz.pantry.dialog.NameFilterDialog;
 import com.hermanowicz.pantry.dialog.ProductFeaturesFilterDialog;
@@ -86,14 +89,18 @@ import java.util.List;
 public class MyPantryActivity extends AppCompatActivity implements MyPantryView, FilterDialogListener, DeleteProductsDialogListener {
 
     private MyPantryDrawerLayoutBinding binding;
-
-    private ProductsAdapter adapterProductsRecyclerView;
+    private MyPantryPresenter presenter;
     private Context context;
-    private SharedPreferences sharedPreferences;
     private ActionMode actionMode;
+    private ProductsAdapter adapterProductRecyclerView;
+
+    private RecyclerView productRecyclerView;
+    private NavigationView navView;
+    private TextView statement;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
     private AdView adView;
 
-    private MyPantryPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,24 +108,31 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
+        initView();
+        setListeners();
+    }
+
+    private void initView() {
         binding = MyPantryDrawerLayoutBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        presenter = new MyPantryPresenter(this, new MyPantryModel(ProductDb.getInstance(context), CategoryDb.getInstance(context)));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        presenter = new MyPantryPresenter(this, new MyPantryModel(context));
 
-        setSupportActionBar(binding.include.toolbar);
+        adView = binding.include.adview;
+        productRecyclerView = binding.include.recyclerviewProducts;
+        navView = binding.navView;
+        statement = binding.include.textStatement;
+        drawerLayout = binding.drawerLayout;
+        toolbar = binding.include.toolbar;
+
+        setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        initData();
-    }
-
-    private void initData() {
-        adView = binding.include.adview;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -126,14 +140,17 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         presenter.setProductLiveData();
         presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
         presenter.setAllProductsList();
-        adapterProductsRecyclerView = new ProductsAdapter(sharedPreferences);
-        adapterProductsRecyclerView.setData(presenter.getGroupProductsList());
-        binding.include.recyclerviewProducts.setAdapter(adapterProductsRecyclerView);
-        adapterProductsRecyclerView.notifyDataSetChanged();
-        binding.include.recyclerviewProducts.setLayoutManager(new LinearLayoutManager(context));
-        binding.include.recyclerviewProducts.setHasFixedSize(true);
-        binding.include.recyclerviewProducts.setItemAnimator(new DefaultItemAnimator());
-        binding.include.recyclerviewProducts.addOnItemTouchListener(new RecyclerClickListener(this, binding.include.recyclerviewProducts, new RecyclerClickListener.OnItemClickListener() {
+        adapterProductRecyclerView = new ProductsAdapter(sharedPreferences);
+        adapterProductRecyclerView.setData(presenter.getGroupProductsList());
+        productRecyclerView.setAdapter(adapterProductRecyclerView);
+        adapterProductRecyclerView.notifyDataSetChanged();
+        productRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        productRecyclerView.setHasFixedSize(true);
+        productRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    private void setListeners() {
+        productRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this, productRecyclerView, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 if (presenter.getIsMultiSelect())
@@ -149,19 +166,18 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
             @Override
             public void onItemLongClick(View view, int position) {
-                /*if (!presenter.getIsMultiSelect()) {
+                if (!presenter.getIsMultiSelect()) {
                     presenter.clearMultiSelectList();
                     presenter.setIsMultiSelect(true);
-
                     if (actionMode == null) {
                         actionMode = startActionMode(actionModeCallback);
                     }
                 }
-                multiSelect(position);*/
+                multiSelect(position);
             }
         }));
 
-        binding.navView.setNavigationItemSelectedListener(
+        navView.setNavigationItemSelectedListener(
                 menuItem -> {
                     int typeOfDialog = menuItem.getItemId();
                     if (typeOfDialog == R.id.filter_clear){
@@ -170,14 +186,14 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                     else{
                         presenter.openDialog(typeOfDialog);
                     }
-                    binding.drawerLayout.closeDrawers();
+                    drawerLayout.closeDrawers();
                     return true;
                 });
     }
 
     private void multiSelect(int position) {
         if(!presenter.getIsMultiSelect())
-            binding.include.toolbar.startActionMode(actionModeCallback);
+            toolbar.startActionMode(actionModeCallback);
         if (actionMode != null) {
             presenter.addMultiSelectProduct(position);
             if(presenter.getGroupsProductsSelectList().size() == 0)
@@ -220,59 +236,33 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adView.resume();
-    }
-
-    @Override
-    public void onPause() {
-        adView.pause();
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        adView.destroy();
-        super.onDestroy();
-    }
-
-    @Override
     public void openFilterDialog(int typeOfDialog) {
         createDialog(typeOfDialog).show(getSupportFragmentManager(), "");
     }
 
     @Override
     public void setFilterIcon(int position) {
-        binding.navView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_true);
+        navView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_true);
     }
 
     @Override
     public void clearFilterIcon(int position) {
-        binding.navView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_false);
+        navView.getMenu().getItem(position).setIcon(R.drawable.ic_check_box_false);
     }
 
     @Override
-    public void showEmptyPantryStatement(boolean state) {
-        if(state)
-            binding.include.textStatement.setText(getString(R.string.MyPantryActivity_products_not_found));
+    public void showProductsNotFound(boolean noProducts) {
+        if(noProducts)
+            statement.setText(getString(R.string.MyPantryActivity_products_not_found));
         else
-            binding.include.textStatement.setText("");
+            statement.setText("");
     }
 
     @Override
     public void clearFilterIcons() {
-        int sizeOfMenu = binding.navView.getMenu().size();
+        int sizeOfMenu = navView.getMenu().size();
         for (int i = 1; i < sizeOfMenu - 1; i++) {
-            binding.navView.getMenu().getItem(i).setIcon(R.drawable.ic_check_box_false);
+            navView.getMenu().getItem(i).setIcon(R.drawable.ic_check_box_false);
         }
     }
 
@@ -284,19 +274,20 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public void updateSelectsRecyclerViewAdapter() {
-        adapterProductsRecyclerView.setMultiSelectList(presenter.getGroupsProductsSelectList());
-        adapterProductsRecyclerView.notifyDataSetChanged();
+        adapterProductRecyclerView.setMultiSelectList(presenter.getGroupsProductsSelectList());
+        adapterProductRecyclerView.notifyDataSetChanged();
     }
 
     @Override
     public void updateProductsRecyclerViewAdapter() {
         presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
-        adapterProductsRecyclerView.setData(presenter.getGroupProductsList());
-        adapterProductsRecyclerView.notifyDataSetChanged();
+        adapterProductRecyclerView.setData(presenter.getGroupProductsList());
+        adapterProductRecyclerView.notifyDataSetChanged();
+        productRecyclerView.setAdapter(adapterProductRecyclerView);
     }
 
     @Override
-    public void onPrintProducts(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList) {
+    public void onPrintProducts(@NonNull ArrayList<String> textToQRCodeList, @NonNull ArrayList<String> namesOfProductsList, @NonNull ArrayList<String> expirationDatesList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
                 .putStringArrayListExtra("text_to_qr_code", textToQRCodeList)
                 .putStringArrayListExtra("expiration_dates", expirationDatesList)
@@ -305,7 +296,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     }
 
     @Override
-    public void onDeleteProducts(List<Product> productList) {
+    public void onDeleteProducts(@NonNull List<Product> productList) {
         for(Product product : productList) {
             Notification.cancelNotification(context, product);
         }
@@ -369,7 +360,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
-                binding.drawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_new_item:
                 Intent intent = new Intent(this, NewProductActivity.class);
@@ -384,7 +375,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         return super.onOptionsItemSelected(item);
     }
 
-    private ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
@@ -418,4 +409,30 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             updateSelectsRecyclerViewAdapter();
         }
     };
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMainActivity();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        adView.destroy();
+        super.onDestroy();
+    }
 }
