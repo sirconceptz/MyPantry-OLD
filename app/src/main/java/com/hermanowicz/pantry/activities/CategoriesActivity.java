@@ -137,8 +137,11 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     }
 
     @Override
-    public void showEmptyCategoryListStatement() {
-        statement.setVisibility(View.VISIBLE);
+    public void showEmptyCategoryListStatement(boolean visible) {
+        if(visible)
+            statement.setVisibility(View.VISIBLE);
+        else
+            statement.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -154,7 +157,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
 
     @Override
     public void onErrorAddNewCategory() {
-        Toast.makeText(this, R.string.Error_wrong_category_data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.Error_wrong_data, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -79,9 +79,11 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private boolean isTypeOfProductTouched;
 
     private Spinner productType, productCategory;
-    private EditText productName, productExpirationDate, productProductionDate, productComposition, productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
-    private CheckBox productHasSugar, productHasSalt;
-    private RadioButton productIsSweet, productIsSour, productIsSweetAndSour, productIsBitter, productIsSalty;
+    private EditText productName, productExpirationDate, productProductionDate, productComposition,
+            productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
+    private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
+    private RadioButton productIsSweet, productIsSour, productIsSweetAndSour, productIsBitter,
+            productIsSalty;
     private AdView adView;
 
     @Override
@@ -122,6 +124,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productWeight = binding.productEdit.edittextWeight;
         productHasSugar = binding.productEdit.checkboxHasSugar;
         productHasSalt = binding.productEdit.checkboxHasSalt;
+        productIsBio = binding.productEdit.checkboxIsBio;
+        productIsVege = binding.productEdit.checkboxIsVege;
         productQuantity = binding.productEdit.edittextQuantity;
         productIsSweet = binding.productEdit.radiobtnIsSweet;
         productIsSour = binding.productEdit.radiobtnIsSour;
@@ -130,7 +134,6 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productIsSalty = binding.productEdit.radiobtnIsSalty;
 
         binding.productEdit.edittextVolume.setText(String.format("%s (%s)", getString(R.string.Product_volume), getString(R.string.Product_volume_unit)));
-
         binding.productEdit.edittextWeight.setText(String.format("%s (%s)", getString(R.string.Product_weight), getString(R.string.Product_weight_unit)));
 
         productName.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -239,6 +242,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         product.setWeight(Integer.parseInt(productWeight.getText().toString()));
         product.setHasSugar(productHasSugar.isChecked());
         product.setHasSalt(productHasSalt.isChecked());
+        product.setIsBio(productIsBio.isChecked());
+        product.setIsVege(productIsVege.isChecked());
         GroupProducts groupProducts = new GroupProducts(product, Integer.parseInt(productQuantity.getText().toString()));
         presenter.setTaste(taste);
         presenter.saveProduct(groupProducts);

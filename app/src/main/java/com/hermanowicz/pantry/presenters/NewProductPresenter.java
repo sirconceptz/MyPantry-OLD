@@ -105,6 +105,10 @@ public class NewProductPresenter {
         return model.getOwnCategoriesArray();
     }
 
+    public String[] getStorageLocationsArray(){
+        return model.getStorageLocationsArray();
+    }
+
     public int[] getExpirationDateArray() {
         return model.getExpirationDateArray();
     }

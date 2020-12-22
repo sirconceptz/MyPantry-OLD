@@ -88,11 +88,13 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private int day, month, year;
     private boolean isTypeOfProductTouched;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> productTypeAdapter, productCategoryAdapter;
+    private ArrayAdapter<CharSequence> productTypeAdapter, productCategoryAdapter,
+            productStorageLocationAdapter;
 
-    private Spinner productType, productCategory;
-    private EditText productName, productExpirationDate, productProductionDate, productComposition, productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
-    private CheckBox productHasSugar, productHasSalt;
+    private Spinner productType, productCategory, productStorageLocation;
+    private EditText productName, productExpirationDate, productProductionDate, productComposition,
+            productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
+    private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
     private Button addProduct;
     private AdView adView;
 
@@ -120,6 +122,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         productName = binding.productEdit.edittextName;
         productType = binding.productEdit.spinnerProductType;
         productCategory = binding.productEdit.spinnerProductCategory;
+        productStorageLocation = binding.productEdit.spinnerProductStorageLocation;
         productExpirationDate = binding.productEdit.edittextExpirationDate;
         productProductionDate = binding.productEdit.edittextProductionDate;
         productComposition = binding.productEdit.edittextComposition;
@@ -129,6 +132,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         productWeight = binding.productEdit.edittextWeight;
         productHasSugar = binding.productEdit.checkboxHasSugar;
         productHasSalt = binding.productEdit.checkboxHasSalt;
+        productIsBio = binding.productEdit.checkboxIsBio;
+        productIsVege = binding.productEdit.checkboxIsVege;
         productQuantity = binding.productEdit.edittextQuantity;
         TextView volumeLabel = binding.productEdit.textVolumeLabel;
         TextView weightLabel = binding.productEdit.textWeightLabel;
@@ -151,6 +156,9 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         productType.setAdapter(productTypeAdapter);
         productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
         productCategory.setAdapter(productCategoryAdapter);
+        productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
+        productStorageLocation.setAdapter(productStorageLocationAdapter);
+
     }
 
     private void setListeners() {
@@ -235,6 +243,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         product.setName(productName.getText().toString());
         product.setTypeOfProduct(String.valueOf(productType.getSelectedItem()));
         product.setProductFeatures(String.valueOf(productCategory.getSelectedItem()));
+        product.setStorageLocation(String.valueOf(productStorageLocation.getSelectedItem()));
         product.setComposition(productComposition.getText().toString());
         product.setHealingProperties(productHealingProperties.getText().toString());
         product.setDosage(productDosage.getText().toString());
@@ -242,6 +251,8 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         product.setWeight(Integer.parseInt(productWeight.getText().toString()));
         product.setHasSugar(productHasSugar.isChecked());
         product.setHasSalt(productHasSalt.isChecked());
+        product.setIsBio(productIsBio.isChecked());
+        product.setIsVege(productIsVege.isChecked());
         presenter.setTaste(taste);
         presenter.setQuantity(productQuantity.getText().toString());
         presenter.addProducts(product);

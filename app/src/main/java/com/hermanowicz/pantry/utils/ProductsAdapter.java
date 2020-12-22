@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -53,6 +55,7 @@ public class ProductsAdapter extends
     private List<Product> multiSelectList = new ArrayList<>();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final SharedPreferences preferences;
+    int itemAnimPosition = -1;
 
     public ProductsAdapter(SharedPreferences preferences) {
         this.preferences = preferences;
@@ -77,6 +80,8 @@ public class ProductsAdapter extends
         TextView expirationDateTv = binding.textExpirationDateValue;
         TextView hasSugar = binding.textHasSugar;
         TextView hasSalt = binding.textHasSalt;
+        TextView isVege = binding.textIsVege;
+        TextView isBio = binding.textIsBio;
 
         Context context = nameTv.getContext();
         Resources resources = context.getResources();
@@ -95,6 +100,10 @@ public class ProductsAdapter extends
             hasSugar.setVisibility(View.VISIBLE);
         if(product.getHasSalt())
             hasSalt.setVisibility(View.VISIBLE);
+        if(product.getIsVege())
+            isVege.setVisibility(View.VISIBLE);
+        if(product.getIsBio())
+            isBio.setVisibility(View.VISIBLE);
         if(product.getExpirationDate().length() > 1) {
             DateHelper dateHelper = new DateHelper(product.getExpirationDate());
             expirationDateTv.setText(dateHelper.getDateInLocalFormat());
@@ -120,6 +129,12 @@ public class ProductsAdapter extends
             } else {
                 viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_expired_products));
             }
+        }
+
+        if(viewHolder.getAdapterPosition() > itemAnimPosition) {
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.slide_in);
+            viewHolder.itemView.startAnimation(animation);
+            itemAnimPosition = viewHolder.getAdapterPosition();
         }
     }
 

@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
@@ -34,7 +35,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  * @since   1.0
  */
 
-@Database(entities = {Product.class}, version = 1)
+@Database(entities = {Product.class}, version = 3)
 public abstract class ProductDb extends RoomDatabase {
 
     public abstract ProductsDao productsDao();
@@ -54,9 +55,31 @@ public abstract class ProductDb extends RoomDatabase {
                                 super.onCreate(db);
                             }
                         })
+                        .addMigrations(ALL_MIGRATIONS)
                         .build();
             }
             return INSTANCE;
         }
     }
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE products ADD COLUMN storageLocation TEXT DEFAULT ''");
+        }
+    };
+
+    static final Migration MIGRATION_1_2 = new Migration(1, 2) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE products ADD COLUMN isVege INTEGER NOT NULL DEFAULT '0'");
+            database.execSQL(
+                    "ALTER TABLE products ADD COLUMN isBio INTEGER NOT NULL DEFAULT '0'");
+        }
+    };
+
+    private static final Migration[] ALL_MIGRATIONS = new Migration[]{
+            MIGRATION_1_2, MIGRATION_2_3};
 }

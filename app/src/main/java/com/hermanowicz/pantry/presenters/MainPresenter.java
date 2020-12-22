@@ -43,6 +43,8 @@ public class MainPresenter {
 
     public void navigateToCategoriesActivity() { view.onNavigationToCategoriesActivity(); }
 
+    public void navigateToStorageLocationsActivity() { view.onNavigationToStorageLocationsActivity(); }
+
     public void navigateToAppSettingsActivity() {
         view.onNavigationToAppSettingsActivity();
     }

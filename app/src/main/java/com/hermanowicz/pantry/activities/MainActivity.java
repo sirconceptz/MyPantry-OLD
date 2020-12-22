@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private Context context;
     private long pressedTime;
 
-    private Button myPantry, scanProduct, newProduct, ownCategories, appSettings;
+    private Button myPantry, scanProduct, newProduct, ownCategories, storageLocations, appSettings;
     private AdView adView;
     
     @Override
@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         scanProduct = binding.buttonScanProduct;
         newProduct = binding.buttonNewProduct;
         ownCategories = binding.buttonOwnCategories;
+        storageLocations = binding.buttonStorageLocations;
         appSettings = binding.buttonAppSettings;
 
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         scanProduct.setOnClickListener(view -> presenter.navigateToScanProductActivity());
         newProduct.setOnClickListener(view -> presenter.navigateToNewProductActivity());
         ownCategories.setOnClickListener(view -> presenter.navigateToCategoriesActivity());
+        storageLocations.setOnClickListener(view -> presenter.navigateToStorageLocationsActivity());
         appSettings.setOnClickListener(view -> presenter.navigateToAppSettingsActivity());
     }
 
@@ -123,6 +125,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void onNavigationToCategoriesActivity() {
         Intent categoriesActivity = new Intent(MainActivity.this, CategoriesActivity.class);
         startActivity(categoriesActivity);
+    }
+
+    @Override
+    public void onNavigationToStorageLocationsActivity() {
+        Intent storageLocationsActivity = new Intent(MainActivity.this, StorageLocationsActivity.class);
+        startActivity(storageLocationsActivity);
     }
 
     @Override

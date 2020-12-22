@@ -49,7 +49,7 @@
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_product_type" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_product_type" />
 
     <Button
         android:id="@+id/button_clear"
@@ -63,6 +63,6 @@
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_productCategory" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_productCategory" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -51,13 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
             <TextView
                 android:id="@+id/text_quantityLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="64dp"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
@@ -70,147 +69,171 @@
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
+                android:layout_marginStart="150dp"
                 android:layout_marginTop="64dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toEndOf="@+id/text_quantityLabel"
+                ads:layout_constraintStart_toEndOf="@id/text_quantityLabel"
                 ads:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/text_productTypeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_type"
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_quantityLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_quantityLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_quantityLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_quantityLabel" />
 
             <TextView
                 android:id="@+id/text_productTypeValue"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_quantityValue"
-                ads:layout_constraintTop_toTopOf="@id/text_quantityValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_quantityValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_quantityValue" />
 
             <TextView
                 android:id="@+id/text_productCategoryLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_category"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productTypeLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productTypeLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productTypeLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productTypeLabel" />
 
             <TextView
-                android:id="@+id/text_product_category_value"
+                android:id="@+id/text_productCategoryValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productTypeValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productTypeValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productTypeValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productTypeValue" />
+
+            <TextView
+                android:id="@+id/text_productStorageLocationLabel"
+                android:textColor="@color/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/Product_storage_location"
+                android:textSize="20sp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                ads:layout_constraintStart_toStartOf="@id/text_productCategoryLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productCategoryLabel" />
+
+            <TextView
+                android:id="@+id/text_productStorageLocationValue"
+                android:textColor="@color/text_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text=""
+                android:textSize="20sp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="@id/text_productCategoryValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productCategoryValue" />
 
             <TextView
                 android:id="@+id/text_productProductionDateLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_production_date"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productCategoryLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productCategoryLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productStorageLocationLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productStorageLocationLabel" />
 
             <TextView
                 android:id="@+id/text_productProductionDateValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_product_category_value"
-                ads:layout_constraintTop_toTopOf="@+id/text_product_category_value" />
+                ads:layout_constraintStart_toStartOf="@id/text_productStorageLocationValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productStorageLocationValue" />
 
             <TextView
                 android:id="@+id/text_productExpirationDateLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_expiration_date"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productProductionDateLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productProductionDateLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productProductionDateLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productProductionDateLabel" />
 
             <TextView
                 android:id="@+id/text_productExpirationDateValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productProductionDateValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productProductionDateValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productProductionDateValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productProductionDateValue" />
 
             <TextView
                 android:id="@+id/text_productVolumeLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_volume"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productExpirationDateLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productExpirationDateLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productExpirationDateLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productExpirationDateLabel" />
 
             <TextView
                 android:id="@+id/text_productVolumeValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productExpirationDateValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productExpirationDateValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productExpirationDateValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productExpirationDateValue" />
 
             <TextView
                 android:id="@+id/text_productWeightLabel"
@@ -221,48 +244,48 @@
                 android:text="@string/Product_weight"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productVolumeLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productVolumeLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productVolumeLabel"
+                ads:layout_constraintTop_toTopOf="@id/text_productVolumeLabel" />
 
             <TextView
                 android:id="@+id/text_productWeightValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
                 ads:layout_constraintStart_toStartOf="@+id/text_productVolumeValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productVolumeValue" />
+                ads:layout_constraintTop_toBottomOf="@+id/text_productVolumeValue" />
 
             <TextView
                 android:id="@+id/text_productTasteLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_taste"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintStart_toStartOf="@+id/text_productWeightLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productWeightLabel" />
+                ads:layout_constraintTop_toBottomOf="@+id/text_productWeightLabel" />
 
             <TextView
                 android:id="@+id/text_productTasteValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productWeightValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productWeightValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productWeightValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productWeightValue" />
 
             <TextView
                 android:id="@+id/text_productHasSugarLabel"
@@ -273,48 +296,100 @@
                 android:text="@string/Product_has_sugar"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productTasteLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productTasteLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productTasteLabel"
+                ads:layout_constraintTop_toTopOf="@id/text_productTasteLabel" />
 
             <TextView
                 android:id="@+id/text_productHasSugarValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productTasteValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productTasteValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productTasteValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productTasteValue" />
 
             <TextView
                 android:id="@+id/text_productHasSaltLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/Product_has_salt"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productHasSugarLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productHasSugarLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productHasSugarLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productHasSugarLabel" />
 
             <TextView
                 android:id="@+id/text_productHasSaltValue"
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productHasSugarValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productHasSugarValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productHasSugarValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productHasSugarValue" />
+
+            <TextView
+                android:id="@+id/text_productIsVegeLabel"
+                android:textColor="@color/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/Product_vege"
+                android:textSize="20sp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                ads:layout_constraintStart_toStartOf="@id/text_productHasSaltLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productHasSaltLabel" />
+
+            <TextView
+                android:id="@+id/text_productIsVegeValue"
+                android:textColor="@color/text_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/ProductDetailsActivity_no"
+                android:textSize="20sp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="@id/text_productHasSaltValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productHasSaltValue" />
+
+            <TextView
+                android:id="@+id/text_productIsBioLabel"
+                android:textColor="@color/text_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/Product_bio"
+                android:textSize="20sp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                ads:layout_constraintStart_toStartOf="@id/text_productIsVegeLabel"
+                ads:layout_constraintTop_toBottomOf="@id/text_productIsVegeLabel" />
+
+            <TextView
+                android:id="@+id/text_productIsBioValue"
+                android:textColor="@color/text_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/ProductDetailsActivity_no"
+                android:textSize="20sp"
+                android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="@id/text_productIsVegeValue"
+                ads:layout_constraintTop_toBottomOf="@id/text_productIsVegeValue" />
 
             <TextView
                 android:id="@+id/text_productCompositionLabel"
@@ -325,8 +400,8 @@
                 android:text="@string/Product_composition"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productHasSaltLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productHasSaltLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productIsBioLabel"
+                ads:layout_constraintTop_toTopOf="@id/text_productIsBioLabel" />
 
             <TextView
                 android:id="@+id/text_productCompositionValue"
@@ -343,8 +418,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productHasSaltValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productHasSaltValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productIsBioValue"
+                ads:layout_constraintTop_toTopOf="@id/text_productIsBioValue" />
 
             <TextView
                 android:id="@+id/text_productHealingPropertiesLabel"
@@ -355,8 +430,8 @@
                 android:text="@string/Product_healing_properties"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productCompositionLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productCompositionLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productCompositionLabel"
+                ads:layout_constraintTop_toTopOf="@id/text_productCompositionLabel" />
 
             <TextView
                 android:id="@+id/text_productHealingPropertiesValue"
@@ -373,8 +448,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productCompositionValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productCompositionValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productCompositionValue"
+                ads:layout_constraintTop_toTopOf="@id/text_productCompositionValue" />
 
             <TextView
                 android:id="@+id/text_productDosageLabel"
@@ -386,8 +461,8 @@
                 android:text="@string/Product_dosage"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productHealingPropertiesLabel"
-                ads:layout_constraintTop_toTopOf="@+id/text_productHealingPropertiesLabel" />
+                ads:layout_constraintStart_toStartOf="@id/text_productHealingPropertiesLabel"
+                ads:layout_constraintTop_toTopOf="@id/text_productHealingPropertiesLabel" />
 
             <TextView
                 android:id="@+id/text_productDosageValue"
@@ -404,8 +479,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productHealingPropertiesValue"
-                ads:layout_constraintTop_toTopOf="@+id/text_productHealingPropertiesValue" />
+                ads:layout_constraintStart_toStartOf="@id/text_productHealingPropertiesValue"
+                ads:layout_constraintTop_toTopOf="@id/text_productHealingPropertiesValue" />
 
             <Button
                 android:id="@+id/button_printQRCode"
@@ -419,7 +494,7 @@
                 android:text="@string/PrintQRCodesActivity_print_qr_codes"
                 ads:layout_constraintStart_toStartOf="parent"
                 ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintTop_toBottomOf="@+id/text_productDosageValue" />
+                ads:layout_constraintTop_toBottomOf="@id/text_productDosageValue" />
 
             <Button
                 android:id="@+id/button_editProduct"
@@ -432,7 +507,7 @@
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_edit_product"
                 ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@+id/button_printQRCode" />
+                ads:layout_constraintTop_toBottomOf="@id/button_printQRCode" />
 
             <Button
                 android:id="@+id/button_deleteProduct"
@@ -446,7 +521,7 @@
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_delete_product"
                 ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@+id/button_editProduct" />
+                ads:layout_constraintTop_toBottomOf="@id/button_editProduct" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

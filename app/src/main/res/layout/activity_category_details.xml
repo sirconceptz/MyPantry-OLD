@@ -103,7 +103,7 @@
                 android:layout_marginEnd="8dp"
                 android:hint="@string/CategoryDetailsActivity_description"
                 app:layout_constraintEnd_toEndOf="@id/categoryName"
-                app:layout_constraintStart_toStartOf="@+id/categoryName"
+                app:layout_constraintStart_toStartOf="@id/categoryName"
                 app:layout_constraintTop_toBottomOf="@id/descriptionLabel" />
 
             <TextView
@@ -133,7 +133,7 @@
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionCharCounter" />
+                app:layout_constraintTop_toBottomOf="@id/descriptionCharCounter" />
 
             <Button
                 android:id="@+id/button_deleteCategory"
@@ -147,7 +147,7 @@
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_updateCategory" />
+                app:layout_constraintTop_toBottomOf="@id/button_updateCategory" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

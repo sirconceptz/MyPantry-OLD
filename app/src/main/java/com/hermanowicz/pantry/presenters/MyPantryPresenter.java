@@ -100,7 +100,7 @@ public class MyPantryPresenter {
         view.updateProductsRecyclerViewAdapter();
     }
 
-    public void setProductLiveData() {
+    public void setProductsLiveData() {
         model.setProductsLiveData();
     }
 
@@ -118,6 +118,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(1);
         }
+        setProductsLiveData();
         model.filterProductListByName(filterName);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -128,6 +129,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(2);
         }
+        setProductsLiveData();
         model.filterProductListByExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -138,6 +140,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(3);
         }
+        setProductsLiveData();
         model.filterProductListByProductionDate(filterProductionDateSince, filterProductionDateFor);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -148,6 +151,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(4);
         }
+        setProductsLiveData();
         model.filterProductListByTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -158,6 +162,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(5);
         }
+        setProductsLiveData();
         model.filterProductListByVolume(filterVolumeSince, filterVolumeFor);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -168,6 +173,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(6);
         }
+        setProductsLiveData();
         model.filterProductListByWeight(filterWeightSince, filterWeightFor);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -178,6 +184,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(7);
         }
+        setProductsLiveData();
         model.filterProductListByTaste(filterTaste);
         view.updateProductsRecyclerViewAdapter();
     }
@@ -188,6 +195,7 @@ public class MyPantryPresenter {
         } else {
             view.setFilterIcon(8);
         }
+        setProductsLiveData();
         model.filterProductListBySugarAndSalt(filterHasSugar, filterHasSalt);
         view.updateProductsRecyclerViewAdapter();
     }

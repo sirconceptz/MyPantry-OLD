@@ -88,8 +88,8 @@
                 android:text="@string/AppSettingsActivity_which_camera_to_scan_products"
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/textView_darkmode"
-                app:layout_constraintTop_toBottomOf="@+id/textView_darkmode" />
+                app:layout_constraintStart_toStartOf="@id/textView_darkmode"
+                app:layout_constraintTop_toBottomOf="@id/textView_darkmode" />
 
             <Spinner
                 android:id="@+id/spinner_cameraSelector"
@@ -98,8 +98,8 @@
                 android:entries="@array/AppSettingsActivity_camera_to_scan"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="@+id/spinner_appThemeSelector"
-                app:layout_constraintTop_toTopOf="@+id/textView_whichCameraToScanProducts" />
+                app:layout_constraintEnd_toEndOf="@id/spinner_appThemeSelector"
+                app:layout_constraintTop_toTopOf="@id/textView_whichCameraToScanProducts" />
 
             <CheckBox
                 android:id="@+id/checkbox_scannerVibrationMode"
@@ -114,7 +114,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_whichCameraToScanProducts" />
+                app:layout_constraintTop_toBottomOf="@id/textView_whichCameraToScanProducts" />
 
             <CheckBox
                 android:id="@+id/checkbox_scannerSoundMode"
@@ -129,7 +129,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkbox_scannerVibrationMode" />
+                app:layout_constraintTop_toBottomOf="@id/checkbox_scannerVibrationMode" />
 
             <TextView
                 android:id="@+id/textview_howManyDaysToExpirationDate"
@@ -140,8 +140,8 @@
                 android:text="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification"
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/checkbox_scannerSoundMode"
-                app:layout_constraintTop_toBottomOf="@+id/checkbox_scannerSoundMode" />
+                app:layout_constraintStart_toStartOf="@id/checkbox_scannerSoundMode"
+                app:layout_constraintTop_toBottomOf="@id/checkbox_scannerSoundMode" />
 
             <EditText
                 android:id="@+id/edittext_daysToNotification"
@@ -154,7 +154,7 @@
                 android:inputType="number"
                 android:maxLength="2"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textview_howManyDaysToExpirationDate"
+                app:layout_constraintTop_toTopOf="@id/textview_howManyDaysToExpirationDate"
                 tools:ignore="LabelFor, Autofill" />
 
             <TextView
@@ -166,8 +166,8 @@
                 android:text="@string/AppSettingsActivity_hour_of_notification"
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/textview_howManyDaysToExpirationDate"
-                app:layout_constraintTop_toBottomOf="@+id/textview_howManyDaysToExpirationDate" />
+                app:layout_constraintStart_toStartOf="@id/textview_howManyDaysToExpirationDate"
+                app:layout_constraintTop_toBottomOf="@id/textview_howManyDaysToExpirationDate" />
 
             <NumberPicker
                 android:id="@+id/numberpicker_hourOfNotification"
@@ -177,7 +177,7 @@
                 android:layout_marginEnd="8dp"
                 android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textview_howManyDaysToExpirationDate" />
+                app:layout_constraintTop_toBottomOf="@id/textview_howManyDaysToExpirationDate" />
 
             <TextView
                 android:id="@+id/textView_typesOfNotifications"
@@ -188,8 +188,8 @@
                 android:text="@string/AppSettingsActivity_notifications_send_by"
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="@+id/textview_hourOfNotifications"
-                app:layout_constraintTop_toBottomOf="@+id/textview_hourOfNotifications" />
+                app:layout_constraintStart_toStartOf="@id/textview_hourOfNotifications"
+                app:layout_constraintTop_toBottomOf="@id/textview_hourOfNotifications" />
 
             <CheckBox
                 android:id="@+id/checkbox_emailNotifications"
@@ -203,7 +203,7 @@
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_typesOfNotifications" />
+                app:layout_constraintTop_toBottomOf="@id/textView_typesOfNotifications" />
 
             <CheckBox
                 android:id="@+id/checkbox_pushNotifications"
@@ -213,8 +213,8 @@
                 android:text="@string/AppSettingsActivity_notifications_push"
                 android:textColor="@color/text_color"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="@+id/checkbox_emailNotifications"
-                app:layout_constraintTop_toBottomOf="@+id/checkbox_emailNotifications" />
+                app:layout_constraintEnd_toEndOf="@id/checkbox_emailNotifications"
+                app:layout_constraintTop_toBottomOf="@id/checkbox_emailNotifications" />
 
             <EditText
                 android:id="@+id/edittext_emailAddress"
@@ -230,7 +230,7 @@
                 android:inputType="textEmailAddress"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkbox_pushNotifications"
+                app:layout_constraintTop_toBottomOf="@id/checkbox_pushNotifications"
                 tools:ignore="Autofill" />
 
             <Button
@@ -245,7 +245,7 @@
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edittext_emailAddress" />
+                app:layout_constraintTop_toBottomOf="@id/edittext_emailAddress" />
 
             <Button
                 android:id="@+id/button_clear_product_database"
@@ -258,7 +258,7 @@
                 android:text="@string/AppSettingsActivity_clear_database"
                 android:textSize="20sp"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintTop_toBottomOf="@+id/button_saveSettings" />
+                app:layout_constraintTop_toBottomOf="@id/button_saveSettings" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

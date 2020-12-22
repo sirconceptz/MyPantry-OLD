@@ -3,7 +3,7 @@ package com.hermanowicz.pantry.interfaces;
 import com.hermanowicz.pantry.db.Category;
 
 public interface CategoryDetailsView {
-    void showErrorOnUpdateProduct();
+    void showErrorOnUpdateCategory();
 
     void showCategoryUpdated();
 

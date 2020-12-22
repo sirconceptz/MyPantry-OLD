@@ -65,9 +65,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     private Context context;
     private int productId;
 
-    private TextView productType, productCategory, productExpirationDate,
+    private TextView productType, productCategory, productStorageLocation, productExpirationDate,
             productProductionDate, productComposition, productHealingProperties, productDosage,
-            productVolume, productWeight, productQuantity, productHasSugar, productHasSalt, taste;
+            productVolume, productWeight, productQuantity, productHasSugar, productHasSalt,
+            productIsVege, productIsBio, productTaste;
     private Button deleteProduct, printQrCode, editProduct;
     private AdView adView;
 
@@ -91,6 +92,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         Toolbar toolbar = binding.toolbar;
         productType = binding.textProductTypeValue;
         productCategory = binding.textProductCategoryValue;
+        productStorageLocation = binding.textProductStorageLocationValue;
         productExpirationDate = binding.textProductExpirationDateValue;
         productProductionDate = binding.textProductProductionDateValue;
         productComposition = binding.textProductCompositionValue;
@@ -101,7 +103,9 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         productQuantity = binding.textQuantityValue;
         productHasSugar = binding.textProductHasSugarValue;
         productHasSalt = binding.textProductHasSaltValue;
-        taste = binding.textProductTasteValue;
+        productIsBio = binding.textProductIsBioValue;
+        productIsVege = binding.textProductIsVegeValue;
+        productTaste = binding.textProductTasteValue;
         deleteProduct = binding.buttonDeleteProduct;
         printQrCode = binding.buttonPrintQRCode;
         editProduct = binding.buttonEditProduct;
@@ -133,6 +137,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         DateHelper dateHelper = new DateHelper(groupProducts.getProduct().getExpirationDate());
         Objects.requireNonNull(getSupportActionBar()).setTitle(groupProducts.getProduct().getName());
         productType.setText(groupProducts.getProduct().getTypeOfProduct());
+        productStorageLocation.setText(groupProducts.getProduct().getStorageLocation());
         productQuantity.setText(String.valueOf(groupProducts.getQuantity()));
         productCategory.setText(groupProducts.getProduct().getProductFeatures());
         productExpirationDate.setText(dateHelper.getDateInLocalFormat());
@@ -143,9 +148,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         productDosage.setText(groupProducts.getProduct().getDosage());
         productVolume.setText(String.format("%s%s", groupProducts.getProduct().getVolume(), getString(R.string.Product_volume_unit)));
         productWeight.setText(String.format("%s%s", groupProducts.getProduct().getWeight(), getString(R.string.Product_weight_unit)));
-        taste.setText(groupProducts.getProduct().getTaste());
+        productTaste.setText(groupProducts.getProduct().getTaste());
         if (groupProducts.getProduct().getHasSugar()) productHasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
         if (groupProducts.getProduct().getHasSalt()) productHasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (groupProducts.getProduct().getIsBio()) productIsBio.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (groupProducts.getProduct().getIsVege()) productIsVege.setText(getString(R.string.ProductDetailsActivity_yes));
     }
 
     @Override

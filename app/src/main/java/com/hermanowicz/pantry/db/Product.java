@@ -38,6 +38,7 @@ public class Product {
     private String hashCode;
     private String typeOfProduct;
     private String productFeatures;
+    private String storageLocation;
     private String expirationDate;
     private String productionDate;
     private String composition;
@@ -47,6 +48,8 @@ public class Product {
     private int weight;
     private boolean hasSugar;
     private boolean hasSalt;
+    private boolean isVege;
+    private boolean isBio;
     private String taste;
 
     public int getId() {
@@ -96,6 +99,13 @@ public class Product {
         this.productFeatures = productFeatures;
     }
 
+    public String getStorageLocation() {
+        return storageLocation;
+    }
+
+    public void setStorageLocation(String storageLocation) {
+        this.storageLocation = storageLocation;
+    }
     public String getExpirationDate() {
         return expirationDate;
     }
@@ -168,6 +178,22 @@ public class Product {
         this.hasSalt = hasSalt;
     }
 
+    public boolean getIsVege() {
+        return isVege;
+    }
+
+    public void setIsVege(boolean vege) {
+        isVege = vege;
+    }
+
+    public boolean getIsBio() {
+        return isBio;
+    }
+
+    public void setIsBio(boolean bio) {
+        isBio = bio;
+    }
+
     public String getTaste() {
         return taste;
     }
@@ -175,5 +201,4 @@ public class Product {
     public void setTaste(String taste) {
         this.taste = taste;
     }
-
 }

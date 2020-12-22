@@ -27,7 +27,4 @@ public interface CategoryDao {
 
     @Update
     void updateCategory(Category category);
-
-    @Query("DELETE FROM categories")
-    void clearDb();
 }

@@ -26,5 +26,7 @@ public interface MainView {
 
     void onNavigationToCategoriesActivity();
 
+    void onNavigationToStorageLocationsActivity();
+
     void onNavigationToAppSettingsActivity();
 }

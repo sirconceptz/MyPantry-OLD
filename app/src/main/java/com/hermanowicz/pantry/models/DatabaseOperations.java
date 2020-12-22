@@ -26,6 +26,8 @@ import com.hermanowicz.pantry.db.Category;
 import com.hermanowicz.pantry.db.CategoryDb;
 import com.hermanowicz.pantry.db.Product;
 import com.hermanowicz.pantry.db.ProductDb;
+import com.hermanowicz.pantry.db.StorageLocation;
+import com.hermanowicz.pantry.db.StorageLocationDb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +36,12 @@ public class DatabaseOperations {
 
     private final ProductDb productDb;
     private final CategoryDb categoryDb;
+    private final StorageLocationDb storageLocationDb;
 
     public DatabaseOperations(Context context){
         this.productDb = ProductDb.getInstance(context);
         this.categoryDb = CategoryDb.getInstance(context);
+        this.storageLocationDb = StorageLocationDb.getInstance(context);
     }
 
     public int getIdOfLastProductInDb(){
@@ -120,5 +124,30 @@ public class DatabaseOperations {
     public void deleteCategory(int id) {
         Category category = categoryDb.categoryDao().getCategory(id);
         categoryDb.categoryDao().deleteCategory(category);
+    }
+
+    public void addStorageLocation(StorageLocation storageLocation) {
+        storageLocationDb.storageLocationDao().addStorageLocation(storageLocation);
+    }
+
+    public StorageLocation getStorageLocation(int id) {
+        return storageLocationDb.storageLocationDao().getStorageLocation(id);
+    }
+
+    public void updateStorageLocation(StorageLocation storageLocation) {
+        storageLocationDb.storageLocationDao().updateStorageLocation(storageLocation);
+    }
+
+    public void deleteStorageLocation(int id) {
+        StorageLocation storageLocation = storageLocationDb.storageLocationDao().getStorageLocation(id);
+        storageLocationDb.storageLocationDao().deleteStorageLocation(storageLocation);
+    }
+
+    public List<StorageLocation> getStorageLocationList() {
+        return storageLocationDb.storageLocationDao().getAllStorageLocations();
+    }
+
+    public String[] getStorageLocationsArray(){
+        return storageLocationDb.storageLocationDao().getAllStorageLocationsArray();
     }
 }

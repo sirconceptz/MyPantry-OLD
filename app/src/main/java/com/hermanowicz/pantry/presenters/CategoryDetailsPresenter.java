@@ -32,7 +32,7 @@ public class CategoryDetailsPresenter {
 
     public void updateCategory(@NonNull Category category) {
         if(model.isCategoryNameNotCorrect(category.getName()) || model.isCategoryDescriptionNotCorrect(category.getDescription()))
-            view.showErrorOnUpdateProduct();
+            view.showErrorOnUpdateCategory();
         else {
             model.updateCategory(category);
             view.showCategoryUpdated();

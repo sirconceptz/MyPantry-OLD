@@ -33,13 +33,14 @@
     <string name="General_not_required">(Nie wymagane)</string>
     <string name="General_cancel">Anuluj</string>
     <string name="General_author_label">Autor</string>
+    <string name="General_save">Zapisz</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Moja spiżarnia</string>
     <string name="MainActivity_scan_product_button">Skanuj kod QR produktu</string>
     <string name="MainActivity_new_product_button">Nowy produkt</string>
     <string name="MainActivity_own_categories">Własne kategorie produktów</string>
+    <string name="MainActivity_storage_locations">Własne miejsca przechowywania</string>
     <string name="MainActivity_app_settings">Ustawienia aplikacji</string>
-    <string name="MainActivity_close_app_button">Zamknij aplikacje</string>
     <!--MyPantryActivity-->
     <string name="MyPantryActivity_products_not_found">Ojoj! Nie znaleziono produktów ;(</string>
     <string name="MyPantryActivity_not_found">Nie znaleziono produktów</string>
@@ -59,10 +60,18 @@
     <string name="NewProductActivity_add_a_product">Dodaj produkt</string>
     <string name="NewProductActivity_product_added_successful">Produkt został dodany pomyślnie do bazy produktów.</string>
     <string name="NewProductActivity_products_added_successful">Produkty zostały dodane pomyślnie do bazy produktów.</string>
+    <!--StorageLocationsActivity-->
+    <string name="StorageLocationsActivity_new_storage_location">Nowe miejsce przechowywania</string>
+    <string name="StorageLocationsActivity_no_storage_locations_statement">Brak dodanych miejsc przechowywania. Dodaj nową przyciskiem na górze ekranu.</string>
+    <!--StorageLocationDetailsActivity-->
+    <string name="StorageLocationDetailsActivity_name">Nazwa miejsca przechowywania</string>
+    <string name="StorageLocationDetailsActivity_description">Opis miejsca przechowywania</string>
+    <string name="StorageLocationDetailsActivity_update_storage_location">Zapisz zmiany</string>
+    <string name="StorageLocationDetailsActivity_delete_storage_location">Usuń miejsce przechowywania</string>
+    <string name="StorageLocationDetailsActivity_storage_location_delete_warning">Czy jesteś pewien, że chcesz usunąć to miejsce przechowywania?</string>
+    <string name="StorageLocationDetailsActivity_storage_location_was_saved">Miejsce przechowywania zostało zapisane</string>
     <!--CategoriesActivity-->
     <string name="CategoriesActivity_new_category">Nowa kategoria</string>
-    <string name="CategoriesActivity_category_name">Nazwa kategorii</string>
-    <string name="CategoriesActivity_save">Zapisz</string>
     <string name="CategoriesActivity_no_categories_statement">Brak dodanych kategorii. Dodaj nową przyciskiem na górze ekranu.</string>
     <!--CategoriesActivity-->
     <string name="CategoryDetailsActivity_name">Nazwa kategorii</string>
@@ -74,7 +83,7 @@
     <!--EditProductActivity-->
     <string name="EditProductActivity_save_product">Zapisz produkt</string>
     <string name="EditProductActivity_cancel">Anuluj</string>
-    <string name="EditProductActivity_product_was_updated">Produkt został zaktualizowany.</string>
+    <string name="EditProductActivity_product_was_updated">Produkt został zapisany</string>
     <!--Product-->
     <string name="Product_name">Nazwa produktu</string>
     <string name="Product_quantity">Ilość</string>
@@ -84,12 +93,15 @@
     <string name="Product_features">Cechy produktu</string>
     <string name="Product_has_sugar">Z cukrem?</string>
     <string name="Product_has_salt">Z solą?</string>
+    <string name="Product_bio">BIO</string>
+    <string name="Product_vege">VEGE</string>
     <string name="Product_taste">Smak</string>
     <string name="Product_sweet">Słodki</string>
     <string name="Product_sour">Kwaśny</string>
     <string name="Product_sweet_and_sour">Słodko-kwaśny</string>
     <string name="Product_bitter">Gorzki</string>
     <string name="Product_salty">Słony</string>
+    <string name="Product_spicy">Pikantny</string>
     <string name="Product_weight">Waga</string>
     <string name="Product_weight_unit">g</string>
     <string name="Product_volume">Objętość</string>
@@ -192,7 +204,9 @@
         <item>Słodko kwaśny</item>
         <item>Gorzki</item>
         <item>Słony</item>
+        <item>Pikantny</item>
     </string-array>
+    <string name="Product_storage_location">Miejsce przechowywania</string>
     <!--ProductDetailsActivity-->
     <string name="ProductDetailsActivity_not_selected">Nie wybrano</string>
     <string name="ProductDetailsActivity_delete_product">Usuń produkt</string>
@@ -245,7 +259,6 @@
     <string name="Error_set_correct_quantity">Podaj prawidłową ilość produktów</string>
     <string name="Error_product_name_is_required">Nazwa produktu jest wymagana</string>
     <string name="Error_expiration_date_is_required">Data przydatności produktu jest wymagana</string>
-    <string name="Error_wrong_category_data">Niepoprawne dane kategorii</string>
     <string name="Error_char_counter">Nieprawidłowa wartość</string>
     <!--Author-->
     <string name="Author_contact_with_author">Kontakt z autorem</string>

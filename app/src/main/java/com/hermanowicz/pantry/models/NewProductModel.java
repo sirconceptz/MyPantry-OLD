@@ -137,4 +137,8 @@ public class NewProductModel {
     public String[] getOwnCategoriesArray() {
         return databaseOperations.getOwnCategoriesArray();
     }
+
+    public String[] getStorageLocationsArray() {
+        return databaseOperations.getStorageLocationsArray();
+    }
 }

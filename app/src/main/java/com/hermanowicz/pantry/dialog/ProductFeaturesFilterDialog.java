@@ -75,7 +75,7 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
                 .setTitle(getString(R.string.Product_features))
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> dialogListener.setProductFeatures(filterHasSugar, filterHasSalt));
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> dialogListener.setFilterProductFeatures(filterHasSugar, filterHasSalt));
         return builder.create();
     }
 

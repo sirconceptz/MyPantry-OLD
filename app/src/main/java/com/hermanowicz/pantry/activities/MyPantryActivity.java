@@ -137,7 +137,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        presenter.setProductLiveData();
+        presenter.setProductsLiveData();
         presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
         presenter.setAllProductsList();
         adapterProductRecyclerView = new ProductsAdapter(sharedPreferences);
@@ -339,7 +339,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     }
 
     @Override
-    public void setProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt) {
+    public void setFilterProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt) {
         presenter.setProductFeatures(filterHasSugar, filterHasSalt);
     }
 

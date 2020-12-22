@@ -21,14 +21,16 @@ public class CategoryPresenter {
     public void updateCategoryList(){
         List<Category> categoryList = model.getCategoryList();
         view.updateCategoryList(categoryList);
-        if(categoryList.size() == 0)
-            view.showEmptyCategoryListStatement();
+        view.showEmptyCategoryListStatement(categoryList.size() == 0);
     }
 
     public void addCategory(Category category) {
-        if(model.addCategory(category)) {
+        if(model.isCategoryNameNotCorrect(category.getName()) || model.isCategoryDescriptionNotCorrect(category.getDescription()))
+            view.onErrorAddNewCategory();
+        else if(model.addCategory(category)) {
             view.onSuccessAddNewCategory();
             view.updateCategoryList(model.getCategoryList());
+            view.showEmptyCategoryListStatement(model.getCategoryList().size() == 0);
         }
         else
             view.onErrorAddNewCategory();

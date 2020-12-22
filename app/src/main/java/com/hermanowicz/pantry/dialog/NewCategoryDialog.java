@@ -47,7 +47,7 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
                 .setTitle(getString(R.string.CategoriesActivity_new_category))
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(getString(R.string.CategoriesActivity_save), (dialog, which) -> {
+                .setPositiveButton(getString(R.string.General_save), (dialog, which) -> {
                     Category category = new Category();
                     category.setName(categoryName.getText().toString());
                     category.setDescription(categoryDescription.getText().toString());

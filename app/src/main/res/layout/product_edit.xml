@@ -95,6 +95,33 @@
         app:layout_constraintTop_toBottomOf="@+id/text_productCategoryLabel" />
 
     <TextView
+        android:id="@+id/text_productStorageLocationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/Product_storage_location"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_productCategory" />
+
+    <Spinner
+        android:id="@+id/spinner_productStorageLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/text_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_productStorageLocationLabel" />
+
+    <TextView
         android:id="@+id/text_expirationDateLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,7 +134,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_productCategory" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_productStorageLocation" />
 
     <EditText
         android:id="@+id/edittext_expirationDate"
@@ -124,7 +151,7 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_expirationDateLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_expirationDateLabel"
         tools:ignore="Autofill" />
 
     <TextView
@@ -140,7 +167,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_expirationDate" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_expirationDate" />
 
     <EditText
         android:id="@+id/edittext_productionDate"
@@ -157,7 +184,7 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_productionDateLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_productionDateLabel"
         tools:ignore="Autofill" />
 
     <TextView
@@ -173,7 +200,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_productionDate" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_productionDate" />
 
     <EditText
         android:id="@+id/edittext_quantity"
@@ -189,7 +216,7 @@
         android:text="@string/NewProductActivity_quantity_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_quantityLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_quantityLabel"
         tools:ignore="Autofill" />
 
     <TextView
@@ -205,7 +232,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_quantity" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_quantity" />
 
     <EditText
         android:id="@+id/edittext_composition"
@@ -221,7 +248,7 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_compositionLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_compositionLabel"
         tools:ignore="Autofill" />
 
     <TextView
@@ -237,7 +264,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_composition" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_composition" />
 
     <EditText
         android:id="@+id/edittext_healingProperties"
@@ -253,7 +280,7 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_healingPropertiesLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_healingPropertiesLabel"
         tools:ignore="Autofill" />
 
     <TextView
@@ -269,7 +296,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_healingProperties" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_healingProperties" />
 
     <EditText
         android:id="@+id/edittext_dosage"
@@ -301,7 +328,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_dosage" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_dosage" />
 
     <EditText
         android:id="@+id/edittext_volume"
@@ -317,7 +344,7 @@
         android:text="@string/NewProductActivity_volume_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_volumeLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_volumeLabel"
         tools:ignore="Autofill" />
 
     <TextView
@@ -333,7 +360,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_volume" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_volume" />
 
     <EditText
         android:id="@+id/edittext_weight"
@@ -349,7 +376,7 @@
         android:text="@string/NewProductActivity_weight_value"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_weightLabel"
+        app:layout_constraintTop_toBottomOf="@id/text_weightLabel"
         tools:ignore="Autofill" />
 
     <CheckBox
@@ -365,7 +392,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_weight"
+        app:layout_constraintTop_toBottomOf="@id/edittext_weight"
         tools:ignore="Autofill" />
 
     <CheckBox
@@ -381,7 +408,39 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_hasSugar"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_hasSugar"
+        tools:ignore="Autofill" />
+
+    <CheckBox
+        android:id="@+id/checkbox_isBio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/Product_bio"
+        android:textColor="@color/text_color"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_hasSalt"
+        tools:ignore="Autofill" />
+
+    <CheckBox
+        android:id="@+id/checkbox_isVege"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/Product_vege"
+        android:textColor="@color/text_color"
+        android:textSize="20sp"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_isBio"
         tools:ignore="Autofill" />
 
     <TextView
@@ -397,7 +456,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox_hasSalt" />
+        app:layout_constraintTop_toBottomOf="@id/checkbox_isVege" />
 
     <RadioGroup
         android:id="@+id/radiogroup_taste"
@@ -458,6 +517,16 @@
             android:textSize="20sp"
             android:fontFamily="@font/proxima_nova_extra_condensed_bold"
             android:text="@string/Product_salty"
+            android:textColor="@color/text_color" />
+
+        <RadioButton
+            android:id="@+id/radiobtn_isSpicy"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+            android:text="@string/Product_spicy"
             android:textColor="@color/text_color" />
 
     </RadioGroup>

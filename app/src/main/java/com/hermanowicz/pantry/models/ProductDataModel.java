@@ -97,26 +97,27 @@ public class ProductDataModel {
     public int getProductFeaturesSpinnerPosition(int productTypeSpinnerPosition){
         String[] productFeaturesArray;
         int selection = 0;
-
         if(productTypeSpinnerPosition == 1)
-            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
+            productFeaturesArray = getOwnCategoriesArray();
         else if(productTypeSpinnerPosition == 2)
-            productFeaturesArray = resources.getStringArray(R.array.Product_ready_meals_array);
+            productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
         else if(productTypeSpinnerPosition == 3)
-            productFeaturesArray = resources.getStringArray(R.array.Product_vegetables_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_ready_meals_array);
         else if(productTypeSpinnerPosition == 4)
-            productFeaturesArray = resources.getStringArray(R.array.Product_fruits_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_vegetables_array);
         else if(productTypeSpinnerPosition == 5)
-            productFeaturesArray = resources.getStringArray(R.array.Product_herbs_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_fruits_array);
         else if(productTypeSpinnerPosition == 6)
-            productFeaturesArray = resources.getStringArray(R.array.Product_liqueurs_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_herbs_array);
         else if(productTypeSpinnerPosition == 7)
-            productFeaturesArray = resources.getStringArray(R.array.Product_wines_type_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_liqueurs_array);
         else if(productTypeSpinnerPosition == 8)
-            productFeaturesArray = resources.getStringArray(R.array.Product_mushrooms_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_wines_type_array);
         else if(productTypeSpinnerPosition == 9)
-            productFeaturesArray = resources.getStringArray(R.array.Product_vinegars_array);
+            productFeaturesArray = resources.getStringArray(R.array.Product_mushrooms_array);
         else if(productTypeSpinnerPosition == 10)
+            productFeaturesArray = resources.getStringArray(R.array.Product_vinegars_array);
+        else if(productTypeSpinnerPosition == 11)
             productFeaturesArray = resources.getStringArray(R.array.Product_chemical_products_array);
         else
             productFeaturesArray = resources.getStringArray(R.array.Product_other_products_array);

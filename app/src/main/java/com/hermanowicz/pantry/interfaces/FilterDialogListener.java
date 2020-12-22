@@ -43,5 +43,5 @@ public interface FilterDialogListener {
 
     void setFilterTaste(String filterTaste);
 
-    void setProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt);
+    void setFilterProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt);
 }

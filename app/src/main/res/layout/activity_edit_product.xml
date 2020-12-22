@@ -72,7 +72,7 @@
                 android:textColor="@color/text_color"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/product_edit" />
+                app:layout_constraintTop_toBottomOf="@id/product_edit" />
 
             <Button
                 android:id="@+id/button_cancel"
@@ -89,7 +89,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/button_saveProduct" />
+                app:layout_constraintTop_toBottomOf="@id/button_saveProduct" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

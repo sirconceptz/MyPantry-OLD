@@ -84,6 +84,19 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
+            android:name=".activities.StorageLocationsActivity"
+            android:label="@string/MainActivity_storage_locations"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".activities.StorageLocationDetailsActivity"
+            android:label="@string/MainActivity_storage_locations"
+            android:parentActivityName=".activities.StorageLocationsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+
+        <activity
             android:name=".activities.AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
             android:parentActivityName=".activities.MainActivity"

@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     private int categoryId;
 
     private TextView categoryName, categoryDescription, nameCharCounter, descriptionCharCounter;
+    private Button updateCategory, deleteCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         categoryDescription = binding.categoryDescription;
         nameCharCounter = binding.nameCharCounter;
         descriptionCharCounter = binding.descriptionCharCounter;
+        updateCategory = binding.buttonUpdateCategory;
+        deleteCategory = binding.buttonDeleteCategory;
 
         Intent categoryIntent = getIntent();
         categoryId = categoryIntent.getIntExtra("category_id", 0);
@@ -67,10 +71,10 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     }
 
     private void setListeners(){
-        binding.buttonUpdateCategory.setOnClickListener(view -> onClickUpdateCategory());
-        binding.buttonDeleteCategory.setOnClickListener(view -> onClickDeleteCategory());
+        updateCategory.setOnClickListener(view -> onClickUpdateCategory());
+        deleteCategory.setOnClickListener(view -> onClickDeleteCategory());
 
-        binding.categoryName.addTextChangedListener(new TextWatcher() {
+        categoryName.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -81,11 +85,11 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                presenter.isCategoryNameCorrect(binding.categoryName.getText().toString());
+                presenter.isCategoryNameCorrect(categoryName.getText().toString());
             }
         });
 
-        binding.categoryDescription.addTextChangedListener(new TextWatcher() {
+        categoryDescription.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
             }
@@ -96,7 +100,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                presenter.isCategoryDescriptionCorrect(binding.categoryDescription.getText().toString());
+                presenter.isCategoryDescriptionCorrect(categoryDescription.getText().toString());
             }
         });
     }
@@ -118,8 +122,8 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     }
 
     @Override
-    public void showErrorOnUpdateProduct() {
-        Toast.makeText(context, getString(R.string.Error_wrong_category_data), Toast.LENGTH_SHORT).show();
+    public void showErrorOnUpdateCategory() {
+        Toast.makeText(context, getString(R.string.Error_wrong_data), Toast.LENGTH_SHORT).show();
     }
 
     @Override
