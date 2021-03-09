@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2019-2021
+ * Mateusz Hermanowicz - All rights reserved.
+ * My Pantry
+ * https://www.mypantry.eu
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.hermanowicz.pantry.dialog;
 
 import android.app.Activity;
@@ -16,12 +33,12 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogNewStorageLocationBinding;
-import com.hermanowicz.pantry.db.StorageLocation;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.DialogStorageLocationListener;
 import com.hermanowicz.pantry.interfaces.NewStorageLocationView;
-import com.hermanowicz.pantry.models.DatabaseOperations;
-import com.hermanowicz.pantry.models.StorageLocationModel;
-import com.hermanowicz.pantry.presenters.NewStorageLocationPresenter;
+import com.hermanowicz.pantry.model.DatabaseOperations;
+import com.hermanowicz.pantry.model.StorageLocationModel;
+import com.hermanowicz.pantry.presenter.NewStorageLocationPresenter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +56,7 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         initView();
-        initListeners();
+        setListeners();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.AppThemeDialog);
         builder.setView(view)
@@ -71,7 +88,7 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
         view = binding.getRoot();
     }
 
-    private void initListeners(){
+    private void setListeners(){
         storageLocationName.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {

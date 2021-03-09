@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -36,7 +36,7 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogExpirationDateBinding;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
-import com.hermanowicz.pantry.utils.DateHelper;
+import com.hermanowicz.pantry.util.DateHelper;
 
 import org.jetbrains.annotations.NotNull;
 

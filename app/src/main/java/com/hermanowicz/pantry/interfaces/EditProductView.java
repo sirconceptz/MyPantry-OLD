@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,7 +17,9 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.models.GroupProducts;
+import com.hermanowicz.pantry.model.GroupProducts;
+
+import java.util.ArrayList;
 
 public interface EditProductView {
     void setSpinnerSelections(int typeOfProductPosition, int productFeaturesPosition);
@@ -25,6 +27,8 @@ public interface EditProductView {
     void showProductData(GroupProducts groupProducts);
 
     void onSavedProduct();
+
+    void navigateToAddPhotoActivity(ArrayList<Integer> productIdList);
 
     void navigateToMyPantryActivity();
 }

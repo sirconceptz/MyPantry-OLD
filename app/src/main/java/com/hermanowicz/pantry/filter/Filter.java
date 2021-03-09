@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.product.Product;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -63,7 +63,7 @@ public class Filter {
                     && isProductProductionDateValid(product.getProductionDate())
                     && isProductVolumeValid(product.getVolume())
                     && isProductWeightValid(product.getWeight())
-                    && isProductHasSugarAndSaltValid(product.getHasSugar(), product.getHasSalt())
+                    && isProductProductFeaturesValid(product.getHasSugar(), product.getHasSalt(), product.getIsBio(), product.getIsVege())
                     && isProductTasteValid(product.getTaste()))
                 tempProductList.add(product);
             }
@@ -75,7 +75,7 @@ public class Filter {
         boolean isNameValid = true;
 
         if (filterProduct.getName() != null)
-            isNameValid = name.contains(filterProduct.getName());
+            isNameValid = name.toLowerCase().contains(filterProduct.getName().toLowerCase());
 
         return isNameValid;
     }
@@ -86,7 +86,6 @@ public class Filter {
 
         if(filterProduct.getTypeOfProduct() != null)
                 isTypeOfProductValid = typeOfProduct.equals(filterProduct.getTypeOfProduct());
-
         if(filterProduct.getProductCategory() != null)
             isProductFeaturesValid = productFeatures.equals(filterProduct.getProductCategory());
 
@@ -126,7 +125,6 @@ public class Filter {
 
         if(filterProduct.getVolumeSince() > -1)
             isProductVolumeSinceValid = filterProduct.getVolumeSince() <= volume;
-
         if(filterProduct.getVolumeFor() > -1)
             isProductVolumeForValid = filterProduct.getVolumeFor() >= volume;
 
@@ -140,7 +138,6 @@ public class Filter {
 
         if(filterProduct.getWeightSince() > -1)
             isProductWeightSinceValid = filterProduct.getWeightSince() <= weight;
-
         if(filterProduct.getWeightFor() > -1)
             isProductWeightForValid = filterProduct.getWeightFor() >= weight;
 
@@ -148,18 +145,24 @@ public class Filter {
         return isProductWeightValid;
     }
 
-    private boolean isProductHasSugarAndSaltValid(boolean isHasSugar, boolean isHasSalt){
+    private boolean isProductProductFeaturesValid(boolean isHasSugar, boolean isHasSalt, boolean isBio, boolean isVege){
         boolean isProductHasSugarAndSaltValid,
-                isProductHasSugarValid = true, isProductHasSaltValid = true;
+                isProductHasSugarValid = true, isProductHasSaltValid = true,
+                isProductIsBioValid = true, isProductIsVegeValid = true;
 
         if(filterProduct.getHasSugar() != Set.DISABLED)
             isProductHasSugarValid = (filterProduct.getHasSugar() == Set.YES && isHasSugar) || (filterProduct.getHasSugar() == Set.NO && !isHasSugar);
         if(filterProduct.getHasSalt() != Set.DISABLED)
             isProductHasSaltValid = (filterProduct.getHasSalt() == Set.YES && isHasSalt) || (filterProduct.getHasSalt() == Set.NO && !isHasSalt);
+        if(filterProduct.getIsBio() != Set.DISABLED)
+            isProductIsBioValid = (filterProduct.getIsBio() == Set.YES && isBio) || (filterProduct.getIsBio() == Set.NO && !isBio);
+        if(filterProduct.getIsVege() != Set.DISABLED)
+            isProductIsVegeValid = (filterProduct.getIsVege() == Set.YES && isVege) || (filterProduct.getIsVege() == Set.NO && !isVege);
 
-        isProductHasSugarAndSaltValid = isProductHasSugarValid && isProductHasSaltValid;
+        isProductHasSugarAndSaltValid = isProductHasSugarValid && isProductHasSaltValid && isProductIsBioValid && isProductIsVegeValid;
         return isProductHasSugarAndSaltValid;
     }
+
 
     private boolean isProductTasteValid(String taste){
         boolean isTasteValid = true;
@@ -176,6 +179,7 @@ public class Filter {
             try {
                 Date productDate = sdf.parse(productDateString);
                 Date filterDateSince = sdf.parse(filterDate);
+                assert productDate != null;
                 isDateAfter = productDate.after(filterDateSince);
             } catch (ParseException e) {
                 Log.e("ProductDate", e.toString());

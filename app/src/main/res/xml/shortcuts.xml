@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019
+  ~ Copyright (c) 2019-2021
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -22,7 +22,7 @@
         android:icon="@drawable/ic_my_pantry_shortcut">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.activities.MyPantryActivity"
+            android:targetClass="com.hermanowicz.pantry.activity.MyPantryActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
     <shortcut
@@ -30,7 +30,7 @@
         android:icon="@drawable/ic_search">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.activities.ScanProductActivity"
+            android:targetClass="com.hermanowicz.pantry.activity.ScanProductActivity"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
     <shortcut
@@ -38,7 +38,7 @@
         android:icon="@drawable/ic_new_product_shortcut">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.hermanowicz.pantry.activities.NewProductActivityTest"
+            android:targetClass="com.hermanowicz.pantry.activity.NewProductActivityTest"
             android:targetPackage="com.hermanowicz.pantry"/>
     </shortcut>
 </shortcuts>

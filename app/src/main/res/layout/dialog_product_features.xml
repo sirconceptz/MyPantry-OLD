@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019
+  ~ Copyright (c) 2019-2021
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -16,12 +16,13 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    tools:context=".activities.MyPantryActivity">
+    tools:context=".activity.MyPantryActivity">
 
     <CheckBox
         android:id="@+id/checkbox_hasSugar"
@@ -55,6 +56,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/checkbox_hasSugar" />
 
+    <CheckBox
+        android:id="@+id/checkbox_isBio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/Product_bio"
+        android:textColorHint="@color/text_color"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        android:textSize="18sp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_hasSalt" />
+
+    <CheckBox
+        android:id="@+id/checkbox_isVege"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/Product_vege"
+        android:textColorHint="@color/text_color"
+        android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+        android:textSize="18sp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_isBio" />
+
     <Button
         android:id="@+id/button_clear"
         android:layout_width="match_parent"
@@ -67,6 +100,6 @@
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkbox_hasSalt" />
+        app:layout_constraintTop_toBottomOf="@id/checkbox_isVege" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

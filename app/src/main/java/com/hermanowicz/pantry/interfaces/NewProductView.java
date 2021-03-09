@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,13 +17,12 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.product.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface NewProductView {
-    void navigateToPrintQRCodesActivity(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList);
+    void navigateToPrintQRCodesActivity(List<Product> productList);
 
     void onProductsAdd(List<Product> products);
 

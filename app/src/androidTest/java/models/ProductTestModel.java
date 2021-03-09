@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,7 +17,7 @@
 
 package models;
 
-import com.hermanowicz.pantry.db.Product;
+import com.hermanowicz.pantry.db.product.Product;
 
 public class ProductTestModel {
 

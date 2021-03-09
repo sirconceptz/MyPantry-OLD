@@ -1,21 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019-2021
+  ~ Mateusz Hermanowicz - All rights reserved.
+  ~ My Pantry
+  ~ https://www.mypantry.eu
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.hermanowicz.pantry">
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA" android:required="true"/>
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" android:required="true"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:required="true"/>
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" android:required="true"/>
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
+        android:maxSdkVersion="29"
+        android:required="true" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" android:required="true" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
-        android:name=".utils.EmailManager"
+        android:name=".util.EmailManager"
         android:allowBackup="true"
         android:appComponentFactory="androidx"
         android:fullBackupContent="@xml/backup_descriptor"
@@ -42,7 +61,7 @@
             android:value="ca-app-pub-4025776034769422~3797748160" />
 
         <activity
-            android:name=".activities.SplashScreenActivity"
+            android:name=".activity.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -52,7 +71,7 @@
         </activity>
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.shortcuts"
@@ -60,79 +79,85 @@
         </activity>
 
         <activity
-            android:name=".activities.MyPantryActivity"
+            android:name=".activity.MyPantryActivity"
             android:label="@string/title_activity_my_pantry"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.NewProductActivity"
+            android:name=".activity.NewProductActivity"
             android:label="@string/title_activity_new_product"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.CategoriesActivity"
+            android:name=".activity.CategoriesActivity"
             android:label="@string/MainActivity_own_categories"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.CategoryDetailsActivity"
+            android:name=".activity.CategoryDetailsActivity"
             android:label="@string/MainActivity_own_categories"
-            android:parentActivityName=".activities.CategoriesActivity"
+            android:parentActivityName=".activity.CategoriesActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
-            android:name=".activities.StorageLocationsActivity"
+            android:name=".activity.StorageLocationsActivity"
             android:label="@string/MainActivity_storage_locations"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.StorageLocationDetailsActivity"
+            android:name=".activity.StorageLocationDetailsActivity"
             android:label="@string/MainActivity_storage_locations"
-            android:parentActivityName=".activities.StorageLocationsActivity"
+            android:parentActivityName=".activity.StorageLocationsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
 
         <activity
-            android:name=".activities.AppSettingsActivity"
+            android:name=".activity.AppSettingsActivity"
             android:label="@string/title_activity_app_settings"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.ScanProductActivity" />
+            android:name=".activity.ScanProductActivity" />
 
         <activity
-            android:name=".activities.PrintQRCodesActivity"
+            android:name=".activity.PrintQRCodesActivity"
             android:label="@string/title_activity_print_qrcodes"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
-            android:name=".activities.ProductDetailsActivity"
+            android:name=".activity.ProductDetailsActivity"
             android:label="@string/title_activity_product_details"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".activity.AddPhotoActivity"
+            android:label="@string/title_activity_add_photo"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"
             tools:replace="android:screenOrientation" />
 
         <activity
-            android:name=".activities.EditProductActivity"
+            android:name=".activity.EditProductActivity"
             android:label="@string/title_activity_edit_product"
-            android:parentActivityName=".activities.MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
-            android:name=".services.NotificationService"
+            android:name=".service.NotificationService"
             android:exported="false" />
 
         <service
@@ -144,13 +169,13 @@
         </service>
 
         <receiver
-            android:name=".receivers.NotificationBroadcastReceiver"
+            android:name=".receiver.NotificationBroadcastReceiver"
             android:enabled="true"
             android:exported="false"
             android:process=":remote" />
 
         <receiver
-            android:name=".receivers.BootDeviceReceiver"
+            android:name=".receiver.BootDeviceReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -160,10 +185,9 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.hermanowicz.pantry.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />

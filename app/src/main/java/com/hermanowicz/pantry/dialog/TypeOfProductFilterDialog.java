@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -35,7 +35,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogTypeOfProductBinding;
-import com.hermanowicz.pantry.db.CategoryDb;
+import com.hermanowicz.pantry.db.category.CategoryDb;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 

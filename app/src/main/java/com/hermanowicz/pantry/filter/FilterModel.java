@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -44,6 +44,8 @@ public class FilterModel {
     private int weightFor = -1;
     private Filter.Set hasSugar = Filter.Set.DISABLED;
     private Filter.Set hasSalt = Filter.Set.DISABLED;
+    private Filter.Set isBio = Filter.Set.DISABLED;
+    private Filter.Set isVege = Filter.Set.DISABLED;
     private String taste = null;
 
     public String getName() {
@@ -172,6 +174,22 @@ public class FilterModel {
 
     public void setHasSalt(Filter.Set hasSalt) {
         this.hasSalt = hasSalt;
+    }
+
+    public Filter.Set getIsBio() {
+        return isBio;
+    }
+
+    public void setIsBio(Filter.Set isBio) {
+        this.isBio = isBio;
+    }
+
+    public Filter.Set getIsVege() {
+        return isVege;
+    }
+
+    public void setIsVege(Filter.Set isVege) {
+        this.isVege = isVege;
     }
 
     public String getTaste() {

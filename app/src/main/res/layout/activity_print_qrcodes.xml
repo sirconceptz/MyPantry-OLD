@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019
+  ~ Copyright (c) 2019-2021
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -16,13 +16,14 @@
   ~ limitations under the License.
   -->
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout"
-    tools:context=".activities.PrintQRCodesActivity">
+    tools:context=".activity.PrintQRCodesActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -37,7 +38,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.PrintQRCodesActivity">
+        tools:context=".activity.PrintQRCodesActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -103,6 +104,21 @@
             ads:layout_constraintTop_toBottomOf="@id/button_printQRCodes" />
 
         <Button
+            android:id="@+id/button_addPhoto"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/proxima_nova_extra_condensed_bold"
+            android:text="@string/AddPhotoActivity_take_photo_of_product"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@id/button_sendPdfByEmail" />
+
+        <Button
             android:id="@+id/button_skip"
             android:layout_width="match_parent"
             android:gravity="center"
@@ -115,7 +131,7 @@
             android:text="@string/PrintQRCodesActivity_skip"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent"
-            ads:layout_constraintTop_toBottomOf="@id/button_sendPdfByEmail" />
+            ads:layout_constraintTop_toBottomOf="@id/button_addPhoto" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

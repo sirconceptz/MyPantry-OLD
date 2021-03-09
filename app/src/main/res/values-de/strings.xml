@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2020
+  ~ Copyright (c) 2019-2021
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -21,11 +21,11 @@
     <string name="title_activity_my_pantry">Meine Speisekammer</string>
     <string name="title_activity_scan_the_product">Scannen Sie den QR-Code des Produkts</string>
     <string name="title_activity_new_product">Neues produkt</string>
-    <string name="title_activity_own_categories">Eigene Kategorien</string>
     <string name="title_activity_app_settings">Anwendungseinstellungen</string>
     <string name="title_activity_print_qrcodes">QR-Codes drucken</string>
     <string name="title_activity_product_details">Angaben zum Produkt</string>
     <string name="title_activity_edit_product">Produkt bearbeiten</string>
+    <string name="title_activity_add_photo">Bild hinzufügen</string>
     <!--General-->
     <string name="General_char_counter">Max. Zeichen</string>
     <string name="General_press_back_agait_to_exit">Zum Beenden erneut drücken</string>
@@ -43,7 +43,6 @@
     <string name="MainActivity_app_settings">Anwendungseinstellungen</string>
     <!--MyPantryActivity-->
     <string name="MyPantryActivity_products_not_found">Hoppla! Nicht gefundene Produkte :(</string>
-    <string name="MyPantryActivity_not_found">Keine Produkte gefunden</string>
     <string name="MyPantryActivity_clear">Löschen</string>
     <string name="MyPantryActivity_since">von</string>
     <string name="MyPantryActivity_for">zu</string>
@@ -84,6 +83,17 @@
     <string name="EditProductActivity_save_product">Produkt speichern</string>
     <string name="EditProductActivity_cancel">Stornieren</string>
     <string name="EditProductActivity_product_was_updated">Produkt wurde gespeichert</string>
+    <!--AddPhotoActivity-->
+    <string name="AddPhotoActivity_photo_description">Fotobeschreibung</string>
+    <string name="AddPhotoActivity_take_photo">Foto machen</string>
+    <string name="AddPhotoActivity_save_photo">Foto speichern</string>
+    <string name="AddPhotoActivity_delete_photo">Foto löschen</string>
+    <string name="AddPhotoActivity_take_photo_of_product">Machen Sie ein Foto des Produkts</string>
+    <string name="AddPhotoActivity_no_camera_access">Kein Kamera Zugang</string>
+    <string name="AddPhotoActivity_invalid_photo_description">Ungültige Fotobeschreibung</string>
+    <string name="AddPhotoActivity_add_photo_successful">Das Foto wurde hinzugefügt</string>
+    <string name="AddPhotoActivity_add_photo_not_successful">Das Foto wurde nicht hinzugefügt</string>
+    <string name="AddPhotoActivity_delete_photo_successful">Das Foto wurde gelöscht</string>
     <!--Product-->
     <string name="Product_name">Produktname</string>
     <string name="Product_quantity">Anzahl</string>
@@ -208,19 +218,16 @@
     </string-array>
     <string name="Product_storage_location">Lagerort</string>
     <!--ProductDetailsActivity-->
-    <string name="ProductDetailsActivity_not_selected">Nicht ausgewählt</string>
     <string name="ProductDetailsActivity_delete_product">Löschen Sie das Produkt</string>
     <string name="ProductDetailsActivity_filter">Filtern</string>
     <string name="ProductDetailsActivity_yes">Ja</string>
     <string name="ProductDetailsActivity_no">Nein</string>
     <string name="ProductDetailsActivity_product_has_been_removed">Das Produkt wurde entfernt.</string>
     <string name="ProductDetailsActivity_edit_product">Produkt bearbeiten</string>
-    <string name="ProductDetailsActivity_send_product_by_nfc">Produkt per NFC senden</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">QR-Codes drucken</string>
     <string name="PrintQRCodesActivity_skip">überspringen</string>
     <string name="PrintQRCodesActivity_send_pdf_via_email">Senden Sie eine PDF-Datei per E-Mail</string>
-    <string name="PrintQRCodesActivity_email_with_pdf_subject">[Meine Speisekammer] PDF mit QR-Codes zum Ausdruckent</string>
     <!--AppSettingsActivity-->
     <string name="AppSettingsActivity_which_theme_user_prefer">Wählen Sie den Anwendungsmodus (Täglich/Nacht)</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Mit welcher Kamera kann ich Produkte scannen?</string>
@@ -236,7 +243,6 @@
     <string name="AppSettingsActivity_clear_database">Löschen Sie die Datenbank</string>
     <string name="AppSettingsActivity_settings_saved_successful">Die Einstellungen wurden erfolgreich gespeichert. </string>
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
-    <string name="AppSettingsActivity_do_you_want_to_clear_db">Möchten Sie die Produktdatenbank wirklich löschen?</string>
     <string name="AppSettingsActivity_version">Version</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rückkamera</item>
@@ -252,13 +258,10 @@
     <string name="Notifications_statement">%PRODUCT_NAME% läuft bald ab. Sie haben noch %DAYS% Tage bis zu diesem Datum.</string>
     <!--Error-->
     <string name="Error_error">Error</string>
-    <string name="Error_something_wrong">Irgendwas stimmt nicht</string>
     <string name="Error_wrong_data">Falschen Daten</string>
     <string name="Error_permission_is_needed_to_save_the_file">Zum Erstellen einer Datei ist eine Berechtigung erforderlich</string>
     <string name="Error_category_not_selected">Kategorie wurde nicht ausgewählt</string>
-    <string name="Error_set_correct_quantity">Geben Sie die richtige Menge an</string>
     <string name="Error_product_name_is_required">Der Produktname ist erforderlich</string>
-    <string name="Error_expiration_date_is_required">Das Verfallsdatum des Produkts ist erforderlich</string>
     <string name="Error_char_counter">Falscher Wert</string>
     <!--Author-->
     <string name="Author_contact_with_author">Contact with author</string>

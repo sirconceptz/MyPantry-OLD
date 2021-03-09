@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -43,5 +43,6 @@ public interface FilterDialogListener {
 
     void setFilterTaste(String filterTaste);
 
-    void setFilterProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt);
+    void setFilterProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt,
+                                  Filter.Set filterIsBio, Filter.Set filterIsVege);
 }

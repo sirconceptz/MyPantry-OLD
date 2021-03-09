@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019
+  ~ Copyright (c) 2019-2021
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -26,4 +26,7 @@
     <external-files-path
         name="external_files_path"
         path="." />
+    <external-files-path
+        name="images"
+        path="MyPantry" />
 </paths>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -21,6 +21,13 @@ import android.content.Context;
 
 import androidx.room.Room;
 
+import com.hermanowicz.pantry.db.category.Category;
+import com.hermanowicz.pantry.db.category.CategoryDao;
+import com.hermanowicz.pantry.db.category.CategoryDb;
+import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.product.ProductDb;
+import com.hermanowicz.pantry.db.product.ProductsDao;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +35,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.core.IsEqual.equalTo;

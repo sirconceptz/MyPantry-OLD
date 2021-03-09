@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -54,13 +54,17 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
     private FilterDialogListener dialogListener;
     private Filter.Set filterHasSugar;
     private Filter.Set filterHasSalt;
+    private Filter.Set filterIsBio;
+    private Filter.Set filterIsVege;
 
-    private CheckBox productHasSugar, productHasSalt;
+    private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
     private Button clearBtn;
 
     public ProductFeaturesFilterDialog(FilterModel filterProduct) {
         this.filterHasSugar = filterProduct.getHasSugar();
         this.filterHasSalt = filterProduct.getHasSalt();
+        this.filterIsBio = filterProduct.getIsBio();
+        this.filterIsVege = filterProduct.getIsVege();
     }
 
     @NotNull
@@ -75,7 +79,8 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
                 .setTitle(getString(R.string.Product_features))
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
-                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> dialogListener.setFilterProductFeatures(filterHasSugar, filterHasSalt));
+                .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) ->
+                        dialogListener.setFilterProductFeatures(filterHasSugar, filterHasSalt, filterIsBio, filterIsVege));
         return builder.create();
     }
 
@@ -86,21 +91,30 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
 
         productHasSugar = binding.checkboxHasSugar;
         productHasSalt = binding.checkboxHasSalt;
+        productIsBio = binding.checkboxIsBio;
+        productIsVege = binding.checkboxIsVege;
         clearBtn = binding.buttonClear;
 
         if (filterHasSugar == Filter.Set.YES)
             binding.checkboxHasSugar.setChecked(true);
-
         if (filterHasSalt == Filter.Set.YES)
             binding.checkboxHasSalt.setChecked(true);
+        if (filterIsBio == Filter.Set.YES)
+            binding.checkboxIsBio.setChecked(true);
+        if (filterIsVege == Filter.Set.YES)
+            binding.checkboxIsVege.setChecked(true);
     }
 
     private void setListeners() {
         clearBtn.setOnClickListener(view13 -> {
             productHasSugar.setChecked(false);
             productHasSalt.setChecked(false);
+            productIsBio.setChecked(false);
+            productIsVege.setChecked(false);
             filterHasSugar = Filter.Set.DISABLED;
             filterHasSalt = Filter.Set.DISABLED;
+            filterIsBio = Filter.Set.DISABLED;
+            filterIsVege = Filter.Set.DISABLED;
         });
 
         productHasSugar.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -116,6 +130,22 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
                         filterHasSalt = Filter.Set.YES;
                     else
                         filterHasSalt = Filter.Set.NO;
+                }
+        );
+
+        productIsBio.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (productIsBio.isChecked())
+                        filterIsBio = Filter.Set.YES;
+                    else
+                        filterIsBio = Filter.Set.NO;
+                }
+        );
+
+        productIsVege.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (productIsVege.isChecked())
+                        filterIsVege = Filter.Set.YES;
+                    else
+                        filterIsVege = Filter.Set.NO;
                 }
         );
     }

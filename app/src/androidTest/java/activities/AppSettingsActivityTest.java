@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -31,9 +31,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.hermanowicz.pantry.BuildConfig;
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.activities.AppSettingsActivity;
-import com.hermanowicz.pantry.activities.MainActivity;
-import com.hermanowicz.pantry.db.ProductDb;
+import com.hermanowicz.pantry.activity.AppSettingsActivity;
+import com.hermanowicz.pantry.activity.MainActivity;
+import com.hermanowicz.pantry.db.product.ProductDb;
 
 import org.junit.Before;
 import org.junit.Rule;

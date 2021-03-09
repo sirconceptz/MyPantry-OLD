@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020
+ * Copyright (c) 2019-2021
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -19,14 +19,18 @@ package com.hermanowicz.pantry.interfaces;
 
 import android.graphics.Bitmap;
 
-public interface PrintQRCodesView {
-    void showPermissionsError();
+import com.hermanowicz.pantry.db.product.Product;
 
+import java.util.List;
+
+public interface PrintQRCodesView {
     void showQRCodeImage(Bitmap qrCodeImage);
 
-    void openPDF();
+    void openPDF(String fileName);
 
-    void sendPDFByEmail();
+    void sendPDFByEmail(String fileName);
 
     void navigateToMainActivity();
+
+    void navigateToAddPhoto(List<Product> productList);
 }
