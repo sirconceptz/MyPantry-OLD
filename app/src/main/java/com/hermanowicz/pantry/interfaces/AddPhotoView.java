@@ -17,6 +17,8 @@
 
 package com.hermanowicz.pantry.interfaces;
 
+import android.graphics.Bitmap;
+
 import com.hermanowicz.pantry.db.product.Product;
 
 import java.io.File;
@@ -24,7 +26,7 @@ import java.io.File;
 public interface AddPhotoView {
     void takePictureIntent(File photoFile);
 
-    void showPhoto(Product product);
+    void showPhoto(Product product, Bitmap photo);
 
     void onPhotoAddSuccess();
 

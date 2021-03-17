@@ -20,9 +20,13 @@ package com.hermanowicz.pantry.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +42,7 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
+import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.ProductDataModel;
 import com.hermanowicz.pantry.presenter.ProductDetailsPresenter;
@@ -50,6 +55,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+
+import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>ProductDetailsActivity</h1>
@@ -71,6 +78,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             productProductionDate, productComposition, productHealingProperties, productDosage,
             productVolume, productWeight, productQuantity, productHasSugar, productHasSalt,
             productIsVege, productIsBio, productTaste;
+    private ImageView photoIv;
     private Button deleteProduct, printQrCode, addPhoto, editProduct;
     private AdView adView;
 
@@ -92,6 +100,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         context = getApplicationContext();
 
         Toolbar toolbar = binding.toolbar;
+        photoIv = binding.photoIv;
         productType = binding.textProductTypeValue;
         productCategory = binding.textProductCategoryValue;
         productStorageLocation = binding.textProductStorageLocationValue;
@@ -119,21 +128,22 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         setSupportActionBar(toolbar);
 
-        presenter = new ProductDetailsPresenter(this, new ProductDataModel(context, getResources()));
+        presenter = new ProductDetailsPresenter(this, new ProductDataModel(context,
+                getResources()), new DatabaseOperations(context));
 
         Intent myPantryActivityIntent = getIntent();
-        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
-        String hashCode = myPantryActivityIntent.getStringExtra("hash_code");
+        productId = myPantryActivityIntent.getIntExtra("PRODUCT_ID", 1);
+        String hashCode = myPantryActivityIntent.getStringExtra("HASH_CODE");
 
         presenter.setProductId(productId);
         presenter.showProductDetails(hashCode);
     }
 
     private void setListeners() {
-        deleteProduct.setOnClickListener(view -> presenter.deleteProduct(productId));
-        printQrCode.setOnClickListener(view -> presenter.printQRCode());
-        editProduct.setOnClickListener(view -> presenter.editProduct(productId));
-        addPhoto.setOnClickListener(view -> presenter.addPhoto());
+        deleteProduct.setOnClickListener(view -> presenter.onClickDeleteProduct(productId));
+        printQrCode.setOnClickListener(view -> presenter.onClickPrintQRCodes());
+        editProduct.setOnClickListener(view -> presenter.onClickEditProduct(productId));
+        addPhoto.setOnClickListener(view -> presenter.onClickTakePhoto());
     }
 
     @Override
@@ -160,6 +170,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
+    public void showPhoto(Bitmap photo) {
+        photoIv.setImageBitmap(photo);
+    }
+
+    @Override
     public void showErrorWrongData() {
         Toast.makeText(context, getString(R.string.Error_wrong_data), Toast.LENGTH_LONG).show();
     }
@@ -170,37 +185,60 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void onPrintQRCode(@NonNull List<Product> productList) {
+    public void navigateToPrintQRCodeActivity(@NonNull List<Product> productList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(printQRCodesActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void navigateToEditProductActivity(int productId) {
         Intent editProductActivityIntent = new Intent(context, EditProductActivity.class)
-                .putExtra("product_id", productId);
+                .putExtra("PRODUCT_ID", productId);
         startActivity(editProductActivityIntent);
-    }
-
-    @Override
-    public void navigateToAddPhotoActivity(List<Product> productList) {
-        Intent addProductActivityIntent = new Intent(context, AddPhotoActivity.class)
-                .putExtra("PRODUCT_LIST", (Serializable) productList);
-        startActivity(addProductActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void navigateToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
-    public void navigateToAddPhoto(List<Product> productList) {
+    public void navigateToAddPhotoActivity(List<Product> productList) {
         Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(addPhotoActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.product_details_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_take_photo:
+                presenter.onClickTakePhoto();
+                return true;
+            case R.id.action_print_codes:
+                presenter.onClickPrintQRCodes();
+                return true;
+            case R.id.action_edit_product:
+                presenter.onClickEditProduct(productId);
+                return true;
+            case R.id.action_delete_product:
+                presenter.onClickDeleteProduct(productId);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -227,5 +265,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

@@ -27,6 +27,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -64,6 +66,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>NewProductActivity</h1>
@@ -163,7 +167,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     }
 
     private void setListeners() {
-        addProduct.setOnClickListener(view -> onClickAddProduct());
+        addProduct.setOnClickListener(view -> presenter.onClickAddProduct());
 
         productExpirationDate.setOnClickListener(v -> {
             if (productExpirationDate.length() < 1) {
@@ -236,7 +240,8 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
         });
     }
 
-    private void onClickAddProduct() {
+    @Override
+    public void onClickAddProduct() {
         int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
         RadioButton taste = findViewById(selectedTasteId);
 
@@ -277,6 +282,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
 
         startActivity(printQRCodesActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
@@ -350,6 +356,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
@@ -358,6 +365,23 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.save_product, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_save_product:
+                presenter.onClickAddProduct();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -376,5 +400,11 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

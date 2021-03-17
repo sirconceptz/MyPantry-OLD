@@ -110,4 +110,8 @@ public class NewProductPresenter {
     public void navigateToMainActivity() {
         view.navigateToMainActivity();
     }
+
+    public void onClickAddProduct() {
+        view.onClickAddProduct();
+    }
 }

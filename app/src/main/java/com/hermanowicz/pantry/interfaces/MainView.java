@@ -29,4 +29,6 @@ public interface MainView {
     void onNavigationToStorageLocationsActivity();
 
     void onNavigationToAppSettingsActivity();
+
+    void showAuthorInfoDialog();
 }

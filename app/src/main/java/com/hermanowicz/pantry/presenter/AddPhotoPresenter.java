@@ -24,8 +24,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AddPhotoView;
-import com.hermanowicz.pantry.model.AddPhotoModel;
 import com.hermanowicz.pantry.model.DatabaseOperations;
+import com.hermanowicz.pantry.model.PhotoModel;
 
 import java.io.File;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.List;
 public class AddPhotoPresenter{
 
     private final AddPhotoView view;
-    private AddPhotoModel model;
+    private PhotoModel model;
 
     public AddPhotoPresenter(AddPhotoView view){
         this.view = view;
@@ -44,12 +44,12 @@ public class AddPhotoPresenter{
         Product singleProduct = productList.get(0);
         if(!(singleProduct.getPhotoDescription() == null)){
             model.setPhotoFile(singleProduct.getPhotoName());
-            view.showPhoto(singleProduct);
+            view.showPhoto(singleProduct, model.getPhotoBitmap());
         }
     }
 
     public void setActivity(@NonNull AppCompatActivity activity){
-        model = new AddPhotoModel(new DatabaseOperations(activity.getApplicationContext()));
+        model = new PhotoModel(new DatabaseOperations(activity.getApplicationContext()));
         model.setActivity(activity);
     }
 

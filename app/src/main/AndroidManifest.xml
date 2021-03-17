@@ -92,25 +92,25 @@
 
         <activity
             android:name=".activity.CategoriesActivity"
-            android:label="@string/MainActivity_own_categories"
+            android:label="@string/MainActivity_own_categories_button"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.CategoryDetailsActivity"
-            android:label="@string/MainActivity_own_categories"
+            android:label="@string/MainActivity_own_categories_button"
             android:parentActivityName=".activity.CategoriesActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".activity.StorageLocationsActivity"
-            android:label="@string/MainActivity_storage_locations"
+            android:label="@string/MainActivity_storage_locations_button"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".activity.StorageLocationDetailsActivity"
-            android:label="@string/MainActivity_storage_locations"
+            android:label="@string/MainActivity_storage_locations_button"
             android:parentActivityName=".activity.StorageLocationsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 

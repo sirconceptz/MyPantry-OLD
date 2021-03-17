@@ -45,6 +45,8 @@ import com.hermanowicz.pantry.presenter.CategoryDetailsPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import maes.tech.intentanim.CustomIntent;
+
 public class CategoryDetailsActivity extends AppCompatActivity implements CategoryDetailsView {
 
     private ActivityCategoryDetailsBinding binding;
@@ -178,7 +180,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     public void navigateToCategoriesActivity() {
         Intent intent = new Intent (getApplicationContext(), CategoriesActivity.class);
         startActivity(intent);
-        finish();
+        CustomIntent.customType(context, "fadein-to-fadeout");
     }
 
     @Override
@@ -187,5 +189,11 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
             presenter.navigateToCategoriesActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

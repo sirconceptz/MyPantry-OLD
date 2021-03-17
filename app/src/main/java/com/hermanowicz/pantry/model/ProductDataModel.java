@@ -57,10 +57,6 @@ public class ProductDataModel {
         oldProductsQuantity = productList.size();
     }
 
-    public List<Product> getSimilarProductList(){
-        return productList;
-    }
-
     public String formatDate(int year, int month, int day) {
         return year + "-" + month + "-" + day;
     }
@@ -142,9 +138,8 @@ public class ProductDataModel {
     }
 
     public void setTaste(@Nullable RadioButton selectedTasteButton){
-        String[] tasteArray = resources.getStringArray(R.array.Product_taste_array);
         if(selectedTasteButton == null)
-            taste = tasteArray[0];
+            taste = "";
         else
             taste = selectedTasteButton.getText().toString();
     }
@@ -218,7 +213,6 @@ public class ProductDataModel {
                 Product newProduct = new Product();
                 newProduct.setName(groupProducts.getProduct().getName());
                 newProduct.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
-                newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
                 newProduct.setExpirationDate(expirationDate);
                 newProduct.setProductionDate(productionDate);
                 newProduct.setVolume(groupProducts.getProduct().getVolume());
@@ -230,6 +224,10 @@ public class ProductDataModel {
                 newProduct.setHasSalt(groupProducts.getProduct().getHasSalt());
                 newProduct.setTaste(taste);
                 newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
+                if(groupProducts.getProduct().getProductFeatures().equals(resources.getString(R.string.Product_choose)))
+                    newProduct.setProductFeatures("");
+                else
+                    newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
                 newProductList.add(newProduct);
             }
             databaseOperations.addProducts(newProductList);

@@ -19,7 +19,6 @@ package com.hermanowicz.pantry.interfaces;
 
 import com.hermanowicz.pantry.db.product.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface MyPantryView {
@@ -39,7 +38,7 @@ public interface MyPantryView {
 
     void updateProductsRecyclerViewAdapter();
 
-    void onPrintProducts(ArrayList<String> textToQRCodeList, ArrayList<String> namesOfProductsList, ArrayList<String> expirationDatesList);
+    void onPrintProducts(List<Product> productList);
 
     void onDeleteProducts(List<Product> productList);
 }

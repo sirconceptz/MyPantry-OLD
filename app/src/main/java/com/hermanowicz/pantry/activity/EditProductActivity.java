@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
+import maes.tech.intentanim.CustomIntent;
+
 /**
  * <h1>EditProductActivity</h1>
  * Activity for edit product details.
@@ -148,7 +150,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productDosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         Intent myPantryActivityIntent = getIntent();
-        int productId = myPantryActivityIntent.getIntExtra("product_id", 1);
+        int productId = myPantryActivityIntent.getIntExtra("PRODUCT_ID", 1);
 
         ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
         binding.productEdit.spinnerProductType.setAdapter(productTypeAdapter);
@@ -313,6 +315,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     public void navigateToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -392,5 +395,11 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

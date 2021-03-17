@@ -52,6 +52,8 @@ public class NewProductModel {
             product.setHashCode(String.valueOf(product.hashCode()));
             if(product.getStorageLocation().equals("null"))
                 product.setStorageLocation("");
+            if(product.getProductFeatures().equals(resources.getString(R.string.Product_choose)))
+                product.setProductFeatures("");
 
             productList.add(product);
         }

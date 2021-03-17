@@ -17,6 +17,8 @@
 
 package com.hermanowicz.pantry.interfaces;
 
+import android.graphics.Bitmap;
+
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.model.GroupProducts;
 
@@ -25,17 +27,17 @@ import java.util.List;
 public interface ProductDetailsView {
     void showProductDetails(GroupProducts groupProducts);
 
+    void showPhoto(Bitmap photo);
+
     void showErrorWrongData();
 
     void onDeletedProduct();
 
-    void onPrintQRCode(List<Product> productList);
+    void navigateToPrintQRCodeActivity(List<Product> productList);
 
     void navigateToEditProductActivity(int productId);
 
-    void navigateToAddPhotoActivity(List<Product> productList);
-
     void navigateToMyPantryActivity();
 
-    void navigateToAddPhoto(List<Product> productList);
+    void navigateToAddPhotoActivity(List<Product> productList);
 }

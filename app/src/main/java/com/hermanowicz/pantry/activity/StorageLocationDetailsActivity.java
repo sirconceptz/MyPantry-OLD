@@ -45,6 +45,8 @@ import com.hermanowicz.pantry.presenter.StorageLocationsDetailsPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import maes.tech.intentanim.CustomIntent;
+
 public class StorageLocationDetailsActivity extends AppCompatActivity implements StorageLocationDetailsView {
 
     private ActivityStorageLocationDetailsBinding binding;
@@ -178,7 +180,7 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     public void navigateToStorageLocationActivity() {
         Intent intent = new Intent (getApplicationContext(), StorageLocationsActivity.class);
         startActivity(intent);
-        finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
@@ -187,5 +189,11 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
             presenter.navigateToStorageLocationActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

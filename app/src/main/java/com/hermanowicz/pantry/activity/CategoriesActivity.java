@@ -57,6 +57,8 @@ import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.util.List;
 
+import maes.tech.intentanim.CustomIntent;
+
 /**
  * <h1>CategoriesActivity</h1>
  * Categories activity - user can create own categories to user's pantry.
@@ -181,7 +183,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     public void navigateToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
-        finish();
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
@@ -208,5 +210,11 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

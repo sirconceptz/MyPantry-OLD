@@ -48,4 +48,8 @@ public class MainPresenter {
     public void navigateToAppSettingsActivity() {
         view.onNavigationToAppSettingsActivity();
     }
+
+    public void showAuthorInfoDialog() {
+        view.showAuthorInfoDialog();
+    }
 }

@@ -73,8 +73,10 @@ import com.hermanowicz.pantry.util.ProductsAdapter;
 import com.hermanowicz.pantry.util.RecyclerClickListener;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
+
+import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>MyPantryActivity</h1>
@@ -158,9 +160,10 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 else {
                     List<GroupProducts> productList = presenter.getGroupProductsList();
                     Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class)
-                            .putExtra("product_id", productList.get(position).getProduct().getId())
-                            .putExtra("hash_code", productList.get(position).getProduct().getHashCode());
+                            .putExtra("PRODUCT_ID", productList.get(position).getProduct().getId())
+                            .putExtra("HASH_CODE", productList.get(position).getProduct().getHashCode());
                     startActivity(productDetailsActivityIntent);
+                    CustomIntent.customType(view.getContext(), "up-to-bottom");
                 }
             }
 
@@ -270,6 +273,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
@@ -287,12 +291,11 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     }
 
     @Override
-    public void onPrintProducts(@NonNull ArrayList<String> textToQRCodeList, @NonNull ArrayList<String> namesOfProductsList, @NonNull ArrayList<String> expirationDatesList) {
+    public void onPrintProducts(@NonNull List<Product> productList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
-                .putStringArrayListExtra("text_to_qr_code", textToQRCodeList)
-                .putStringArrayListExtra("expiration_dates", expirationDatesList)
-                .putStringArrayListExtra("names_of_products", namesOfProductsList);
+                .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(printQRCodesActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
@@ -365,7 +368,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             case R.id.action_new_item:
                 Intent intent = new Intent(this, NewProductActivity.class);
                 startActivity(intent);
-                finish();
+                CustomIntent.customType(this, "up-to-bottom");
             case R.id.action_print:
                 return true;
             case R.id.action_delete:
@@ -434,5 +437,11 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

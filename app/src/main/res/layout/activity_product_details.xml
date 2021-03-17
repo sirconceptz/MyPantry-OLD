@@ -18,7 +18,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
@@ -29,9 +29,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        ads:layout_constraintEnd_toEndOf="parent"
-        ads:layout_constraintStart_toStartOf="parent"
-        ads:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -52,18 +52,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/photoIv"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="64dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/text_quantityLabel"
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/Product_quantity"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photoIv" />
 
             <TextView
                 android:id="@+id/text_quantityValue"
@@ -71,14 +83,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="150dp"
-                android:layout_marginTop="64dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toEndOf="@id/text_quantityLabel"
-                ads:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/text_quantityLabel"
+                app:layout_constraintTop_toBottomOf="@id/photoIv" />
 
             <TextView
                 android:id="@+id/text_productTypeLabel"
@@ -89,8 +101,8 @@
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_quantityLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_quantityLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_quantityLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_quantityLabel" />
 
             <TextView
                 android:id="@+id/text_productTypeValue"
@@ -102,9 +114,9 @@
                 android:textColor="@color/text_color"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_quantityValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_quantityValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_quantityValue"
+                app:layout_constraintTop_toBottomOf="@id/text_quantityValue" />
 
             <TextView
                 android:id="@+id/text_productCategoryLabel"
@@ -115,8 +127,8 @@
                 android:text="@string/Product_category"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productTypeLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productTypeLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productTypeLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productTypeLabel" />
 
             <TextView
                 android:id="@+id/text_productCategoryValue"
@@ -128,9 +140,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productTypeValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productTypeValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productTypeValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productTypeValue" />
 
             <TextView
                 android:id="@+id/text_productStorageLocationLabel"
@@ -141,8 +153,8 @@
                 android:text="@string/Product_storage_location"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productCategoryLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productCategoryLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productCategoryLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productCategoryLabel" />
 
             <TextView
                 android:id="@+id/text_productStorageLocationValue"
@@ -154,9 +166,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productCategoryValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productCategoryValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productCategoryValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productCategoryValue" />
 
             <TextView
                 android:id="@+id/text_productProductionDateLabel"
@@ -167,8 +179,8 @@
                 android:text="@string/Product_production_date"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productStorageLocationLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productStorageLocationLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productStorageLocationLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productStorageLocationLabel" />
 
             <TextView
                 android:id="@+id/text_productProductionDateValue"
@@ -180,9 +192,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productStorageLocationValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productStorageLocationValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productStorageLocationValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productStorageLocationValue" />
 
             <TextView
                 android:id="@+id/text_productExpirationDateLabel"
@@ -193,8 +205,8 @@
                 android:text="@string/Product_expiration_date"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productProductionDateLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productProductionDateLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productProductionDateLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productProductionDateLabel" />
 
             <TextView
                 android:id="@+id/text_productExpirationDateValue"
@@ -206,9 +218,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productProductionDateValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productProductionDateValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productProductionDateValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productProductionDateValue" />
 
             <TextView
                 android:id="@+id/text_productVolumeLabel"
@@ -219,8 +231,8 @@
                 android:text="@string/Product_volume"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productExpirationDateLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productExpirationDateLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productExpirationDateLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productExpirationDateLabel" />
 
             <TextView
                 android:id="@+id/text_productVolumeValue"
@@ -232,9 +244,9 @@
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productExpirationDateValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productExpirationDateValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productExpirationDateValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productExpirationDateValue" />
 
             <TextView
                 android:id="@+id/text_productWeightLabel"
@@ -245,8 +257,8 @@
                 android:text="@string/Product_weight"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productVolumeLabel"
-                ads:layout_constraintTop_toTopOf="@id/text_productVolumeLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productVolumeLabel"
+                app:layout_constraintTop_toTopOf="@id/text_productVolumeLabel" />
 
             <TextView
                 android:id="@+id/text_productWeightValue"
@@ -258,9 +270,9 @@
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@+id/text_productVolumeValue"
-                ads:layout_constraintTop_toBottomOf="@+id/text_productVolumeValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/text_productVolumeValue"
+                app:layout_constraintTop_toBottomOf="@+id/text_productVolumeValue" />
 
             <TextView
                 android:id="@+id/text_productTasteLabel"
@@ -271,8 +283,8 @@
                 android:text="@string/Product_taste"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@+id/text_productWeightLabel"
-                ads:layout_constraintTop_toBottomOf="@+id/text_productWeightLabel" />
+                app:layout_constraintStart_toStartOf="@+id/text_productWeightLabel"
+                app:layout_constraintTop_toBottomOf="@+id/text_productWeightLabel" />
 
             <TextView
                 android:id="@+id/text_productTasteValue"
@@ -284,9 +296,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productWeightValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productWeightValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productWeightValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productWeightValue" />
 
             <TextView
                 android:id="@+id/text_productHasSugarLabel"
@@ -297,8 +309,8 @@
                 android:text="@string/Product_has_sugar"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productTasteLabel"
-                ads:layout_constraintTop_toTopOf="@id/text_productTasteLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productTasteLabel"
+                app:layout_constraintTop_toTopOf="@id/text_productTasteLabel" />
 
             <TextView
                 android:id="@+id/text_productHasSugarValue"
@@ -310,9 +322,9 @@
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productTasteValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productTasteValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productTasteValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productTasteValue" />
 
             <TextView
                 android:id="@+id/text_productHasSaltLabel"
@@ -323,8 +335,8 @@
                 android:text="@string/Product_has_salt"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productHasSugarLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productHasSugarLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productHasSugarLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productHasSugarLabel" />
 
             <TextView
                 android:id="@+id/text_productHasSaltValue"
@@ -336,9 +348,9 @@
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productHasSugarValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productHasSugarValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productHasSugarValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productHasSugarValue" />
 
             <TextView
                 android:id="@+id/text_productIsVegeLabel"
@@ -349,8 +361,8 @@
                 android:text="@string/Product_vege"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productHasSaltLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productHasSaltLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productHasSaltLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productHasSaltLabel" />
 
             <TextView
                 android:id="@+id/text_productIsVegeValue"
@@ -362,9 +374,9 @@
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productHasSaltValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productHasSaltValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productHasSaltValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productHasSaltValue" />
 
             <TextView
                 android:id="@+id/text_productIsBioLabel"
@@ -375,8 +387,8 @@
                 android:text="@string/Product_bio"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productIsVegeLabel"
-                ads:layout_constraintTop_toBottomOf="@id/text_productIsVegeLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productIsVegeLabel"
+                app:layout_constraintTop_toBottomOf="@id/text_productIsVegeLabel" />
 
             <TextView
                 android:id="@+id/text_productIsBioValue"
@@ -388,9 +400,9 @@
                 android:text="@string/ProductDetailsActivity_no"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productIsVegeValue"
-                ads:layout_constraintTop_toBottomOf="@id/text_productIsVegeValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productIsVegeValue"
+                app:layout_constraintTop_toBottomOf="@id/text_productIsVegeValue" />
 
             <TextView
                 android:id="@+id/text_productCompositionLabel"
@@ -401,8 +413,8 @@
                 android:text="@string/Product_composition"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productIsBioLabel"
-                ads:layout_constraintTop_toTopOf="@id/text_productIsBioLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productIsBioLabel"
+                app:layout_constraintTop_toTopOf="@id/text_productIsBioLabel" />
 
             <TextView
                 android:id="@+id/text_productCompositionValue"
@@ -418,9 +430,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productIsBioValue"
-                ads:layout_constraintTop_toTopOf="@id/text_productIsBioValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productIsBioValue"
+                app:layout_constraintTop_toTopOf="@id/text_productIsBioValue" />
 
             <TextView
                 android:id="@+id/text_productHealingPropertiesLabel"
@@ -431,8 +443,8 @@
                 android:text="@string/Product_healing_properties"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productCompositionLabel"
-                ads:layout_constraintTop_toTopOf="@id/text_productCompositionLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productCompositionLabel"
+                app:layout_constraintTop_toTopOf="@id/text_productCompositionLabel" />
 
             <TextView
                 android:id="@+id/text_productHealingPropertiesValue"
@@ -448,9 +460,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productCompositionValue"
-                ads:layout_constraintTop_toTopOf="@id/text_productCompositionValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productCompositionValue"
+                app:layout_constraintTop_toTopOf="@id/text_productCompositionValue" />
 
             <TextView
                 android:id="@+id/text_productDosageLabel"
@@ -462,8 +474,8 @@
                 android:text="@string/Product_dosage"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintStart_toStartOf="@id/text_productHealingPropertiesLabel"
-                ads:layout_constraintTop_toTopOf="@id/text_productHealingPropertiesLabel" />
+                app:layout_constraintStart_toStartOf="@id/text_productHealingPropertiesLabel"
+                app:layout_constraintTop_toTopOf="@id/text_productHealingPropertiesLabel" />
 
             <TextView
                 android:id="@+id/text_productDosageValue"
@@ -479,9 +491,9 @@
                 android:text=""
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintStart_toStartOf="@id/text_productHealingPropertiesValue"
-                ads:layout_constraintTop_toTopOf="@id/text_productHealingPropertiesValue" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/text_productHealingPropertiesValue"
+                app:layout_constraintTop_toTopOf="@id/text_productHealingPropertiesValue" />
 
             <Button
                 android:id="@+id/button_printQRCode"
@@ -493,9 +505,9 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/PrintQRCodesActivity_print_qr_codes"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintTop_toBottomOf="@id/text_productDosageValue" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_productDosageValue" />
 
             <Button
                 android:id="@+id/button_editProduct"
@@ -507,8 +519,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_edit_product"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@id/button_printQRCode" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/button_printQRCode" />
 
             <Button
                 android:id="@+id/button_addPhoto"
@@ -520,8 +532,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/AddPhotoActivity_take_photo_of_product"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@id/button_editProduct" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/button_editProduct" />
 
 
             <Button
@@ -535,8 +547,8 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_delete_product"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toBottomOf="@id/button_addPhoto" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/button_addPhoto" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -547,10 +559,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id"
-        ads:layout_constraintBottom_toBottomOf="parent"
-        ads:layout_constraintEnd_toEndOf="parent"
-        ads:layout_constraintStart_toStartOf="parent" />
+        app:adSize="BANNER"
+        app:adUnitId="@string/banner_ad_unit_id"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,24 +22,26 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityMainBinding;
+import com.hermanowicz.pantry.dialog.AuthorDialog;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenter.MainPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.util.Objects;
+import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>MainActivity</h1>
@@ -57,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private Context context;
     private long pressedTime;
 
-    private Button myPantry, scanProduct, newProduct, ownCategories, storageLocations, appSettings;
+    private CardView myPantry, scanProduct, newProduct, ownCategories, storageLocations, appSettings;
+    private ImageView authorInfo;
     private AdView adView;
     
     @Override
@@ -77,16 +80,15 @@ public class MainActivity extends AppCompatActivity implements MainView {
         context = getApplicationContext();
 
         MobileAds.initialize(context);
-        setSupportActionBar(binding.toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         adView = binding.adview;
-        myPantry = binding.buttonMyPantry;
-        scanProduct = binding.buttonScanProduct;
-        newProduct = binding.buttonNewProduct;
-        ownCategories = binding.buttonOwnCategories;
-        storageLocations = binding.buttonStorageLocations;
-        appSettings = binding.buttonAppSettings;
+        authorInfo = binding.authorInfo;
+        myPantry = binding.myPantryCV;
+        scanProduct = binding.scanProductCV;
+        newProduct = binding.newProductCV;
+        ownCategories = binding.ownCategoriesCV;
+        storageLocations = binding.storageLocationsCV;
+        appSettings = binding.appSettingsCV;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -101,42 +103,55 @@ public class MainActivity extends AppCompatActivity implements MainView {
         ownCategories.setOnClickListener(view -> presenter.navigateToCategoriesActivity());
         storageLocations.setOnClickListener(view -> presenter.navigateToStorageLocationsActivity());
         appSettings.setOnClickListener(view -> presenter.navigateToAppSettingsActivity());
+        authorInfo.setOnClickListener(view -> presenter.showAuthorInfoDialog());
     }
 
     @Override
     public void onNavigationToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void onNavigationToScanProductActivity() {
         Intent scanProductActivityIntent = new Intent(MainActivity.this, ScanProductActivity.class);
         startActivity(scanProductActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void onNavigationToNewProductActivity() {
         Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
         startActivity(newProductActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void onNavigationToCategoriesActivity() {
         Intent categoriesActivity = new Intent(MainActivity.this, CategoriesActivity.class);
         startActivity(categoriesActivity);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void onNavigationToStorageLocationsActivity() {
         Intent storageLocationsActivity = new Intent(MainActivity.this, StorageLocationsActivity.class);
         startActivity(storageLocationsActivity);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void onNavigationToAppSettingsActivity() {
         Intent appSettingsActivityIntent = new Intent(MainActivity.this, AppSettingsActivity.class);
         startActivity(appSettingsActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
+    }
+
+    @Override
+    public void showAuthorInfoDialog() {
+        AuthorDialog authorDialog = new AuthorDialog();
+        authorDialog.show(getSupportFragmentManager(), "");
     }
 
     @Override
@@ -168,5 +183,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

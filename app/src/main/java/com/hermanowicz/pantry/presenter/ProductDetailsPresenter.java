@@ -21,7 +21,9 @@ import androidx.annotation.NonNull;
 
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
+import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.model.GroupProducts;
+import com.hermanowicz.pantry.model.PhotoModel;
 import com.hermanowicz.pantry.model.ProductDataModel;
 
 import java.util.List;
@@ -30,10 +32,12 @@ public class ProductDetailsPresenter {
 
     private final ProductDetailsView view;
     private final ProductDataModel model;
+    private final PhotoModel photoModel;
 
-    public ProductDetailsPresenter(@NonNull ProductDetailsView view, @NonNull ProductDataModel productDataModel) {
+    public ProductDetailsPresenter(@NonNull ProductDetailsView view, @NonNull ProductDataModel productDataModel, @NonNull DatabaseOperations databaseOperations) {
         this.view = view;
         this.model = productDataModel;
+        this.photoModel = new PhotoModel(databaseOperations);
     }
 
     public void setProductId(int productId) {
@@ -47,33 +51,35 @@ public class ProductDetailsPresenter {
         } else if(model.isCorrectHashCode(hashCode)) {
             GroupProducts groupProducts = model.getGroupProducts();
             view.showProductDetails(groupProducts);
+            photoModel.setPhotoFile(groupProducts.getProduct().getPhotoName());
+            view.showPhoto(photoModel.getPhotoBitmap());
         } else {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
         }
     }
 
-    public void deleteProduct(int productId) {
+    public void onClickDeleteProduct(int productId) {
         model.deleteSimilarProducts(productId);
         view.onDeletedProduct();
         view.navigateToMyPantryActivity();
     }
 
-    public void printQRCode() {
+    public void onClickPrintQRCodes() {
         List<Product> productList = model.getProductList();
 
-        view.onPrintQRCode(productList);
+        view.navigateToPrintQRCodeActivity(productList);
     }
 
-    public void editProduct(int productId){
+    public void onClickEditProduct(int productId){
         view.navigateToEditProductActivity(productId);
+    }
+
+    public void onClickTakePhoto() {
+        view.navigateToAddPhotoActivity(model.getProductList());
     }
 
     public void navigateToMyPantryActivity() {
         view.navigateToMyPantryActivity();
-    }
-
-    public void addPhoto() {
-        view.navigateToAddPhoto(model.getProductList());
     }
 }

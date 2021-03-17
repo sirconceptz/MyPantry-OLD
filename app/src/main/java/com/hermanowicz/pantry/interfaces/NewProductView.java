@@ -24,6 +24,8 @@ import java.util.List;
 public interface NewProductView {
     void navigateToPrintQRCodesActivity(List<Product> productList);
 
+    void onClickAddProduct();
+
     void onProductsAdd(List<Product> products);
 
     void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);

@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.model;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -39,7 +40,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 
-public class AddPhotoModel {
+public class PhotoModel {
 
     public final int MAX_CHAR_PHOTO_DESCRIPTION = 50;
 
@@ -51,7 +52,7 @@ public class AddPhotoModel {
     private String filePath;
     private String fileName;
 
-    public AddPhotoModel(@NonNull DatabaseOperations databaseOperations){
+    public PhotoModel(@NonNull DatabaseOperations databaseOperations){
         this.databaseOperations = databaseOperations;
     }
 
@@ -84,6 +85,10 @@ public class AddPhotoModel {
         }
         databaseOperations.updateProducts(productList);
         photoFile.delete();
+    }
+
+    public Bitmap getPhotoBitmap(){
+        return BitmapFactory.decodeFile(photoFile.getAbsolutePath());
     }
 
     public boolean isPhotoDescriptionNotCorrect(@NonNull String categoryDescription) {

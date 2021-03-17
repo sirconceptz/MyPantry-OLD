@@ -56,6 +56,8 @@ import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.util.List;
 
+import maes.tech.intentanim.CustomIntent;
+
 /**
  * <h1>CategoriesActivity</h1>
  * Categories activity - user can create own categories to user's pantry.
@@ -120,6 +122,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
                 Intent intent = new Intent(context, StorageLocationDetailsActivity.class)
                         .putExtra("storage_location_id", storageLocationList.get(position).getId());
                 startActivity(intent);
+                CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }
 
             @Override
@@ -180,7 +183,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     public void navigateToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
-        finish();
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
@@ -207,5 +210,11 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

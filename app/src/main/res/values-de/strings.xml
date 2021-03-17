@@ -38,9 +38,9 @@
     <string name="MainActivity_my_pantry_button">Meine speisekammer</string>
     <string name="MainActivity_scan_product_button">Scannen Sie den QR-Code des Produkts</string>
     <string name="MainActivity_new_product_button">Neues produkt</string>
-    <string name="MainActivity_own_categories">Eigene Produktkategorien</string>
-    <string name="MainActivity_storage_locations">Lagerorte</string>
-    <string name="MainActivity_app_settings">Anwendungseinstellungen</string>
+    <string name="MainActivity_own_categories_button">Eigene Produktkategorien</string>
+    <string name="MainActivity_storage_locations_button">Lagerorte</string>
+    <string name="MainActivity_app_settings_button">Anwendungseinstellungen</string>
     <!--MyPantryActivity-->
     <string name="MyPantryActivity_products_not_found">Hoppla! Nicht gefundene Produkte :(</string>
     <string name="MyPantryActivity_clear">Löschen</string>
@@ -137,6 +137,7 @@
     <string-array name="Product_choose_array">
         <item>Wählen</item>
     </string-array>
+    <string name="Product_choose">Wählen</string>
     <string name="Product_category">Produktkategorie</string>
     <string-array name="ProductDetailsActivity_store_products_array">
         <item>Wählen</item>

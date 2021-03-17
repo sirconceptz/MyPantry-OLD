@@ -37,9 +37,9 @@
     <string name="MainActivity_my_pantry_button">My pantry</string>
     <string name="MainActivity_scan_product_button">Scan the product\'s QR code</string>
     <string name="MainActivity_new_product_button">New product</string>
-    <string name="MainActivity_own_categories">Own product categories</string>
-    <string name="MainActivity_storage_locations">Storage locations</string>
-    <string name="MainActivity_app_settings">Application settings</string>
+    <string name="MainActivity_own_categories_button">Own product categories</string>
+    <string name="MainActivity_storage_locations_button">Storage locations</string>
+    <string name="MainActivity_app_settings_button">Application settings</string>
     <!--MyPantryActivity-->
     <string name="MyPantryActivity_products_not_found">Oops! Not found products :(</string>
     <string name="MyPantryActivity_clear">Clear</string>
@@ -136,6 +136,7 @@
     <string-array name="Product_choose_array">
         <item>Choose</item>
     </string-array>
+    <string name="Product_choose">Choose</string>
     <string name="Product_category">Product category</string>
     <string-array name="ProductDetailsActivity_store_products_array">
         <item>Choose</item>

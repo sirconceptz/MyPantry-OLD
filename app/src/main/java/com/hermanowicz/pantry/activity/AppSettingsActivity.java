@@ -52,6 +52,8 @@ import com.hermanowicz.pantry.util.Notification;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import maes.tech.intentanim.CustomIntent;
+
 /**
  * <h1>AppSettingsActivity</h1>
  * Activity for application settings.
@@ -256,14 +258,20 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             presenter.navigateToMainActivity();
-            finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

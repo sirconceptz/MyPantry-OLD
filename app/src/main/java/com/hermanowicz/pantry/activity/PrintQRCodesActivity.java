@@ -47,6 +47,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+import maes.tech.intentanim.CustomIntent;
+
 import static androidx.core.content.FileProvider.getUriForFile;
 
 /**
@@ -144,6 +146,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
+        CustomIntent.customType(this, "bottom-to-up");
     }
 
     @Override
@@ -151,6 +154,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(addPhotoActivityIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
@@ -159,5 +163,11 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
             presenter.navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

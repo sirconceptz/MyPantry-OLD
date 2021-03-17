@@ -33,6 +33,8 @@ import com.hermanowicz.pantry.databinding.ActivitySplashScreenBinding;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import maes.tech.intentanim.CustomIntent;
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     private ActivitySplashScreenBinding binding;
@@ -75,8 +77,9 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 
     private void goToMainActivity() {
-        Intent i = new Intent(SplashScreenActivity.this, MainActivity.class); startActivity(i);
-        finish();
+        Intent i = new Intent(SplashScreenActivity.this, MainActivity.class);
+        startActivity(i);
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     private void delayAndGoToMainActivity() {

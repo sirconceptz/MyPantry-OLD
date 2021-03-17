@@ -44,6 +44,8 @@ import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.util.List;
 
+import maes.tech.intentanim.CustomIntent;
+
 /**
  * <h1>ScanProductActivity/h1>
  * Activity to scan QR code. Uses camera and zxing library.
@@ -131,11 +133,19 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         productDetailsIntent.putExtra("product_id", decodedScanResultAsList.get(0));
         productDetailsIntent.putExtra("hash_code", String.valueOf(decodedScanResultAsList.get(1)));
         startActivity(productDetailsIntent);
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
+        CustomIntent.customType(this, "bottom-to-up");
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

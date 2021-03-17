@@ -30,6 +30,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
 import com.hermanowicz.pantry.R;
@@ -55,6 +58,8 @@ import com.hermanowicz.pantry.util.ThemeMode;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.List;
+
+import maes.tech.intentanim.CustomIntent;
 
 public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView {
 
@@ -85,7 +90,8 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
 
         context = AddPhotoActivity.this;
 
-        imageViewPhoto = binding.photo;
+        Toolbar toolbar = binding.toolbar;
+        imageViewPhoto = binding.photoIv;
         description = binding.photoDescription;
         descriptionCharCounter = binding.descriptionCharCounter;
         takePhoto = binding.buttonTakePhoto;
@@ -98,6 +104,8 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         presenter.setDb(new DatabaseOperations(context));
         presenter.setProductList(productList);
         presenter.updateDescriptionCharCounter(description.getText().toString());
+
+        setSupportActionBar(toolbar);
     }
 
     private void setListeners() {
@@ -157,11 +165,9 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     }
 
     @Override
-    public void showPhoto(@NonNull Product singleProduct) {
+    public void showPhoto(@NonNull Product singleProduct, Bitmap photo) {
         description.setText(singleProduct.getPhotoDescription());
-
-        Bitmap takenImage = BitmapFactory.decodeFile(presenter.getPhotoFile().getAbsolutePath());
-        imageViewPhoto.setImageBitmap(takenImage);
+        imageViewPhoto.setImageBitmap(photo);
     }
 
     @Override
@@ -201,5 +207,34 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     @Override
     public void updateDescriptionCharCounter(int charCounter, int maxChar) {
         descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.add_photo_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_take_photo:
+                presenter.onClickTakePhoto();
+                return true;
+            case R.id.action_save_photo:
+                presenter.onClickSavePhoto();
+                return true;
+            case R.id.action_delete_product:
+                presenter.onClickDeletePhoto();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

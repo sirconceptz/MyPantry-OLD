@@ -26,9 +26,7 @@ import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.MyPantryModel;
-import com.hermanowicz.pantry.util.PrintQRData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MyPantryPresenter {
@@ -83,14 +81,9 @@ public class MyPantryPresenter {
     }
 
     public void printSelectedProducts() {
-        ArrayList<String> textToQRCodeList, namesOfProductsList, expirationDatesList;
         List<Product> productList = model.getAllSelectedProductList();
 
-        textToQRCodeList = PrintQRData.getTextToQRCodeList(productList, 0);
-        namesOfProductsList = PrintQRData.getNamesOfProductsList(productList);
-        expirationDatesList = PrintQRData.getExpirationDatesList(productList);
-
-        view.onPrintProducts(textToQRCodeList, namesOfProductsList, expirationDatesList);
+        view.onPrintProducts(productList);
     }
 
     public void clearFilters() {
