@@ -51,6 +51,10 @@ public class PermissionsHandler implements PermissionHandler {
             permissionHandler.requestPermission(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_MEDIA_LOCATION},
                     23);
         }
+        else {
+            permissionHandler.requestPermission(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    23);
+        }
     }
 
     public static boolean isCameraPermission(AppCompatActivity activity){

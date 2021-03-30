@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.model;
 import com.hermanowicz.pantry.db.product.Product;
 
 public final class GroupProducts {
+
     private Product product;
     private int quantity;
 

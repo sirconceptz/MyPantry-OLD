@@ -83,7 +83,7 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
         deleteStorageLocation = binding.buttonDeleteStorageLocation;
 
         Intent categoryIntent = getIntent();
-        storageLocationId = categoryIntent.getIntExtra("storage_location_id", 0);
+        storageLocationId = categoryIntent.getIntExtra("STORAGE_LOCATION_ID", 0);
         DatabaseOperations databaseOperations = new DatabaseOperations(context);
         presenter = new StorageLocationsDetailsPresenter(this, new StorageLocationModel(databaseOperations));
         presenter.setStorageLocationId(storageLocationId);

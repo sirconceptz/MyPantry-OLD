@@ -54,6 +54,7 @@
 
             <ImageView
                 android:id="@+id/photoIv"
+                app:srcCompat="@drawable/ic_no_image"
                 android:layout_width="300dp"
                 android:layout_height="200dp"
                 android:layout_marginTop="64dp"
@@ -175,7 +176,7 @@
                 android:textColor="@color/text_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/Product_production_date"
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
@@ -187,7 +188,7 @@
                 android:textColor="@color/text_color"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="16dp"
                 android:text=""
                 android:textSize="20sp"

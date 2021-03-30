@@ -83,7 +83,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         deleteCategory = binding.buttonDeleteCategory;
 
         Intent categoryIntent = getIntent();
-        categoryId = categoryIntent.getIntExtra("category_id", 0);
+        categoryId = categoryIntent.getIntExtra("CATEGORY_ID", 0);
         DatabaseOperations databaseOperations = new DatabaseOperations(context);
         presenter = new CategoryDetailsPresenter(this, new CategoryModel(databaseOperations));
         presenter.setCategoryId(categoryId);
@@ -180,7 +180,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     public void navigateToCategoriesActivity() {
         Intent intent = new Intent (getApplicationContext(), CategoriesActivity.class);
         startActivity(intent);
-        CustomIntent.customType(context, "fadein-to-fadeout");
+        CustomIntent.customType(this, "up-to-bottom");
     }
 
     @Override
@@ -194,6 +194,6 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

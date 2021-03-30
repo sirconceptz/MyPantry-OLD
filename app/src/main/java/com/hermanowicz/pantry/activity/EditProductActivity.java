@@ -27,6 +27,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -56,7 +58,6 @@ import com.hermanowicz.pantry.util.DateHelper;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -78,17 +79,17 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private Context context;
     private Resources resources;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> productCategoryAdapter;
+    private ArrayAdapter<CharSequence> productCategoryAdapter, productStorageLocationAdapter;
     private int day, month, year;
     private boolean isTypeOfProductTouched;
 
-    private Spinner productType, productCategory;
+    private Spinner productType, productCategory, productStorageLocation;
     private EditText productName, productExpirationDate, productProductionDate, productComposition,
             productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
     private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
     private RadioButton productIsSweet, productIsSour, productIsSweetAndSour, productIsBitter,
             productIsSalty;
-    private Button addPhoto, saveProduct, cancelButton;
+    private Button saveProduct, cancelButton;
     private AdView adView;
 
     @Override
@@ -120,6 +121,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productName = binding.productEdit.edittextName;
         productType = binding.productEdit.spinnerProductType;
         productCategory = binding.productEdit.spinnerProductCategory;
+        productStorageLocation = binding.productEdit.spinnerProductStorageLocation;
         productExpirationDate = binding.productEdit.edittextExpirationDate;
         productProductionDate = binding.productEdit.edittextProductionDate;
         productComposition = binding.productEdit.edittextComposition;
@@ -137,7 +139,6 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productIsSweetAndSour = binding.productEdit.radiobtnIsSweetAndSour;
         productIsBitter = binding.productEdit.radiobtnIsBitter;
         productIsSalty = binding.productEdit.radiobtnIsSalty;
-        addPhoto = binding.buttonAddPhoto;
         saveProduct = binding.buttonSaveProduct;
         cancelButton = binding.buttonCancel;
 
@@ -155,15 +156,18 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
         binding.productEdit.spinnerProductType.setAdapter(productTypeAdapter);
 
+        productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
+        productStorageLocationAdapter.notifyDataSetChanged();
+        productStorageLocation.setAdapter(productStorageLocationAdapter);
+
         productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
         binding.productEdit.spinnerProductCategory.setAdapter(productCategoryAdapter);
         presenter.setProduct(productId);
     }
 
     private void setListeners() {
-        addPhoto.setOnClickListener(view -> presenter.onClickAddPhotoButton());
-        saveProduct.setOnClickListener(view -> onClickSaveProductButton());
-        cancelButton.setOnClickListener(view -> onClickCancelButton());
+        saveProduct.setOnClickListener(view -> presenter.onClickSaveProductButton());
+        cancelButton.setOnClickListener(view -> presenter.onClickCancelButton());
 
         productExpirationDate.setOnClickListener(v -> {
             if (productExpirationDate.length() <= 1) {
@@ -236,7 +240,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         });
     }
 
-    private void onClickSaveProductButton(){
+    @Override
+    public void onClickSaveProductButton(){
         int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
         RadioButton taste = findViewById(selectedTasteId);
 
@@ -253,20 +258,18 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         product.setHasSalt(productHasSalt.isChecked());
         product.setIsBio(productIsBio.isChecked());
         product.setIsVege(productIsVege.isChecked());
+        product.setStorageLocation(String.valueOf(productStorageLocation.getSelectedItem()));
         GroupProducts groupProducts = new GroupProducts(product, Integer.parseInt(productQuantity.getText().toString()));
         presenter.setTaste(taste);
         presenter.saveProduct(groupProducts);
     }
 
-    private void onClickCancelButton(){
-        presenter.navigateToMyPantryActivity();
-    }
-
     @Override
-    public void setSpinnerSelections(int typeOfProductPosition, int productFeaturesPosition) {
+    public void setSpinnerSelections(int typeOfProductPosition, int productFeaturesPosition, int productStorageLocationSpinnerPosition) {
         productType.setSelection(typeOfProductPosition);
         updateProductFeaturesAdapter(String.valueOf(productType.getSelectedItem()));
         productCategory.setSelection(productFeaturesPosition);
+        productStorageLocation.setSelection(productStorageLocationSpinnerPosition);
     }
 
     @Override
@@ -286,6 +289,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productWeight.setText(String.valueOf(groupProducts.getProduct().getWeight()));
         productHasSugar.setChecked(groupProducts.getProduct().getHasSugar());
         productHasSalt.setChecked(groupProducts.getProduct().getHasSalt());
+        productIsBio.setChecked(groupProducts.getProduct().getIsBio());
+        productIsVege.setChecked(groupProducts.getProduct().getIsVege());
 
         if(groupProducts.getProduct().getTaste().equals(tasteArray[0]))
             productIsSweet.setChecked(true);
@@ -302,13 +307,6 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     public void onSavedProduct() {
         Toast.makeText(context, getString(R.string.EditProductActivity_product_was_updated), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void navigateToAddPhotoActivity(ArrayList<Integer> productIdList) {
-        Intent intent = new Intent(context, AddPhotoActivity.class)
-                .putExtra("product_id_list", productIdList);
-        startActivity(intent);
     }
 
     @Override
@@ -374,9 +372,29 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMyPantryActivity();
+            presenter.onClickCancelButton();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_product_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_save_product:
+                presenter.onClickSaveProductButton();
+                return true;
+            case R.id.action_cancel:
+                presenter.onClickCancelButton();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -121,8 +121,9 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
             public void onItemClick(View view, int position) {
                 List<Category> categoryList = CategoryDb.getInstance(context).categoryDao().getAllOwnCategories();
                 Intent intent = new Intent(context, CategoryDetailsActivity.class)
-                        .putExtra("category_id", categoryList.get(position).getId());
+                        .putExtra("CATEGORY_ID", categoryList.get(position).getId());
                 startActivity(intent);
+                CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }
 
             @Override
@@ -133,7 +134,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        getMenuInflater().inflate(R.menu.new_item, menu);
+        getMenuInflater().inflate(R.menu.new_item_menu, menu);
         return true;
     }
 

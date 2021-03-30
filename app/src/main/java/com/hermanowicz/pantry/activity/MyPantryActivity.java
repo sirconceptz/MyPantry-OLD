@@ -354,7 +354,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.new_item, menu);
+        getMenuInflater().inflate(R.menu.new_item_menu, menu);
         return true;
     }
 
@@ -382,7 +382,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.multi_select_products, menu);
+            inflater.inflate(R.menu.multi_select_products_menu, menu);
             return true;
         }
 

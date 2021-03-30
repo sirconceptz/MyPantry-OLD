@@ -19,16 +19,14 @@ package com.hermanowicz.pantry.interfaces;
 
 import com.hermanowicz.pantry.model.GroupProducts;
 
-import java.util.ArrayList;
-
 public interface EditProductView {
-    void setSpinnerSelections(int typeOfProductPosition, int productFeaturesPosition);
+    void setSpinnerSelections(int typeOfProductPosition, int productFeaturesPosition, int productStorageLocationSpinnerPosition);
 
     void showProductData(GroupProducts groupProducts);
 
     void onSavedProduct();
 
-    void navigateToAddPhotoActivity(ArrayList<Integer> productIdList);
+    void onClickSaveProductButton();
 
     void navigateToMyPantryActivity();
 }

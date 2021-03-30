@@ -369,7 +369,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
 
     @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
-        getMenuInflater().inflate(R.menu.save_product, menu);
+        getMenuInflater().inflate(R.menu.save_product_menu, menu);
         return true;
     }
 

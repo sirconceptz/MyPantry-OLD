@@ -23,8 +23,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -39,10 +40,10 @@ import com.hermanowicz.pantry.databinding.ActivityPrintQrcodesBinding;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
 import com.hermanowicz.pantry.presenter.PrintQRCodesPresenter;
+import com.hermanowicz.pantry.util.FileManager;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -119,9 +120,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     @Override
     public void openPDF(String fileName) {
-        File pdfFile = new File(Environment.getExternalStorageDirectory() + File.separator
-                + "Download/MyPantry", fileName);
-        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
+        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", FileManager.getPdfFile(fileName));
         Intent pdfDocumentIntent = new Intent(Intent.ACTION_VIEW);
         pdfDocumentIntent.setDataAndType(pdfUri, "application/pdf");
         pdfDocumentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -131,9 +130,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     @Override
     public void sendPDFByEmail(String fileName) {
-        File pdfFile = new File(Environment.getExternalStorageDirectory() + File.separator
-                + "Download/MyPantry", fileName);
-        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
+        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", FileManager.getPdfFile(fileName));
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
         emailIntent.setType("plain/text");
         if (pdfUri != null) {
@@ -169,5 +166,31 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     public void finish() {
         super.finish();
         CustomIntent.customType(this, "up-to-bottom");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(@NonNull Menu menu) {
+        getMenuInflater().inflate(R.menu.print_qr_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_print_codes:
+                presenter.onClickPrintQRCodes();
+                return true;
+            case R.id.action_send_email:
+                presenter.onClickSendPdfByEmail();
+                return true;
+            case R.id.action_take_photo:
+                presenter.onClickAddPhoto(productList);
+                return true;
+            case R.id.action_skip:
+                presenter.onClickSkipButton();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -17,11 +17,17 @@
 
 package com.hermanowicz.pantry.util;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.hermanowicz.pantry.db.product.Product;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +46,9 @@ import java.util.List;
  */
 
 public class PrintQRData {
+
+    private static final int QR_CODE_WIDTH = 100;
+    private static final int QR_CODE_HEIGHT = 100;
 
     public static ArrayList<String> getTextToQRCodeList(@NonNull List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
@@ -82,5 +91,25 @@ public class PrintQRData {
             expirationDatesList.add(product.getExpirationDate());
         }
         return expirationDatesList;
+    }
+
+    public static ArrayList<Bitmap> getQrCodeBitmapArray(ArrayList<String> textToQRCodeArray) {
+        ArrayList<Bitmap> qrCodeBitmapArray = new ArrayList<>();
+        for (int i = 0; i < textToQRCodeArray.size(); i++) {
+            qrCodeBitmapArray.add(getBitmapQRCode(textToQRCodeArray.get(i)));
+        }
+        return qrCodeBitmapArray;
+    }
+
+    public static Bitmap getBitmapQRCode(@NonNull String textToQrCode) {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = null;
+        try {
+            bitMatrix = qrCodeWriter.encode(textToQrCode, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT);
+        } catch (WriterException e) {
+            Log.e("QRCodeWriter", e.toString());
+        }
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        return barcodeEncoder.createBitmap(bitMatrix);
     }
 }

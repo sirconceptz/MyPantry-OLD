@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,14 +64,6 @@ public class ProductDataModel {
 
     public List<Product> getProductList(){
         return productList;
-    }
-
-    public ArrayList<Integer> getProductIdList(){
-        ArrayList<Integer> productIdList = new ArrayList<>();
-        for(Product product : productList){
-            productIdList.add(product.getId());
-        }
-        return productIdList;
     }
 
     public boolean isProductListEmpty() {
@@ -132,6 +125,16 @@ public class ProductDataModel {
 
         for(int counter = 0; productFeaturesArray.length > counter; counter++){
             if(productList.get(0).getProductFeatures().equals(productFeaturesArray[counter]))
+                selection = counter;
+        }
+        return selection;
+    }
+
+    public int getProductStorageLocationPosition() {
+        List<StorageLocation> storageLocationList = databaseOperations.getStorageLocationList();
+        int selection = 0;
+        for(int counter = 0; storageLocationList.size() > counter; counter++){
+            if(productList.get(0).getStorageLocation().equals(storageLocationList.get(counter).getName()))
                 selection = counter;
         }
         return selection;
@@ -202,6 +205,8 @@ public class ProductDataModel {
             product.setVolume(groupProducts.getProduct().getVolume());
             product.setHasSugar(groupProducts.getProduct().getHasSugar());
             product.setHasSalt(groupProducts.getProduct().getHasSugar());
+            product.setIsBio(groupProducts.getProduct().getIsBio());
+            product.setIsVege(groupProducts.getProduct().getIsVege());
             product.setProductionDate(productionDate);
             product.setExpirationDate(expirationDate);
             product.setTaste(taste);
@@ -249,5 +254,9 @@ public class ProductDataModel {
 
     public String[] getOwnCategoriesArray(){
         return databaseOperations.getOwnCategoriesArray();
+    }
+
+    public String[] getStorageLocationsArray() {
+        return databaseOperations.getStorageLocationsArray();
     }
 }

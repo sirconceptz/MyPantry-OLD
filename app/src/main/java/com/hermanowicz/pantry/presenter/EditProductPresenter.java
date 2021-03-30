@@ -27,7 +27,6 @@ import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.ProductDataModel;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -51,7 +50,8 @@ public class EditProductPresenter {
         GroupProducts groupProducts = model.getGroupProducts();
         int productTypeSpinnerPosition = model.getProductTypeSpinnerPosition();
         int productFeaturesSpinnerPosition = model.getProductFeaturesSpinnerPosition(productTypeSpinnerPosition);
-        view.setSpinnerSelections(productTypeSpinnerPosition, productFeaturesSpinnerPosition);
+        int productStorageLocationSpinnerPosition = model.getProductStorageLocationPosition();
+        view.setSpinnerSelections(productTypeSpinnerPosition, productFeaturesSpinnerPosition, productStorageLocationSpinnerPosition);
         view.showProductData(groupProducts);
     }
 
@@ -61,11 +61,6 @@ public class EditProductPresenter {
 
     public void setTaste(@NonNull RadioButton selectedTasteButton){
         model.setTaste(selectedTasteButton);
-    }
-
-    public void onClickAddPhotoButton(){
-        ArrayList<Integer> productIdList = model.getProductIdList();
-        view.navigateToAddPhotoActivity(productIdList);
     }
 
     public void saveProduct(@NonNull GroupProducts groupProducts){
@@ -79,6 +74,10 @@ public class EditProductPresenter {
             view.onSavedProduct();
             view.navigateToMyPantryActivity();
         }
+    }
+
+    public String[] getStorageLocationsArray(){
+        return model.getStorageLocationsArray();
     }
 
     public void setExpirationDate(int year, int month, int day) {
@@ -117,7 +116,11 @@ public class EditProductPresenter {
         return model.getOwnCategoriesArray();
     }
 
-    public void navigateToMyPantryActivity(){
+    public void onClickCancelButton(){
         view.navigateToMyPantryActivity();
+    }
+
+    public void onClickSaveProductButton() {
+        view.onClickSaveProductButton();
     }
 }

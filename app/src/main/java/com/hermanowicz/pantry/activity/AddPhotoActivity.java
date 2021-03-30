@@ -188,8 +188,10 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     @Override
     public void onSavePhoto() {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) imageViewPhoto.getDrawable();
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        presenter.galleryAddPic(bitmap);
+        if(bitmapDrawable != null) {
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            presenter.galleryAddPic(bitmap);
+        }
         String photoDescription = description.getText().toString();
         presenter.addPhotoToDb(photoDescription);
     }

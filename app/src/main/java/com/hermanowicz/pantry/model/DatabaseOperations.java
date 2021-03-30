@@ -95,7 +95,10 @@ public class DatabaseOperations {
                     && singleProduct.getVolume() == testedProduct.getVolume()
                     && singleProduct.getHasSugar() == testedProduct.getHasSugar()
                     && singleProduct.getHasSalt() == testedProduct.getHasSalt()
-                    && singleProduct.getTaste().equals(testedProduct.getTaste()))
+                    && singleProduct.getIsVege() == testedProduct.getIsVege()
+                    && singleProduct.getIsBio() == testedProduct.getIsBio()
+                    && singleProduct.getTaste().equals(testedProduct.getTaste())
+                    && singleProduct.getStorageLocation().equals(testedProduct.getStorageLocation()))
                 productList.add(singleProduct);
         }
         return productList;

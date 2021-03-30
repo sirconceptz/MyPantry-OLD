@@ -55,6 +55,7 @@
 
             <ImageView
                 android:id="@+id/photoIv"
+                app:srcCompat="@drawable/ic_no_image"
                 android:layout_width="300dp"
                 android:layout_height="400dp"
                 android:layout_marginTop="16dp"
