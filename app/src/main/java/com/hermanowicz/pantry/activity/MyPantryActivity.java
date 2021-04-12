@@ -414,14 +414,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     };
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         adView.resume();
@@ -437,6 +429,14 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMainActivity();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -155,20 +156,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.print_qr_menu, menu);
         return true;
@@ -192,5 +179,27 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            presenter.onClickPrintQRCodes();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMainActivity();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        CustomIntent.customType(this, "up-to-bottom");
     }
 }

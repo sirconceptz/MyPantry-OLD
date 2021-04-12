@@ -59,6 +59,7 @@
     <string name="NewProductActivity_add_a_product">Produkt hinzufügen</string>
     <string name="NewProductActivity_product_added_successful">Das Produkt wurde erfolgreich zur Produktdatenbank hinzugefügt.</string>
     <string name="NewProductActivity_products_added_successful">Die Produkte wurden erfolgreich zur Produktdatenbank hinzugefügt.</string>
+    <string name="NewProductActivity_cancel_product_adding">Möchten Sie das Hinzufügen eines neuen Produkts abbrechen?</string>
     <!--StorageLocationsActivity-->
     <string name="StorageLocationsActivity_new_storage_location">Neuer Lagerort</string>
     <string name="StorageLocationsActivity_no_storage_locations_statement">Keine Lagerort hinzugefügt. Fügen Sie oben auf dem Bildschirm eine neue Schaltfläche hinzu.</string>

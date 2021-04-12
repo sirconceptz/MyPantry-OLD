@@ -26,6 +26,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +46,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -360,9 +363,31 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     }
 
     @Override
+    public boolean isFormNotFilled() {
+        boolean isFormNotFilled = false;
+        if(TextUtils.isEmpty(productName.getText().toString()))
+            isFormNotFilled = true;
+        return isFormNotFilled;
+    }
+
+    @Override
+    public void showCancelProductAddDialog() {
+        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
+                .setMessage(R.string.NewProductActivity_cancel_product_adding)
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.navigateToMainActivity())
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
+            if(presenter.isFormNotFilled())
+                presenter.navigateToMainActivity();
+            else{
+                presenter.showCancelProductAddDialog();
+            }
         }
         return super.onKeyDown(keyCode, event);
     }

@@ -114,4 +114,13 @@ public class NewProductPresenter {
     public void onClickAddProduct() {
         view.onClickAddProduct();
     }
+
+    public boolean isFormNotFilled() {
+        boolean isFormNotFilled = view.isFormNotFilled();
+        return isFormNotFilled;
+    }
+
+    public void showCancelProductAddDialog() {
+        view.showCancelProductAddDialog();
+    }
 }

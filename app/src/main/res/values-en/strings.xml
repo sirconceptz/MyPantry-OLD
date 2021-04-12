@@ -58,6 +58,7 @@
     <string name="NewProductActivity_add_a_product">Add a product</string>
     <string name="NewProductActivity_product_added_successful">The product has been added to the product database.</string>
     <string name="NewProductActivity_products_added_successful">The products has been added to the product database.</string>
+    <string name="NewProductActivity_cancel_product_adding">Do you want to cancel adding a new product?</string>
     <!--StorageLocationsActivity-->
     <string name="StorageLocationsActivity_new_storage_location">New storage location</string>
     <string name="StorageLocationsActivity_no_storage_locations_statement">No storage locations added. Add a new button at the top of the screen.</string>

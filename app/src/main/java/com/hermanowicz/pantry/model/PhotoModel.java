@@ -125,8 +125,8 @@ public class PhotoModel {
                 fos.close();
             }
             else {
-                FileOutputStream fileOutputStream = new FileOutputStream(Environment.DIRECTORY_PICTURES
-                        + File.separator + "MyPantry" + File.separator + fileName, false);
+                FileOutputStream fileOutputStream = new FileOutputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                         + File.separator + fileName + ".jpg", false);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
                 fileOutputStream.close();
             }
@@ -157,7 +157,11 @@ public class PhotoModel {
     }
 
     public void setPhotoFile(@NonNull String photoName) {
-        String EXTERNAL = "/storage/emulated/0/Pictures/MyPantry/";
-        photoFile = new File(EXTERNAL + photoName + ".jpg");
+        String external;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            external = Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "MyPantry";
+        else
+            external = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        photoFile = new File(external + File.separator + photoName + ".jpg");
     }
 }

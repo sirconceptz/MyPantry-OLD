@@ -370,14 +370,6 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.onClickCancelButton();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.edit_product_menu, menu);
         return true;
@@ -413,6 +405,14 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.onClickCancelButton();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

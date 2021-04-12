@@ -188,14 +188,6 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         adView.resume();
@@ -211,6 +203,14 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMainActivity();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

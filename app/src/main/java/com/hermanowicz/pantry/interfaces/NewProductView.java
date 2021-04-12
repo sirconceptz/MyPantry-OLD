@@ -41,4 +41,8 @@ public interface NewProductView {
     void showErrorCategoryNotSelected();
 
     void navigateToMainActivity();
+
+    void showCancelProductAddDialog();
+
+    boolean isFormNotFilled();
 }

@@ -24,12 +24,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -181,14 +179,6 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
         Intent intent = new Intent (getApplicationContext(), StorageLocationsActivity.class);
         startActivity(intent);
         CustomIntent.customType(this, "up-to-bottom");
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToStorageLocationActivity();
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

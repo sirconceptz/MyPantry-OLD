@@ -25,10 +25,8 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.view.KeyEvent;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -94,14 +92,6 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
             }
         else
             super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

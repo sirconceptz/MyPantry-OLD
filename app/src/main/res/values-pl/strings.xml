@@ -59,6 +59,7 @@
     <string name="NewProductActivity_add_a_product">Dodaj produkt</string>
     <string name="NewProductActivity_product_added_successful">Produkt został dodany pomyślnie do bazy produktów.</string>
     <string name="NewProductActivity_products_added_successful">Produkty zostały dodane pomyślnie do bazy produktów.</string>
+    <string name="NewProductActivity_cancel_product_adding">Czy chcesz zrezygnować z dodawania nowego produktu?</string>
     <!--StorageLocationsActivity-->
     <string name="StorageLocationsActivity_new_storage_location">Nowe miejsce przechowywania</string>
     <string name="StorageLocationsActivity_no_storage_locations_statement">Brak dodanych miejsc przechowywania. Dodaj nowe przyciskiem na górze ekranu.</string>

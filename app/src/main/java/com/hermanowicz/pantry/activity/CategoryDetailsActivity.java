@@ -24,12 +24,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ContextThemeWrapper;
-import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -181,14 +179,6 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         Intent intent = new Intent (getApplicationContext(), CategoriesActivity.class);
         startActivity(intent);
         CustomIntent.customType(this, "up-to-bottom");
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToCategoriesActivity();
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

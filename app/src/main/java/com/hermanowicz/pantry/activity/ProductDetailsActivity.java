@@ -242,14 +242,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMyPantryActivity();
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         adView.resume();
@@ -265,6 +257,14 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMyPantryActivity();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

@@ -57,6 +57,7 @@
     <string name="NewProductActivity_add_a_product">Add a product</string>
     <string name="NewProductActivity_product_added_successful">The product has been added to the product database.</string>
     <string name="NewProductActivity_products_added_successful">The products has been added to the product database.</string>
+    <string name="NewProductActivity_cancel_product_adding">Do you want to cancel adding a new product?</string>
     <string name="NewProductActivity_quantity_value" translatable="false">1</string>
     <string name="NewProductActivity_volume_value" translatable="false">0</string>
     <string name="NewProductActivity_weight_value" translatable="false">0</string>

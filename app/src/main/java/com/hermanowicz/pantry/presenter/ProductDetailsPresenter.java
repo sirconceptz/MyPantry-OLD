@@ -51,8 +51,10 @@ public class ProductDetailsPresenter {
         } else if(model.isCorrectHashCode(hashCode)) {
             GroupProducts groupProducts = model.getGroupProducts();
             view.showProductDetails(groupProducts);
-            photoModel.setPhotoFile(groupProducts.getProduct().getPhotoName());
-            view.showPhoto(photoModel.getPhotoBitmap());
+            if(groupProducts.getProduct().getPhotoName() != null){
+                photoModel.setPhotoFile(groupProducts.getProduct().getPhotoName());
+                view.showPhoto(photoModel.getPhotoBitmap());
+            }
         } else {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
@@ -67,7 +69,6 @@ public class ProductDetailsPresenter {
 
     public void onClickPrintQRCodes() {
         List<Product> productList = model.getProductList();
-
         view.navigateToPrintQRCodeActivity(productList);
     }
 
