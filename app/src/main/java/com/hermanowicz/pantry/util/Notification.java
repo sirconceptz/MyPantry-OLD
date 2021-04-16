@@ -50,7 +50,6 @@ public class Notification {
     public static final int NOTIFICATION_DEFAULT_HOUR = 12;
     public static final int NOTIFICATION_DEFAULT_DAYS = 3;
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
-    private static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
 
     private static Calendar createCalendar(@NonNull Context context, @NonNull String expirationDate){
         String[] dateArray = expirationDate.split("-");
@@ -60,8 +59,7 @@ public class Notification {
         calendar.set(Calendar.YEAR, Integer.parseInt(dateArray[0]));
         calendar.set(Calendar.MONTH, (Integer.parseInt(dateArray[1]))-1);
         calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateArray[2]));
-        calendar.set(Calendar.HOUR_OF_DAY, preferences.getInt(
-                PREFERENCES_HOUR_OF_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_HOUR));
+        calendar.set(Calendar.HOUR_OF_DAY, Notification.NOTIFICATION_DEFAULT_HOUR);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.add(Calendar.DAY_OF_MONTH, -(preferences.getInt(

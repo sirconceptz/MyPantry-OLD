@@ -157,7 +157,7 @@ public class MyPantryActivityTest {
         insertTestProductsToDbAndRestartActivity();
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.filter_name));
-        onView(withId(R.id.nameValue)).perform(typeText(ProductTestModel.getTestProduct1().getName()));
+        onView(withId(R.id.edittext_name)).perform(typeText(ProductTestModel.getTestProduct1().getName()));
         onView(withText(R.string.MyPantryActivity_set)).perform(click());
         Thread.sleep(300);
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);

@@ -30,9 +30,5 @@ public interface StorageLocationDetailsView {
 
     void showStorageLocationDescriptionError();
 
-    void updateNameCharCounter(int charCounter, int maxChar);
-
-    void updateDescriptionCharCounter(int charCounter, int maxChar);
-
     void navigateToStorageLocationActivity();
 }

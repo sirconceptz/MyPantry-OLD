@@ -35,6 +35,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.BuildConfig;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityPrintQrcodesBinding;
@@ -69,6 +72,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     private PrintQRCodesPresenter presenter;
     private Context context;
 
+    private AdView adView;
     private ImageView qrCodeImage;
     private Button printQrCodes, sendPdfByEmail, addPhoto, skip;
     private List<Product> productList;
@@ -78,6 +82,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
@@ -89,11 +94,15 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
         context = getApplicationContext();
 
+        adView = binding.adview;
         qrCodeImage = binding.imageQrCode;
         printQrCodes = binding.buttonPrintQRCodes;
         addPhoto = binding.buttonAddPhoto;
         sendPdfByEmail = binding.buttonSendPdfByEmail;
         skip = binding.buttonSkip;
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
 
         productList = (List<Product>) getIntent().getSerializableExtra("PRODUCT_LIST");
 
@@ -144,7 +153,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -152,7 +161,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(addPhotoActivityIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -200,6 +209,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

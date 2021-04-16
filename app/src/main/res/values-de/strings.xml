@@ -231,26 +231,28 @@
     <string name="PrintQRCodesActivity_skip">überspringen</string>
     <string name="PrintQRCodesActivity_send_pdf_via_email">Senden Sie eine PDF-Datei per E-Mail</string>
     <!--AppSettingsActivity-->
-    <string name="AppSettingsActivity_which_theme_user_prefer">Wählen Sie den Anwendungsmodus (Täglich/Nacht)</string>
-    <string name="AppSettingsActivity_which_camera_to_scan_products">Mit welcher Kamera kann ich Produkte scannen?</string>
+    <string name="AppSettingsActivity_general_settings">Allgemeine Einstellungen</string>
+    <string name="AppSettingsActivity_notifications_settings">Benachrichtigungseinstellungen</string>
+    <string name="AppSettingsActivity_enabled">Aktiviert</string>
+    <string name="AppSettingsActivity_disabled">Deaktiviert</string>
+    <string name="AppSettingsActivity_which_theme_user_prefer">Wählen Sie den Anwendungsmodus</string>
+    <string name="AppSettingsActivity_which_camera_to_scan_products">Kamera zum Scannen von QR-Codes</string>
     <string name="AppSettingsActivity_scanner_vibration_mode">Vibration beim Scannen</string>
     <string name="AppSettingsActivity_scanner_sound_mode">Ton beim Scannen</string>
-    <string name="AppSettingsActivity_notifications_send_by">Benachrichtigungen über den Verlust des Verfallsdatums des Produkts senden</string>
-    <string name="AppSettingsActivity_hour_of_notification">Wann möchten Sie benachrichtigt werden?</string>
-    <string name="AppSettingsActivity_notifications_push">per notifiziert</string>
-    <string name="AppSettingsActivity_notifications_email">per Email</string>
-    <string name="AppSettingsActivity_give_email_adress">Geben Sie Ihre Email-Adresse ein.</string>
-    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Wie viele Tage vor Ablauf des Ablaufdatums die Benachrichtigung erfolgt?</string>
+    <string name="AppSettingsActivity_notifications_push">Benachrichtigungen über Push-Benachrichtigungen</string>
+    <string name="AppSettingsActivity_notifications_email">Benachrichtigungen per E-Mail</string>
+    <string name="AppSettingsActivity_give_email_adress">Zeitpunkt der Benachrichtigungen</string>
+    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Wie viele Tage vor Ablauf?</string>
     <string name="AppSettingsActivity_save_settings">Einstellungen speichern</string>
     <string name="AppSettingsActivity_clear_database">Löschen Sie die Datenbank</string>
-    <string name="AppSettingsActivity_settings_saved_successful">Die Einstellungen wurden erfolgreich gespeichert. </string>
+    <string name="AppSettingsActivity_clear_database_statement">Möchten Sie die Produktdatenbank löschen? Alle Produkte werden entfernt und der Vorgang ist irreversibel.</string>
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
     <string name="AppSettingsActivity_version">Version</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rückkamera</item>
         <item>Front-Kamera</item>
     </string-array>
-    <string-array name="AppSettingsActivity_darkmodeSelector">
+    <string-array name="AppSettingsActivity_darkmode_selector">
         <item>Automatisch</item>
         <item>Täglich</item>
         <item>Nacht</item>

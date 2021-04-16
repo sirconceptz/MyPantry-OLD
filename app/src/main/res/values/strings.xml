@@ -232,30 +232,52 @@
     <string name="PrintQRCodesActivity_skip">Skip</string>
     <string name="PrintQRCodesActivity_send_pdf_via_email">Send a PDF file by e-mail</string>
     <!--AppSettingsActivity-->
-    <string name="AppSettingsActivity_which_theme_user_prefer">Choose application mode (day/night)</string>
-    <string name="AppSettingsActivity_which_camera_to_scan_products">Which camera will be used to scan products?</string>
+    <string name="AppSettingsActivity_general_settings">General settings</string>
+    <string name="AppSettingsActivity_notifications_settings">Notifications settings</string>
+    <string name="AppSettingsActivity_enabled">Enabled</string>
+    <string name="AppSettingsActivity_disabled">Disabled</string>
+    <string name="AppSettingsActivity_which_theme_user_prefer">Choose application mode</string>
+    <string name="AppSettingsActivity_which_camera_to_scan_products">Camera for scanning QR codes</string>
     <string name="AppSettingsActivity_scanner_vibration_mode">Vibration on scan</string>
     <string name="AppSettingsActivity_scanner_sound_mode">Sound on scan</string>
-    <string name="AppSettingsActivity_notifications_send_by">Send notifications about expirations date of product</string>
-    <string name="AppSettingsActivity_hour_of_notification">What time do you want to receive a notifications?</string>
-    <string name="AppSettingsActivity_notifications_push">via push notications</string>
-    <string name="AppSettingsActivity_notifications_email">via email</string>
-    <string name="AppSettingsActivity_give_email_adress">Give your email address to receive a notifications.</string>
-    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">How many days before the expiration date of product send a notification?</string>
+    <string name="AppSettingsActivity_notifications_push">Notifications via push notications</string>
+    <string name="AppSettingsActivity_notifications_email">Notifications via email</string>
+    <string name="AppSettingsActivity_give_email_adress">Email address for notifications</string>
+    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">How many days before expiration?</string>
     <string name="AppSettingsActivity_save_settings">Save settings</string>
     <string name="AppSettingsActivity_clear_database">Clear database</string>
-    <string name="AppSettingsActivity_settings_saved_successful">Settings are saved successful.</string>
+    <string name="AppSettingsActivity_clear_database_statement">Do you want to clear the product database? All products will be removed and the operation is irreversible.</string>
     <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
     <string name="AppSettingsActivity_version">Version</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rear camera</item>
         <item>Front camera</item>
     </string-array>
-    <string-array name="AppSettingsActivity_darkmodeSelector">
+    <string-array name="AppSettingsActivity_camera_to_scan_value">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_darkmode_selector">
         <item>Automatic</item>
         <item>Day</item>
         <item>Night</item>
     </string-array>
+    <string-array name="AppSettingsActivity_darkmode_selector_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <!--PreferencesKeys-->
+    <string name="PreferencesKey_selected_application_theme" translatable="false">SELECTED_APPLICATION_THEME</string>
+    <string name="PreferencesKey_scan_camera" translatable="false">SCAN_CAMERA</string>
+    <string name="PreferencesKey_vibration_on_scanner" translatable="false">VIBRATION_ON_SCANNER?</string>
+    <string name="PreferencesKey_sound_on_scanner" translatable="false">SOUND_ON_SCANNER?</string>
+    <string name="PreferencesKey_notification_days_before_expiration" translatable="false">HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?</string>
+    <string name="PreferencesKey_email_address" translatable="false">EMAIL_ADDRESS</string>
+    <string name="PreferencesKey_push_notifications" translatable="false">PUSH_NOTIFICATIONS?</string>
+    <string name="PreferencesKey_email_notifications" translatable="false">EMAIL_NOTIFICATIONS?</string>
+    <string name="PreferencesKey_clear_db" translatable="false">CLEAR_DB</string>
+    <string name="PreferencesKey_version" translatable="false">VERSION</string>
     <!--Notifications-->
     <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% is overdue. You have less than %DAYS% days to make it before this date.</string>

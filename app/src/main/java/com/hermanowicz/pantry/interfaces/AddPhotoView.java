@@ -39,6 +39,4 @@ public interface AddPhotoView {
     void onDeletePhoto();
 
     void showDescriptionFieldError();
-
-    void updateDescriptionCharCounter(int charCounter, int maxChar);
 }

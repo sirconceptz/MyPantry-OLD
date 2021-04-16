@@ -163,7 +163,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                             .putExtra("PRODUCT_ID", productList.get(position).getProduct().getId())
                             .putExtra("HASH_CODE", productList.get(position).getProduct().getHashCode());
                     startActivity(productDetailsActivityIntent);
-                    CustomIntent.customType(view.getContext(), "up-to-bottom");
+                    CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
                 }
             }
 
@@ -273,7 +273,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -295,7 +295,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(printQRCodesActivityIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -368,7 +368,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             case R.id.action_new_item:
                 Intent intent = new Intent(this, NewProductActivity.class);
                 startActivity(intent);
-                CustomIntent.customType(this, "up-to-bottom");
+                CustomIntent.customType(this, "fadein-to-fadeout");
             case R.id.action_print:
                 return true;
             case R.id.action_delete:
@@ -442,6 +442,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

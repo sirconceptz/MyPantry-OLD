@@ -56,7 +56,7 @@ public class ScanProductPresenter {
     }
 
     public int getSelectedCamera(){
-        return appSettingsModel.getSelectedCamera();
+        return appSettingsModel.getSelectedScanCamera();
     }
 
     public void showErrorProductNotFound() {

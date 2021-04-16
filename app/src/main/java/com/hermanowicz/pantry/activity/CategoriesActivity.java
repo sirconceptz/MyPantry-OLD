@@ -184,7 +184,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     public void navigateToMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -216,6 +216,6 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

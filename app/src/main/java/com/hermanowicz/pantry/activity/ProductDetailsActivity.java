@@ -100,7 +100,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         context = getApplicationContext();
 
         Toolbar toolbar = binding.toolbar;
-        photoIv = binding.photoIv;
+        photoIv = binding.imageviewPhoto;
         productType = binding.textProductTypeValue;
         productCategory = binding.textProductCategoryValue;
         productStorageLocation = binding.textProductStorageLocationValue;
@@ -189,7 +189,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(printQRCodesActivityIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -197,14 +197,14 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         Intent editProductActivityIntent = new Intent(context, EditProductActivity.class)
                 .putExtra("PRODUCT_ID", productId);
         startActivity(editProductActivityIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void navigateToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -212,7 +212,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
         startActivity(addPhotoActivityIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -270,6 +270,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

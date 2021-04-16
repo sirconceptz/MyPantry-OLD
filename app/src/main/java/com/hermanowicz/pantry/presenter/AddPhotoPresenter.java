@@ -82,11 +82,6 @@ public class AddPhotoPresenter{
     public void isPhotoDescriptionCorrect(String photoDescription) {
         if(model.isPhotoDescriptionNotCorrect(photoDescription))
             view.showDescriptionFieldError();
-        view.updateDescriptionCharCounter(photoDescription.length(), model.MAX_CHAR_PHOTO_DESCRIPTION);
-    }
-
-    public void updateDescriptionCharCounter(String description){
-        view.updateDescriptionCharCounter(description.length(), model.MAX_CHAR_PHOTO_DESCRIPTION);
     }
 
     public void addPhotoToDb(@NonNull String photoDescription) {

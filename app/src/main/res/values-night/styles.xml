@@ -18,17 +18,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Base application theme. -->
     <!-- Dark/Night mode theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">
-            @color/cast_libraries_material_featurehighlight_outer_highlight_default_color
+            @color/material_accent
         </item>
+        <item name="android:statusBarColor">@color/color_primary_statusbar</item>
+        <item name="android:navigationBarColor">@color/color_primary_statusbar</item>
         <item name="android:textColorPrimary">@color/text_color</item>
-        <item name="android:text">@color/text_color</item>
+        <item name="android:textColorSecondary">@color/text_color_secondary</item>
+        <item name="errorTextColor">@color/color_primary</item>
         <item name="android:colorBackground" tools:ignore="PrivateResource">
             @color/background_material
         </item>
+        <item name="android:colorButtonNormal" tools:ignore="PrivateResource">
+            @color/button_color
+        </item>
+        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
         <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
         <item name="actionModeStyle">@style/LStyled.ActionMode</item>
         <item name="windowActionModeOverlay">true</item>
@@ -44,11 +51,21 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppThemeDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+    <style name="AppPreferenceTheme" parent="PreferenceThemeOverlay">
+        <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="colorAccent">@color/text_color</item>
+        <item name="colorPrimaryDark">@color/text_color</item>
+    </style>
+
+    <style name="ButtonTextStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/material_accent</item>
+    </style>
+
+    <style name="AppThemeDialog" parent="ThemeOverlay.AppCompat.Dark">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">
-            @color/cast_libraries_material_featurehighlight_outer_highlight_default_color
+            @color/material_accent
         </item>
         <item name="android:textColorPrimary">@color/text_color</item>
         <item name="android:text">@color/text_color</item>
@@ -56,6 +73,8 @@
             @color/background_material
         </item>
         <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/ButtonTextStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/ButtonTextStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -64,10 +83,9 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">
-            @color/cast_libraries_material_featurehighlight_outer_highlight_default_color
+            @color/material_accent
         </item>
         <item name="android:textColorPrimary">@color/text_color</item>
-        <item name="android:text">@color/text_color</item>
         <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
     </style>
 
@@ -91,7 +109,7 @@
         <item name="android:background">@drawable/round_edittext</item>
         <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
         <item name="android:textColorHint">@color/text_color</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:padding">4dp</item>
     </style>
 

@@ -178,12 +178,12 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     public void navigateToCategoriesActivity() {
         Intent intent = new Intent (getApplicationContext(), CategoriesActivity.class);
         startActivity(intent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

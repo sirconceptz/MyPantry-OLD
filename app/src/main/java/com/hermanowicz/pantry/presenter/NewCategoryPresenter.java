@@ -33,21 +33,15 @@ public class NewCategoryPresenter {
         this.model = model;
     }
 
-    public void initCharCounters(){
-        view.updateNameCharCounter(0, model.MAX_CHAR_CATEGORY_NAME);
-        view.updateDescriptionCharCounter(0, model.MAX_CHAR_CATEGORY_DESCRIPTION);
-    }
 
     public void isCategoryNameCorrect(@NonNull String categoryName){
         if(model.isCategoryNameNotCorrect(categoryName))
             view.showNameFieldError();
-        view.updateNameCharCounter(categoryName.length(), model.MAX_CHAR_CATEGORY_NAME);
     }
 
     public void isCategoryDescriptionCorrect(@NonNull String categoryDescription){
         if(model.isCategoryDescriptionNotCorrect(categoryDescription))
             view.showDescriptionFieldError();
-        view.updateDescriptionCharCounter(categoryDescription.length(), model.MAX_CHAR_CATEGORY_DESCRIPTION);
     }
 
     public void onPressAddCategory(@NonNull Category category) {

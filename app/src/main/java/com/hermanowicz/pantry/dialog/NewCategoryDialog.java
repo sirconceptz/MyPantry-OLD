@@ -25,7 +25,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -50,7 +49,6 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
     private View view;
     private DialogCategoryListener dialogListener;
     private EditText categoryName, categoryDescription;
-    private TextView nameCharCounter, descriptionCharCounter;
 
 
     @NotNull
@@ -77,14 +75,11 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
         activity = getActivity();
         binding = DialogNewCategoryBinding.inflate(activity.getLayoutInflater());
 
-        categoryName = binding.nameValue;
-        categoryDescription = binding.descriptionValue;
-        nameCharCounter = binding.nameCharCounter;
-        descriptionCharCounter = binding.descriptionCharCounter;
+        categoryName = binding.edittextName;
+        categoryDescription = binding.edittextDescription;
 
         DatabaseOperations databaseOperations = new DatabaseOperations(activity.getApplicationContext());
         presenter = new NewCategoryPresenter(this, new CategoryModel(databaseOperations));
-        presenter.initCharCounters();
 
         view = binding.getRoot();
     }
@@ -134,16 +129,6 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
     @Override
     public void onAddCategory(Category category) {
         dialogListener.onAddCategory(category);
-    }
-
-    @Override
-    public void updateNameCharCounter(int charCounter, int maxChar) {
-        nameCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
-    }
-
-    @Override
-    public void updateDescriptionCharCounter(int charCounter, int maxChar) {
-        descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override

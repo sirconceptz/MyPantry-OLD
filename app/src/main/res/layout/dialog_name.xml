@@ -25,7 +25,7 @@
     tools:context=".activity.MyPantryActivity">
 
     <EditText
-        android:id="@+id/nameValue"
+        android:id="@+id/edittext_name"
         style="@style/CustomEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -53,6 +53,6 @@
         android:text="@string/MyPantryActivity_clear"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nameValue" />
+        app:layout_constraintTop_toBottomOf="@id/edittext_name" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

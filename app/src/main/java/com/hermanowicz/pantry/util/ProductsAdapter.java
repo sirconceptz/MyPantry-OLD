@@ -117,8 +117,8 @@ public class ProductsAdapter extends
         } catch (ParseException e) {
             Log.e("ProductsAdapter", e.toString());
         }
-        calendar.add(Calendar.DAY_OF_MONTH, preferences.getInt(
-                PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS));
+        calendar.add(Calendar.DAY_OF_MONTH, Integer.parseInt(preferences.getString(
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, String.valueOf(Notification.NOTIFICATION_DEFAULT_DAYS))));
         Date dayOfNotification = calendar.getTime();
         if (multiSelectList.contains(productList.get(position).getProduct())) {
             viewHolder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.background_product_selected));

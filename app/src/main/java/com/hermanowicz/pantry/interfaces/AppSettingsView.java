@@ -18,33 +18,22 @@
 package com.hermanowicz.pantry.interfaces;
 
 public interface AppSettingsView {
-    void setSelectedTheme(int selectedTheme);
-
-    void setScanCamera(int selectedCamera);
-
-    void setCheckboxScannerVibrationMode(boolean vibrationMode);
-
-    void setCheckboxScannerSoundMode(boolean soundMode);
-
-    void setDaysBeforeExpirationDate(int daysBeforeExpirationDate);
-
-    void setCheckboxPushNotification(boolean isPushNotificationsAllowed);
-
-    void setCheckboxEmailNotification(boolean isEmailNotificationsAllowed);
-
-    void setEmailAddress(String emailAddress);
-
-    void setHourOfNotifications(int hourOfNotifications);
 
     void recreateNotifications();
 
-    void enableEmailCheckbox(boolean isValidEmail);
-
-    void onSettingsSaved();
-
     void onDatabaseClear();
 
-    void showCodeVersion(String version);
+    void showSelectedTheme(int selectedTheme);
 
-    void navigateToMainActivity();
+    void showSelectedScanCamera(int selectedScanCamera);
+
+    void showEmailAddress(String emailAddress);
+
+    void showDaysToNotification(int daysToNotificaion);
+
+    void showVersionCode(String version);
+
+    void setEmailPreferences();
+
+    void refreshActivity();
 }

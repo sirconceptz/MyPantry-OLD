@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Copyright (c) 2019-2021
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
@@ -14,11 +15,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <resources xmlns:tools="http://schemas.android.com/tools">
     <color name="color_primary">#242424</color>
     <color name="color_primary_statusbar">#191919</color>
     <color name="text_color">#DDCFCF</color>
+    <color name="text_color_secondary">#AEACAC</color>
     <color name="text_splash">#DDCFCF</color>
     <color name="text_title">#DDCFCF</color>
     <color name="background_material" tools:ignore="PrivateResource">#252525</color>
@@ -26,5 +27,6 @@
     <color name="background_expired_products">#330000</color>
     <color name="background_product_selected">#002766</color>
     <color name="button_color">#282828</color>
-    <color name="cast_libraries_material_featurehighlight_outer_highlight_default_color">#2196F3</color>
+    <color name="preferences_icon">#2196F3</color>
+    <color name="material_accent">#2196F3</color>
 </resources>

@@ -21,97 +21,61 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
-import com.hermanowicz.pantry.interfaces.AppSettingsView;
+import com.hermanowicz.pantry.activity.AppSettingsActivity;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 
 public class AppSettingsPresenter {
 
-    private final AppSettingsView view;
+    private final AppSettingsActivity.MyPreferenceFragment view;
     private final AppSettingsModel model;
 
-    public AppSettingsPresenter(@NonNull AppSettingsView view, @NonNull SharedPreferences preferences) {
+    public AppSettingsPresenter(@NonNull AppSettingsActivity.MyPreferenceFragment view, @NonNull SharedPreferences preferences) {
         this.view = view;
         this.model = new AppSettingsModel(preferences);
-    }
-
-    public void setSelectedTheme(int selectedTheme){
-        model.setSelectedTheme(selectedTheme);
-    }
-
-    public void setSelectedScanCamera(int selectedScanCamera) {
-        model.setSelectedCamera(selectedScanCamera);
-    }
-
-    public void setScannerVibrationMode(boolean vibrationMode) {
-        model.setScannerVibrationMode(vibrationMode);
-    }
-
-    public void setScannerSoundMode(boolean soundMode) {
-        model.setScannerSoundMode(soundMode);
-    }
-
-    public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
-        model.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
-    }
-
-    public void setIsEmailNotificationsAllowed(boolean isEmailNotificationsAllowed) {
-        model.setIsEmailNotificationsAllowed(isEmailNotificationsAllowed);
-    }
-
-    public void setIsPushNotificationsAllowed(boolean isPushNotificationsAllowed) {
-        model.setIsPushNotificationsAllowed(isPushNotificationsAllowed);
-    }
-
-    public void setHourOfNotifications(int hourOfNotifications) {
-        model.setHourOfNotifications(hourOfNotifications);
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        model.setEmailAddress(emailAddress);
-    }
-
-    public void enableEmailCheckbox(String emailAddress) {
-        view.enableEmailCheckbox(model.isValidEmail(emailAddress));
-    }
-
-    public void loadSettings() {
-        int selectedTheme = model.getSelectedAppTheme();
-        int selectedCamera = model.getSelectedCamera();
-        boolean scannerVibrationMode = model.getScannerVibrationMode();
-        boolean scannerSoundMode = model.getScannerSoundMode();
-        int daysBeforeExpirationDate = model.getDaysBeforeExpirationDate();
-        boolean pushNotificationsAllowed = model.isPushNotificationsAllowed();
-        boolean emailNotificationsAllowed = model.isEmailNotificationsAllowed();
-        int hourOfNotifications = model.getHourOfNotifications();
-        String emailAddress = model.getEmailAddress();
-
-        view.setSelectedTheme(selectedTheme);
-        view.setScanCamera(selectedCamera);
-        view.setCheckboxScannerVibrationMode(scannerVibrationMode);
-        view.setCheckboxScannerSoundMode(scannerSoundMode);
-        view.setDaysBeforeExpirationDate(daysBeforeExpirationDate);
-        view.setCheckboxPushNotification(pushNotificationsAllowed);
-        view.setCheckboxEmailNotification(emailNotificationsAllowed);
-        view.setHourOfNotifications(hourOfNotifications);
-        view.setEmailAddress(emailAddress);
-
-        enableEmailCheckbox(emailAddress);
-        view.showCodeVersion(model.getAppVersion());
-    }
-
-    public void saveSettings() {
-        model.saveSettings();
-
-        if (model.isNotificationsSettingsChanged())
-            view.recreateNotifications();
-        view.onSettingsSaved();
     }
 
     public void clearDatabase() {
         view.onDatabaseClear();
     }
 
-    public void navigateToMainActivity() {
-        view.navigateToMainActivity();
+    public void reCreateNotifications(){
+        view.recreateNotifications();
+    }
+
+    public void showStoredPreferences() {
+        showSelectedTheme();
+        showSelectedScanCamera();
+        showEmailAddress();
+        showDaysToNotification();
+        showVersionCode();
+    }
+
+    public void showSelectedTheme() {
+        view.showSelectedTheme(model.getSelectedAppTheme());
+    }
+
+    public void showSelectedScanCamera() {
+        view.showSelectedScanCamera(model.getSelectedScanCamera());
+    }
+
+    public void showEmailAddress() {
+        if(model.isValidEmail())
+            view.showEmailAddress(model.getEmailAddress());
+        else{
+            model.clearEmailAddress();
+            view.setEmailPreferences();
+        }
+    }
+
+    public void showDaysToNotification() {
+        view.showDaysToNotification(model.getDaysToNotification());
+    }
+
+    private void showVersionCode() {
+        view.showVersionCode(model.getAppVersion());
+    }
+
+    public void refreshActivity() {
+        view.refreshActivity();
     }
 }

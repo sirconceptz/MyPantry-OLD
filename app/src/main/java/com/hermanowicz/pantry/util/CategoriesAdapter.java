@@ -59,8 +59,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        TextView name = binding.nameValue;
-        TextView description = binding.descriptionValue;
+        TextView name = binding.edittextName;
+        TextView description = binding.edittextDescription;
         name.setText(categoryList.get(position).getName());
         description.setText(categoryList.get(position).getDescription());
 

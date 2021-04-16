@@ -25,7 +25,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -50,7 +49,6 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
     private View view;
     private DialogStorageLocationListener dialogListener;
     private EditText storageLocationName, storageLocationDescription;
-    private TextView nameCharCounter, descriptionCharCounter;
 
     @NotNull
     @Override
@@ -76,14 +74,11 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
         activity = getActivity();
         binding = DialogNewStorageLocationBinding.inflate(activity.getLayoutInflater());
 
-        storageLocationName = binding.nameValue;
-        storageLocationDescription = binding.descriptionValue;
-        nameCharCounter = binding.nameCharCounter;
-        descriptionCharCounter = binding.descriptionCharCounter;
+        storageLocationName = binding.edittextName;
+        storageLocationDescription = binding.edittextDescription;
 
         DatabaseOperations databaseOperations = new DatabaseOperations(activity.getApplicationContext());
         presenter = new NewStorageLocationPresenter(this, new StorageLocationModel(databaseOperations));
-        presenter.initCharCounters();
 
         view = binding.getRoot();
     }
@@ -133,16 +128,6 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
     @Override
     public void onAddStorageLocation(StorageLocation storageLocation) {
         dialogListener.onAddStorageLocation(storageLocation);
-    }
-
-    @Override
-    public void updateNameCharCounter(int charCounter, int maxChar) {
-        nameCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
-    }
-
-    @Override
-    public void updateDescriptionCharCounter(int charCounter, int maxChar) {
-        descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override

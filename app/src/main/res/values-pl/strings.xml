@@ -231,26 +231,28 @@
     <string name="PrintQRCodesActivity_skip">Pomiń</string>
     <string name="PrintQRCodesActivity_send_pdf_via_email">Wyślij plik PDF jako email</string>
     <!--AppSettingsActivity-->
-    <string name="AppSettingsActivity_which_theme_user_prefer">Wybierz tryb aplikacji (dzienny/nocny)</string>
-    <string name="AppSettingsActivity_which_camera_to_scan_products">Która kamera ma być używana do skanowania produktów?</string>
-    <string name="AppSettingsActivity_scanner_vibration_mode">Wibracje podczas skanowania</string>
-    <string name="AppSettingsActivity_scanner_sound_mode">Dźwięk podczas skanowania</string>
-    <string name="AppSettingsActivity_notifications_send_by">Wyślij powiadomienia o utracie terminu przydatności produktu</string>
-    <string name="AppSettingsActivity_hour_of_notification">O której godzinie chcesz otrzymać powiadomienia?</string>
-    <string name="AppSettingsActivity_notifications_push">przez powiadomienia</string>
-    <string name="AppSettingsActivity_notifications_email">przez email</string>
-    <string name="AppSettingsActivity_give_email_adress">Podaj swój adres email, aby otrzymać powiadomienia.</string>
-    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Ile dni przed utratą terminu przydatności ma przyjść powiadomienie?</string>
+    <string name="AppSettingsActivity_general_settings">Główne ustawienia</string>
+    <string name="AppSettingsActivity_notifications_settings">Ustawienia powiadomień</string>
+    <string name="AppSettingsActivity_enabled">Włączone</string>
+    <string name="AppSettingsActivity_disabled">Wyłączone</string>
+    <string name="AppSettingsActivity_which_theme_user_prefer">Wybierz tryb aplikacji</string>
+    <string name="AppSettingsActivity_which_camera_to_scan_products">Aparat do skanowania kodów QR</string>
+    <string name="AppSettingsActivity_scanner_vibration_mode">Wibracja skanowania</string>
+    <string name="AppSettingsActivity_scanner_sound_mode">Dźwięk skanowania</string>
+    <string name="AppSettingsActivity_notifications_push">Powiadomienia Push</string>
+    <string name="AppSettingsActivity_notifications_email">Powiadomienia przez email</string>
+    <string name="AppSettingsActivity_give_email_adress">Adres email do powiadomień</string>
+    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Ile dni przed przeterminowaniem?</string>
     <string name="AppSettingsActivity_save_settings">Zapisz ustawienia</string>
     <string name="AppSettingsActivity_clear_database">Wyczyść bazę danych</string>
-    <string name="AppSettingsActivity_settings_saved_successful">Ustawienia zostały pomyślnie zapisane.</string>
+    <string name="AppSettingsActivity_clear_database_statement">Czy chcesz wyczyścić bazę danych produktów? Wszystkie produkty zostaną usunięte, a operacja jest nieodwracalna.</string>
     <string name="AppSettingsActivity_database_is_clear">Baza danych została wyczyszczona.</string>
     <string name="AppSettingsActivity_version">Wersja</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
-        <item>Tylna kamera</item>
-        <item>Przednia kamera</item>
+        <item>Tylni aparat</item>
+        <item>Przedni aparat</item>
     </string-array>
-    <string-array name="AppSettingsActivity_darkmodeSelector">
+    <string-array name="AppSettingsActivity_darkmode_selector">
         <item>Automatyczny</item>
         <item>Dzienny</item>
         <item>Nocny</item>

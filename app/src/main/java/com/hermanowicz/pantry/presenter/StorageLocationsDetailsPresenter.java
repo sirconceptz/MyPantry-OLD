@@ -60,16 +60,10 @@ public class StorageLocationsDetailsPresenter {
     public void isStorageLocationNameCorrect(@NonNull String storageLocationName) {
         if(model.isStorageLocationNameNotCorrect(storageLocationName))
             view.showStorageLocationNameError();
-        view.updateNameCharCounter(storageLocationName.length(), model.MAX_CHAR_STORAGE_LOCATION_NAME);
     }
 
     public void isStorageLocationDescriptionCorrect(@NonNull String storageLocationDescription) {
         if(model.isStorageLocationDescriptionNotCorrect(storageLocationDescription))
             view.showStorageLocationDescriptionError();
-        view.updateDescriptionCharCounter(storageLocationDescription.length(), model.MAX_CHAR_STORAGE_LOCATION_DESCRIPTION);
-    }
-
-    public void navigateToStorageLocationActivity() {
-        view.navigateToStorageLocationActivity();
     }
 }

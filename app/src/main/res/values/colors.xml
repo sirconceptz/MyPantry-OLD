@@ -15,12 +15,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="white">#FFFFFF</color>
     <color name="color_primary">#001EA6</color>
     <color name="color_primary_statusbar">#001883</color>
-    <color name="text_color">#DD00011B</color>
+    <color name="text_color">#111111</color>
+    <color name="text_color_secondary">#3E3E3E</color>
     <color name="text_splash">#001EA6</color>
     <color name="text_title">#E1F1FF</color>
     <color name="background_material" tools:ignore="PrivateResource">#E1F1FF</color>
@@ -28,5 +27,6 @@
     <color name="background_expired_products">#FF8181</color>
     <color name="background_product_selected">#6FAEFF</color>
     <color name="button_color">#82B1FF</color>
-    <color name="cast_libraries_material_featurehighlight_outer_highlight_default_color">#2196F3</color>
+    <color name="preferences_icon">#002BED</color>
+    <color name="material_accent">#2196F3</color>
 </resources>

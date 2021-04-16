@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019-2021
+  ~ Mateusz Hermanowicz - All rights reserved.
+  ~ My Pantry
+  ~ https://www.mypantry.eu
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory android:title="@string/AppSettingsActivity_general_settings">
+
+        <ListPreference
+            android:dialogTitle="@string/AppSettingsActivity_which_theme_user_prefer"
+            android:defaultValue="0"
+            android:entries="@array/AppSettingsActivity_darkmode_selector"
+            android:entryValues="@array/AppSettingsActivity_darkmode_selector_value"
+            android:icon="@drawable/ic_night"
+            android:key="@string/PreferencesKey_selected_application_theme"
+            android:title="@string/AppSettingsActivity_which_theme_user_prefer" />
+
+        <ListPreference
+            android:dialogTitle="@string/AppSettingsActivity_which_camera_to_scan_products"
+            android:defaultValue="0"
+            android:entries="@array/AppSettingsActivity_camera_to_scan"
+            android:entryValues="@array/AppSettingsActivity_camera_to_scan_value"
+            android:icon="@drawable/ic_camera"
+            android:key="@string/PreferencesKey_scan_camera"
+            android:title="@string/AppSettingsActivity_which_camera_to_scan_products" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_vibration"
+            android:key="@string/PreferencesKey_vibration_on_scanner"
+            android:summaryOff="@string/AppSettingsActivity_disabled"
+            android:summaryOn="@string/AppSettingsActivity_enabled"
+            android:title="@string/AppSettingsActivity_scanner_vibration_mode" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_sound"
+            android:key="@string/PreferencesKey_sound_on_scanner"
+            android:summaryOff="@string/AppSettingsActivity_disabled"
+            android:summaryOn="@string/AppSettingsActivity_enabled"
+            android:title="@string/AppSettingsActivity_scanner_sound_mode"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/AppSettingsActivity_notifications_settings">
+
+        <EditTextPreference
+            android:defaultValue="3"
+            android:icon="@drawable/ic_days"
+            android:key="@string/PreferencesKey_notification_days_before_expiration"
+            android:title="@string/AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification"
+            android:inputType="number"
+            android:maxLength="2" />
+
+        <EditTextPreference
+            android:icon="@drawable/ic_email_address"
+            android:key="@string/PreferencesKey_email_address"
+            android:title="@string/AppSettingsActivity_give_email_adress"
+            android:inputType="textEmailAddress"
+            android:maxLength="30" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/ic_notification"
+            android:key="@string/PreferencesKey_push_notifications"
+            android:summaryOff="@string/AppSettingsActivity_disabled"
+            android:summaryOn="@string/AppSettingsActivity_enabled"
+            android:title="@string/AppSettingsActivity_notifications_push" />
+
+        <SwitchPreference
+            android:dependency="@string/PreferencesKey_email_address"
+            android:defaultValue="false"
+            android:icon="@drawable/ic_notification"
+            android:key="@string/PreferencesKey_email_notifications"
+            android:summaryOff="@string/AppSettingsActivity_disabled"
+            android:summaryOn="@string/AppSettingsActivity_enabled"
+            android:title="@string/AppSettingsActivity_notifications_email" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/app_name">
+
+        <Preference
+            android:icon="@drawable/ic_clear_db"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_clear_db"
+            android:title="@string/AppSettingsActivity_clear_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_version"
+            android:selectable="false"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_version"
+            android:title="@string/AppSettingsActivity_version"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

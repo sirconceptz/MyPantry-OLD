@@ -36,7 +36,6 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +45,9 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityAddPhotoBinding;
 import com.hermanowicz.pantry.db.product.Product;
@@ -70,9 +72,9 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     private Context context;
     private AddPhotoPresenter presenter;
 
+    private AdView adView;
     private ImageView imageViewPhoto;
     private EditText description;
-    private TextView descriptionCharCounter;
     private Button takePhoto, savePhoto, deletePhoto;
 
     @Override
@@ -80,6 +82,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
@@ -92,9 +95,9 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         context = AddPhotoActivity.this;
 
         Toolbar toolbar = binding.toolbar;
-        imageViewPhoto = binding.photoIv;
-        description = binding.photoDescription;
-        descriptionCharCounter = binding.descriptionCharCounter;
+        adView = binding.adview;
+        imageViewPhoto = binding.imageviewPhoto;
+        description = binding.edittextPhotoDescription;
         takePhoto = binding.buttonTakePhoto;
         savePhoto = binding.buttonSavePhoto;
         deletePhoto = binding.buttonDeletePhoto;
@@ -104,8 +107,9 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         presenter.setActivity(this);
         presenter.setDb(new DatabaseOperations(context));
         presenter.setProductList(productList);
-        presenter.updateDescriptionCharCounter(description.getText().toString());
 
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
         setSupportActionBar(toolbar);
     }
 
@@ -205,11 +209,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     @Override
     public void showDescriptionFieldError() {
         description.setError(getText(R.string.AddPhotoActivity_invalid_photo_description));
-    }
-
-    @Override
-    public void updateDescriptionCharCounter(int charCounter, int maxChar) {
-        descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override

@@ -58,8 +58,8 @@ public class StorageLocationsAdapter extends RecyclerView.Adapter<StorageLocatio
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        TextView name = binding.nameValue;
-        TextView description = binding.descriptionValue;
+        TextView name = binding.edittextName;
+        TextView description = binding.edittextDescription;
         name.setText(storageLocationList.get(position).getName());
         description.setText(storageLocationList.get(position).getDescription());
 

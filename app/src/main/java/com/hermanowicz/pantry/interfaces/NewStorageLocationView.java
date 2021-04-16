@@ -22,10 +22,6 @@ import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 public interface NewStorageLocationView {
     void onAddStorageLocation(StorageLocation storageLocation);
 
-    void updateNameCharCounter(int charCounter, int maxChar);
-
-    void updateDescriptionCharCounter(int charCounter, int maxChar);
-
     void showNameFieldError();
 
     void showDescriptionFieldError();

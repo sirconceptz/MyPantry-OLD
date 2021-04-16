@@ -256,8 +256,10 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
         product.setComposition(productComposition.getText().toString());
         product.setHealingProperties(productHealingProperties.getText().toString());
         product.setDosage(productDosage.getText().toString());
-        product.setVolume(Integer.parseInt(productVolume.getText().toString()));
-        product.setWeight(Integer.parseInt(productWeight.getText().toString()));
+        if(!productVolume.getText().toString().equals(""))
+            product.setVolume(Integer.parseInt(productVolume.getText().toString()));
+        if(!productWeight.getText().toString().equals(""))
+            product.setWeight(Integer.parseInt(productWeight.getText().toString()));
         product.setHasSugar(productHasSugar.isChecked());
         product.setHasSalt(productHasSalt.isChecked());
         product.setIsBio(productIsBio.isChecked());
@@ -285,7 +287,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
                 .putExtra("PRODUCT_LIST", (Serializable) productList);
 
         startActivity(printQRCodesActivityIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -359,7 +361,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
@@ -430,6 +432,6 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

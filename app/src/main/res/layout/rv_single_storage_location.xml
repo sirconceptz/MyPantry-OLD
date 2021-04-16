@@ -34,10 +34,13 @@
         android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@color/background_field"
         app:cardCornerRadius="10dp"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
-            android:id="@+id/nameValue"
+            android:id="@+id/edittext_name"
             android:textColor="@color/text_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,7 +60,7 @@
             app:layout_constraintTop_toTopOf="@id/category_cardView" />
 
         <TextView
-            android:id="@+id/descriptionValue"
+            android:id="@+id/edittext_description"
             android:textColor="@color/text_color"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +74,7 @@
             android:textSize="16sp"
             android:fontFamily="@font/proxima_nova_extra_condensed_bold"
             app:layout_constraintStart_toStartOf="@id/storageLocation_cardView"
-            app:layout_constraintTop_toBottomOf="@id/nameValue" />
+            app:layout_constraintTop_toBottomOf="@id/edittext_name" />
 
     </androidx.cardview.widget.CardView>
 

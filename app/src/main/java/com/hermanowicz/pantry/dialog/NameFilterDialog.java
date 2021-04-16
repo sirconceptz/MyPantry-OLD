@@ -88,7 +88,7 @@ public class NameFilterDialog extends AppCompatDialogFragment {
         binding = DialogNameBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
-        name = binding.nameValue;
+        name = binding.edittextName;
         clearBtn = binding.buttonClear;
 
         if (filterName != null) name.setText(filterName);

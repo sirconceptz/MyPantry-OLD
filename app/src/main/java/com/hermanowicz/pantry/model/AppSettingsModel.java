@@ -23,162 +23,52 @@ import android.util.Patterns;
 import androidx.annotation.NonNull;
 
 import com.hermanowicz.pantry.BuildConfig;
-import com.hermanowicz.pantry.util.Notification;
 
 import java.util.regex.Pattern;
 
 public class AppSettingsModel {
 
-    private static final String PREFERENCES_SELECTED_APP_THEME = "SELECTED_APPLICATION_THEME";
-    private static final String PREFERENCES_SELECTED_SCAN_CAMERA = "SCAN_CAMERA";
-    private static final String PREFERENCES_EMAIL_ADDRESS = "EMAIL_ADDRESS";
-    private static final String PREFERENCES_EMAIL_NOTIFICATIONS = "EMAIL_NOTIFICATIONS?";
-    private static final String PREFERENCES_PUSH_NOTIFICATIONS = "PUSH_NOTIFICATIONS?";
-    private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
-    private static final String PREFERENCES_HOUR_OF_NOTIFICATIONS = "HOUR_OF_NOTIFICATIONS?";
-    private static final String PREFERENCES_VIBRATION_MODE = "VIBRATION_ON_SCANNER?";
-    private static final String PREFERENCES_SOUND_MODE = "SOUND_ON_SCANNER?";
-
     private final SharedPreferences preferences;
-    private int selectedAppTheme, selectedCamera, daysBeforeExpirationDate, hourOfNotifications;
-    private boolean emailNotificationsAllowed, pushNotificationsAllowed, scannerVibrationMode, scannerSoundMode;
-    private String emailAddress;
 
     public AppSettingsModel(@NonNull SharedPreferences preferences) {
         this.preferences = preferences;
-
-        this.selectedAppTheme = preferences.getInt(PREFERENCES_SELECTED_APP_THEME, 0); //0 - Auto, 1 - Day, 2 - Night
-        this.selectedCamera = preferences.getInt(PREFERENCES_SELECTED_SCAN_CAMERA, 0); //0 - Rear camera, 1 - Front camera
-        this.scannerVibrationMode = preferences.getBoolean(PREFERENCES_VIBRATION_MODE, true);
-        this.scannerSoundMode = preferences.getBoolean(PREFERENCES_SOUND_MODE, true);
-        this.daysBeforeExpirationDate = preferences.getInt(
-                PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS);
-        this.hourOfNotifications = preferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS,
-                Notification.NOTIFICATION_DEFAULT_HOUR);
-        this.emailNotificationsAllowed = preferences.getBoolean(PREFERENCES_EMAIL_NOTIFICATIONS,
-                false);
-        this.pushNotificationsAllowed = preferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,
-                true);
-        this.emailAddress = preferences.getString(PREFERENCES_EMAIL_ADDRESS, "");
     }
 
-    public int getSelectedAppTheme(){
-        return selectedAppTheme;
+    public int getSelectedAppTheme() {
+        return Integer.parseInt(preferences.getString("SELECTED_APPLICATION_THEME", "0"));
     }
 
-    public void setSelectedTheme(int selectedAppTheme){
-        this.selectedAppTheme = selectedAppTheme;
-    }
-
-    public int getSelectedCamera() {
-        return selectedCamera;
-    }
-
-    public void setSelectedCamera(int selectedCamera) {
-        this.selectedCamera = selectedCamera;
+    public int getSelectedScanCamera() {
+        return Integer.parseInt(preferences.getString("SCAN_CAMERA", "0"));
     }
 
     public boolean getScannerVibrationMode() {
-        return scannerVibrationMode;
-    }
-
-    public void setScannerVibrationMode(@NonNull Boolean vibrationMode) {
-        this.scannerVibrationMode = vibrationMode;
+        return preferences.getBoolean("VIBRATION_ON_SCANNER?", true);
     }
 
     public boolean getScannerSoundMode() {
-        return scannerSoundMode;
+        return preferences.getBoolean("SOUND_ON_SCANNER?", true);
     }
 
-    public void setScannerSoundMode(Boolean soundMode) {
-        this.scannerSoundMode = soundMode;
+    public boolean isValidEmail() {
+        String address = preferences.getString("EMAIL_ADDRESS", "");
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(address).matches();
     }
-
-    public int getDaysBeforeExpirationDate() {
-        return daysBeforeExpirationDate;
-    }
-
-    public void setDaysBeforeExpirationDate(int daysBeforeExpirationDate) {
-        this.daysBeforeExpirationDate = daysBeforeExpirationDate;
-    }
-
-    public int getHourOfNotifications() {
-        return hourOfNotifications;
-    }
-
-    public void setHourOfNotifications(int hourOfNotifications) {
-        this.hourOfNotifications = hourOfNotifications;
-    }
-
-    public boolean isPushNotificationsAllowed() {
-        return pushNotificationsAllowed;
-    }
-
-    public boolean isEmailNotificationsAllowed() {
-        return emailNotificationsAllowed;
+    
+    public String getAppVersion(){
+        return BuildConfig.VERSION_NAME;
     }
 
     public String getEmailAddress() {
-        return emailAddress;
+        return preferences.getString("EMAIL_ADDRESS", "");
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public int getDaysToNotification() {
+        return Integer.parseInt(preferences.getString("HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?", "3"));
     }
 
-    public void setIsEmailNotificationsAllowed(boolean emailNotificationsAllowed) {
-        this.emailNotificationsAllowed = emailNotificationsAllowed;
-    }
-
-    public void setIsPushNotificationsAllowed(boolean pushNotificationsAllowed) {
-        this.pushNotificationsAllowed = pushNotificationsAllowed;
-    }
-
-    public boolean isValidEmail(@NonNull String email) {
-        Pattern pattern = Patterns.EMAIL_ADDRESS;
-        return pattern.matcher(email).matches();
-    }
-
-    public boolean isNotificationsSettingsChanged() {
-        boolean isNotificationSettingsChanged = false;
-        int oldHourOfNotifications = preferences.getInt(PREFERENCES_HOUR_OF_NOTIFICATIONS,
-                Notification.NOTIFICATION_DEFAULT_HOUR);
-        int newHourOfNotifications = hourOfNotifications;
-        int oldDaysBeforeNotifications = preferences.getInt(PREFERENCES_DAYS_TO_NOTIFICATIONS,
-                Notification.NOTIFICATION_DEFAULT_HOUR);
-        int newDaysBeforeNotifications = daysBeforeExpirationDate;
-
-        if (oldHourOfNotifications != newHourOfNotifications)
-            isNotificationSettingsChanged = true;
-        if (oldDaysBeforeNotifications != newDaysBeforeNotifications)
-            isNotificationSettingsChanged = true;
-
-        return isNotificationSettingsChanged;
-    }
-
-    public void saveSettings() {
-        SharedPreferences.Editor preferenceEditor = preferences.edit();
-
-        preferenceEditor.putInt(PREFERENCES_SELECTED_APP_THEME, selectedAppTheme);
-        preferenceEditor.putInt(PREFERENCES_SELECTED_SCAN_CAMERA, selectedCamera);
-        preferenceEditor.putInt(PREFERENCES_DAYS_TO_NOTIFICATIONS, daysBeforeExpirationDate);
-        preferenceEditor.putBoolean(PREFERENCES_PUSH_NOTIFICATIONS, pushNotificationsAllowed);
-        preferenceEditor.putInt(PREFERENCES_HOUR_OF_NOTIFICATIONS, hourOfNotifications);
-        preferenceEditor.putBoolean(PREFERENCES_VIBRATION_MODE, scannerVibrationMode);
-        preferenceEditor.putBoolean(PREFERENCES_SOUND_MODE, scannerSoundMode);
-
-        if (isValidEmail(emailAddress)) {
-            preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, emailNotificationsAllowed);
-            preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, emailAddress);
-        } else {
-            preferenceEditor.putBoolean(PREFERENCES_EMAIL_NOTIFICATIONS, false);
-            preferenceEditor.putString(PREFERENCES_EMAIL_ADDRESS, "");
-        }
-
-        preferenceEditor.apply();
-    }
-
-    public String getAppVersion(){
-        return BuildConfig.VERSION_NAME;
+    public void clearEmailAddress(){
+        preferences.edit().putString("EMAIL_ADDRESS", "").apply();
     }
 }

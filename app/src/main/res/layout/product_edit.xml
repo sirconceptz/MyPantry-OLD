@@ -38,22 +38,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/edittext_name"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_required"
-        android:inputType="textPersonName"
-        android:text=""
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_nameLabel"
-        tools:ignore="Autofill" />
+        app:layout_constraintTop_toBottomOf="@id/text_nameLabel"
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_name"
+            android:inputType="textCapSentences"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_productTypeLabel"
@@ -68,7 +74,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_name" />
+        app:layout_constraintTop_toBottomOf="@id/layout_name" />
 
     <Spinner
         android:id="@+id/spinner_productType"
@@ -82,7 +88,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_productTypeLabel" />
+        app:layout_constraintTop_toBottomOf="@id/text_productTypeLabel" />
 
     <TextView
         android:id="@+id/text_productCategoryLabel"
@@ -97,7 +103,7 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_productType" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_productType" />
 
     <Spinner
         android:id="@+id/spinner_productCategory"
@@ -110,7 +116,7 @@
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_productCategoryLabel" />
+        app:layout_constraintTop_toBottomOf="@id/text_productCategoryLabel" />
 
     <TextView
         android:id="@+id/text_productStorageLocationLabel"
@@ -125,7 +131,7 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_productCategory" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_productCategory" />
 
     <Spinner
         android:id="@+id/spinner_productStorageLocation"
@@ -137,7 +143,7 @@
         android:textColor="@color/text_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_productStorageLocationLabel" />
+        app:layout_constraintTop_toBottomOf="@id/text_productStorageLocationLabel" />
 
     <TextView
         android:id="@+id/text_expirationDateLabel"
@@ -154,23 +160,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinner_productStorageLocation" />
 
-    <EditText
-        android:id="@+id/edittext_expirationDate"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_expirationDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:focusable="false"
-        android:hint="@string/General_not_required"
-        android:inputType="date"
-        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_expirationDateLabel"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_expirationDate"
+            android:focusable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_productionDateLabel"
@@ -183,27 +191,29 @@
         android:textColor="@color/text_color"
         android:textSize="20sp"
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_expirationDate" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_expirationDate" />
 
-    <EditText
-        android:id="@+id/edittext_productionDate"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/productionDate_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:focusable="false"
-        android:hint="@string/General_not_required"
-        android:inputType="date"
-        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_productionDateLabel"
-        tools:ignore="Autofill" />
+        app:layout_constraintTop_toBottomOf="@+id/text_productionDateLabel"
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edittext_productionDate"
+            style="@style/CustomEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_quantityLabel"
@@ -218,24 +228,31 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_productionDate" />
+        app:layout_constraintTop_toBottomOf="@id/productionDate_layout" />
 
-    <EditText
-        android:id="@+id/edittext_quantity"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_quantity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_not_required"
-        android:inputType="number"
-        android:text="@string/NewProductActivity_quantity_value"
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_quantityLabel"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_quantity"
+            android:inputType="number"
+            android:text="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_compositionLabel"
@@ -250,24 +267,30 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_quantity" />
+        app:layout_constraintTop_toBottomOf="@id/layout_quantity" />
 
-    <EditText
-        android:id="@+id/edittext_composition"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_composition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_not_required"
-        android:inputType="textPersonName"
-        android:text=""
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_compositionLabel"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_composition"
+            android:inputType="textMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_healingPropertiesLabel"
@@ -282,24 +305,30 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_composition" />
+        app:layout_constraintTop_toBottomOf="@id/layout_composition" />
 
-    <EditText
-        android:id="@+id/edittext_healingProperties"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_healingProperties"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_not_required"
-        android:inputType="textPersonName"
-        android:text=""
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="200"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_healingPropertiesLabel"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_healingProperties"
+            android:inputType="textCapSentences|textMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_dosageLabel"
@@ -314,24 +343,30 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_healingProperties" />
+        app:layout_constraintTop_toBottomOf="@id/layout_healingProperties" />
 
-    <EditText
-        android:id="@+id/edittext_dosage"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_dosage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_not_required"
-        android:inputType="textPersonName"
-        android:text=""
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="150"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_dosageLabel"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_dosage"
+            android:inputType="textCapSentences|textMultiLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_volumeLabel"
@@ -344,26 +379,32 @@
         android:textColor="@color/text_color"
         android:textSize="20sp"
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_dosage" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_dosage" />
 
-    <EditText
-        android:id="@+id/edittext_volume"
-        style="@style/CustomEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_volume"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_not_required"
-        android:inputType="number"
-        android:text="@string/NewProductActivity_volume_value"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="10"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_volumeLabel"
-        tools:ignore="Autofill" />
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_volume"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/text_weightLabel"
@@ -376,26 +417,32 @@
         android:textColor="@color/text_color"
         android:textSize="20sp"
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_volume" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_volume" />
 
-    <EditText
-        android:id="@+id/edittext_weight"
-        style="@style/CustomEditText"
-        android:layout_width="0dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_weight"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:ems="10"
-        android:hint="@string/General_not_required"
-        android:inputType="number"
-        android:text="@string/NewProductActivity_weight_value"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:endIconMode="clear_text"
+        app:counterEnabled="true"
+        app:counterMaxLength="10"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_weightLabel"
-        tools:ignore="Autofill" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_weightLabel"
+        tools:ignore="Autofill">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/CustomEditText"
+            android:id="@+id/edittext_weight"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
         android:id="@+id/checkbox_hasSugar"
@@ -410,7 +457,7 @@
         android:fontFamily="@font/proxima_nova_extra_condensed_bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edittext_weight"
+        app:layout_constraintTop_toBottomOf="@id/layout_weight"
         tools:ignore="Autofill" />
 
     <CheckBox

@@ -33,21 +33,14 @@ public class NewStorageLocationPresenter {
         this.model = model;
     }
 
-    public void initCharCounters(){
-        view.updateNameCharCounter(0, model.MAX_CHAR_STORAGE_LOCATION_NAME);
-        view.updateDescriptionCharCounter(0, model.MAX_CHAR_STORAGE_LOCATION_DESCRIPTION);
-    }
-
     public void isStorageLocationNameCorrect(@NonNull String storageLocationName){
         if(model.isStorageLocationNameNotCorrect(storageLocationName))
             view.showNameFieldError();
-        view.updateNameCharCounter(storageLocationName.length(), model.MAX_CHAR_STORAGE_LOCATION_NAME);
     }
 
     public void isStorageLocationDescriptionCorrect(@NonNull String storageLocationDescription){
         if(model.isStorageLocationDescriptionNotCorrect(storageLocationDescription))
             view.showDescriptionFieldError();
-        view.updateDescriptionCharCounter(storageLocationDescription.length(), model.MAX_CHAR_STORAGE_LOCATION_DESCRIPTION);
     }
 
     public void onPressAddNewStorageLocation(@NonNull StorageLocation storageLocation) {

@@ -22,10 +22,6 @@ import com.hermanowicz.pantry.db.category.Category;
 public interface NewCategoryView {
     void onAddCategory(Category category);
 
-    void updateNameCharCounter(int charCounter, int maxChar);
-
-    void updateDescriptionCharCounter(int charCounter, int maxChar);
-
     void showNameFieldError();
 
     void showDescriptionFieldError();

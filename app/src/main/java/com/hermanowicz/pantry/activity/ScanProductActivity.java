@@ -123,19 +123,19 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         productDetailsIntent.putExtra("product_id", decodedScanResultAsList.get(0));
         productDetailsIntent.putExtra("hash_code", String.valueOf(decodedScanResultAsList.get(1)));
         startActivity(productDetailsIntent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void navigateToMainActivity() {
         Intent mainActivityIntent = new Intent(context, MainActivity.class);
         startActivity(mainActivityIntent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

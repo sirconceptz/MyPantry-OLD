@@ -165,25 +165,15 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void updateNameCharCounter(int charCounter, int maxChar) {
-        nameCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
-    }
-
-    @Override
-    public void updateDescriptionCharCounter(int charCounter, int maxChar) {
-        descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
-    }
-
-    @Override
     public void navigateToStorageLocationActivity() {
         Intent intent = new Intent (getApplicationContext(), StorageLocationsActivity.class);
         startActivity(intent);
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 }

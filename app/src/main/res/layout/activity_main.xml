@@ -75,7 +75,10 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="6dp"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
+                app:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -107,7 +110,10 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="6dp"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
+                app:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -139,7 +145,10 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="6dp"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
+                app:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -171,7 +180,10 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="6dp"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
+                app:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -203,7 +215,10 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="6dp"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
+                app:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -235,7 +250,10 @@
                 app:cardCornerRadius="15dp"
                 app:cardElevation="6dp"
                 app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
+                app:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

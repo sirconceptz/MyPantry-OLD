@@ -17,22 +17,14 @@
 
 package com.hermanowicz.pantry.activity;
 
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,12 +32,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.databinding.ActivityAppSettingsBinding;
 import com.hermanowicz.pantry.db.product.ProductDb;
-import com.hermanowicz.pantry.dialog.AuthorDialog;
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
 import com.hermanowicz.pantry.presenter.AppSettingsPresenter;
 import com.hermanowicz.pantry.util.Notification;
@@ -63,18 +53,7 @@ import maes.tech.intentanim.CustomIntent;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity implements AppSettingsView {
-
-    private ActivityAppSettingsBinding binding;
-    private AppSettingsPresenter presenter;
-    private Context context;
-
-    private TextView appVersion, appAuthor;
-    private Spinner themeSelector, cameraSelector;
-    private CheckBox vibrationMode, soundMode, pushNotifications, emailNotifications;
-    private EditText daysToNofitication, emailAddress;
-    private Button saveSettings, clearProductDatabase;
-    private NumberPicker hourOfNotification;
+public class AppSettingsActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,189 +61,19 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
-        initView();
-        setListeners();
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
-    private void initView() {
-        binding = ActivityAppSettingsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        context = getApplicationContext();
-
-        Toolbar toolbar = binding.toolbar;
-        appVersion = binding.appVersion;
-        appAuthor = binding.appAuthor;
-        themeSelector = binding.spinnerAppThemeSelector;
-        cameraSelector = binding.spinnerCameraSelector;
-        vibrationMode = binding.checkboxScannerVibrationMode;
-        soundMode = binding.checkboxScannerSoundMode;
-        daysToNofitication = binding.edittextDaysToNotification;
-        pushNotifications = binding.checkboxPushNotifications;
-        emailNotifications = binding.checkboxEmailNotifications;
-        emailAddress = binding.edittextEmailAddress;
-        saveSettings = binding.buttonSaveSettings;
-        clearProductDatabase = binding.buttonClearProductDatabase;
-        hourOfNotification = binding.numberpickerHourOfNotification;
-
-        appAuthor.setText(String.format("%s: %s", getString(R.string.General_author_label), getString(R.string.Author_name)));
-
-        setSupportActionBar(toolbar);
-        setNumberpickerSettings();
-        setSpinnerAdapters();
-
-        presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(context));
-        presenter.loadSettings();
-    }
-
-    private void setListeners() {
-        saveSettings.setOnClickListener(view -> onClickSaveSettingsButton());
-        clearProductDatabase.setOnClickListener(view -> onClickClearDatabaseButton());
-        appAuthor.setOnClickListener(view -> onClickAuthorLabel());
-
-        emailAddress.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String emailAddress = binding.edittextEmailAddress.getText().toString();
-                presenter.enableEmailCheckbox(emailAddress);
-            }
-        });
-    }
-
-    private void setNumberpickerSettings() {
-        hourOfNotification.setMinValue(1);
-        hourOfNotification.setMaxValue(24);
-        hourOfNotification.setWrapSelectorWheel(false);
-    }
-
-    private void setSpinnerAdapters() {
-        ArrayAdapter<CharSequence> appThemeSelectorAdapter = ArrayAdapter.createFromResource(context, R.array.AppSettingsActivity_darkmodeSelector, R.layout.custom_spinner);
-        binding.spinnerAppThemeSelector.setAdapter(appThemeSelectorAdapter);
-        ArrayAdapter<CharSequence> cameraSelectorAdapter = ArrayAdapter.createFromResource(context, R.array.AppSettingsActivity_camera_to_scan, R.layout.custom_spinner);
-        binding.spinnerCameraSelector.setAdapter(cameraSelectorAdapter);
-    }
-
-    private void onClickClearDatabaseButton() {
-        new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
-                .setMessage(R.string.AppSettingsActivity_clear_database)
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.clearDatabase())
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    private void onClickAuthorLabel() {
-        AuthorDialog authorDialog = new AuthorDialog();
-        authorDialog.show(getSupportFragmentManager(), "");
-    }
-
-    void onClickSaveSettingsButton() {
-        presenter.setSelectedTheme(themeSelector.getSelectedItemPosition());
-        presenter.setSelectedScanCamera(cameraSelector.getSelectedItemPosition());
-        presenter.setScannerVibrationMode(vibrationMode.isChecked());
-        presenter.setScannerSoundMode(soundMode.isChecked());
-        presenter.setDaysBeforeExpirationDate(Integer.parseInt(daysToNofitication.getText().toString()));
-        presenter.setIsEmailNotificationsAllowed(emailNotifications.isChecked());
-        presenter.setIsPushNotificationsAllowed(pushNotifications.isChecked());
-        presenter.setHourOfNotifications(hourOfNotification.getValue());
-        presenter.setEmailAddress(emailAddress.getText().toString());
-
-        presenter.saveSettings();
-    }
-
-    @Override
-    public void setSelectedTheme(int selectedTheme) {
-        themeSelector.setSelection(selectedTheme);
-    }
-
-    @Override
-    public void setScanCamera(int selectedCamera) {
-        cameraSelector.setSelection(selectedCamera);
-    }
-
-    @Override
-    public void setCheckboxScannerVibrationMode(boolean mode) {
-        vibrationMode.setChecked(mode);
-    }
-
-    @Override
-    public void setCheckboxScannerSoundMode(boolean mode) {
-        soundMode.setChecked(mode);
-    }
-
-    @Override
-    public void setDaysBeforeExpirationDate(int days) {
-        daysToNofitication.setText(String.valueOf(days));
-    }
-
-    @Override
-    public void setCheckboxPushNotification(boolean mode) {
-        pushNotifications.setChecked(mode);
-    }
-
-    @Override
-    public void setCheckboxEmailNotification(boolean mode) {
-        emailNotifications.setChecked(mode);
-    }
-
-    @Override
-    public void setEmailAddress(String address) {
-        emailAddress.setText(address);
-    }
-
-    @Override
-    public void setHourOfNotifications(int hour) {
-        hourOfNotification.setValue(hour);
-    }
-
-    @Override
-    public void recreateNotifications() {
-        Notification.cancelAllNotifications(context);
-        Notification.createNotificationsForAllProducts(context);
-    }
-
-    @Override
-    public void enableEmailCheckbox(boolean isValidEmail) {
-        emailNotifications.setEnabled(isValidEmail);
-    }
-
-    @Override
-    public void onSettingsSaved() {
-        Toast.makeText(context, getString(R.string.AppSettingsActivity_settings_saved_successful), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onDatabaseClear() {
-        ProductDb productDb = ProductDb.getInstance(context);
-        productDb.productsDao().clearDb();
-        Notification.cancelAllNotifications(context);
-        Toast.makeText(context, getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void showCodeVersion(String version) {
-        appVersion.setText(String.format("%s: %s", getString(R.string.AppSettingsActivity_version), version));
-    }
-
-    @Override
-    public void navigateToMainActivity() {
-        Intent mainActivityIntent = new Intent(context, MainActivity.class);
+    private void navigateToMainActivity(){
+        Intent mainActivityIntent = new Intent(this, MainActivity.class);
         startActivity(mainActivityIntent);
-        CustomIntent.customType(this, "bottom-to-up");
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
+            navigateToMainActivity();
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -272,6 +81,133 @@ public class AppSettingsActivity extends AppCompatActivity implements AppSetting
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "up-to-bottom");
+        CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, AppSettingsView {
+
+        AppSettingsPresenter presenter;
+        Preference selectedTheme, scanCamera, emailAddress, notificationDaysBefore,
+                emailNotifications, clearDb, version;
+
+        @Override
+        public void onCreate(final Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            initView();
+            setListeners();
+            presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(getContext()));
+            presenter.showStoredPreferences();
+        }
+
+        private void initView(){
+            addPreferencesFromResource(R.xml.preferences);
+            selectedTheme = findPreference(getString(R.string.PreferencesKey_selected_application_theme));
+            scanCamera = findPreference(getString(R.string.PreferencesKey_scan_camera));
+            notificationDaysBefore = findPreference(getString(R.string.PreferencesKey_notification_days_before_expiration));
+            emailAddress = findPreference(getString(R.string.PreferencesKey_email_address));
+            emailNotifications = findPreference(getString(R.string.PreferencesKey_email_notifications));
+            clearDb = findPreference(getString(R.string.PreferencesKey_clear_db));
+            version = findPreference(getString(R.string.PreferencesKey_version));
+        }
+
+        public void setListeners(){
+            clearDb.setOnPreferenceClickListener(preference -> {
+                onClickClearDatabaseButton();
+                return false;
+            });
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        private void onClickClearDatabaseButton() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_clear_database_statement)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.clearDatabase())
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+        {
+            if(key.equals(getString(R.string.PreferencesKey_push_notifications)) || key.equals(getString(R.string.PreferencesKey_notification_days_before_expiration)))
+                presenter.reCreateNotifications();
+            if(key.equals(getString(R.string.PreferencesKey_selected_application_theme)))
+                presenter.showSelectedTheme();
+                presenter.refreshActivity();
+            if(key.equals(getString(R.string.PreferencesKey_scan_camera)))
+                presenter.showSelectedScanCamera();
+            if(key.equals(getString(R.string.PreferencesKey_notification_days_before_expiration)))
+                presenter.showDaysToNotification();
+            if(key.equals(getString(R.string.PreferencesKey_email_address))){
+                presenter.showEmailAddress();
+            }
+        }
+
+        @Override
+        public void recreateNotifications() {
+            Notification.cancelAllNotifications(getContext());
+            Notification.createNotificationsForAllProducts(getContext());
+        }
+
+        @Override
+        public void onDatabaseClear() {
+            ProductDb productDb = ProductDb.getInstance(getContext());
+            productDb.productsDao().clearDb();
+            Notification.cancelAllNotifications(getContext());
+            Toast.makeText(getContext(), getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void showSelectedTheme(int themeId) {
+            String[] themeList = getResources().getStringArray(R.array.AppSettingsActivity_darkmode_selector);
+            selectedTheme.setSummary(themeList[themeId]);
+        }
+
+        @Override
+        public void showSelectedScanCamera(int scanCameraId) {
+            String[] scanCameraList = getResources().getStringArray(R.array.AppSettingsActivity_camera_to_scan);
+            scanCamera.setSummary(scanCameraList[scanCameraId]);
+        }
+
+        @Override
+        public void showEmailAddress(String address) {
+            emailAddress.setSummary(address);
+            emailNotifications.setEnabled(true);
+        }
+
+        @Override
+        public void showDaysToNotification(int quantity) {
+            notificationDaysBefore.setSummary(String.valueOf(quantity));
+        }
+
+        @Override
+        public void showVersionCode(String appVersion) {
+            version.setSummary(appVersion);
+        }
+
+        @Override
+        public void setEmailPreferences() {
+            emailAddress.setSummary("");
+            emailNotifications.setEnabled(false);
+        }
+
+        @Override
+        public void refreshActivity() {
+            getActivity().finish();
+            startActivity(getActivity().getIntent());
+        }
     }
 }
