@@ -200,6 +200,7 @@ public class ProductDataModel {
             product.setProductFeatures(groupProducts.getProduct().getProductFeatures());
             product.setHealingProperties(groupProducts.getProduct().getHealingProperties());
             product.setComposition(groupProducts.getProduct().getComposition());
+            product.setStorageLocation(groupProducts.getProduct().getStorageLocation());
             product.setDosage(groupProducts.getProduct().getDosage());
             product.setWeight(groupProducts.getProduct().getWeight());
             product.setVolume(groupProducts.getProduct().getVolume());
@@ -207,6 +208,8 @@ public class ProductDataModel {
             product.setHasSalt(groupProducts.getProduct().getHasSugar());
             product.setIsBio(groupProducts.getProduct().getIsBio());
             product.setIsVege(groupProducts.getProduct().getIsVege());
+            product.setPhotoName(groupProducts.getProduct().getPhotoName());
+            product.setPhotoDescription(groupProducts.getProduct().getPhotoDescription());
             product.setProductionDate(productionDate);
             product.setExpirationDate(expirationDate);
             product.setTaste(taste);
@@ -223,10 +226,15 @@ public class ProductDataModel {
                 newProduct.setVolume(groupProducts.getProduct().getVolume());
                 newProduct.setWeight(groupProducts.getProduct().getWeight());
                 newProduct.setComposition(groupProducts.getProduct().getComposition());
+                newProduct.setStorageLocation(groupProducts.getProduct().getStorageLocation());
                 newProduct.setHealingProperties(groupProducts.getProduct().getHealingProperties());
                 newProduct.setDosage(groupProducts.getProduct().getDosage());
                 newProduct.setHasSugar(groupProducts.getProduct().getHasSugar());
                 newProduct.setHasSalt(groupProducts.getProduct().getHasSalt());
+                newProduct.setIsBio(groupProducts.getProduct().getIsBio());
+                newProduct.setIsVege(groupProducts.getProduct().getIsVege());
+                newProduct.setPhotoName(groupProducts.getProduct().getPhotoName());
+                newProduct.setPhotoDescription(groupProducts.getProduct().getPhotoDescription());
                 newProduct.setTaste(taste);
                 newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
                 if(groupProducts.getProduct().getProductFeatures().equals(resources.getString(R.string.Product_choose)))

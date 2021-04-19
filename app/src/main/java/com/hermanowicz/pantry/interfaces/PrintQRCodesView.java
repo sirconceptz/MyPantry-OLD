@@ -19,10 +19,6 @@ package com.hermanowicz.pantry.interfaces;
 
 import android.graphics.Bitmap;
 
-import com.hermanowicz.pantry.db.product.Product;
-
-import java.util.List;
-
 public interface PrintQRCodesView {
     void showQRCodeImage(Bitmap qrCodeImage);
 
@@ -31,6 +27,4 @@ public interface PrintQRCodesView {
     void sendPDFByEmail(String fileName);
 
     void navigateToMainActivity();
-
-    void navigateToAddPhoto(List<Product> productList);
 }

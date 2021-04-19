@@ -48,7 +48,6 @@ import com.hermanowicz.pantry.util.FileManager;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,7 +73,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     private AdView adView;
     private ImageView qrCodeImage;
-    private Button printQrCodes, sendPdfByEmail, addPhoto, skip;
+    private Button printQrCodes, sendPdfByEmail, skip;
     private List<Product> productList;
 
     @Override
@@ -97,7 +96,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         adView = binding.adview;
         qrCodeImage = binding.imageQrCode;
         printQrCodes = binding.buttonPrintQRCodes;
-        addPhoto = binding.buttonAddPhoto;
         sendPdfByEmail = binding.buttonSendPdfByEmail;
         skip = binding.buttonSkip;
 
@@ -119,7 +117,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     private void setListeners() {
         printQrCodes.setOnClickListener(view -> presenter.onClickPrintQRCodes());
         sendPdfByEmail.setOnClickListener(view -> presenter.onClickSendPdfByEmail());
-        addPhoto.setOnClickListener(view -> presenter.onClickAddPhoto(productList));
         skip.setOnClickListener(view -> presenter.onClickSkipButton());
     }
 
@@ -157,14 +154,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     }
 
     @Override
-    public void navigateToAddPhoto(List<Product> productList) {
-        Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
-                .putExtra("PRODUCT_LIST", (Serializable) productList);
-        startActivity(addPhotoActivityIntent);
-        CustomIntent.customType(this, "fadein-to-fadeout");
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(@NonNull Menu menu) {
         getMenuInflater().inflate(R.menu.print_qr_menu, menu);
         return true;
@@ -179,9 +168,6 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
                 return true;
             case R.id.action_send_email:
                 presenter.onClickSendPdfByEmail();
-                return true;
-            case R.id.action_take_photo:
-                presenter.onClickAddPhoto(productList);
                 return true;
             case R.id.action_skip:
                 presenter.onClickSkipButton();

@@ -22,7 +22,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
@@ -62,8 +61,8 @@ public class Notification {
         calendar.set(Calendar.HOUR_OF_DAY, Notification.NOTIFICATION_DEFAULT_HOUR);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
-        calendar.add(Calendar.DAY_OF_MONTH, -(preferences.getInt(
-                PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS)));
+        calendar.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(preferences.getString(
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, String.valueOf(Notification.NOTIFICATION_DEFAULT_DAYS))));
 
         return calendar;
     }
@@ -79,18 +78,9 @@ public class Notification {
         if(!product.getExpirationDate().equals("-"))
         {
             Calendar calendar = createCalendar(context, product.getExpirationDate());
-
-            if (Build.VERSION.SDK_INT >= 23) {
-                assert alarmManager != null;
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
-                        calendar.getTimeInMillis(), pendingIntent);
-            } else if (Build.VERSION.SDK_INT >= 19) {
-                assert alarmManager != null;
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                assert alarmManager != null;
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
+            assert alarmManager != null;
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(), pendingIntent);
         }
     }
 

@@ -64,10 +64,6 @@ public class PrintQRCodesPresenter {
             view.openPDF(model.getPdfFileName());
     }
 
-    public void onClickAddPhoto(@NonNull List<Product> productList) {
-        view.navigateToAddPhoto(productList);
-    }
-
     public void onClickSendPdfByEmail() {
         if (createAndSavePDF())
             view.sendPDFByEmail(model.getPdfFileName());

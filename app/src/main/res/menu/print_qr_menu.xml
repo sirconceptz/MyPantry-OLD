@@ -28,11 +28,6 @@
         android:title=""
         app:showAsAction="always"/>
 
-    <item android:id="@+id/action_take_photo"
-        android:icon="@drawable/ic_photo"
-        android:title=""
-        app:showAsAction="always"/>
-
     <item android:id="@+id/action_skip"
         android:icon="@drawable/ic_skip"
         android:title=""

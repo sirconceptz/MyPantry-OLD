@@ -60,7 +60,7 @@
         <item name="android:textColor">@color/material_accent</item>
     </style>
 
-    <style name="AppThemeDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+    <style name="AppThemeDialog" parent="Theme.AppCompat.Dialog">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">
@@ -72,8 +72,6 @@
             @color/background_material
         </item>
         <item name="android:spinnerDropDownItemStyle">@style/CustomSpinnerItemStyle</item>
-        <item name="buttonBarNegativeButtonStyle">@style/ButtonTextStyle</item>
-        <item name="buttonBarPositiveButtonStyle">@style/ButtonTextStyle</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -88,7 +86,7 @@
         <item name="android:fontFamily">@font/proxima_nova_extra_condensed_bold</item>
     </style>
 
-    <style name="AppThemeDatePicker" parent="android:Theme.Holo">
+    <style name="AppThemeDatePicker" parent="android:Theme.Holo.Light">
         <item name="android:layout_gravity">center</item>
     </style>
 

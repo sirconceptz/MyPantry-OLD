@@ -98,12 +98,20 @@ public class ProductsAdapter extends
         volumeTv.setText(volumeString);
         if(product.getHasSugar())
             hasSugar.setVisibility(View.VISIBLE);
+        else
+            hasSugar.setVisibility(View.INVISIBLE);
         if(product.getHasSalt())
             hasSalt.setVisibility(View.VISIBLE);
+        else
+            hasSalt.setVisibility(View.INVISIBLE);
         if(product.getIsVege())
             isVege.setVisibility(View.VISIBLE);
+        else
+            isVege.setVisibility(View.INVISIBLE);
         if(product.getIsBio())
             isBio.setVisibility(View.VISIBLE);
+        else
+            isBio.setVisibility(View.INVISIBLE);
         if(product.getExpirationDate().length() > 1) {
             DateHelper dateHelper = new DateHelper(product.getExpirationDate());
             expirationDateTv.setText(dateHelper.getDateInLocalFormat());
