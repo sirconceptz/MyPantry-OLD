@@ -284,7 +284,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     @Override
     public void navigateToPrintQRCodesActivity(List<Product> productList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
-                .putExtra("PRODUCT_LIST", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList);
 
         startActivity(printQRCodesActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");

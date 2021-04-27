@@ -81,7 +81,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         deleteCategory = binding.buttonDeleteCategory;
 
         Intent categoryIntent = getIntent();
-        categoryId = categoryIntent.getIntExtra("CATEGORY_ID", 0);
+        categoryId = categoryIntent.getIntExtra("category_id", 0);
         DatabaseOperations databaseOperations = new DatabaseOperations(context);
         presenter = new CategoryDetailsPresenter(this, new CategoryModel(databaseOperations));
         presenter.setCategoryId(categoryId);

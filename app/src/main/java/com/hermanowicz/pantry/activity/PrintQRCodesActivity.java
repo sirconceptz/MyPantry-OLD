@@ -102,7 +102,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        productList = (List<Product>) getIntent().getSerializableExtra("PRODUCT_LIST");
+        productList = (List<Product>) getIntent().getSerializableExtra("product_list");
 
         presenter = new PrintQRCodesPresenter(this);
 

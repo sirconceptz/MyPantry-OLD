@@ -121,7 +121,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
             public void onItemClick(View view, int position) {
                 List<Category> categoryList = CategoryDb.getInstance(context).categoryDao().getAllOwnCategories();
                 Intent intent = new Intent(context, CategoryDetailsActivity.class)
-                        .putExtra("CATEGORY_ID", categoryList.get(position).getId());
+                        .putExtra("category_id", categoryList.get(position).getId());
                 startActivity(intent);
                 CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }

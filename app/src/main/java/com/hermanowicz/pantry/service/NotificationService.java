@@ -62,7 +62,6 @@ public class NotificationService extends IntentService {
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
     static final String DAYS_TAG = "%DAYS%";
     static final String PRODUCT_NAME_TAG = "%PRODUCT_NAME%";
-    static final String PRODUCTS_QUANTITY = "%PRODUCTS_QUANTITY%";
     static final String URL_API = "https://www.mypantry.eu/api/";
     static final String API_MAIL_FILE = "mail.php";
 
@@ -84,8 +83,8 @@ public class NotificationService extends IntentService {
     protected void onHandleIntent(@NonNull Intent intent) {
         Context context = getApplicationContext();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        productName = intent.getStringExtra("PRODUCT_NAME");
-        int productID = intent.getIntExtra("PRODUCT_ID", 0);
+        productName = intent.getStringExtra("product_name");
+        int productID = intent.getIntExtra("product_id", 0);
         daysToNotification = 3;
         daysToNotification = preferences.getInt(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.util.Notification.NOTIFICATION_DEFAULT_DAYS);

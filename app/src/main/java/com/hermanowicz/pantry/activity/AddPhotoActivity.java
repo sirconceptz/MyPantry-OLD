@@ -102,7 +102,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         savePhoto = binding.buttonSavePhoto;
         deletePhoto = binding.buttonDeletePhoto;
 
-        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("PRODUCT_LIST");
+        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
         presenter = new AddPhotoPresenter(this);
         presenter.setActivity(this);
         presenter.setDb(new DatabaseOperations(context));

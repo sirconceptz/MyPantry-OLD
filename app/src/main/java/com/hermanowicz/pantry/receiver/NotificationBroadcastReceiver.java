@@ -38,10 +38,10 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Intent intentNotificationService = new Intent(context, NotificationService.class);
-        intentNotificationService.putExtra("PRODUCT_NAME",
-                intent.getStringExtra("PRODUCT_NAME"));
-        intentNotificationService.putExtra("PRODUCT_ID",
-                intent.getStringExtra("PRODUCT_ID"));
+        intentNotificationService.putExtra("product_name",
+                intent.getStringExtra("product_name"));
+        intentNotificationService.putExtra("product_id",
+                intent.getStringExtra("product_id"));
         context.startService(intentNotificationService);
     }
 }

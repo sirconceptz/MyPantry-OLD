@@ -119,7 +119,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
             public void onItemClick(View view, int position) {
                 List<StorageLocation> storageLocationList = presenter.getStorageLocationList();
                 Intent intent = new Intent(context, StorageLocationDetailsActivity.class)
-                        .putExtra("STORAGE_LOCATION_ID", storageLocationList.get(position).getId());
+                        .putExtra("storage_location_id", storageLocationList.get(position).getId());
                 startActivity(intent);
                 CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }

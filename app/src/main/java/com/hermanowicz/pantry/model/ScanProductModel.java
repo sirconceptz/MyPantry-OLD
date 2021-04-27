@@ -34,8 +34,8 @@ public class ScanProductModel {
         try {
             decodedQRCodeAsList = new ArrayList<>();
             JSONObject jsonObject = new JSONObject(scanResult);
-            decodedQRCodeAsList.add(jsonObject.getInt("PRODUCT_ID"));
-            decodedQRCodeAsList.add(jsonObject.getInt("HASH_CODE"));
+            decodedQRCodeAsList.add(jsonObject.getInt("product_id"));
+            decodedQRCodeAsList.add(jsonObject.getInt("hash_code"));
         } catch (JSONException e) {
             Log.e("Decode scan result", e.toString());
         }

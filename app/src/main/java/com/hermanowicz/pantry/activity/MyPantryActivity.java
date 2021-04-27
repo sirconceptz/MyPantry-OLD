@@ -160,8 +160,8 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 else {
                     List<GroupProducts> productList = presenter.getGroupProductsList();
                     Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class)
-                            .putExtra("PRODUCT_ID", productList.get(position).getProduct().getId())
-                            .putExtra("HASH_CODE", productList.get(position).getProduct().getHashCode());
+                            .putExtra("product_id", productList.get(position).getProduct().getId())
+                            .putExtra("hash_code", productList.get(position).getProduct().getHashCode());
                     startActivity(productDetailsActivityIntent);
                     CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
                 }
@@ -293,7 +293,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     @Override
     public void onPrintProducts(@NonNull List<Product> productList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
-                .putExtra("PRODUCT_LIST", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList);
         startActivity(printQRCodesActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }

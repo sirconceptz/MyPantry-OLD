@@ -70,8 +70,8 @@ public class Notification {
     public static void createNotification(@NonNull Context context, @Nullable Product product) {
         Intent intent = new Intent(context, NotificationBroadcastReceiver.class);
         assert product != null;
-        intent.putExtra("PRODUCT_NAME", product.getName());
-        intent.putExtra("PRODUCT_ID", product.getId());
+        intent.putExtra("product_name", product.getName());
+        intent.putExtra("product_id", product.getId());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, product.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
 

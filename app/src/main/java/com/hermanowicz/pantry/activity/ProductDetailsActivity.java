@@ -132,8 +132,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
                 getResources()), new DatabaseOperations(context));
 
         Intent myPantryActivityIntent = getIntent();
-        productId = myPantryActivityIntent.getIntExtra("PRODUCT_ID", 1);
-        String hashCode = myPantryActivityIntent.getStringExtra("HASH_CODE");
+        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
+        String hashCode = myPantryActivityIntent.getStringExtra("hash_code");
 
         presenter.setProductId(productId);
         presenter.showProductDetails(hashCode);
@@ -187,7 +187,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public void navigateToPrintQRCodeActivity(@NonNull List<Product> productList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
-                .putExtra("PRODUCT_LIST", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList);
         startActivity(printQRCodesActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
@@ -195,7 +195,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public void navigateToEditProductActivity(int productId) {
         Intent editProductActivityIntent = new Intent(context, EditProductActivity.class)
-                .putExtra("PRODUCT_ID", productId);
+                .putExtra("product_id", productId);
         startActivity(editProductActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
@@ -210,7 +210,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public void navigateToAddPhotoActivity(List<Product> productList) {
         Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
-                .putExtra("PRODUCT_LIST", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList);
         startActivity(addPhotoActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
