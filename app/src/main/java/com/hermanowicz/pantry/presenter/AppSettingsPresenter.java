@@ -21,16 +21,23 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hermanowicz.pantry.activity.AppSettingsActivity;
+import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 
 public class AppSettingsPresenter {
 
     private final AppSettingsActivity.MyPreferenceFragment view;
+    private final AccountView accountView;
     private final AppSettingsModel model;
 
-    public AppSettingsPresenter(@NonNull AppSettingsActivity.MyPreferenceFragment view, @NonNull SharedPreferences preferences) {
+    public AppSettingsPresenter(@NonNull AppSettingsActivity.MyPreferenceFragment view,
+                                @NonNull AccountView accountView,
+                                @NonNull SharedPreferences preferences) {
         this.view = view;
+        this.accountView = accountView;
         this.model = new AppSettingsModel(preferences);
     }
 
@@ -48,6 +55,15 @@ public class AppSettingsPresenter {
         showEmailAddress();
         showDaysToNotification();
         showVersionCode();
+        showActiveUser();
+    }
+
+    public void showActiveUser(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null)
+            view.showActiveUser(user.getEmail());
+        else
+            view.showActiveUser("Niezalogowany");
     }
 
     public void showSelectedTheme() {
@@ -77,5 +93,24 @@ public class AppSettingsPresenter {
 
     public void refreshActivity() {
         view.refreshActivity();
+    }
+
+    public void signInOrSignOut() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null)
+            accountView.signIn();
+        else {
+            accountView.signOut();
+            updateUserData();
+            view.refreshActivity();
+        }
+    }
+
+    public void updateUserData(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null)
+            accountView.updateUserData("");
+        else
+            accountView.updateUserData(user.getEmail());
     }
 }

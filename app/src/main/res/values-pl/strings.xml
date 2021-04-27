@@ -248,6 +248,7 @@
     <string name="AppSettingsActivity_clear_database_statement">Czy chcesz wyczyścić bazę danych produktów? Wszystkie produkty zostaną usunięte, a operacja jest nieodwracalna.</string>
     <string name="AppSettingsActivity_database_is_clear">Baza danych została wyczyszczona.</string>
     <string name="AppSettingsActivity_version">Wersja</string>
+    <string name="AppSettingsActivity_active_user">Zalogowany użytkownik</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Tylni aparat</item>
         <item>Przedni aparat</item>

@@ -15,27 +15,16 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.model;
 
-public interface AppSettingsView {
+import androidx.annotation.NonNull;
 
-    void recreateNotifications();
+public class User {
 
-    void onDatabaseClear();
+    public String name, email;
 
-    void showSelectedTheme(int selectedTheme);
-
-    void showSelectedScanCamera(int selectedScanCamera);
-
-    void showEmailAddress(String emailAddress);
-
-    void showDaysToNotification(int daysToNotificaion);
-
-    void showActiveUser(String activeUser);
-
-    void showVersionCode(String version);
-
-    void setEmailPreferences();
-
-    void refreshActivity();
+    public User(@NonNull String name, @NonNull String email){
+        this.name = name;
+        this.email = email;
+    }
 }

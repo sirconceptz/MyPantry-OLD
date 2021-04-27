@@ -248,6 +248,7 @@
     <string name="AppSettingsActivity_clear_database_statement">Möchten Sie die Produktdatenbank löschen? Alle Produkte werden entfernt und der Vorgang ist irreversibel.</string>
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
     <string name="AppSettingsActivity_version">Version</string>
+    <string name="AppSettingsActivity_active_user">Angemeldeter Benutzer</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rückkamera</item>
         <item>Front-Kamera</item>

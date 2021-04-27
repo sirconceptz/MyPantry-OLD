@@ -34,13 +34,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
+import com.firebase.ui.auth.AuthUI;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.product.ProductDb;
+import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
 import com.hermanowicz.pantry.presenter.AppSettingsPresenter;
 import com.hermanowicz.pantry.util.Notification;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
+
+import java.util.Arrays;
+import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
@@ -84,11 +89,13 @@ public class AppSettingsActivity extends AppCompatActivity{
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, AppSettingsView {
+    public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, AppSettingsView, AccountView {
+
+        private final int RC_SIGN_IN = 10;
 
         AppSettingsPresenter presenter;
         Preference selectedTheme, scanCamera, emailAddress, notificationDaysBefore,
-                emailNotifications, clearDb, version;
+                emailNotifications, clearDb, version, activeUser;
 
         @Override
         public void onCreate(final Bundle savedInstanceState)
@@ -96,7 +103,7 @@ public class AppSettingsActivity extends AppCompatActivity{
             super.onCreate(savedInstanceState);
             initView();
             setListeners();
-            presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(getContext()));
+            presenter = new AppSettingsPresenter(this, this, PreferenceManager.getDefaultSharedPreferences(getContext()));
             presenter.showStoredPreferences();
         }
 
@@ -109,11 +116,17 @@ public class AppSettingsActivity extends AppCompatActivity{
             emailNotifications = findPreference(getString(R.string.PreferencesKey_email_notifications));
             clearDb = findPreference(getString(R.string.PreferencesKey_clear_db));
             version = findPreference(getString(R.string.PreferencesKey_version));
+            activeUser = findPreference(getString(R.string.PreferencesKey_active_user));
         }
 
         public void setListeners(){
             clearDb.setOnPreferenceClickListener(preference -> {
                 onClickClearDatabaseButton();
+                return false;
+            });
+
+            activeUser.setOnPreferenceClickListener(preference -> {
+                presenter.signInOrSignOut();
                 return false;
             });
         }
@@ -194,6 +207,11 @@ public class AppSettingsActivity extends AppCompatActivity{
         }
 
         @Override
+        public void showActiveUser(String user) {
+            activeUser.setSummary(user);
+        }
+
+        @Override
         public void showVersionCode(String appVersion) {
             version.setSummary(appVersion);
         }
@@ -208,6 +226,39 @@ public class AppSettingsActivity extends AppCompatActivity{
         public void refreshActivity() {
             getActivity().finish();
             startActivity(getActivity().getIntent());
+        }
+
+        @Override
+        public void signIn() {
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.EmailBuilder().build());
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .setTheme(R.style.AppTheme)
+                            .build(),
+                    RC_SIGN_IN);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == RC_SIGN_IN) {
+                if (resultCode == RESULT_OK) {
+                    presenter.updateUserData();
+                }
+            }
+        }
+
+        @Override
+        public void signOut() {
+            AuthUI.getInstance().signOut(getContext());
+        }
+
+        @Override
+        public void updateUserData(String userEmail) {
+            activeUser.setSummary(userEmail);
         }
     }
 }

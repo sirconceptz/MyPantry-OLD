@@ -23,6 +23,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -30,16 +31,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityMainBinding;
 import com.hermanowicz.pantry.dialog.AuthorDialog;
+import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.presenter.MainPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
+
+import java.util.Arrays;
+import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
@@ -52,7 +58,9 @@ import maes.tech.intentanim.CustomIntent;
  * @since   1.0
  */
 
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends AppCompatActivity implements MainView, AccountView {
+
+    private final int RC_SIGN_IN = 10;
 
     private ActivityMainBinding binding;
     private MainPresenter presenter;
@@ -60,7 +68,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private long pressedTime;
 
     private CardView myPantry, scanProduct, newProduct, ownCategories, storageLocations, appSettings;
-    private ImageView authorInfo;
+    private TextView loggedUser;
+    private ImageView login, authorInfo;
     private AdView adView;
 
     @Override
@@ -89,11 +98,14 @@ public class MainActivity extends AppCompatActivity implements MainView {
         ownCategories = binding.ownCategoriesCV;
         storageLocations = binding.storageLocationsCV;
         appSettings = binding.appSettingsCV;
+        login = binding.login;
+        loggedUser = binding.loggedUser;
 
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
 
-        presenter = new MainPresenter(this);
+        presenter = new MainPresenter(this, this);
+        presenter.updateUserData();
     }
 
     private void setListeners() {
@@ -104,9 +116,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
         storageLocations.setOnClickListener(view -> presenter.navigateToStorageLocationsActivity());
         appSettings.setOnClickListener(view -> presenter.navigateToAppSettingsActivity());
         authorInfo.setOnClickListener(view -> presenter.showAuthorInfoDialog());
+        login.setOnClickListener(view -> presenter.signInOrSignOut());
     }
-
-
 
     @Override
     public void onNavigationToMyPantryActivity() {
@@ -167,6 +178,42 @@ public class MainActivity extends AppCompatActivity implements MainView {
         }
         pressedTime = System.currentTimeMillis();
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                presenter.updateUserData();
+            }
+        }
+    }
+
+    @Override
+    public void signIn() {
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build());
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        .setTheme(R.style.AppTheme)
+                        .build(),
+                RC_SIGN_IN);
+    }
+
+    @Override
+    public void signOut() {
+        AuthUI.getInstance().signOut(this);
+    }
+
+    @Override
+    public void updateUserData(String userEmail) {
+        if(userEmail == null)
+            loggedUser.setText("Wylogowany");
+        else
+            loggedUser.setText("Zalogowany: " + userEmail);
     }
 
     @Override

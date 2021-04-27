@@ -44,4 +44,7 @@ public interface StorageLocationDao {
 
     @Update
     void updateStorageLocation(StorageLocation storageLocation);
+
+    @Query("DELETE FROM storage_locations")
+    void clearDb();
 }

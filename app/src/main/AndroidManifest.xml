@@ -88,11 +88,6 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".activity.MyPantryActivity"
-            android:label="@string/title_activity_my_pantry"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".activity.NewProductActivity"
             android:label="@string/title_activity_new_product"
             android:parentActivityName=".activity.MainActivity"

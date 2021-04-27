@@ -17,25 +17,10 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface AppSettingsView {
+public interface AccountView {
+    void signIn();
 
-    void recreateNotifications();
+    void signOut();
 
-    void onDatabaseClear();
-
-    void showSelectedTheme(int selectedTheme);
-
-    void showSelectedScanCamera(int selectedScanCamera);
-
-    void showEmailAddress(String emailAddress);
-
-    void showDaysToNotification(int daysToNotificaion);
-
-    void showActiveUser(String activeUser);
-
-    void showVersionCode(String version);
-
-    void setEmailPreferences();
-
-    void refreshActivity();
+    void updateUserData(String userEmail);
 }

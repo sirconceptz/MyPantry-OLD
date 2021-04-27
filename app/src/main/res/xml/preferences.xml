@@ -23,6 +23,13 @@
 
     <PreferenceCategory android:title="@string/AppSettingsActivity_general_settings">
 
+        <Preference
+            android:icon="@drawable/ic_person"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_active_user"
+            android:title="@string/AppSettingsActivity_active_user"/>
+
         <ListPreference
             android:dialogTitle="@string/AppSettingsActivity_which_theme_user_prefer"
             android:defaultValue="0"

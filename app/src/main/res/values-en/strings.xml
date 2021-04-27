@@ -247,6 +247,7 @@
     <string name="AppSettingsActivity_clear_database_statement">Do you want to clear the product database? All products will be removed and the operation is irreversible.</string>
     <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
     <string name="AppSettingsActivity_version">Version</string>
+    <string name="AppSettingsActivity_active_user">Signed in user</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rear camera</item>
         <item>Front camera</item>

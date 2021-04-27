@@ -27,6 +27,9 @@ import com.hermanowicz.pantry.db.category.CategoryDb;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.db.product.ProductsDao;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocationDao;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocationDb;
 
 import org.junit.After;
 import org.junit.Before;
@@ -50,14 +53,19 @@ public class DatabaseTest {
     private CategoryDao categoryDao;
     private CategoryDb categoryDb;
 
+    private StorageLocationDao storageLocationDao;
+    private StorageLocationDb storageLocationDb;
+
     @Before
     public void createDb() {
         Context context = RuntimeEnvironment.systemContext;
         productDb = Room.inMemoryDatabaseBuilder(context, ProductDb.class).allowMainThreadQueries().build();
         categoryDb = Room.inMemoryDatabaseBuilder(context, CategoryDb.class).allowMainThreadQueries().build();
+        storageLocationDb = Room.inMemoryDatabaseBuilder(context, StorageLocationDb.class).allowMainThreadQueries().build();
 
         productsDao = productDb.productsDao();
         categoryDao = categoryDb.categoryDao();
+        storageLocationDao = storageLocationDb.storageLocationDao();
     }
 
     @Test
@@ -69,7 +77,7 @@ public class DatabaseTest {
 
         Category category = new Category();
         category.setName("Example name");
-        category.setName("Example description");
+        category.setDescription("Example description");
         categoryDao.addCategory(category);
 
         categoryList = categoryDao.getAllOwnCategories();
@@ -77,20 +85,36 @@ public class DatabaseTest {
     }
 
     @Test
+    public void canIWriteStorageLocationAndReadInList() {
+        storageLocationDao.clearDb();
+
+        List<StorageLocation> storageLocationList = storageLocationDao.getAllStorageLocations();
+        assertThat(storageLocationList.size(), equalTo(0));
+
+        StorageLocation storageLocation = new StorageLocation();
+        storageLocation.setName("Example name");
+        storageLocation.setDescription("Example description");
+        storageLocationDao.addStorageLocation(storageLocation);
+
+        storageLocationList = storageLocationDao.getAllStorageLocations();
+        assertEquals(storageLocationList.size(), 1);
+    }
+
+    @Test
     public void canIWriteProductsAndReadInList() {
         productsDao.clearDb();
-
         List<Product> productList = productsDao.getAllProductsList();
         assertThat(productList.size(), equalTo(0));
-
         for(int counter = 0; 3 > counter; counter++)
         {
             Product product = new Product();
-
+            product.setName("Example name");
+            product.setIsVege(true);
+            product.setVolume(100);
+            product.setWeight(200);
             productList.add(product);
         }
         productDb.productsDao().addProducts(productList);
-
         productList = productsDao.getAllProductsList();
         assertThat(productList.size(), equalTo(3));
     }
@@ -111,9 +135,18 @@ public class DatabaseTest {
         assertEquals(0, sizeOfDatabase);
     }
 
+    @Test
+    public void canIClearStorageLocationDatabase() {
+        canIWriteStorageLocationAndReadInList();
+        storageLocationDao.clearDb();
+        int sizeOfDatabase = storageLocationDao.getAllStorageLocations().size();
+        assertEquals(0, sizeOfDatabase);
+    }
+
     @After
     public void closeDb() {
         categoryDb.close();
         productDb.close();
+        storageLocationDb.close();
     }
 }

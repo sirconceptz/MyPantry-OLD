@@ -61,7 +61,7 @@
         <item name="android:textColor">@color/material_accent</item>
     </style>
 
-    <style name="AppThemeDialog" parent="ThemeOverlay.AppCompat.Dark">
+    <style name="AppThemeDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">

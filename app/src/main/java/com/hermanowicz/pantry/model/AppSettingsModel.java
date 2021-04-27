@@ -71,4 +71,12 @@ public class AppSettingsModel {
     public void clearEmailAddress(){
         preferences.edit().putString("EMAIL_ADDRESS", "").apply();
     }
+
+    public static boolean isSettingsUpdated(@NonNull SharedPreferences preferences){
+        return preferences.getBoolean("SETTINGS_UPDATED", false);
+    }
+
+    public static void deleteOldSettings(@NonNull SharedPreferences preferences){
+        preferences.edit().clear().putBoolean("SETTINGS_UPDATED", true).apply();
+    }
 }
