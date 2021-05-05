@@ -220,6 +220,7 @@
     </string-array>
     <string name="Product_storage_location">Miejsce przechowywania</string>
     <!--ProductDetailsActivity-->
+    <string name="ProductDetailsActivity_not_set">Nie podano</string>
     <string name="ProductDetailsActivity_delete_product">Usuń produkt</string>
     <string name="ProductDetailsActivity_filter">Filtruj</string>
     <string name="ProductDetailsActivity_yes">Tak</string>

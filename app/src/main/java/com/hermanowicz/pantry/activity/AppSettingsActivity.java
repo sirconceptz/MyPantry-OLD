@@ -146,7 +146,6 @@ public class AppSettingsActivity extends AppCompatActivity{
                 presenter.reCreateNotifications();
             if(key.equals(getString(R.string.PreferencesKey_selected_application_theme)))
                 presenter.showSelectedTheme();
-                presenter.refreshActivity();
             if(key.equals(getString(R.string.PreferencesKey_scan_camera)))
                 presenter.showSelectedScanCamera();
             if(key.equals(getString(R.string.PreferencesKey_notification_days_before_expiration)))
@@ -202,12 +201,6 @@ public class AppSettingsActivity extends AppCompatActivity{
         public void setEmailPreferences() {
             emailAddress.setSummary("");
             emailNotifications.setEnabled(false);
-        }
-
-        @Override
-        public void refreshActivity() {
-            getActivity().finish();
-            startActivity(getActivity().getIntent());
         }
     }
 }

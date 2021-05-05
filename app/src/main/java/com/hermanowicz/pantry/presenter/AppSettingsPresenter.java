@@ -74,8 +74,4 @@ public class AppSettingsPresenter {
     private void showVersionCode() {
         view.showVersionCode(model.getAppVersion());
     }
-
-    public void refreshActivity() {
-        view.refreshActivity();
-    }
 }

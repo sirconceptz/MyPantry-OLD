@@ -198,6 +198,7 @@ public class ProductDataModel {
             product.setName(groupProducts.getProduct().getName());
             product.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
             product.setProductFeatures(groupProducts.getProduct().getProductFeatures());
+            product.setStorageLocation(groupProducts.getProduct().getStorageLocation());
             product.setHealingProperties(groupProducts.getProduct().getHealingProperties());
             product.setComposition(groupProducts.getProduct().getComposition());
             product.setDosage(groupProducts.getProduct().getDosage());
@@ -218,6 +219,8 @@ public class ProductDataModel {
                 Product newProduct = new Product();
                 newProduct.setName(groupProducts.getProduct().getName());
                 newProduct.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
+                newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
+                newProduct.setStorageLocation(groupProducts.getProduct().getStorageLocation());
                 newProduct.setExpirationDate(expirationDate);
                 newProduct.setProductionDate(productionDate);
                 newProduct.setVolume(groupProducts.getProduct().getVolume());
@@ -227,6 +230,8 @@ public class ProductDataModel {
                 newProduct.setDosage(groupProducts.getProduct().getDosage());
                 newProduct.setHasSugar(groupProducts.getProduct().getHasSugar());
                 newProduct.setHasSalt(groupProducts.getProduct().getHasSalt());
+                newProduct.setIsVege(groupProducts.getProduct().getIsVege());
+                newProduct.setIsBio(groupProducts.getProduct().getIsBio());
                 newProduct.setTaste(taste);
                 newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
                 if(groupProducts.getProduct().getProductFeatures().equals(resources.getString(R.string.Product_choose)))

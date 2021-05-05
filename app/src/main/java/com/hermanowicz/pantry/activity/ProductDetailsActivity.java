@@ -151,7 +151,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         DateHelper dateHelper = new DateHelper(groupProducts.getProduct().getExpirationDate());
         Objects.requireNonNull(getSupportActionBar()).setTitle(groupProducts.getProduct().getName());
         productType.setText(groupProducts.getProduct().getTypeOfProduct());
-        productStorageLocation.setText(groupProducts.getProduct().getStorageLocation());
+        if(groupProducts.getProduct().getStorageLocation().equals("null"))
+            productStorageLocation.setText(R.string.ProductDetailsActivity_not_set);
+        else
+            productStorageLocation.setText(groupProducts.getProduct().getStorageLocation());
         productQuantity.setText(String.valueOf(groupProducts.getQuantity()));
         productCategory.setText(groupProducts.getProduct().getProductFeatures());
         productExpirationDate.setText(dateHelper.getDateInLocalFormat());

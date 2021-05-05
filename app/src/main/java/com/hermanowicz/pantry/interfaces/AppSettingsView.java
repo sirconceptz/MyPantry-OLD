@@ -34,6 +34,4 @@ public interface AppSettingsView {
     void showVersionCode(String version);
 
     void setEmailPreferences();
-
-    void refreshActivity();
 }

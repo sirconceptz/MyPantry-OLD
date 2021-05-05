@@ -219,6 +219,7 @@
     </string-array>
     <string name="Product_storage_location">Storage location</string>
     <!--ProductDetailsActivity-->
+    <string name="ProductDetailsActivity_not_set">Not specified</string>
     <string name="ProductDetailsActivity_delete_product">Delete product</string>
     <string name="ProductDetailsActivity_filter">Filter</string>
     <string name="ProductDetailsActivity_yes">Yes</string>
