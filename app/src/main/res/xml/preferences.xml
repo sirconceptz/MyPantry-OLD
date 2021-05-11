@@ -95,14 +95,74 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/app_name">
+    <PreferenceCategory android:title="@string/AppSettingsActivity_database_backup">
+
+        <Preference
+            android:icon="@drawable/ic_restore"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_restore_product_db"
+            android:title="@string/AppSettingsActivity_import_product_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_backup"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_backup_product_db"
+            android:title="@string/AppSettingsActivity_export_product_database"/>
 
         <Preference
             android:icon="@drawable/ic_clear_db"
             android:selectable="true"
             android:enabled="true"
-            android:key="@string/PreferencesKey_clear_db"
-            android:title="@string/AppSettingsActivity_clear_database"/>
+            android:key="@string/PreferencesKey_clear_product_db"
+            android:title="@string/AppSettingsActivity_clear_product_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_restore"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_restore_category_db"
+            android:title="@string/AppSettingsActivity_import_category_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_backup"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_backup_category_db"
+            android:title="@string/AppSettingsActivity_export_category_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_clear_db"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_clear_category_db"
+            android:title="@string/AppSettingsActivity_clear_category_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_restore"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_restore_storage_location_db"
+            android:title="@string/AppSettingsActivity_import_storage_location_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_backup"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_backup_storage_location_db"
+            android:title="@string/AppSettingsActivity_export_storage_location_database"/>
+
+        <Preference
+            android:icon="@drawable/ic_clear_db"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_clear_storage_location_db"
+            android:title="@string/AppSettingsActivity_clear_storage_location_database"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/app_name">
 
         <Preference
             android:icon="@drawable/ic_version"

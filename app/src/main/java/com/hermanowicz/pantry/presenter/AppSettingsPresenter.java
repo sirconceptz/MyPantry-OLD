@@ -17,12 +17,14 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 
 import com.hermanowicz.pantry.activity.AppSettingsActivity;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseBackup;
 
 public class AppSettingsPresenter {
 
@@ -32,10 +34,6 @@ public class AppSettingsPresenter {
     public AppSettingsPresenter(@NonNull AppSettingsActivity.MyPreferenceFragment view, @NonNull SharedPreferences preferences) {
         this.view = view;
         this.model = new AppSettingsModel(preferences);
-    }
-
-    public void clearDatabase() {
-        view.onDatabaseClear();
     }
 
     public void reCreateNotifications(){
@@ -73,5 +71,85 @@ public class AppSettingsPresenter {
 
     private void showVersionCode() {
         view.showVersionCode(model.getAppVersion());
+    }
+
+    public void backupProductDatabase(Context context) {
+        DatabaseBackup.backupProductDb(context);
+    }
+
+    public void restoreProductDatabase(Context context) {
+        DatabaseBackup.restoreProductDb(context);
+        view.showDbBackupHasBeenMade();
+    }
+
+    public void clearProductDatabase(Context context) {
+        DatabaseBackup.clearProductDb(context);
+        view.onProductDatabaseClear();
+    }
+
+    public void backupCategoryDatabase(Context context) {
+        DatabaseBackup.backupCategoryDb(context);
+        view.showDbBackupHasBeenMade();
+    }
+
+    public void restoreCategoryDatabase(Context context) {
+        DatabaseBackup.restoreCategoryDb(context);
+        view.showDbHasBeenRestored();
+    }
+
+    public void clearCategoryDatabase(Context context) {
+        DatabaseBackup.clearCategoryDb(context);
+        view.showDbHasBeenClear();
+    }
+
+    public void backupStorageLocationDatabase(Context context) {
+        DatabaseBackup.backupStorageLocationDb(context);
+        view.showDbBackupHasBeenMade();
+    }
+
+    public void restoreStorageLocationDatabase(Context context) {
+        DatabaseBackup.restoreStorageLocationDb(context);
+        view.showDbHasBeenRestored();
+    }
+
+    public void clearStorageLocationDatabase(Context context) {
+        DatabaseBackup.clearStorageLocationDb(context);
+        view.showDbHasBeenClear();
+    }
+
+    public void onClickBackupProductDatabase() {
+        view.showDialogBackupProductDb();
+    }
+
+    public void onClickRestoreProductDatabase() {
+        view.showDialogRestoreProductDb();
+    }
+
+    public void onClickClearProductDatabase() {
+        view.showDialogClearProductDb();
+    }
+
+    public void onClickBackupCategoryDatabase() {
+        view.showDialogBackupCategoryDb();
+    }
+
+    public void onClickRestoreCategoryDatabase() {
+        view.showDialogRestoreCategoryDb();
+    }
+
+    public void onClickClearCategoryDatabase() {
+        view.showDialogClearCategoryDb();
+    }
+
+    public void onClickBackupStorageLocationDatabase() {
+        view.showDialogBackupStorageLocationDb();
+    }
+
+    public void onClickRestoreStorageLocationDatabase() {
+        view.showDialogRestoreStorageLocationDb();
+    }
+
+    public void onClickClearStorageLocationDatabase() {
+        view.showDialogClearStorageLocationDb();
     }
 }

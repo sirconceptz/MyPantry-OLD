@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogNewStorageLocationBinding;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
@@ -38,8 +39,6 @@ import com.hermanowicz.pantry.interfaces.NewStorageLocationView;
 import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.model.StorageLocationModel;
 import com.hermanowicz.pantry.presenter.NewStorageLocationPresenter;
-
-import org.jetbrains.annotations.NotNull;
 
 public class NewStorageLocationDialog extends AppCompatDialogFragment implements NewStorageLocationView {
 

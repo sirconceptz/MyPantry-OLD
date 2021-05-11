@@ -35,7 +35,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.R;
-import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
 import com.hermanowicz.pantry.presenter.AppSettingsPresenter;
 import com.hermanowicz.pantry.util.Notification;
@@ -53,7 +52,7 @@ import maes.tech.intentanim.CustomIntent;
  * @since   1.0
  */
 
-public class AppSettingsActivity extends AppCompatActivity{
+public class AppSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,11 +63,13 @@ public class AppSettingsActivity extends AppCompatActivity{
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
+
     private void navigateToMainActivity(){
         Intent mainActivityIntent = new Intent(this, MainActivity.class);
         startActivity(mainActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
@@ -84,11 +85,14 @@ public class AppSettingsActivity extends AppCompatActivity{
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener, AppSettingsView {
+    public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener,
+            AppSettingsView {
 
         AppSettingsPresenter presenter;
         Preference selectedTheme, scanCamera, emailAddress, notificationDaysBefore,
-                emailNotifications, clearDb, version;
+                emailNotifications, backupProductDb, restoreProductDb, clearProductDb,
+                backupCategoryDb, restoreCategoryDb, clearCategoryDb,
+                backupStorageLocationDb, restoreStorageLocationDb, clearStorageLocationDb, version;
 
         @Override
         public void onCreate(final Bundle savedInstanceState)
@@ -107,13 +111,55 @@ public class AppSettingsActivity extends AppCompatActivity{
             notificationDaysBefore = findPreference(getString(R.string.PreferencesKey_notification_days_before_expiration));
             emailAddress = findPreference(getString(R.string.PreferencesKey_email_address));
             emailNotifications = findPreference(getString(R.string.PreferencesKey_email_notifications));
-            clearDb = findPreference(getString(R.string.PreferencesKey_clear_db));
+            restoreProductDb = findPreference(getString(R.string.PreferencesKey_restore_product_db));
+            backupProductDb = findPreference(getString(R.string.PreferencesKey_backup_product_db));
+            clearProductDb = findPreference(getString(R.string.PreferencesKey_clear_product_db));
+            restoreCategoryDb = findPreference(getString(R.string.PreferencesKey_restore_category_db));
+            backupCategoryDb = findPreference(getString(R.string.PreferencesKey_backup_category_db));
+            clearCategoryDb = findPreference(getString(R.string.PreferencesKey_clear_category_db));
+            restoreStorageLocationDb = findPreference(getString(R.string.PreferencesKey_restore_storage_location_db));
+            backupStorageLocationDb = findPreference(getString(R.string.PreferencesKey_backup_storage_location_db));
+            clearStorageLocationDb = findPreference(getString(R.string.PreferencesKey_clear_storage_location_db));
             version = findPreference(getString(R.string.PreferencesKey_version));
         }
 
         public void setListeners(){
-            clearDb.setOnPreferenceClickListener(preference -> {
-                onClickClearDatabaseButton();
+            backupProductDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickBackupProductDatabase();
+                return false;
+            });
+            restoreProductDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickRestoreProductDatabase();
+                return false;
+            });
+            clearProductDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickClearProductDatabase();
+                return false;
+            });
+
+            backupCategoryDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickBackupCategoryDatabase();
+                return false;
+            });
+            restoreCategoryDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickRestoreCategoryDatabase();
+                return false;
+            });
+            clearCategoryDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickClearCategoryDatabase();
+                return false;
+            });
+
+            backupStorageLocationDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickBackupStorageLocationDatabase();
+                return false;
+            });
+            restoreStorageLocationDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickRestoreStorageLocationDatabase();
+                return false;
+            });
+            clearStorageLocationDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickClearStorageLocationDatabase();
                 return false;
             });
         }
@@ -128,15 +174,6 @@ public class AppSettingsActivity extends AppCompatActivity{
         public void onPause() {
             super.onPause();
             getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        }
-
-        private void onClickClearDatabaseButton() {
-            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
-                    .setMessage(R.string.AppSettingsActivity_clear_database_statement)
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.clearDatabase())
-                    .setNegativeButton(android.R.string.no, null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
         }
 
         @Override
@@ -162,9 +199,7 @@ public class AppSettingsActivity extends AppCompatActivity{
         }
 
         @Override
-        public void onDatabaseClear() {
-            ProductDb productDb = ProductDb.getInstance(getContext());
-            productDb.productsDao().clearDb();
+        public void onProductDatabaseClear() {
             Notification.cancelAllNotifications(getContext());
             Toast.makeText(getContext(), getString(R.string.AppSettingsActivity_database_is_clear), Toast.LENGTH_LONG).show();
         }
@@ -201,6 +236,123 @@ public class AppSettingsActivity extends AppCompatActivity{
         public void setEmailPreferences() {
             emailAddress.setSummary("");
             emailNotifications.setEnabled(false);
+        }
+
+        @Override
+        public void showDialogBackupProductDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_export_product_database)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.backupProductDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogRestoreProductDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_import_product_database)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.restoreProductDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogClearProductDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_clear_database_statement)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.clearProductDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogBackupCategoryDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_export_category_database)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.backupCategoryDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogRestoreCategoryDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_import_category_database)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.restoreCategoryDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogClearCategoryDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_clear_database_statement)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.clearCategoryDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogBackupStorageLocationDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_export_storage_location_database)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.backupStorageLocationDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogRestoreStorageLocationDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_import_storage_location_database)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.restoreStorageLocationDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDialogClearStorageLocationDb() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_clear_database_statement)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.clearStorageLocationDatabase(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void showDbBackupHasBeenMade() {
+            Toast.makeText(getContext(), getString(R.string.AppSettingsActivity_db_backup_has_been_made),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void showDbHasBeenRestored() {
+            Toast.makeText(getContext(), getString(R.string.AppSettingsActivity_db_has_been_restored),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void showDbHasBeenClear() {
+            Toast.makeText(getContext(), getString(R.string.AppSettingsActivity_db_has_been_clear),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

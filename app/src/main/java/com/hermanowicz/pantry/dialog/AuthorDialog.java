@@ -28,10 +28,9 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogAuthorBinding;
-
-import org.jetbrains.annotations.NotNull;
 
 public class AuthorDialog extends AppCompatDialogFragment {
 

@@ -106,8 +106,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
         authorInfo.setOnClickListener(view -> presenter.showAuthorInfoDialog());
     }
 
-
-
     @Override
     public void onNavigationToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);

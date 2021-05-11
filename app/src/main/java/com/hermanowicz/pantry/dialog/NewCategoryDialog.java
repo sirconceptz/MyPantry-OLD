@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogNewCategoryBinding;
 import com.hermanowicz.pantry.db.category.Category;
@@ -39,8 +40,6 @@ import com.hermanowicz.pantry.model.CategoryModel;
 import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.presenter.NewCategoryPresenter;
 
-import org.jetbrains.annotations.NotNull;
-
 public class NewCategoryDialog extends AppCompatDialogFragment implements NewCategoryView {
 
     private DialogNewCategoryBinding binding;
@@ -49,7 +48,6 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
     private View view;
     private DialogCategoryListener dialogListener;
     private EditText categoryName, categoryDescription;
-
 
     @NotNull
     @Override

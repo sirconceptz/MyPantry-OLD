@@ -246,10 +246,28 @@
     <string name="AppSettingsActivity_give_email_adress">Email address for notifications</string>
     <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">How many days before expiration?</string>
     <string name="AppSettingsActivity_save_settings">Save settings</string>
-    <string name="AppSettingsActivity_clear_database">Clear database</string>
+    <string name="AppSettingsActivity_import_product_database">Import product database</string>
+    <string name="AppSettingsActivity_export_product_database">Export product database</string>
+    <string name="AppSettingsActivity_clear_product_database">Clear product database</string>
+    <string name="AppSettingsActivity_import_category_database">Import category database</string>
+    <string name="AppSettingsActivity_export_category_database">Export category database</string>
+    <string name="AppSettingsActivity_clear_category_database">Clear category database</string>
+    <string name="AppSettingsActivity_import_storage_location_database">Import storage location database</string>
+    <string name="AppSettingsActivity_export_storage_location_database">Export storage location database</string>
+    <string name="AppSettingsActivity_clear_storage_location_database">Clear storage location database</string>
+    <string name="AppSettingsActivity_choose_file_to_restore">Choose database file to restore</string>
     <string name="AppSettingsActivity_clear_database_statement">Do you want to clear the product database? All products will be removed and the operation is irreversible.</string>
     <string name="AppSettingsActivity_database_is_clear">Database is cleared.</string>
+    <string name="AppSettingsActivity_database_backup">Database backup</string>
     <string name="AppSettingsActivity_version">Version</string>
+    <string name="AppSettingsActivity_product_db">Product database</string>
+    <string name="AppSettingsActivity_category_db">Category database</string>
+    <string name="AppSettingsActivity_storage_location_db">Storage Location database</string>
+    <string name="AppSettingsActivity_import_statement">Do you want to import databases from an external file? This will result in the loss of the products currently added to the application.</string>
+    <string name="AppSettingsActivity_export_statement">Do you want to export databases from an external file? This will result in the loss of the products currently added to the application.</string>
+    <string name="AppSettingsActivity_db_backup_has_been_made">The backup has been created</string>
+    <string name="AppSettingsActivity_db_has_been_restored">The backup has been restored</string>
+    <string name="AppSettingsActivity_db_has_been_clear">The database has been cleared</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rear camera</item>
         <item>Front camera</item>
@@ -277,7 +295,15 @@
     <string name="PreferencesKey_email_address" translatable="false">EMAIL_ADDRESS</string>
     <string name="PreferencesKey_push_notifications" translatable="false">PUSH_NOTIFICATIONS?</string>
     <string name="PreferencesKey_email_notifications" translatable="false">EMAIL_NOTIFICATIONS?</string>
-    <string name="PreferencesKey_clear_db" translatable="false">CLEAR_DB</string>
+    <string name="PreferencesKey_clear_product_db" translatable="false">CLEAR_PRODUCT_DB</string>
+    <string name="PreferencesKey_restore_product_db" translatable="false">IMPORT_PRODUCT_DB</string>
+    <string name="PreferencesKey_backup_product_db" translatable="false">EXPORT_PRODUCT_DB</string>
+    <string name="PreferencesKey_clear_category_db" translatable="false">CLEAR_CATEGORY_DB</string>
+    <string name="PreferencesKey_restore_category_db" translatable="false">IMPORT_CATEGORY_DB</string>
+    <string name="PreferencesKey_backup_category_db" translatable="false">EXPORT_CATEGORY_DB</string>
+    <string name="PreferencesKey_clear_storage_location_db" translatable="false">CLEAR_STORAGE_LOCATION_DB</string>
+    <string name="PreferencesKey_restore_storage_location_db" translatable="false">IMPORT_STORAGE_LOCATION_DB</string>
+    <string name="PreferencesKey_backup_storage_location_db" translatable="false">EXPORT_STORAGE_LOCATION_DB</string>
     <string name="PreferencesKey_version" translatable="false">VERSION</string>
     <!--Notifications-->
     <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>

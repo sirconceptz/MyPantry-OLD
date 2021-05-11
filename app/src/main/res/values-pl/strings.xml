@@ -245,10 +245,28 @@
     <string name="AppSettingsActivity_give_email_adress">Adres email do powiadomień</string>
     <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Ile dni przed przeterminowaniem?</string>
     <string name="AppSettingsActivity_save_settings">Zapisz ustawienia</string>
-    <string name="AppSettingsActivity_clear_database">Wyczyść bazę danych</string>
-    <string name="AppSettingsActivity_clear_database_statement">Czy chcesz wyczyścić bazę danych produktów? Wszystkie produkty zostaną usunięte, a operacja jest nieodwracalna.</string>
+    <string name="AppSettingsActivity_import_product_database">Importuj bazę produktów</string>
+    <string name="AppSettingsActivity_export_product_database">Eksportuj bazę produktów</string>
+    <string name="AppSettingsActivity_clear_product_database">Wyczyść bazę danych produktów</string>
+    <string name="AppSettingsActivity_import_category_database">Importuj bazę kategorii</string>
+    <string name="AppSettingsActivity_export_category_database">Eksportuj bazę kategorii</string>
+    <string name="AppSettingsActivity_clear_category_database">Wyczyść bazę danych kategorii</string>
+    <string name="AppSettingsActivity_import_storage_location_database">Importuj bazę miejsc przechowywania</string>
+    <string name="AppSettingsActivity_export_storage_location_database">Eksportuj bazę miejsc przechowywania</string>
+    <string name="AppSettingsActivity_clear_storage_location_database">Wyczyść bazę danych miejsc przechowywania</string>
+    <string name="AppSettingsActivity_clear_database_statement">Czy chcesz wyczyścić bazę danych? Wszystkie wpisy zostaną usunięte, a operacja jest nieodwracalna.</string>
+    <string name="AppSettingsActivity_choose_file_to_restore">Wybierz plik bazy do przywrócenia</string>
     <string name="AppSettingsActivity_database_is_clear">Baza danych została wyczyszczona.</string>
+    <string name="AppSettingsActivity_database_backup">Kopia zapasowa bazy danych</string>
     <string name="AppSettingsActivity_version">Wersja</string>
+    <string name="AppSettingsActivity_product_db">Baza danych produktów</string>
+    <string name="AppSettingsActivity_category_db">Baza danych kategorii</string>
+    <string name="AppSettingsActivity_storage_location_db">Baza danych miejch przechowywania</string>
+    <string name="AppSettingsActivity_import_statement">Czy chcesz zaimportować bazy danych z pliku zewnętrznego? Spowoduje to utratę obecnie dodanych do aplikacji produktów.</string>
+    <string name="AppSettingsActivity_export_statement">Czy chcesz eksportować bazy danych z pliku zewnętrznego? Spowoduje to utratę obecnie dodanych do aplikacji produktów.</string>
+    <string name="AppSettingsActivity_db_backup_has_been_made">Kopia zapasowa została utworzona</string>
+    <string name="AppSettingsActivity_db_has_been_restored">Kopia zapasowa została przywrócona</string>
+    <string name="AppSettingsActivity_db_has_been_clear">Baza danych została wyczyszczona</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Tylni aparat</item>
         <item>Przedni aparat</item>

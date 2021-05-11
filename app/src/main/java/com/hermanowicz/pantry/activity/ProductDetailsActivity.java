@@ -38,6 +38,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding;
 import com.hermanowicz.pantry.db.product.Product;
@@ -49,8 +50,6 @@ import com.hermanowicz.pantry.presenter.ProductDetailsPresenter;
 import com.hermanowicz.pantry.util.DateHelper;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.List;

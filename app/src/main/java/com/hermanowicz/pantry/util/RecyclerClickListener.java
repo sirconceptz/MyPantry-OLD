@@ -24,7 +24,7 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.firebase.database.annotations.NotNull;
 
 public class RecyclerClickListener implements RecyclerView.OnItemTouchListener {
 

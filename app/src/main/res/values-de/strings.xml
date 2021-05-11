@@ -245,10 +245,28 @@
     <string name="AppSettingsActivity_give_email_adress">Zeitpunkt der Benachrichtigungen</string>
     <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Wie viele Tage vor Ablauf?</string>
     <string name="AppSettingsActivity_save_settings">Einstellungen speichern</string>
-    <string name="AppSettingsActivity_clear_database">Löschen Sie die Datenbank</string>
-    <string name="AppSettingsActivity_clear_database_statement">Möchten Sie die Produktdatenbank löschen? Alle Produkte werden entfernt und der Vorgang ist irreversibel.</string>
+    <string name="AppSettingsActivity_import_product_database">Produktdatenbank importieren</string>
+    <string name="AppSettingsActivity_export_product_database">Produktdatenbank exportieren</string>
+    <string name="AppSettingsActivity_clear_product_database">Produktdatenbank löschen</string>
+    <string name="AppSettingsActivity_import_category_database">Kategoriedatenbank importieren</string>
+    <string name="AppSettingsActivity_export_category_database">Kategoriedatenbank exportieren</string>
+    <string name="AppSettingsActivity_clear_category_database">Kategoriedatenbank löschen</string>
+    <string name="AppSettingsActivity_import_storage_location_database">Speicherortdatenbank importieren</string>
+    <string name="AppSettingsActivity_export_storage_location_database">Speicherortdatenbank exportieren</string>
+    <string name="AppSettingsActivity_clear_storage_location_database">Löschen Sie die Speicherortdatenbank</string>
+    <string name="AppSettingsActivity_choose_file_to_restore">Wählen Sie die wiederherzustellende Datenbankdatei aus</string>
+    <string name="AppSettingsActivity_clear_database_statement">Möchten Sie die Datenbank löschen? Alle Einträge werden entfernt und der Vorgang ist irreversibel.</string>
     <string name="AppSettingsActivity_database_is_clear">Die Datenbank wurde gelöscht.</string>
+    <string name="AppSettingsActivity_database_backup">Datenbanksicherung</string>
     <string name="AppSettingsActivity_version">Version</string>
+    <string name="AppSettingsActivity_product_db">Produktdatenbank</string>
+    <string name="AppSettingsActivity_category_db">Kategoriedatenbank</string>
+    <string name="AppSettingsActivity_storage_location_db">Speicherortdatenbank</string>
+    <string name="AppSettingsActivity_import_statement">Möchten Sie Datenbanken aus einer externen Datei importieren? Dies führt zum Verlust der Produkte, die derzeit zur Anwendung hinzugefügt werden.</string>
+    <string name="AppSettingsActivity_export_statement">Möchten Sie Datenbanken aus einer externen Datei exportieren? Dies führt zum Verlust der Produkte, die derzeit zur Anwendung hinzugefügt werden.</string>
+    <string name="AppSettingsActivity_db_backup_has_been_made">Das Backup wurde erstellt</string>
+    <string name="AppSettingsActivity_db_has_been_restored">Die Sicherung wurde wiederhergestellt</string>
+    <string name="AppSettingsActivity_db_has_been_clear">Die Datenbank wurde gelöscht</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rückkamera</item>
         <item>Front-Kamera</item>

@@ -21,7 +21,7 @@ public interface AppSettingsView {
 
     void recreateNotifications();
 
-    void onDatabaseClear();
+    void onProductDatabaseClear();
 
     void showSelectedTheme(int selectedTheme);
 
@@ -34,4 +34,28 @@ public interface AppSettingsView {
     void showVersionCode(String version);
 
     void setEmailPreferences();
+
+    void showDialogBackupProductDb();
+
+    void showDialogRestoreProductDb();
+
+    void showDialogClearProductDb();
+
+    void showDialogBackupCategoryDb();
+
+    void showDialogRestoreCategoryDb();
+
+    void showDialogClearCategoryDb();
+
+    void showDialogBackupStorageLocationDb();
+
+    void showDialogRestoreStorageLocationDb();
+
+    void showDialogClearStorageLocationDb();
+
+    void showDbBackupHasBeenMade();
+
+    void showDbHasBeenRestored();
+
+    void showDbHasBeenClear();
 }

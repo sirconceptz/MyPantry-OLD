@@ -24,6 +24,7 @@
         <item name="colorAccent">
             @color/material_accent
         </item>
+        <item name="colorSurface">@color/background_material</item>
         <item name="android:statusBarColor">@color/color_primary_statusbar</item>
         <item name="android:navigationBarColor">@color/color_primary_statusbar</item>
         <item name="android:textColorPrimary">@color/text_color</item>
