@@ -18,6 +18,7 @@
 package com.hermanowicz.pantry.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -37,34 +38,30 @@ import maes.tech.intentanim.CustomIntent;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
-    private ActivitySplashScreenBinding binding;
-
-    private ImageView logo;
-    private TextView appName, appAuthor, appVersion;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        updateSettingsData();
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         super.onCreate(savedInstanceState);
         initView();
-        delayAndGoToMainActivity();
+        delayAndGoToLoginActivity();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        goToMainActivity();
+        goToLoginActivity();
     }
 
     private void initView() {
-        binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
+        ActivitySplashScreenBinding binding = ActivitySplashScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        logo = binding.logo;
-        appName = binding.appName;
-        appAuthor = binding.appAuthor;
-        appVersion = binding.appVersion;
+        ImageView logo = binding.logo;
+        TextView appName = binding.appName;
+        TextView appAuthor = binding.appAuthor;
+        TextView appVersion = binding.appVersion;
 
         appAuthor.setText(String.format("%s: %s", getString(R.string.General_author_label), getString(R.string.Author_name)));
 
@@ -75,17 +72,23 @@ public class SplashScreenActivity extends AppCompatActivity {
         appVersion.setText(String.format("%s: %s", getString(R.string.AppSettingsActivity_version), appSettingsModel.getAppVersion()));
     }
 
+    private void updateSettingsData() {
+        SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
+        if(!AppSettingsModel.isSettingsUpdated(preferences))
+            AppSettingsModel.deleteOldSettings(preferences);
+    }
 
-    private void goToMainActivity() {
+
+    private void goToLoginActivity() {
         Intent i = new Intent(SplashScreenActivity.this, MainActivity.class);
         startActivity(i);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    private void delayAndGoToMainActivity() {
+    private void delayAndGoToLoginActivity() {
         new Handler().postDelayed(() -> {
             finish();
-            goToMainActivity();
+            goToLoginActivity();
         }, 2000);
     }
 }

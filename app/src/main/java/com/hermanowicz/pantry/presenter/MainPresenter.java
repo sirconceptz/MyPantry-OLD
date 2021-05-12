@@ -19,14 +19,19 @@ package com.hermanowicz.pantry.presenter;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.MainView;
 
 public class MainPresenter {
 
     private final MainView view;
+    private final AccountView accountView;
 
-    public MainPresenter(@NonNull MainView view) {
+    public MainPresenter(@NonNull MainView view, @NonNull AccountView accountView) {
         this.view = view;
+        this.accountView = accountView;
     }
 
     public void navigateToMyPantryActivity() {
@@ -51,5 +56,23 @@ public class MainPresenter {
 
     public void showAuthorInfoDialog() {
         view.showAuthorInfoDialog();
+    }
+
+    public void updateUserData(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null)
+            accountView.updateUserData("Niezalogowany");
+        else
+            accountView.updateUserData(user.getEmail());
+    }
+
+    public void signInOrSignOut() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null)
+            accountView.signIn();
+        else {
+            accountView.signOut();
+            updateUserData();
+        }
     }
 }

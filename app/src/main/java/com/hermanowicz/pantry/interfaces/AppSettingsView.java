@@ -31,6 +31,8 @@ public interface AppSettingsView {
 
     void showDaysToNotification(int daysToNotificaion);
 
+    void showActiveUser(String activeUser);
+
     void showVersionCode(String version);
 
     void setEmailPreferences();

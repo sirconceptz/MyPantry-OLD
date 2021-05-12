@@ -91,8 +91,7 @@
                 app:counterMaxLength="50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_descriptionLabel"
-                tools:ignore="Autofill">
+                app:layout_constraintTop_toBottomOf="@id/text_descriptionLabel">
 
                 <com.google.android.material.textfield.TextInputEditText
                     style="@style/CustomEditText"
