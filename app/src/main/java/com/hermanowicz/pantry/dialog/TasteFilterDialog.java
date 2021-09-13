@@ -43,8 +43,6 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * The dialog window needed to set filters by taste to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class TasteFilterDialog extends AppCompatDialogFragment {
@@ -59,7 +57,7 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
     private Spinner productTaste;
     private Button clearBtn;
 
-    public TasteFilterDialog(FilterModel filterProduct) {
+    public TasteFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterTaste = filterProduct.getTaste();
     }
 

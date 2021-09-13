@@ -17,12 +17,14 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.widget.Toast;
@@ -34,12 +36,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.firebase.ui.auth.AuthUI;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.AppSettingsView;
+import com.hermanowicz.pantry.interfaces.PremiumUserView;
 import com.hermanowicz.pantry.presenter.AppSettingsPresenter;
 import com.hermanowicz.pantry.util.Notification;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
@@ -48,8 +69,6 @@ import maes.tech.intentanim.CustomIntent;
  * Activity for application settings.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class AppSettingsActivity extends AppCompatActivity {
@@ -63,13 +82,11 @@ public class AppSettingsActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
-
     private void navigateToMainActivity(){
         Intent mainActivityIntent = new Intent(this, MainActivity.class);
         startActivity(mainActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
@@ -86,13 +103,33 @@ public class AppSettingsActivity extends AppCompatActivity {
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener,
-            AppSettingsView {
+            AppSettingsView, AccountView, PremiumUserView, PurchasesUpdatedListener {
 
-        AppSettingsPresenter presenter;
-        Preference selectedTheme, scanCamera, emailAddress, notificationDaysBefore,
-                emailNotifications, backupProductDb, restoreProductDb, clearProductDb,
-                backupCategoryDb, restoreCategoryDb, clearCategoryDb,
-                backupStorageLocationDb, restoreStorageLocationDb, clearStorageLocationDb, version;
+        private final int RC_SIGN_IN = 10;
+
+        private AppSettingsPresenter presenter;
+        private Preference qr;
+        private Preference scanCamera;
+        private Preference emailAddress;
+        private Preference notificationDaysBefore;
+        private Preference emailNotifications;
+        private Preference backupProductDb;
+        private Preference restoreProductDb;
+        private Preference clearProductDb;
+        private Preference backupCategoryDb;
+        private Preference restoreCategoryDb;
+        private Preference clearCategoryDb;
+        private Preference backupStorageLocationDb;
+        private Preference restoreStorageLocationDb;
+        private Preference clearStorageLocationDb;
+        private Preference version;
+        private Preference goPremium;
+        private Preference activeUser;
+        private Preference databaseMode;
+        private Preference importDb;
+        private BillingClient billingClient;
+        private final List<String> skuList = Collections.singletonList("premium");
+        private SkuDetails skuDetails;
 
         @Override
         public void onCreate(final Bundle savedInstanceState)
@@ -100,13 +137,14 @@ public class AppSettingsActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             initView();
             setListeners();
-            presenter = new AppSettingsPresenter(this, PreferenceManager.getDefaultSharedPreferences(getContext()));
-            presenter.showStoredPreferences();
+            presenter = new AppSettingsPresenter(this, this, this, getContext());
+            presenter.showStoredPreferences(getResources());
+            setupBillingClient();
         }
 
         private void initView(){
             addPreferencesFromResource(R.xml.preferences);
-            selectedTheme = findPreference(getString(R.string.PreferencesKey_selected_application_theme));
+            qr = findPreference(getString(R.string.PreferencesKey_selected_application_theme));
             scanCamera = findPreference(getString(R.string.PreferencesKey_scan_camera));
             notificationDaysBefore = findPreference(getString(R.string.PreferencesKey_notification_days_before_expiration));
             emailAddress = findPreference(getString(R.string.PreferencesKey_email_address));
@@ -121,15 +159,31 @@ public class AppSettingsActivity extends AppCompatActivity {
             backupStorageLocationDb = findPreference(getString(R.string.PreferencesKey_backup_storage_location_db));
             clearStorageLocationDb = findPreference(getString(R.string.PreferencesKey_clear_storage_location_db));
             version = findPreference(getString(R.string.PreferencesKey_version));
+            activeUser = findPreference(getString(R.string.PreferencesKey_active_user));
+            goPremium = findPreference(getString(R.string.PreferencesKey_go_premium));
+            databaseMode = findPreference(getString(R.string.PreferencesKey_database_mode));
+            importDb = findPreference(getString(R.string.PreferencesKey_import_db));
         }
 
         public void setListeners(){
+            goPremium.setOnPreferenceClickListener(preference -> {
+                presenter.goPremium();
+                return false;
+            });
+
+            activeUser.setOnPreferenceClickListener(preference -> {
+                presenter.signInOrSignOut();
+                return false;
+            });
+
             backupProductDb.setOnPreferenceClickListener(preference -> {
                 presenter.onClickBackupProductDatabase();
+
                 return false;
             });
             restoreProductDb.setOnPreferenceClickListener(preference -> {
                 presenter.onClickRestoreProductDatabase();
+
                 return false;
             });
             clearProductDb.setOnPreferenceClickListener(preference -> {
@@ -162,6 +216,75 @@ public class AppSettingsActivity extends AppCompatActivity {
                 presenter.onClickClearStorageLocationDatabase();
                 return false;
             });
+            importDb.setOnPreferenceClickListener(preference -> {
+                presenter.onClickImportDb();
+                return false;
+            });
+        }
+
+        private void setupBillingClient() {
+            billingClient = BillingClient.newBuilder(getActivity())
+                    .setListener(this)
+                    .enablePendingPurchases()
+                    .build();
+            billingClient.startConnection(new BillingClientStateListener() {
+                @Override
+                public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        loadAllSKUs();
+                        restorePremium();
+                    } else
+                        presenter.billingClientNotReady();
+                }
+                @Override
+                public void onBillingServiceDisconnected() {
+                    Log.e("BillingClient:", billingClient.toString());
+                }
+            });
+        }
+
+        private void restorePremium() {
+            if(!presenter.isPremiumRestored()) {
+                billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, (billingResult, list) -> {
+                    for (Purchase purchase : list) {
+                        ArrayList<String> thisSkuList = purchase.getSkus();
+                        for (String sku : thisSkuList) {
+                            if (sku.equals(skuList.get(0))) {
+                                presenter.setPremiumIsRestored();
+                                enablePremiumFeatures();
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        private void loadAllSKUs() {
+            if(billingClient.isReady()){
+                SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+                params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+                billingClient.querySkuDetailsAsync(params.build(),
+                        (billingResult, skuDetailsList) -> {
+                            if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                assert skuDetailsList != null;
+                                if (!skuDetailsList.isEmpty()) for (Object skuDetailsObject : skuDetailsList) {
+                                    SkuDetails testSku = (SkuDetails) skuDetailsObject;
+                                    if (testSku.equals(skuDetailsList.get(0))) {
+                                        skuDetails = testSku;
+                                        goPremium.setEnabled(true);
+                                    }
+                                }
+                            }
+                        });
+            }
+            else
+                Toast.makeText(getContext(), getString(R.string.Error_billing_client_not_ready), Toast.LENGTH_SHORT).show();
+        }
+
+        private void enablePremiumFeatures() {
+            new PremiumAccess(getContext()).enablePremiumAccess();
+            refreshActivity();
         }
 
         @Override
@@ -177,8 +300,9 @@ public class AppSettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+        public void onSharedPreferenceChanged(@NonNull SharedPreferences sharedPreferences, @NonNull String key)
         {
+            refreshActivity();
             if(key.equals(getString(R.string.PreferencesKey_push_notifications)) || key.equals(getString(R.string.PreferencesKey_notification_days_before_expiration)))
                 presenter.reCreateNotifications();
             if(key.equals(getString(R.string.PreferencesKey_selected_application_theme)))
@@ -190,12 +314,17 @@ public class AppSettingsActivity extends AppCompatActivity {
             if(key.equals(getString(R.string.PreferencesKey_email_address))){
                 presenter.showEmailAddress();
             }
+            if(key.equals(getString(R.string.PreferencesKey_database_mode))){
+                presenter.showDatabaseMode(getResources());
+            }
         }
 
         @Override
         public void recreateNotifications() {
-            Notification.cancelAllNotifications(getContext());
-            Notification.createNotificationsForAllProducts(getContext());
+            Context context = getContext();
+            Notification.cancelAllNotifications(context);
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            sharedPreferences.edit().putBoolean("IS_NOTIFICATIONS_TO_RESTORE", true).apply();
         }
 
         @Override
@@ -207,7 +336,7 @@ public class AppSettingsActivity extends AppCompatActivity {
         @Override
         public void showSelectedTheme(int themeId) {
             String[] themeList = getResources().getStringArray(R.array.AppSettingsActivity_darkmode_selector);
-            selectedTheme.setSummary(themeList[themeId]);
+            qr.setSummary(themeList[themeId]);
         }
 
         @Override
@@ -217,7 +346,7 @@ public class AppSettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void showEmailAddress(String address) {
+        public void showEmailAddress(@NonNull String address) {
             emailAddress.setSummary(address);
             emailNotifications.setEnabled(true);
         }
@@ -228,7 +357,20 @@ public class AppSettingsActivity extends AppCompatActivity {
         }
 
         @Override
-        public void showVersionCode(String appVersion) {
+        public void showActiveUser(String activeUser) {
+            if(activeUser == null)
+                this.activeUser.setSummary(R.string.General_loggedOut);
+            else
+                this.activeUser.setSummary(activeUser);
+        }
+
+        @Override
+        public void showDatatabaseMode(@NonNull String databaseMode) {
+            this.databaseMode.setSummary(databaseMode);
+        }
+
+        @Override
+        public void showVersionCode(@NonNull String appVersion) {
             version.setSummary(appVersion);
         }
 
@@ -354,5 +496,118 @@ public class AppSettingsActivity extends AppCompatActivity {
             Toast.makeText(getContext(), getString(R.string.AppSettingsActivity_db_has_been_clear),
                     Toast.LENGTH_SHORT).show();
         }
+
+        @Override
+        public void signIn() {
+            List<AuthUI.IdpConfig> providers = Arrays.asList(
+                    new AuthUI.IdpConfig.EmailBuilder().build());
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .setTheme(R.style.AppTheme)
+                            .build(),
+                    RC_SIGN_IN);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == RC_SIGN_IN) {
+                if (resultCode == RESULT_OK) {
+                    presenter.updateUserData();
+                    refreshActivity();
+                }
+            }
+        }
+
+        @Override
+        public void signOut() {
+            AuthUI.getInstance().signOut(getContext());
+            presenter.setDatabaseMode("local");
+            refreshActivity();
+        }
+
+        @Override
+        public void updateUserData(String userEmail) {
+            activeUser.setSummary(userEmail);
+        }
+
+        @Override
+        public void refreshActivity() {
+            getActivity().finish();
+            startActivity(getActivity().getIntent());
+        }
+
+        @Override
+        public void showInfoUserIsPremium() {
+            Toast.makeText(getContext(), getString(R.string.General_user_is_premium), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void enableDatabaseModeSelection(@NonNull Boolean isEnabled) {
+            databaseMode.setEnabled(isEnabled);
+        }
+
+        @Override
+        public void buyPremiumFeatures() {
+            BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                    .setSkuDetails(skuDetails)
+                    .build();
+            int responseCode = billingClient.launchBillingFlow(getActivity(), billingFlowParams).getResponseCode();
+        }
+
+        @Override
+        public void showDialogImportDatabase() {
+            new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.AppThemeDialog))
+                    .setMessage(R.string.AppSettingsActivity_import_db_statement)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                            presenter.onImportDb(getContext()))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+        @Override
+        public void enableImportDatabaseSelection(boolean isEnabled) {
+            importDb.setEnabled(isEnabled);
+        }
+
+        @Override
+        public void showBillingClientNotReady() {
+            Toast.makeText(getContext(), getString(R.string.Error_billing_client_not_ready), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void showInfoForPremiumUserOnly() {
+            Toast.makeText(getContext(), getString(R.string.Error_for_premium_users_only), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> purchaseList) {
+            int responseCode = billingResult.getResponseCode();
+            if(responseCode == BillingClient.BillingResponseCode.OK && purchaseList != null){
+                for(Purchase purchase : purchaseList){
+                    handlePurchase(purchase);
+                }
+            }
+        }
+
+        private void handlePurchase(@NonNull Purchase purchase) {
+            if(purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED){
+                if (!purchase.isAcknowledged()) {
+                    AcknowledgePurchaseParams acknowledgePurchaseParams =
+                            AcknowledgePurchaseParams.newBuilder()
+                                    .setPurchaseToken(purchase.getPurchaseToken())
+                                    .build();
+                    enablePremiumFeatures();
+                    billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
+                }
+                Toast.makeText(getContext(), getString(R.string.General_premium_purchase_done), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        private final AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener = billingResult -> {
+        };
     }
 }

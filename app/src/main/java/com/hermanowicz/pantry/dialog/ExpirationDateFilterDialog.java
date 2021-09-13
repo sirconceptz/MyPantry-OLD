@@ -49,8 +49,6 @@ import java.util.Date;
  * The dialog window needed to set filters by expiration date to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
@@ -69,7 +67,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
     private EditText expirationDateSince, expirationDateFor;
     private Button clearBtn;
 
-    public ExpirationDateFilterDialog(FilterModel filterProduct) {
+    public ExpirationDateFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterExpirationDateSince = filterProduct.getExpirationDateSince();
         this.filterExpirationDateFor = filterProduct.getExpirationDateFor();
     }

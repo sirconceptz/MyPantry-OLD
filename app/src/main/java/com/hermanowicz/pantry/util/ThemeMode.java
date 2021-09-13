@@ -25,6 +25,13 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.hermanowicz.pantry.model.AppSettingsModel;
 
+/**
+ * <h1>ThemeMode</h1>
+ * Class to check what theme of application the user set
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class ThemeMode {
     public static int getThemeMode(@NonNull Activity activity) {
         AppSettingsModel model = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(activity));

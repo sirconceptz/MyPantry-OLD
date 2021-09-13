@@ -17,43 +17,97 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.category.Category;
+import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.CategoryView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.CategoryModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
 
-public class CategoryPresenter {
+/**
+ * <h1>CategoryPresenter</h1>
+ * Presenter for CategoriesActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+public class CategoryPresenter implements CategoryDbResponse {
 
     private final CategoryView view;
     private final CategoryModel model;
+    private final PremiumAccess premiumAccess;
+    private final AppSettingsModel appSettingsModel;
+    private final CategoryDbResponse dbResponse;
 
-    public CategoryPresenter (@NonNull CategoryView view, @NonNull CategoryModel model){
+    public CategoryPresenter (@NonNull CategoryView view, @NonNull Context context
+            , @NonNull CategoryDbResponse dbResponse){
         this.view = view;
-        this.model = model;
+        this.model = new CategoryModel(context);
+        this.appSettingsModel = new AppSettingsModel(PreferenceManager.
+                getDefaultSharedPreferences(context));
+        this.premiumAccess = new PremiumAccess(context);
+        this.dbResponse = dbResponse;
+
+        model.setDatabaseMode(getDatabaseMode());
+        if(getDatabaseMode().equals("local")){
+            model.setOfflineDbCategoryList();
+        }
     }
 
-    public void updateCategoryList(){
+    public void updateCategoryListView(){
         List<Category> categoryList = model.getCategoryList();
-        view.updateCategoryList(categoryList);
-        view.showEmptyCategoryListStatement(categoryList.size() == 0);
+        int categoryListSize = categoryList.size();
+        view.updateCategoryViewAdapter(categoryList);
+        view.showEmptyCategoryListStatement(categoryListSize == 0);
     }
 
-    public void addCategory(Category category) {
-        if(model.isCategoryNameNotCorrect(category.getName()) || model.isCategoryDescriptionNotCorrect(category.getDescription()))
-            view.onErrorAddNewCategory();
-        else if(model.addCategory(category)) {
+    public void addCategory(@NonNull Category category) {
+        if(model.addCategory(category)) {
             view.onSuccessAddNewCategory();
-            view.updateCategoryList(model.getCategoryList());
-            view.showEmptyCategoryListStatement(model.getCategoryList().size() == 0);
+            view.setOnlineDbCategoryList(dbResponse);
+            if(getDatabaseMode().equals("local")){
+                model.setOfflineDbCategoryList();
+            }
+            updateCategoryListView();
         }
         else
-            view.onErrorAddNewCategory();
+            view.showErrorAddNewCategory();
     }
 
     public void navigateToMainActivity() {
         view.navigateToMainActivity();
+    }
+
+    public boolean isPremium() {
+        return premiumAccess.isPremium();
+    }
+
+    public List<Category> getCategoryList() {
+        return model.getCategoryList();
+    }
+
+    public void setOnlineCategoryList(@NonNull List<Category> categoryList) {
+        if(getDatabaseMode().equals("online")) {
+            model.setCategoryList(categoryList);
+            view.showEmptyCategoryListStatement(categoryList.size() == 0);
+        }
+        else
+            model.setOfflineDbCategoryList();
+    }
+
+    public String getDatabaseMode(){
+        return appSettingsModel.getDatabaseMode();
+    }
+
+    @Override
+    public void onResponse(List<Category> categoryList) {
+        model.setCategoryList(categoryList);
     }
 }

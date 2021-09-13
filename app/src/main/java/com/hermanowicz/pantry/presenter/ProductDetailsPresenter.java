@@ -18,51 +18,79 @@
 package com.hermanowicz.pantry.presenter;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
+import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.PhotoModel;
 import com.hermanowicz.pantry.model.ProductDataModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
+
+/**
+ * <h1>ProductDetailsPresenter</h1>
+ * Presenter for ProductDetailsActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class ProductDetailsPresenter {
 
     private final ProductDetailsView view;
     private final ProductDataModel model;
     private final PhotoModel photoModel;
+    private PremiumAccess premiumAccess;
+    private final AppSettingsModel appSettingsModel;
 
-    public ProductDetailsPresenter(@NonNull ProductDetailsView view, @NonNull ProductDataModel productDataModel, @NonNull DatabaseOperations databaseOperations) {
+    public ProductDetailsPresenter(@NonNull ProductDetailsView view, @NonNull AppCompatActivity activity) {
         this.view = view;
-        this.model = productDataModel;
-        this.photoModel = new PhotoModel(databaseOperations);
+        this.model = new ProductDataModel(activity.getApplicationContext());
+        this.photoModel = new PhotoModel(activity);
+        this.appSettingsModel = new AppSettingsModel(PreferenceManager.
+                getDefaultSharedPreferences(activity.getApplicationContext()));
+        photoModel.setDatabaseMode(appSettingsModel.getDatabaseMode());
+    }
+
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
     public void setProductId(int productId) {
-        model.setProductId(productId);
+        model.setProduct(productId);
     }
 
     public void showProductDetails(@NonNull String hashCode) {
         if (model.isProductListEmpty()) {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
-        } else if(model.isCorrectHashCode(hashCode)) {
+        }
+        else if(model.isCorrectHashCode(hashCode)) {
             GroupProducts groupProducts = model.getGroupProducts();
             view.showProductDetails(groupProducts);
-            if(groupProducts.getProduct().getPhotoName() != null){
-                photoModel.setPhotoFile(groupProducts.getProduct().getPhotoName());
+            String photo = "";
+            if(groupProducts.getProduct().getPhotoName() != null)
+                photo = groupProducts.getProduct().getPhotoName();
+            if (!photo.equals("")) {
+                photoModel.setPhotoFile(String.valueOf(groupProducts.getProduct().getPhotoName()));
                 view.showPhoto(photoModel.getPhotoBitmap());
             }
-        } else {
+        }
+        else {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
         }
     }
 
-    public void onClickDeleteProduct(int productId) {
-        model.deleteSimilarProducts(productId);
+    public void onClickDeleteProduct() {
+        if(appSettingsModel.getDatabaseMode().equals("local"))
+            model.deleteSimilarOfflineProducts();
+        else
+            model.deleteSimilarOnlineProducts();
         view.onDeletedProduct();
         view.navigateToMyPantryActivity();
     }
@@ -73,14 +101,33 @@ public class ProductDetailsPresenter {
     }
 
     public void onClickEditProduct(int productId){
-        view.navigateToEditProductActivity(productId);
+        List<Product> productList = model.getProductList();
+        view.navigateToEditProductActivity(productId, productList);
     }
 
     public void onClickTakePhoto() {
-        view.navigateToAddPhotoActivity(model.getProductList());
+        List<Product> productList = model.getProductList();
+        List<Photo> photoList = photoModel.getPhotoList();
+        view.navigateToAddPhotoActivity(productList, photoList);
     }
 
     public void navigateToMyPantryActivity() {
         view.navigateToMyPantryActivity();
+    }
+
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public void setProductList(List<Product> productList) {
+        model.setProductList(productList);
+    }
+
+    public void setPhotoList(List<Photo> photoList) {
+        photoModel.setPhotoList(photoList);
+    }
+
+    public boolean isOfflineDb() {
+        return appSettingsModel.getDatabaseMode().equals("local");
     }
 }

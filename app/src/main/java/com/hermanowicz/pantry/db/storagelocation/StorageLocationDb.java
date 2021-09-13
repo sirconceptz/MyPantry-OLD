@@ -25,6 +25,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+/**
+ * <h1>StorageLocationDb/h1>
+ * Storage locations database class
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 @Database(entities = {StorageLocation.class}, version = 1)
 public abstract class StorageLocationDb extends RoomDatabase {
 
@@ -33,7 +40,7 @@ public abstract class StorageLocationDb extends RoomDatabase {
     private static StorageLocationDb INSTANCE;
     private static final Object sLock = new Object();
 
-    public static StorageLocationDb getInstance(Context context) {
+    public static StorageLocationDb getInstance(@NonNull Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),

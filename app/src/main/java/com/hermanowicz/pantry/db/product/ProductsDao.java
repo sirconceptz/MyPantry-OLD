@@ -31,14 +31,15 @@ import java.util.List;
  * Products dao needed to support database.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 @Dao
 public interface ProductsDao {
     @Query("SELECT * FROM products WHERE id = (:id)")
     Product getProduct(int id);
+
+    @Query("SELECT * FROM products WHERE barcode = (:barcode)")
+    List<Product> getProductListWithBarcode(String barcode);
 
     @Query("SELECT * FROM products ORDER BY expirationDate ASC")
     LiveData<List<Product>> getAllProductsLivedata();

@@ -17,13 +17,13 @@
 
 package com.hermanowicz.pantry.filter;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 class FilterModelTest {
 
-    private FilterModel filterProduct = new FilterModel();
+    private final FilterModel filterProduct = new FilterModel();
 
     @Test
     void canIGetCorrectName() {

@@ -17,35 +17,60 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
+import androidx.preference.PreferenceManager;
 
+import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.MyPantryModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
+
+/**
+ * <h1>MyPantryPresenter</h1>
+ * Presenter for MyPantryActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class MyPantryPresenter {
 
     private final MyPantryView view;
     private final MyPantryModel model;
+    private PremiumAccess premiumAccess;
 
-    public MyPantryPresenter(@NonNull MyPantryView view, @NonNull MyPantryModel model) {
+    public MyPantryPresenter(@NonNull MyPantryView view, @NonNull Context context) {
         this.view = view;
-        this.model = model;
+        this.model = new MyPantryModel(context);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(context));
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
-    public void setAllProductsList(){
-        model.setAllProductsList();
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
-    public void setProductList(@NonNull List<Product> productList) {
-        view.showProductsNotFound(productList.size() == 0);
+    public void setProductList(List<Product> productList){
         model.setProductList(productList);
+        setProductsLiveData();
+        view.showProductsNotFound(productList.size() == 0);
+    }
+
+    public void setAllProductList(@NonNull List<Product> productList) {
+        model.setAllProductsList(productList);
+    }
+
+    public void setAllProductsOfflineList(){
+        model.setOfflineDbProductsList();
     }
 
     public List<GroupProducts> getGroupProductsList() {
@@ -82,15 +107,15 @@ public class MyPantryPresenter {
 
     public void printSelectedProducts() {
         List<Product> productList = model.getAllSelectedProductList();
-
-        view.onPrintProducts(productList);
+        List<Product> allProductList = model.getAllProductsList();
+        view.onPrintProducts(productList, allProductList);
     }
 
     public void clearFilters() {
         model.clearFilters();
         view.clearFilterIcons();
-        model.setProductsLiveData();
-        view.updateProductsRecyclerViewAdapter();
+        setProductsLiveData();
+        view.updateProductsViewAdapter();
     }
 
     public void setProductsLiveData() {
@@ -113,7 +138,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByName(filterName);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterExpirationDate(String filterExpirationDateSince, String filterExpirationDateFor) {
@@ -124,7 +149,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterProductionDate(String filterProductionDateSince, String filterProductionDateFor) {
@@ -135,7 +160,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByProductionDate(filterProductionDateSince, filterProductionDateFor);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterTypeOfProduct(String filterTypeOfProduct, String filterProductFeatures) {
@@ -146,7 +171,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByTypeOfProduct(filterTypeOfProduct, filterProductFeatures);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterVolume(int filterVolumeSince, int filterVolumeFor) {
@@ -157,7 +182,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByVolume(filterVolumeSince, filterVolumeFor);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterWeight(int filterWeightSince, int filterWeightFor) {
@@ -168,7 +193,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByWeight(filterWeightSince, filterWeightFor);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterTaste(String filterTaste) {
@@ -179,7 +204,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByTaste(filterTaste);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void setFilterProductFeatures(Filter.Set filterHasSugar, Filter.Set filterHasSalt,
@@ -192,7 +217,7 @@ public class MyPantryPresenter {
         }
         setProductsLiveData();
         model.filterProductListByProductFeatures(filterHasSugar, filterHasSalt, filterIsBio, filterIsVege);
-        view.updateProductsRecyclerViewAdapter();
+        view.updateProductsViewAdapter();
     }
 
     public void navigateToMainActivity() {
@@ -201,5 +226,25 @@ public class MyPantryPresenter {
 
     public void openDialog(int typeOfDialog) {
         view.openFilterDialog(typeOfDialog);
+    }
+
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public boolean isOfflineDb() {
+        return model.getDatabaseMode().equals("local");
+    }
+
+    public List<Product> getProductList() {
+        return model.getAllProductsList();
+    }
+
+    public void setAllPhotoList(List<Photo> photoList) {
+        model.setPhotoList(photoList);
+    }
+
+    public List<Photo> getPhotoList() {
+        return model.getPhotoList();
     }
 }

@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -27,6 +28,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -50,22 +52,32 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityNewProductBinding;
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.dialog.ChooseProductToCopyDialog;
 import com.hermanowicz.pantry.interfaces.NewProductView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
-import com.hermanowicz.pantry.model.NewProductModel;
+import com.hermanowicz.pantry.interfaces.ProductDbResponse;
+import com.hermanowicz.pantry.interfaces.ProductToCopyView;
 import com.hermanowicz.pantry.presenter.NewProductPresenter;
 import com.hermanowicz.pantry.util.DateHelper;
-import com.hermanowicz.pantry.util.Notification;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -82,12 +94,10 @@ import maes.tech.intentanim.CustomIntent;
  * activity) to print a QR code to scan in the future.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
-public class
-NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, DatePickerDialog.OnDateSetListener, NewProductView {
+public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener,
+        DatePickerDialog.OnDateSetListener, NewProductView, ProductToCopyView, ProductDbResponse {
 
     private ActivityNewProductBinding binding;
     private NewProductPresenter presenter;
@@ -96,8 +106,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     private int day, month, year;
     private boolean isTypeOfProductTouched;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> productTypeAdapter, productCategoryAdapter,
-            productStorageLocationAdapter;
+    private ArrayAdapter<CharSequence> productCategoryAdapter;
 
     private Spinner productType, productCategory, productStorageLocation;
     private EditText productName, productExpirationDate, productProductionDate, productComposition,
@@ -114,6 +123,7 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        setListenerOnlineDb(this);
     }
 
     private void initView(){
@@ -147,9 +157,6 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
         TextView weightLabel = binding.productEdit.textWeightLabel;
         addProduct = binding.buttonAddProduct;
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
         volumeLabel.setText(String.format("%s (%s)", getString(R.string.Product_volume), getString(R.string.Product_volume_unit)));
         weightLabel.setText(String.format("%s (%s)", getString(R.string.Product_weight), getString(R.string.Product_weight_unit)));
 
@@ -158,15 +165,33 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
         productHealingProperties.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         productDosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
-        presenter = new NewProductPresenter(this, new NewProductModel(resources, new DatabaseOperations(context)));
+        presenter = new NewProductPresenter(this, context);
+        presenter.setPremiumAccess(new PremiumAccess(context));
 
-        productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
+        setListenerOnlineDb(this);
+
+        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
+        if(productList != null)
+            presenter.setProductList(productList);
+        String barcode = getIntent().getStringExtra("barcode");
+        if(barcode != null)
+            presenter.setBarcode(barcode);
+
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
+        if(presenter.isOfflineDb())
+            presenter.setAllProductList(null);
+
+        ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
         productType.setAdapter(productTypeAdapter);
         productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
         productCategory.setAdapter(productCategoryAdapter);
-        productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
+        ArrayAdapter<CharSequence> productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
         productStorageLocation.setAdapter(productStorageLocationAdapter);
-
     }
 
     private void setListeners() {
@@ -243,6 +268,37 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
         });
     }
 
+    private void setListenerOnlineDb(ProductDbResponse response){
+        if(!presenter.isOfflineDb()) {
+            DatabaseReference ref;
+            List<Product> onlineProductList = new ArrayList<>();
+            ref = FirebaseDatabase.getInstance().getReference().child("products/" + FirebaseAuth.getInstance().getUid());
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists())
+                        onlineProductList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Product product = dataSnapshot.getValue(Product.class);
+                        onlineProductList.add(product);
+                    }
+                    response.onProductResponse(onlineProductList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("FirebaseDB", error.getMessage());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void chooseProductToCopy(String[] namesProductList) {
+        ChooseProductToCopyDialog dialog = new ChooseProductToCopyDialog(namesProductList);
+        dialog.show(getSupportFragmentManager(), "");
+    }
+
     @Override
     public void onClickAddProduct() {
         int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
@@ -282,19 +338,24 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     }
 
     @Override
-    public void navigateToPrintQRCodesActivity(List<Product> productList) {
+    public void navigateToPrintQRCodesActivity(List<Product> productList, List<Product> allProductList) {
         Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
-                .putExtra("product_list", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList)
+                .putExtra("all_product_list", (Serializable) allProductList);
 
         startActivity(printQRCodesActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
-    public void onProductsAdd(List<Product> products) {
-        for (Product product : products) {
-            Notification.createNotification(context, product);
-        }
+    public void reCreateNotifications() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putBoolean("IS_NOTIFICATIONS_TO_RESTORE", true).apply();
+    }
+
+    @Override
+    public void setSelectedProductToCopy(int position) {
+        presenter.setSelectedProductToCopy(position);
     }
 
     @Override
@@ -373,6 +434,20 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     }
 
     @Override
+    public void setProductData(Product product) {
+        productName.setText(product.getName());
+        productComposition.setText(product.getComposition());
+        productHealingProperties.setText(product.getHealingProperties());
+        productDosage.setText(product.getDosage());
+        productVolume.setText(String.valueOf(product.getVolume()));
+        productWeight.setText(String.valueOf(product.getWeight()));
+        productIsBio.setChecked(product.getIsBio());
+        productIsVege.setChecked(product.getIsVege());
+        productHasSugar.setChecked(product.getHasSugar());
+        productHasSalt.setChecked(product.getHasSalt());
+    }
+
+    @Override
     public void showCancelProductAddDialog() {
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
                 .setMessage(R.string.NewProductActivity_cancel_product_adding)
@@ -403,12 +478,16 @@ NewProductActivity extends AppCompatActivity implements OnItemSelectedListener, 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.action_save_product:
-                presenter.onClickAddProduct();
-                return true;
+        if (id == R.id.action_save_product) {
+            presenter.onClickAddProduct();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onProductResponse(List<Product> productList) {
+        presenter.setAllProductList(productList);
     }
 
     @Override

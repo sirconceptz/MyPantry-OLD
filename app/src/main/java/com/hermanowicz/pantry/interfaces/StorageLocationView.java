@@ -24,11 +24,13 @@ import java.util.List;
 public interface StorageLocationView {
     void showEmptyStorageLocationListStatement(boolean visible);
 
-    void updateStorageLocationList(List<StorageLocation> storageLocationList);
+    void updateStorageLocationViewAdapter(List<StorageLocation> storageLocationList);
 
     void onSuccessAddNewStorageLocation();
 
-    void onErrorAddNewStorageLocation();
+    void showErrorAddNewStorageLocation();
 
     void navigateToMainActivity();
+
+    void setOnlineDbStorageLocationList(StorageLocationDbResponse response);
 }

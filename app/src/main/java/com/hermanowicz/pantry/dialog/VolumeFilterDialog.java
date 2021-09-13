@@ -41,8 +41,6 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * The dialog window needed to set filters by volume of product to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class VolumeFilterDialog extends AppCompatDialogFragment {
@@ -56,7 +54,7 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
     private EditText volumeSince, volumeFor;
     private Button clearBtn;
 
-    public VolumeFilterDialog(FilterModel filterProduct) {
+    public VolumeFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterVolumeSince = filterProduct.getVolumeSince();
         this.filterVolumeFor = filterProduct.getVolumeFor();
     }

@@ -54,6 +54,8 @@
 
     <style name="AppPreferenceTheme" parent="PreferenceThemeOverlay">
         <item name="android:textColorSecondary">@color/text_color</item>
+        <item name="android:colorControlActivated">@color/material_accent</item>
+        <item name="android:buttonBarButtonStyle">@style/ButtonTextStyle</item>
         <item name="colorAccent">@color/text_color</item>
         <item name="colorPrimaryDark">@color/text_color</item>
     </style>
@@ -62,7 +64,7 @@
         <item name="android:textColor">@color/material_accent</item>
     </style>
 
-    <style name="AppThemeDialog" parent="Theme.AppCompat.Dialog">
+    <style name="AppThemeDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorPrimaryDark">@color/color_primary_statusbar</item>
         <item name="colorAccent">

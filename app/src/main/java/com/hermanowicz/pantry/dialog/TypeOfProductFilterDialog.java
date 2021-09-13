@@ -45,8 +45,6 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * The dialog window needed to set filters by type of product to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
@@ -67,7 +65,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     private Spinner productType, productCategory;
     private Button clearBtn;
 
-    public TypeOfProductFilterDialog(FilterModel filterProduct) {
+    public TypeOfProductFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterTypeOfProduct = filterProduct.getTypeOfProduct();
         this.filterProductFeatures = filterProduct.getProductCategory();
     }

@@ -17,6 +17,10 @@
 
 package activities;
 
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static junit.framework.TestCase.assertNotNull;
+
 import android.widget.Button;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -34,10 +38,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static junit.framework.TestCase.assertNotNull;
-
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
 
@@ -53,7 +53,7 @@ public class MainActivityTest {
 
     @Test
     public void shouldGoToMyPantryActivity(){
-        Button myPantry = activity.findViewById(R.id.button_myPantry);
+        Button myPantry = activity.findViewById(R.id.myPantryCV);
         assertNotNull(myPantry);
         activity.runOnUiThread(() -> myPantry.performClick());
         intended(hasComponent(MyPantryActivity.class.getName()));
@@ -61,7 +61,7 @@ public class MainActivityTest {
 
     @Test
     public void shouldGoToScanProductActivity(){
-        Button scanProduct = activity.findViewById(R.id.button_scanProduct);
+        Button scanProduct = activity.findViewById(R.id.scanProductCV);
         assertNotNull(scanProduct);
         activity.runOnUiThread(() -> scanProduct.performClick());
         intended(hasComponent(ScanProductActivity.class.getName()));
@@ -69,7 +69,7 @@ public class MainActivityTest {
 
     @Test
     public void shouldGoToNewProductActivity(){
-        Button newProduct = activity.findViewById(R.id.button_newProduct);
+        Button newProduct = activity.findViewById(R.id.newProductCV);
         assertNotNull(newProduct);
         activity.runOnUiThread(() -> newProduct.performClick());
         intended(hasComponent(NewProductActivity.class.getName()));
@@ -77,7 +77,7 @@ public class MainActivityTest {
 
     @Test
     public void shouldGoToAppSettingsActivity(){
-        Button appSettings = activity.findViewById(R.id.button_appSettings);
+        Button appSettings = activity.findViewById(R.id.appSettingsCV);
         assertNotNull(appSettings);
         activity.runOnUiThread(() -> appSettings.performClick());
         intended(hasComponent(AppSettingsActivity.class.getName()));

@@ -27,6 +27,7 @@
     <string name="title_activity_edit_product">Produkt bearbeiten</string>
     <string name="title_activity_add_photo">Bild hinzufügen</string>
     <!--General-->
+    <string name="General_choose">Wählen</string>
     <string name="General_char_counter">Max. Zeichen</string>
     <string name="General_press_back_agait_to_exit">Zum Beenden erneut drücken</string>
     <string name="General_required">(Erforderlich)</string>
@@ -34,6 +35,10 @@
     <string name="General_cancel">Abbestellen</string>
     <string name="General_author_label">Autor</string>
     <string name="General_save">Zuschreiben</string>
+    <string name="General_user_is_premium">Der User ist schon Premium ;-)</string>
+    <string name="General_user">Benutzer</string>
+    <string name="General_loggedOut">Abgemeldet</string>
+    <string name="General_premium_purchase_done">Vielen Dank für Ihren Premium-Kauf! Ich wünsche Ihnen viel Spaß bei der Verwendung!</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Meine speisekammer</string>
     <string name="MainActivity_scan_product_button">Scannen Sie den QR-Code des Produkts</string>
@@ -53,8 +58,13 @@
     <string name="MyPantryActivity_with_sugar">+Zucker</string>
     <string name="MyPantryActivity_with_salt">+Salz</string>
     <!--ScanProductActivity-->
+    <string name="ScanProductActivity_choose_scan_type">Wählen Sie aus, ob der QR des von der Anwendung erstellten Produkts oder der Barcode des Geschäftsprodukts gescannt werden soll.</string>
+    <string name="ScanProductActivity_choose_product_to_copy">Der Barcode wurde den folgenden Produkten hinzugefügt. Wählen Sie das Produkt aus der Liste aus, das Sie hinzufügen möchten.</string>
     <string name="ScanProductActivity_scan_qr_code">Scannen Sie den QR-Code des Produkts</string>
+    <string name="ScanProductActivity_scan_barcode">Scannen Sie den Produkt-Barcode</string>
+    <string name="ScanProductActivity_enter_barcode_manually">Geben Sie den Barcode manuell ein</string>
     <string name="ScanProductActivity_product_not_found">Das Produkt wurde nicht gefunden.</string>
+    <string name="ScanProductActivity_scanner_hint">Wichtig: Der Barcode-Scanner sucht nicht nach Produkten, die noch nicht der Anwendung hinzugefügt wurden.</string>
     <!--NewProductActivity-->
     <string name="NewProductActivity_add_a_product">Produkt hinzufügen</string>
     <string name="NewProductActivity_product_added_successful">Das Produkt wurde erfolgreich zur Produktdatenbank hinzugefügt.</string>
@@ -236,6 +246,7 @@
     <string name="AppSettingsActivity_notifications_settings">Benachrichtigungseinstellungen</string>
     <string name="AppSettingsActivity_enabled">Aktiviert</string>
     <string name="AppSettingsActivity_disabled">Deaktiviert</string>
+    <string name="AppSettingsActivity_qr_code_sizes">Größe der gedruckten QR-Code-Etiketten</string>
     <string name="AppSettingsActivity_which_theme_user_prefer">Wählen Sie den Anwendungsmodus</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Kamera zum Scannen von QR-Codes</string>
     <string name="AppSettingsActivity_scanner_vibration_mode">Vibration beim Scannen</string>
@@ -267,6 +278,13 @@
     <string name="AppSettingsActivity_db_backup_has_been_made">Das Backup wurde erstellt</string>
     <string name="AppSettingsActivity_db_has_been_restored">Die Sicherung wurde wiederhergestellt</string>
     <string name="AppSettingsActivity_db_has_been_clear">Die Datenbank wurde gelöscht</string>
+    <string name="AppSettingsActivity_active_user">Aktiver Nutzer</string>
+    <string name="AppSettingsActivity_go_premium">Wechseln Sie zum Premium-Konto</string>
+    <string name="AppSettingsActivity_database_mode">Produktdatenbankmodus</string>
+    <string name="AppSettingsActivity_qr_code_size_big">Groß</string>
+    <string name="AppSettingsActivity_qr_code_size_small">Klein</string>
+    <string name="AppSettingsActivity_import_db">Datenbank vom Telefon in die Cloud importieren</string>
+    <string name="AppSettingsActivity_import_db_statement">Importieren Sie die Produktdatenbank vom Gerät in die Cloud (in ein Internetkonto). AKTUELL GESPEICHERTE DATEN IN DER CLOUD WERDEN GELÖSCHT UND DURCH TELEFONPRODUKTE ERSETZT.</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rückkamera</item>
         <item>Front-Kamera</item>
@@ -275,6 +293,10 @@
         <item>Automatisch</item>
         <item>Täglich</item>
         <item>Nacht</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_database_mode">
+        <item>Lokal (im Telefon)</item>
+        <item>Online</item>
     </string-array>
     <!--Notifications-->
     <string name="Notifications_title">[Meine Speisekammer] Das Produkt wird bald verfallen.</string>
@@ -286,6 +308,8 @@
     <string name="Error_category_not_selected">Kategorie wurde nicht ausgewählt</string>
     <string name="Error_product_name_is_required">Der Produktname ist erforderlich</string>
     <string name="Error_char_counter">Falscher Wert</string>
+    <string name="Error_for_premium_users_only">Funktion nur für Premium-Benutzer</string>
+    <string name="Error_billing_client_not_ready">Zahlungsfunktion derzeit nicht verfügbar</string>
     <!--Author-->
     <string name="Author_contact_with_author">Contact with author</string>
 </resources>

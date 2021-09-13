@@ -26,6 +26,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.annotations.NotNull;
 
+/**
+ * <h1>RecyclerClickListener</h1>
+ * Class to detect long click in products view
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class RecyclerClickListener implements RecyclerView.OnItemTouchListener {
 
     public interface OnItemClickListener {

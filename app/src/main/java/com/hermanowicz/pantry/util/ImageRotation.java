@@ -23,6 +23,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * <h1>ImageRotation</h1>
+ * Class used to rotate a photo in the correct direction
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class ImageRotation {
 
     public static int neededRotation(File ff)

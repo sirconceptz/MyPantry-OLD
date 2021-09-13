@@ -30,9 +30,8 @@ import com.hermanowicz.pantry.service.NotificationService;
  * Broadcast receiver for notifications. Sending details needed to prepare notification.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
+
 public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     @Override

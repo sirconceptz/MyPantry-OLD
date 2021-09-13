@@ -17,6 +17,7 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -28,6 +29,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -37,20 +39,23 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityStorageLocationDetailsBinding;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.StorageLocationDetailsView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
-import com.hermanowicz.pantry.model.StorageLocationModel;
-import com.hermanowicz.pantry.presenter.StorageLocationsDetailsPresenter;
+import com.hermanowicz.pantry.presenter.StorageLocationDetailsPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import maes.tech.intentanim.CustomIntent;
 
+/**
+ * <h1>StorageLocationActivity</h1>
+ * Activity for add new storage location.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class StorageLocationDetailsActivity extends AppCompatActivity implements StorageLocationDetailsView {
 
-    private ActivityStorageLocationDetailsBinding binding;
-    private StorageLocationsDetailsPresenter presenter;
+    private StorageLocationDetailsPresenter presenter;
     private Context context;
-    private int storageLocationId;
 
     private TextView storageLocationName, storageLocationDescription, nameCharCounter, descriptionCharCounter;
     private Button updateStorageLocation, deleteStorageLocation;
@@ -67,7 +72,7 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
 
     private void initView() {
         context = getApplicationContext();
-        binding = ActivityStorageLocationDetailsBinding.inflate(getLayoutInflater());
+        com.hermanowicz.pantry.databinding.ActivityStorageLocationDetailsBinding binding = ActivityStorageLocationDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Toolbar toolbar = binding.toolbar;
@@ -80,11 +85,10 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
         updateStorageLocation = binding.buttonUpdateStorageLocation;
         deleteStorageLocation = binding.buttonDeleteStorageLocation;
 
-        Intent categoryIntent = getIntent();
-        storageLocationId = categoryIntent.getIntExtra("storage_location_id", 0);
-        DatabaseOperations databaseOperations = new DatabaseOperations(context);
-        presenter = new StorageLocationsDetailsPresenter(this, new StorageLocationModel(databaseOperations));
-        presenter.setStorageLocationId(storageLocationId);
+        Intent storageLocationIntent = getIntent();
+        StorageLocation storageLocation = (StorageLocation) storageLocationIntent.getSerializableExtra("storage_location");
+        presenter = new StorageLocationDetailsPresenter(this, context);
+        presenter.setStorageLocation(storageLocation);
     }
 
     private void setListeners(){
@@ -123,7 +127,7 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     }
 
     private void onClickUpdateStorageLocation(){
-        StorageLocation storageLocation = presenter.getStorageLocation(storageLocationId);
+        StorageLocation storageLocation = presenter.getStorageLocation();
         storageLocation.setName(storageLocationName.getText().toString());
         storageLocation.setDescription(storageLocationDescription.getText().toString());
         presenter.updateStorageLocation(storageLocation);
@@ -132,7 +136,7 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     private void onClickDeleteStorageLocation() {
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
                 .setMessage(R.string.StorageLocationDetailsActivity_storage_location_delete_warning)
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.deleteStorageLocation(storageLocationId))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.deleteStorageLocation())
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
@@ -149,7 +153,7 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void showStorageLocationDetails(StorageLocation storageLocation) {
+    public void showStorageLocationDetails(@NonNull StorageLocation storageLocation) {
         storageLocationName.setText(storageLocation.getName());
         storageLocationDescription.setText(storageLocation.getDescription());
     }
@@ -162,6 +166,20 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     @Override
     public void showStorageLocationDescriptionError() {
         storageLocationDescription.setError(getText(R.string.Error_char_counter));
+    }
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public void updateNameCharCounter(int charCounter, int maxChar) {
+        nameCharCounter.setText(String.format("%s: %d/%d",
+                getText(R.string.General_char_counter).toString(), charCounter, maxChar));
+    }
+
+    @SuppressLint("DefaultLocale")
+    @Override
+    public void updateDescriptionCharCounter(int charCounter, int maxChar) {
+        descriptionCharCounter.setText(String.format("%s: %d/%d",
+                getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override

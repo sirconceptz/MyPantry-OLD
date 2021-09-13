@@ -36,13 +36,11 @@ import java.util.List;
  * Class for filtering products according to data from the filter model.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class Filter {
 
-    private List<Product> productList;
+    private final List<Product> productList;
 
     private FilterModel filterProduct;
     private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

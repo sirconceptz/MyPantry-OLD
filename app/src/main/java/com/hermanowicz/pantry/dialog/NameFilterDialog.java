@@ -40,8 +40,6 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * The dialog window needed to set filters by name to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class NameFilterDialog extends AppCompatDialogFragment {
@@ -55,7 +53,7 @@ public class NameFilterDialog extends AppCompatDialogFragment {
     private EditText name;
     private Button clearBtn;
 
-    public NameFilterDialog(FilterModel filterProduct) {
+    public NameFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterName = filterProduct.getName();
     }
 

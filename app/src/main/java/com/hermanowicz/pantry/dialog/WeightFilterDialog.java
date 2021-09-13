@@ -41,8 +41,6 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * The dialog window needed to set filters by weight of product to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class WeightFilterDialog extends AppCompatDialogFragment {
@@ -56,7 +54,7 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
     private EditText weightSince, weightFor;
     private Button clearBtn;
 
-    public WeightFilterDialog(FilterModel filterProduct) {
+    public WeightFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterWeightSince = filterProduct.getWeightSince();
         this.filterWeightFor = filterProduct.getWeightFor();
     }

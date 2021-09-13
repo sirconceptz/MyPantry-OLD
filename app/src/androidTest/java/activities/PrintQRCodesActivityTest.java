@@ -17,6 +17,11 @@
 
 package activities;
 
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -46,11 +51,6 @@ import java.util.List;
 
 import models.ProductTestModel;
 
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 @RunWith(AndroidJUnit4.class)
 public class PrintQRCodesActivityTest {
 
@@ -58,7 +58,7 @@ public class PrintQRCodesActivityTest {
 
     private Button printQrCodes, sendPdfByEmail, skip;
     private UiDevice uiDevice;
-    private Product product = ProductTestModel.getTestProduct1();
+    private final Product product = ProductTestModel.getTestProduct1();
 
     @Rule
     public GrantPermissionRule readPermissionRule =

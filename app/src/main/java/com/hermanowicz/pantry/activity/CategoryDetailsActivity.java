@@ -17,6 +17,7 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -28,6 +29,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -37,20 +39,23 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityCategoryDetailsBinding;
 import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.interfaces.CategoryDetailsView;
-import com.hermanowicz.pantry.model.CategoryModel;
-import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.presenter.CategoryDetailsPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import maes.tech.intentanim.CustomIntent;
 
+/**
+ * <h1>CategoriesActivity</h1>
+ * Activity for add new category.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class CategoryDetailsActivity extends AppCompatActivity implements CategoryDetailsView {
 
-    private ActivityCategoryDetailsBinding binding;
     private CategoryDetailsPresenter presenter;
     private Context context;
-    private int categoryId;
 
     private TextView categoryName, categoryDescription, nameCharCounter, descriptionCharCounter;
     private Button updateCategory, deleteCategory;
@@ -67,7 +72,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
     private void initView() {
         context = getApplicationContext();
-        binding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
+        com.hermanowicz.pantry.databinding.ActivityCategoryDetailsBinding binding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Toolbar toolbar = binding.toolbar;
@@ -81,10 +86,9 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         deleteCategory = binding.buttonDeleteCategory;
 
         Intent categoryIntent = getIntent();
-        categoryId = categoryIntent.getIntExtra("category_id", 0);
-        DatabaseOperations databaseOperations = new DatabaseOperations(context);
-        presenter = new CategoryDetailsPresenter(this, new CategoryModel(databaseOperations));
-        presenter.setCategoryId(categoryId);
+        Category category = (Category) categoryIntent.getSerializableExtra("category");
+        presenter = new CategoryDetailsPresenter(this, context);
+        presenter.setCategory(category);
     }
 
     private void setListeners(){
@@ -123,7 +127,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     }
 
     private void onClickUpdateCategory(){
-        Category category = presenter.getCategory(categoryId);
+        Category category = presenter.getCategory();
         category.setName(categoryName.getText().toString());
         category.setDescription(categoryDescription.getText().toString());
         presenter.updateCategory(category);
@@ -132,7 +136,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     private void onClickDeleteCategory() {
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
                 .setMessage(R.string.CategoryDetailsActivity_category_delete_warning)
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.deleteCategory(categoryId))
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.deleteCategory())
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
@@ -149,7 +153,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     }
 
     @Override
-    public void showCategoryDetails(Category category) {
+    public void showCategoryDetails(@NonNull Category category) {
         categoryName.setText(category.getName());
         categoryDescription.setText(category.getDescription());
     }
@@ -164,14 +168,18 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         categoryDescription.setError(getText(R.string.Error_char_counter));
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void updateNameCharCounter(int charCounter, int maxChar) {
-        nameCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
+        nameCharCounter.setText(String.format("%s: %d/%d",
+                getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void updateDescriptionCharCounter(int charCounter, int maxChar) {
-        descriptionCharCounter.setText(String.format("%s: %d/%d", getText(R.string.General_char_counter).toString(), charCounter, maxChar));
+        descriptionCharCounter.setText(String.format("%s: %d/%d",
+                getText(R.string.General_char_counter).toString(), charCounter, maxChar));
     }
 
     @Override

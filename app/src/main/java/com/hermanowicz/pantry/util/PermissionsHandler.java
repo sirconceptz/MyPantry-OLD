@@ -28,6 +28,13 @@ import androidx.core.content.ContextCompat;
 
 import com.hermanowicz.pantry.interfaces.PermissionHandler;
 
+/**
+ * <h1>PermissionHandler</h1>
+ * Class to request and check permissions necessary for the functioning of the application.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class PermissionsHandler implements PermissionHandler {
     @Override
     public boolean checkHasPermission(@NonNull AppCompatActivity activity, @NonNull String permission){
@@ -39,13 +46,13 @@ public class PermissionsHandler implements PermissionHandler {
         ActivityCompat.requestPermissions(activity, permissions, requestCode);
     }
 
-    public static boolean isWritePermission(AppCompatActivity activity){
+    public static boolean isWritePermission(@NonNull AppCompatActivity activity){
         PermissionsHandler permissionHandler = new PermissionsHandler();
         return permissionHandler.checkHasPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 || permissionHandler.checkHasPermission(activity, Manifest.permission.ACCESS_MEDIA_LOCATION);
     }
 
-    public static void requestWritePermission(AppCompatActivity activity){
+    public static void requestWritePermission(@NonNull AppCompatActivity activity){
         PermissionsHandler permissionHandler = new PermissionsHandler();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             permissionHandler.requestPermission(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_MEDIA_LOCATION},
@@ -57,12 +64,12 @@ public class PermissionsHandler implements PermissionHandler {
         }
     }
 
-    public static boolean isCameraPermission(AppCompatActivity activity){
+    public static boolean isCameraPermission(@NonNull AppCompatActivity activity){
         PermissionsHandler permissionHandler = new PermissionsHandler();
         return permissionHandler.checkHasPermission(activity, Manifest.permission.CAMERA);
     }
 
-    public static void requestCameraPermission(AppCompatActivity activity){
+    public static void requestCameraPermission(@NonNull AppCompatActivity activity){
         PermissionsHandler permissionHandler = new PermissionsHandler();
         permissionHandler.requestPermission(activity, new String[]{Manifest.permission.CAMERA},
                 23);

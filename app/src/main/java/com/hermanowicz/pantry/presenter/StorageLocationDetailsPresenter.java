@@ -17,33 +17,54 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
+import com.hermanowicz.pantry.interfaces.StorageLocationDbResponse;
 import com.hermanowicz.pantry.interfaces.StorageLocationDetailsView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.StorageLocationModel;
 
-public class StorageLocationsDetailsPresenter {
+import java.util.List;
+
+/**
+ * <h1>StorageLocationDetailsPresenter</h1>
+ * Presenter for StorageLocationDetailsActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+public class StorageLocationDetailsPresenter implements StorageLocationDbResponse {
 
     private final StorageLocationModel model;
     private final StorageLocationDetailsView view;
 
-    public StorageLocationsDetailsPresenter(@NonNull StorageLocationDetailsView view, @NonNull StorageLocationModel model) {
-        this.model = model;
+    public StorageLocationDetailsPresenter(@NonNull StorageLocationDetailsView view,
+                                           @NonNull Context context) {
+        this.model = new StorageLocationModel(context);
         this.view = view;
+        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.
+                getDefaultSharedPreferences(context));
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
-    public void setStorageLocationId(int id) {
-        StorageLocation storageLocation = model.getStorageLocation(id);
+    public StorageLocation getStorageLocation(){
+        return model.getStorageLocation();
+    }
+
+    public void setStorageLocation(@NonNull StorageLocation storageLocation){
+        model.setStorageLocation(storageLocation);
         view.showStorageLocationDetails(storageLocation);
     }
 
-    public StorageLocation getStorageLocation(int id){
-        return model.getStorageLocation(id);
-    }
-
-    public void deleteStorageLocation(int id) {
-        model.deleteStorageLocation(id);
+    public void deleteStorageLocation() {
+        if(model.getDatabaseMode().equals("local"))
+            model.deleteOfflineDbStorageLocation(model.getStorageLocation());
+        else
+            model.deleteOnlineStorageLocation(model.getStorageLocation());
         view.navigateToStorageLocationActivity();
     }
 
@@ -65,5 +86,10 @@ public class StorageLocationsDetailsPresenter {
     public void isStorageLocationDescriptionCorrect(@NonNull String storageLocationDescription) {
         if(model.isStorageLocationDescriptionNotCorrect(storageLocationDescription))
             view.showStorageLocationDescriptionError();
+    }
+
+    @Override
+    public void onResponse(List<StorageLocation> storageLocationList) {
+        model.setStorageLocation(storageLocationList.get(0));
     }
 }

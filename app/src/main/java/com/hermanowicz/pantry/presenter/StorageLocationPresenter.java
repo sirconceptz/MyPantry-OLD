@@ -17,47 +17,94 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
+import com.hermanowicz.pantry.interfaces.StorageLocationDbResponse;
 import com.hermanowicz.pantry.interfaces.StorageLocationView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.StorageLocationModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
 
-public class StorageLocationPresenter {
+/**
+ * <h1>StorageLocationPresenter</h1>
+ * Presenter for StorageLocationActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+public class StorageLocationPresenter implements StorageLocationDbResponse {
 
     private final StorageLocationView view;
     private final StorageLocationModel model;
+    private final PremiumAccess premiumAccess;
+    private final AppSettingsModel appSettingsModel;
+    private final StorageLocationDbResponse dbResponse;
 
-    public StorageLocationPresenter(@NonNull StorageLocationView view, @NonNull StorageLocationModel model){
+    public StorageLocationPresenter (@NonNull StorageLocationView view, @NonNull Context context,
+                                     @NonNull StorageLocationDbResponse dbResponse){
         this.view = view;
-        this.model = model;
+        this.model = new StorageLocationModel(context);
+        this.appSettingsModel = new AppSettingsModel(PreferenceManager.
+                getDefaultSharedPreferences(context));
+        this.premiumAccess = new PremiumAccess(context);
+        this.dbResponse = dbResponse;
+
+        model.setDatabaseMode(getDatabaseMode());
+        if(getDatabaseMode().equals("local")){
+            model.setOfflineDbStorageLocationList();
+        }
     }
 
-    public void updateStorageLocationList(){
+    public String getDatabaseMode(){
+        return appSettingsModel.getDatabaseMode();
+    }
+
+    public void updateStorageLocationListView(){
         List<StorageLocation> storageLocationList = model.getStorageLocationList();
-        view.updateStorageLocationList(storageLocationList);
+        view.updateStorageLocationViewAdapter(storageLocationList);
         view.showEmptyStorageLocationListStatement(storageLocationList.size() == 0);
     }
 
-    public void addStorageLocation(StorageLocation storageLocation) {
-       if(model.isStorageLocationNameNotCorrect(storageLocation.getName()) || model.isStorageLocationDescriptionNotCorrect(storageLocation.getDescription()))
-           view.onErrorAddNewStorageLocation();
-        else if(model.addStorageLocation(storageLocation)) {
+    public void addStorageLocation(@NonNull StorageLocation storageLocation) {
+        if(model.addStorageLocation(storageLocation)) {
             view.onSuccessAddNewStorageLocation();
-            view.updateStorageLocationList(model.getStorageLocationList());
-            view.showEmptyStorageLocationListStatement(model.getStorageLocationList().size() == 0);
+            view.setOnlineDbStorageLocationList(dbResponse);
+            if(getDatabaseMode().equals("local")){
+                model.setOfflineDbStorageLocationList();
+            }
+            updateStorageLocationListView();
         }
         else
-            view.onErrorAddNewStorageLocation();
+            view.showErrorAddNewStorageLocation();
+    }
+
+    public void navigateToMainActivity() {
+        view.navigateToMainActivity();
+    }
+
+    public boolean isPremium() {
+        return premiumAccess.isPremium();
     }
 
     public List<StorageLocation> getStorageLocationList() {
         return model.getStorageLocationList();
     }
 
-    public void navigateToMainActivity() {
-        view.navigateToMainActivity();
+    public void setOnlineDbStorageLocationList(@NonNull List<StorageLocation> storageLocationList) {
+        if (getDatabaseMode().equals("online")) {
+            model.setStorageLocationList(storageLocationList);
+            updateStorageLocationListView();
+        }
+    }
+
+    @Override
+    public void onResponse(List<StorageLocation> storageLocationList) {
+        model.setStorageLocationList(storageLocationList);
     }
 }

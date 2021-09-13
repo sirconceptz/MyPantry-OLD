@@ -21,6 +21,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.product.ProductDb;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +31,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScanProductModel {
+
+    private final ProductDb productDb;
+    private String scanResult;
+    private List<Product> productList;
+    private String databaseMode;
+
+    public ScanProductModel(@NonNull ProductDb productDb){
+        this.productDb = productDb;
+    }
+
+    private boolean isBarcodeScan = false;
+
+    public List<Product> getProductListWithBarcode(String barcode) {
+        List<Product> productListWithBarcode = new ArrayList<>();
+        for(Product product : productList){
+            if(product.getBarcode().equals(barcode))
+                productListWithBarcode.add(product);
+        }
+        return productListWithBarcode;
+    }
+
+    public void setIsBarcodeScan(boolean barcodeScan){
+        isBarcodeScan = barcodeScan;
+    }
+
+    public boolean isBarcodeScan(){
+        return isBarcodeScan;
+    }
 
     public List<Integer> decodeScanResult(@NonNull String scanResult) {
         List<Integer> decodedQRCodeAsList = null;
@@ -40,5 +71,29 @@ public class ScanProductModel {
             Log.e("Decode scan result", e.toString());
         }
         return decodedQRCodeAsList;
+    }
+
+    public void setScanResult(String scanResult) {
+        this.scanResult = scanResult;
+    }
+
+    public String getScanResult(){
+        return scanResult;
+    }
+
+    public void setDatabaseMode(String databaseMode) {
+        this.databaseMode = databaseMode;
+    }
+
+    public String getDatabaseMode() {
+        return databaseMode;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
+    }
+
+    public void setOfflineAllProductList() {
+        this.productList = productDb.productsDao().getAllProductsList();
     }
 }

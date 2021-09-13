@@ -34,6 +34,13 @@ import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 
 import java.util.List;
 
+/**
+ * <h1>StorageLocationsAdapter</h1>
+ * View's adapter for storage locations view
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class StorageLocationsAdapter extends RecyclerView.Adapter<StorageLocationsAdapter.ViewHolder> {
 
     private RvSingleStorageLocationBinding binding;

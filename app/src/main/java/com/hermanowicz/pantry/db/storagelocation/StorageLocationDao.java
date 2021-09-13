@@ -25,6 +25,13 @@ import androidx.room.Update;
 
 import java.util.List;
 
+/**
+ * <h1>StorageLocationDao</h1>
+ * Storage location dao needed to support database.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 @Dao
 public interface StorageLocationDao {
     @Query("SELECT * FROM storage_locations WHERE id = (:id)")

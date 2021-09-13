@@ -17,31 +17,54 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.interfaces.NewProductView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.NewProductModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * <h1>NewProductPresenter</h1>
+ * Presenter for NewProductActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class NewProductPresenter {
 
     private final NewProductView view;
     private final NewProductModel model;
-
+    private final Context context;
     private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
+    private PremiumAccess premiumAccess;
 
-    public NewProductPresenter(@NonNull NewProductView view, @NonNull NewProductModel model) {
+    public NewProductPresenter(@NonNull NewProductView view, @NonNull Context context) {
         this.view = view;
-        this.model = model;
+        this.model = new NewProductModel(context);
+        this.context = context;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+    }
+
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
     public void setExpirationDate(int year, int month, int day) {
@@ -81,9 +104,10 @@ public class NewProductPresenter {
             model.createProductsList(product);
             model.addProducts();
             List<Product> productList = model.getProductList();
-            view.onProductsAdd(productList);
+            List<Product> allProductList = model.getAllProductList();
+            view.reCreateNotifications();
             view.showStatementOnAreProductsAdded(model.getOnProductAddStatement());
-            view.navigateToPrintQRCodesActivity(productList);
+            view.navigateToPrintQRCodesActivity(productList, allProductList);
         }
     }
 
@@ -116,11 +140,49 @@ public class NewProductPresenter {
     }
 
     public boolean isFormNotFilled() {
-        boolean isFormNotFilled = view.isFormNotFilled();
-        return isFormNotFilled;
+        return view.isFormNotFilled();
     }
 
     public void showCancelProductAddDialog() {
         view.showCancelProductAddDialog();
+    }
+
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public void setBarcode(String barcode) {
+        model.setBarcode(barcode);
+    }
+
+    public void setProductList(List<Product> productList) {
+        model.setProductList(productList);
+        List<GroupProducts> groupProductsList = model.getGroupProductList();
+        int groupProductsListSize = groupProductsList.size();
+        if(groupProductsListSize == 1)
+            view.setProductData(productList.get(0));
+        else if(groupProductsListSize > 1) {
+            String[] namesOfProducts = model.getNamesProductList();
+            view.chooseProductToCopy(namesOfProducts);
+        }
+    }
+
+    public void setSelectedProductToCopy(int position) {
+        List<GroupProducts> groupProductsList = model.getGroupProductList();
+        GroupProducts groupProducts = groupProductsList.get(position);
+        Product product = groupProducts.getProduct();
+        view.setProductData(product);
+    }
+
+    public boolean isOfflineDb() {
+        return model.getDatabaseMode().equals("local");
+    }
+
+    public void setAllProductList(List<Product> allProductList) {
+        if(isOfflineDb()) {
+            ProductDb db = ProductDb.getInstance(context);
+            allProductList = db.productsDao().getAllProductsList();
+        }
+        model.setAllProductList(allProductList);
     }
 }

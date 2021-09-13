@@ -17,33 +17,54 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.category.Category;
+import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.CategoryDetailsView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.CategoryModel;
 
-public class CategoryDetailsPresenter {
+import java.util.List;
+
+/**
+ * <h1>CategoryDetailsPresenter</h1>
+ * Presenter for CategoryDetailsActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+public class CategoryDetailsPresenter implements CategoryDbResponse {
 
     private final CategoryModel model;
     private final CategoryDetailsView view;
 
-    public CategoryDetailsPresenter (@NonNull CategoryDetailsView view, @NonNull CategoryModel model) {
-        this.model = model;
+    public CategoryDetailsPresenter (@NonNull CategoryDetailsView view,
+                                     @NonNull Context context) {
+        this.model = new CategoryModel(context);
         this.view = view;
+        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.
+                getDefaultSharedPreferences(context));
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
-    public void setCategoryId(int id) {
-        Category category = model.getCategory(id);
+    public void setCategory(@NonNull Category category) {
+        model.setCategory(category);
         view.showCategoryDetails(category);
     }
 
-    public Category getCategory(int id){
-        return model.getCategory(id);
+    public Category getCategory(){
+        return model.getCategory();
     }
 
-    public void deleteCategory(int id) {
-        model.deleteCategory(id);
+    public void deleteCategory() {
+        if(model.getDatabaseMode().equals("local"))
+            model.deleteOfflineDbCategory(model.getCategory());
+        else
+            model.deleteOnlineCategory(model.getCategory());
         view.navigateToCategoriesActivity();
     }
 
@@ -69,7 +90,8 @@ public class CategoryDetailsPresenter {
         view.updateDescriptionCharCounter(categoryDescription.length(), model.MAX_CHAR_CATEGORY_DESCRIPTION);
     }
 
-    public void navigateToCategoriesActivity() {
-        view.navigateToCategoriesActivity();
+    @Override
+    public void onResponse(List<Category> categoryList) {
+        model.setCategory(categoryList.get(0));
     }
 }

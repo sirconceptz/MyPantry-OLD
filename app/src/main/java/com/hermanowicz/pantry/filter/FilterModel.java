@@ -22,8 +22,6 @@ package com.hermanowicz.pantry.filter;
  * The filter model is used to store the data needed to find products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class FilterModel {

@@ -20,23 +20,42 @@ package com.hermanowicz.pantry.presenter;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
+import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AddPhotoView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.PhotoModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.io.File;
 import java.util.List;
 
+/**
+ * <h1>AddPhotoPresenter</h1>
+ * Presenter for AddPhotoActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class AddPhotoPresenter{
 
     private final AddPhotoView view;
-    private PhotoModel model;
+    private final PhotoModel model;
+    private PremiumAccess premiumAccess;
 
-    public AddPhotoPresenter(AddPhotoView view){
+    public AddPhotoPresenter(@NonNull AddPhotoView view, @NonNull AppCompatActivity activity){
         this.view = view;
+        this.model = new PhotoModel(activity);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(activity));
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+    }
+
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
     public void setProductList(@NonNull List<Product> productList){
@@ -46,15 +65,6 @@ public class AddPhotoPresenter{
             model.setPhotoFile(singleProduct.getPhotoName());
             view.showPhoto(singleProduct, model.getPhotoBitmap());
         }
-    }
-
-    public void setActivity(@NonNull AppCompatActivity activity){
-        model = new PhotoModel(new DatabaseOperations(activity.getApplicationContext()));
-        model.setActivity(activity);
-    }
-
-    public void setDb(DatabaseOperations databaseOperations){
-        model.setDB(databaseOperations);
     }
 
     public void onClickTakePhoto(){
@@ -75,7 +85,10 @@ public class AddPhotoPresenter{
     }
 
     public void onClickDeletePhoto(){
-        model.deletePhoto();
+        if(isOfflineDb())
+            model.deleteOfflinePhoto();
+        else
+            model.deleteOnlinePhoto();
         view.onDeletePhoto();
     }
 
@@ -84,19 +97,31 @@ public class AddPhotoPresenter{
             view.showDescriptionFieldError();
     }
 
-    public void addPhotoToDb(@NonNull String photoDescription) {
-        model.addPhotoToDb(photoDescription);
+    public void addPhotoToDb(@Nullable Bitmap bitmap, @NonNull String photoDescription) {
+        model.addPhotoToDb(bitmap, photoDescription);
     }
 
     public File getPhotoFile() {
         return model.getPhotoFile();
     }
 
-    public void galleryAddPic(Bitmap bitmap) {
-        int result = model.galleryAddPic(bitmap);
-        if(result == -1)
-            view.onPhotoAddSuccess();
-        else
-            view.onPhotoAddError();
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public void setPhotoList(@Nullable List<Photo> photoList) {
+        model.setPhotoList(photoList);
+    }
+
+    public boolean isOfflineDb() {
+        return model.getDatabaseMode().equals("local");
+    }
+
+    public void setIsNewPhoto(boolean isNewPhoto) {
+        model.setIsNewPhoto(isNewPhoto);
+    }
+
+    public void setAllProductList(List<Product> productList) {
+        model.setAllProductList(productList);
     }
 }

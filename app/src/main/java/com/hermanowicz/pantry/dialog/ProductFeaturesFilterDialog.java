@@ -41,8 +41,6 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * The dialog window needed to set filters by product features to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
@@ -59,7 +57,7 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
     private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
     private Button clearBtn;
 
-    public ProductFeaturesFilterDialog(FilterModel filterProduct) {
+    public ProductFeaturesFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterHasSugar = filterProduct.getHasSugar();
         this.filterHasSalt = filterProduct.getHasSalt();
         this.filterIsBio = filterProduct.getIsBio();

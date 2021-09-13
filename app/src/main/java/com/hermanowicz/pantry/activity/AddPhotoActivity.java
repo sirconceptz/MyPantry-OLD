@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -48,31 +49,46 @@ import androidx.core.content.FileProvider;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityAddPhotoBinding;
+import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AddPhotoView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
+import com.hermanowicz.pantry.interfaces.PhotoDbResponse;
 import com.hermanowicz.pantry.presenter.AddPhotoPresenter;
 import com.hermanowicz.pantry.util.ImageRotation;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
-public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView {
+/**
+ * <h1>AppSettingsActivity</h1>
+ * Activity for add and remove photo for products.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView, PhotoDbResponse {
 
     private static final int REQUEST_IMAGE_CAPTURE_CODE = 42;
 
-    private ActivityAddPhotoBinding binding;
     private Context context;
     private AddPhotoPresenter presenter;
+    private List<Product> productList;
 
-    private AdView adView;
     private ImageView imageViewPhoto;
     private EditText description;
     private Button takePhoto, savePhoto, deletePhoto;
@@ -82,35 +98,63 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
     }
 
     private void initView() {
-        binding = ActivityAddPhotoBinding.inflate(getLayoutInflater());
+        com.hermanowicz.pantry.databinding.ActivityAddPhotoBinding binding = ActivityAddPhotoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = AddPhotoActivity.this;
+        presenter = new AddPhotoPresenter(this, this);
 
         Toolbar toolbar = binding.toolbar;
-        adView = binding.adview;
+        AdView adView = binding.adview;
         imageViewPhoto = binding.imageviewPhoto;
         description = binding.edittextPhotoDescription;
         takePhoto = binding.buttonTakePhoto;
         savePhoto = binding.buttonSavePhoto;
         deletePhoto = binding.buttonDeletePhoto;
 
-        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
-        presenter = new AddPhotoPresenter(this);
-        presenter.setActivity(this);
-        presenter.setDb(new DatabaseOperations(context));
-        presenter.setProductList(productList);
+        setOnlineDbPhotoList(this);
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        productList = (List<Product>) getIntent().getSerializableExtra("product_list");
+        presenter.setProductList(productList);
+        presenter.setPremiumAccess(new PremiumAccess(context));
+
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
         setSupportActionBar(toolbar);
+    }
+
+    private void setOnlineDbPhotoList(PhotoDbResponse response) {
+        if(!presenter.isOfflineDb()) {
+            List<Photo> onlinePhotoList = new ArrayList<>();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("photos/" + FirebaseAuth.getInstance().getUid());
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists())
+                        onlinePhotoList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Photo photo = dataSnapshot.getValue(Photo.class);
+                        onlinePhotoList.add(photo);
+                    }
+                    response.onPhotoResponse(onlinePhotoList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("FirebaseDB - Photos", error.getMessage());
+                }
+            });
+        }
     }
 
     private void setListeners() {
@@ -160,6 +204,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
                     m, true);
 
             imageViewPhoto.setImageBitmap(takenImage);
+            presenter.setIsNewPhoto(true);
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             takenImage.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -186,19 +231,19 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     }
 
     @Override
-    public void onTakePhoto(File photoFile) {
+    public void onTakePhoto(@NonNull File photoFile) {
         takePictureIntent(photoFile);
     }
 
     @Override
     public void onSavePhoto() {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) imageViewPhoto.getDrawable();
+        Bitmap bitmap = null;
         if(bitmapDrawable != null) {
-            Bitmap bitmap = bitmapDrawable.getBitmap();
-            presenter.galleryAddPic(bitmap);
+            bitmap = bitmapDrawable.getBitmap();
         }
         String photoDescription = description.getText().toString();
-        presenter.addPhotoToDb(photoDescription);
+        presenter.addPhotoToDb(bitmap, photoDescription);
     }
 
     @Override
@@ -227,7 +272,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
             case R.id.action_save_photo:
                 presenter.onClickSavePhoto();
                 return true;
-            case R.id.action_delete_product:
+            case R.id.action_delete_photo:
                 presenter.onClickDeletePhoto();
                 return true;
         }
@@ -236,9 +281,10 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    presenter.onClickTakePhoto();
+            presenter.onClickTakePhoto();
         }
     }
 
@@ -246,5 +292,11 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     public void finish() {
         super.finish();
         CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void onPhotoResponse(List<Photo> photoList) {
+        presenter.setPhotoList(photoList);
+        presenter.setAllProductList(productList);
     }
 }

@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -41,19 +42,20 @@ import java.util.List;
  * that needed to print stickers with QR codes.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class PrintQRData {
 
-    private static final int QR_CODE_WIDTH = 100;
-    private static final int QR_CODE_HEIGHT = 100;
+    private static final int SMALL_QR_CODE_WIDTH = 100;
+    private static final int SMALL_QR_CODE_HEIGHT = 100;
+    private static final int BIG_QR_CODE_WIDTH = 130;
+    private static final int BIG_QR_CODE_HEIGHT = 130;
 
-    public static ArrayList<String> getTextToQRCodeList(@NonNull List<Product> productList, int idOfLastProductInDb) {
+    public static ArrayList<String> getTextToQRCodeList(@Nullable List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
         JSONObject jsonObject = new JSONObject();
         int counter = 0;
+        assert productList != null;
         for (Product product : productList) {
             try{
                 if (product.getId() > 0)
@@ -70,13 +72,13 @@ public class PrintQRData {
         return textToQRCodeList;
     }
 
-    public static ArrayList<String> getNamesOfProductsList(@NonNull List<Product> productsList) {
+    public static ArrayList<String> getNamesOfProductsList(@Nullable List<Product> productList) {
         ArrayList<String> namesOfProductsList = new ArrayList<>();
-
-        for (Product product : productsList) {
+        assert productList != null;
+        for (Product product : productList) {
             String productName = product.getName();
-            if (productName.length() > 15) {
-                namesOfProductsList.add(productName.substring(0, 14) + ".");
+            if (productName.length() > 29) {
+                namesOfProductsList.add(productName.substring(0, 28) + ".");
             } else {
                 namesOfProductsList.add(productName);
             }
@@ -84,28 +86,41 @@ public class PrintQRData {
         return namesOfProductsList;
     }
 
-    public static ArrayList<String> getExpirationDatesList(@NonNull List<Product> productsList) {
+    public static ArrayList<String> getExpirationDatesList(@Nullable List<Product> productList) {
         ArrayList<String> expirationDatesList = new ArrayList<>();
-
-        for (Product product : productsList) {
+        assert productList != null;
+        for (Product product : productList) {
             expirationDatesList.add(product.getExpirationDate());
         }
         return expirationDatesList;
     }
 
-    public static ArrayList<Bitmap> getQrCodeBitmapArray(ArrayList<String> textToQRCodeArray) {
+    public static ArrayList<String> getProductionDatesList(@Nullable List<Product> productList) {
+        ArrayList<String> productionDatesList = new ArrayList<>();
+        assert productList != null;
+        for (Product product : productList) {
+            productionDatesList.add(product.getProductionDate());
+        }
+        return productionDatesList;
+    }
+
+    public static ArrayList<Bitmap> getQrCodeBitmapArray(@Nullable ArrayList<String> textToQRCodeArray, boolean isBigQrCode) {
         ArrayList<Bitmap> qrCodeBitmapArray = new ArrayList<>();
+        assert textToQRCodeArray != null;
         for (int i = 0; i < textToQRCodeArray.size(); i++) {
-            qrCodeBitmapArray.add(getBitmapQRCode(textToQRCodeArray.get(i)));
+            qrCodeBitmapArray.add(getBitmapQRCode(textToQRCodeArray.get(i), isBigQrCode));
         }
         return qrCodeBitmapArray;
     }
 
-    public static Bitmap getBitmapQRCode(@NonNull String textToQrCode) {
+    public static Bitmap getBitmapQRCode(@NonNull String textToQrCode, boolean isBigQrCode) {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = null;
         try {
-            bitMatrix = qrCodeWriter.encode(textToQrCode, BarcodeFormat.QR_CODE, QR_CODE_WIDTH, QR_CODE_HEIGHT);
+            if(isBigQrCode)
+                bitMatrix = qrCodeWriter.encode(textToQrCode, BarcodeFormat.QR_CODE, BIG_QR_CODE_WIDTH, BIG_QR_CODE_HEIGHT);
+            else
+                bitMatrix = qrCodeWriter.encode(textToQrCode, BarcodeFormat.QR_CODE, SMALL_QR_CODE_WIDTH, SMALL_QR_CODE_HEIGHT);
         } catch (WriterException e) {
             Log.e("QRCodeWriter", e.toString());
         }

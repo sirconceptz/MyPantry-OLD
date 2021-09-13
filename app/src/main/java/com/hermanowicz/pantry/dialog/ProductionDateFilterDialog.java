@@ -49,8 +49,6 @@ import java.util.Date;
  * The dialog window needed to set filters by production date to search for products in the pantry.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class ProductionDateFilterDialog extends AppCompatDialogFragment {
@@ -69,7 +67,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
     private EditText productionDateSince, productionDateFor;
     private Button clearBtn;
 
-    public ProductionDateFilterDialog(FilterModel filterProduct) {
+    public ProductionDateFilterDialog(@NonNull FilterModel filterProduct) {
         this.filterProductionDateSince = filterProduct.getProductionDateSince();
         this.filterProductionDateFor = filterProduct.getProductionDateFor();
     }

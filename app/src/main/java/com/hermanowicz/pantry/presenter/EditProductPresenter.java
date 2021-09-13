@@ -17,36 +17,55 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
 import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
+import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.ProductDataModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+/**
+ * <h1>EditProductPresenter</h1>
+ * Presenter for EditProductActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class EditProductPresenter {
 
     private final EditProductView view;
     private final ProductDataModel model;
     private final ProductDataView productDataView;
-
     private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
+    private PremiumAccess premiumAccess;
 
-    public EditProductPresenter(@NonNull EditProductView view, @NonNull ProductDataView productDataView, @NonNull ProductDataModel model){
-        this.model = model;
+    public EditProductPresenter(@NonNull EditProductView view, @NonNull ProductDataView productDataView, @NonNull Context context){
+        this.model = new ProductDataModel(context);
         this.view = view;
         this.productDataView = productDataView;
+        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(context));
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+    }
+
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
     public void setProduct(int productId){
-        model.setProductId(productId);
+        model.setProduct(productId);
         GroupProducts groupProducts = model.getGroupProducts();
         int productTypeSpinnerPosition = model.getProductTypeSpinnerPosition();
         int productFeaturesSpinnerPosition = model.getProductFeaturesSpinnerPosition(productTypeSpinnerPosition);
@@ -122,5 +141,13 @@ public class EditProductPresenter {
 
     public void onClickSaveProductButton() {
         view.onClickSaveProductButton();
+    }
+
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public void setProductList(List<Product> productList) {
+        model.setProductList(productList);
     }
 }

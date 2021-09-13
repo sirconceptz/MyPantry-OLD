@@ -36,8 +36,6 @@ import java.util.Map;
  * A helper class for mail sending by mail API.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class CustomRequest extends Request<JSONObject> {

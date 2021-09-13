@@ -17,6 +17,8 @@
 
 package com.hermanowicz.pantry.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.hermanowicz.pantry.db.product.Product;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,17 +27,15 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class PrintQRDataTest {
 
     private List<Product> productList = new ArrayList<>();
-    private String date1 = "1990-01-01";
-    private String date2 = "2000-02-02";
-    private String date3 = "2005-03-05";
-    private String name1 = "Strawberry";
-    private String name2 = "Apple";
-    private String name3 = "Banana";
+    private final String date1 = "1990-01-01";
+    private final String date2 = "2000-02-02";
+    private final String date3 = "2005-03-05";
+    private final String name1 = "Strawberry";
+    private final String name2 = "Apple";
+    private final String name3 = "Banana";
 
     @BeforeEach
     void setUp()

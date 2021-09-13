@@ -20,10 +20,10 @@ package com.hermanowicz.pantry.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
-
-import com.hermanowicz.pantry.util.Notification;
+import androidx.preference.PreferenceManager;
 
 /**
  * <h1>BootDeviceReceiver</h1>
@@ -32,13 +32,13 @@ import com.hermanowicz.pantry.util.Notification;
  * settings.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
+
 public class BootDeviceReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
-       Notification.createNotificationsForAllProducts(context);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putBoolean("IS_NOTIFICATIONS_TO_RESTORE", true).apply();
     }
 }

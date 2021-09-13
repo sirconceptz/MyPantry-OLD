@@ -17,6 +17,7 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -36,6 +37,14 @@ import com.hermanowicz.pantry.util.ThemeMode;
 
 import maes.tech.intentanim.CustomIntent;
 
+/**
+ * <h1>SplashScreen</h1>
+ * Splash screen to welcome the user back with logo of application and current version.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+@SuppressLint("CustomSplashScreen")
 public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
@@ -50,7 +59,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        goToLoginActivity();
+        goToMainActivity();
     }
 
     private void initView() {
@@ -79,7 +88,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
 
-    private void goToLoginActivity() {
+    private void goToMainActivity() {
         Intent i = new Intent(SplashScreenActivity.this, MainActivity.class);
         startActivity(i);
         CustomIntent.customType(this, "fadein-to-fadeout");
@@ -88,7 +97,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     private void delayAndGoToLoginActivity() {
         new Handler().postDelayed(() -> {
             finish();
-            goToLoginActivity();
+            goToMainActivity();
         }, 2000);
     }
 }

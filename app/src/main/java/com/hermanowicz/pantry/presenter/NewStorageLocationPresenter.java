@@ -23,6 +23,13 @@ import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.NewStorageLocationView;
 import com.hermanowicz.pantry.model.StorageLocationModel;
 
+/**
+ * <h1>NewStorageLocationPresenter</h1>
+ * Presenter for NewStorageLocationDialog
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class NewStorageLocationPresenter {
 
     private final NewStorageLocationView view;

@@ -23,6 +23,13 @@ import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.interfaces.NewCategoryView;
 import com.hermanowicz.pantry.model.CategoryModel;
 
+/**
+ * <h1>NewCategoryPresenter</h1>
+ * Presenter for NewCategoryDialog
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class NewCategoryPresenter {
 
     private final NewCategoryView view;
@@ -32,7 +39,6 @@ public class NewCategoryPresenter {
         this.view = view;
         this.model = model;
     }
-
 
     public void isCategoryNameCorrect(@NonNull String categoryName){
         if(model.isCategoryNameNotCorrect(categoryName))

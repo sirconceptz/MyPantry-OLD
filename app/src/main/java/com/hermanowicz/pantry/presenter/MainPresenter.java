@@ -17,21 +17,45 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.MainView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.util.Notification;
+import com.hermanowicz.pantry.util.PremiumAccess;
+
+import java.util.List;
+
+/**
+ * <h1>MainPresenter</h1>
+ * Presenter for MainActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class MainPresenter {
 
     private final MainView view;
     private final AccountView accountView;
+    private final SharedPreferences sharedPreferences;
+    private PremiumAccess premiumAccess;
 
-    public MainPresenter(@NonNull MainView view, @NonNull AccountView accountView) {
+    public MainPresenter(@NonNull MainView view,
+                         @NonNull AccountView accountView, @NonNull SharedPreferences sharedPreferences) {
         this.view = view;
         this.accountView = accountView;
+        this.sharedPreferences = sharedPreferences;
+    }
+
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
     public void navigateToMyPantryActivity() {
@@ -61,18 +85,25 @@ public class MainPresenter {
     public void updateUserData(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user == null)
-            accountView.updateUserData("Niezalogowany");
+            accountView.updateUserData(null);
         else
             accountView.updateUserData(user.getEmail());
     }
 
-    public void signInOrSignOut() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user == null)
-            accountView.signIn();
-        else {
-            accountView.signOut();
-            updateUserData();
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public void restoreNotifications(@NonNull Context context, @NonNull List<Product> productList) {
+        boolean isNotificationsToRestore = sharedPreferences.getBoolean("IS_NOTIFICATIONS_TO_RESTORE", false);
+        if (isNotificationsToRestore) {
+            Notification.createNotificationsForAllProducts(context, productList);
+            sharedPreferences.edit().putBoolean("IS_NOTIFICATIONS_TO_RESTORE", false).apply();
         }
+    }
+
+    public boolean isOfflineDb() {
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
+        return appSettingsModel.getDatabaseMode().equals("local");
     }
 }

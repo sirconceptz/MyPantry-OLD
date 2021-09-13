@@ -17,10 +17,12 @@
 
 package com.hermanowicz.pantry.interfaces;
 
+import com.hermanowicz.pantry.db.product.Product;
+
 import java.util.List;
 
 public interface ScanProductView {
-    void setQrScanner(boolean scannerSoundMode);
+    void setScanner(boolean scannerSoundMode, String message);
 
     void navigateToProductDetailsActivity(List<Integer> decodedScanResults);
 
@@ -29,4 +31,10 @@ public interface ScanProductView {
     void onVibration();
 
     void navigateToMainActivity();
+
+    void navigateToNewProductActivity(String barcode, List<Product> productList);
+
+    void navigateToNewProductActivity(Product product);
+
+    void onSelectedEnterBarcodeManually();
 }

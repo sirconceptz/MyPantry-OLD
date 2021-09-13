@@ -24,11 +24,13 @@ import java.util.List;
 public interface CategoryView {
     void showEmptyCategoryListStatement(boolean visible);
 
-    void updateCategoryList(List<Category> categoryList);
+    void updateCategoryViewAdapter(List<Category> categoryList);
 
     void onSuccessAddNewCategory();
 
-    void onErrorAddNewCategory();
+    void showErrorAddNewCategory();
 
     void navigateToMainActivity();
+
+    void setOnlineDbCategoryList(CategoryDbResponse response);
 }

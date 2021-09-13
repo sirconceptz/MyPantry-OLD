@@ -17,20 +17,23 @@
 
 package com.hermanowicz.pantry.db.product;
 
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h1>Product/h1>
- * Product model. Is needed to support database and used to store a product data.
+ * Product model.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
+@Keep
 @Entity(tableName = "products")
 public class Product implements Serializable {
 
@@ -55,6 +58,7 @@ public class Product implements Serializable {
     private String taste;
     private String photoName;
     private String photoDescription;
+    private String barcode;
 
     public int getId() {
         return id;
@@ -220,5 +224,38 @@ public class Product implements Serializable {
 
     public void setPhotoDescription(String photoDescription) {
         this.photoDescription = photoDescription;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public static List<Product> getSimilarProductsList(@NonNull Product testedProduct, @NonNull List<Product> productList){
+        List<Product> similarProductList = new ArrayList<>();
+        for(Product singleProduct : productList){
+            if(singleProduct.getName().equals(testedProduct.getName())
+                    && singleProduct.getTypeOfProduct().equals(testedProduct.getTypeOfProduct())
+                    && singleProduct.getProductFeatures().equals(testedProduct.getProductFeatures())
+                    && singleProduct.getExpirationDate().equals(testedProduct.getExpirationDate())
+                    && singleProduct.getProductionDate().equals(testedProduct.getProductionDate())
+                    && singleProduct.getHealingProperties().equals(testedProduct.getHealingProperties())
+                    && singleProduct.getComposition().equals(testedProduct.getComposition())
+                    && singleProduct.getDosage().equals(testedProduct.getDosage())
+                    && singleProduct.getBarcode().equals(testedProduct.getBarcode())
+                    && singleProduct.getWeight() == testedProduct.getWeight()
+                    && singleProduct.getVolume() == testedProduct.getVolume()
+                    && singleProduct.getHasSugar() == testedProduct.getHasSugar()
+                    && singleProduct.getHasSalt() == testedProduct.getHasSalt()
+                    && singleProduct.getIsVege() == testedProduct.getIsVege()
+                    && singleProduct.getIsBio() == testedProduct.getIsBio()
+                    && singleProduct.getTaste().equals(testedProduct.getTaste())
+                    && singleProduct.getStorageLocation().equals(testedProduct.getStorageLocation()))
+                similarProductList.add(singleProduct);
+        }
+        return similarProductList;
     }
 }

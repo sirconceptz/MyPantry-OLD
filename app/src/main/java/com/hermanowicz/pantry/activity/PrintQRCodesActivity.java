@@ -17,8 +17,11 @@
 
 package com.hermanowicz.pantry.activity;
 
+import static androidx.core.content.FileProvider.getUriForFile;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -34,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -43,9 +47,11 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityPrintQrcodesBinding;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.presenter.PrintQRCodesPresenter;
 import com.hermanowicz.pantry.util.FileManager;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.util.List;
@@ -53,62 +59,64 @@ import java.util.Objects;
 
 import maes.tech.intentanim.CustomIntent;
 
-import static androidx.core.content.FileProvider.getUriForFile;
-
 /**
  * <h1>PrintQRCodesActivity</h1>
  * Activity to print QR codes. Uses zxing library. User will be asked. The user gets a query if
  * he wants to print QR codes for added products.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesView {
 
-    private ActivityPrintQrcodesBinding binding;
     private PrintQRCodesPresenter presenter;
     private Context context;
 
-    private AdView adView;
     private ImageView qrCodeImage;
     private Button printQrCodes, sendPdfByEmail, skip;
-    private List<Product> productList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
     }
 
     private void initView() {
-        binding = ActivityPrintQrcodesBinding.inflate(getLayoutInflater());
+        com.hermanowicz.pantry.databinding.ActivityPrintQrcodesBinding binding = ActivityPrintQrcodesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
 
-        adView = binding.adview;
+        AdView adView = binding.adview;
         qrCodeImage = binding.imageQrCode;
         printQrCodes = binding.buttonPrintQRCodes;
         sendPdfByEmail = binding.buttonSendPdfByEmail;
         skip = binding.buttonSkip;
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
+        List<Product> allProductList = (List<Product>) getIntent().getSerializableExtra("all_product_list");
 
-        productList = (List<Product>) getIntent().getSerializableExtra("product_list");
-
-        presenter = new PrintQRCodesPresenter(this);
-
-        presenter.setActivity(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
+        presenter = new PrintQRCodesPresenter(this, appSettingsModel, this);
+        presenter.setPremiumAccess(new PremiumAccess(context));
+        presenter.setAllProductList(allProductList);
         presenter.setProductList(productList);
         presenter.showQRCodeImage();
+
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
+        if(presenter.isOfflineDb()) {
+            presenter.setAllProductList(null);
+        }
 
         setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(getString(R.string.PrintQRCodesActivity_print_qr_codes));
@@ -162,23 +170,23 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.action_print_codes:
-                presenter.onClickPrintQRCodes();
-                return true;
-            case R.id.action_send_email:
-                presenter.onClickSendPdfByEmail();
-                return true;
-            case R.id.action_skip:
-                presenter.onClickSkipButton();
-                return true;
+        if (id == R.id.action_print_codes) {
+            presenter.onClickPrintQRCodes();
+            return true;
+        } else if (id == R.id.action_send_email) {
+            presenter.onClickSendPdfByEmail();
+            return true;
+        } else if (id == R.id.action_skip) {
+            presenter.onClickSkipButton();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             presenter.onClickPrintQRCodes();
         }

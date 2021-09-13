@@ -17,6 +17,18 @@
 
 package activities;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
+import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -45,18 +57,6 @@ import java.util.Date;
 
 import models.ProductTestModel;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
-import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
-
 @RunWith(AndroidJUnit4.class)
 public class NewProductActivityTest {
 
@@ -65,7 +65,7 @@ public class NewProductActivityTest {
     private EditText    name, expirationDate, productionDate, quantity, composition, healingProperties,
                         dosage, volume, weight;
     private Spinner     typeOfProduct;
-    private RadioButton isSweet;
+    private RadioButton isSweet, isSour, isSweetAndSour, isBitter, isSalty;
     private Button      addProduct;
     private Product     product;
 
@@ -87,6 +87,10 @@ public class NewProductActivityTest {
         volume = activity.findViewById(R.id.edittext_volume);
         weight = activity.findViewById(R.id.edittext_weight);
         isSweet = activity.findViewById(R.id.radiobtn_isSweet);
+        isSour = activity.findViewById(R.id.radiobtn_isSour);
+        isSweetAndSour = activity.findViewById(R.id.radiobtn_isSweetAndSour);
+        isBitter = activity.findViewById(R.id.radiobtn_isBitter);
+        isSalty = activity.findViewById(R.id.radiobtn_isSalty);
         addProduct = activity.findViewById(R.id.button_addProduct);
         product = ProductTestModel.getTestProduct1();
     }

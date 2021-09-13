@@ -85,6 +85,7 @@
             android:textSize="20sp"
             android:fontFamily="@font/proxima_nova_extra_condensed_bold"
             android:text="@string/PrintQRCodesActivity_print_qr_codes"
+            android:textColor="@color/text_color"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent"
             ads:layout_constraintTop_toBottomOf="@id/image_qrCode" />
@@ -100,6 +101,7 @@
             android:textSize="20sp"
             android:fontFamily="@font/proxima_nova_extra_condensed_bold"
             android:text="@string/PrintQRCodesActivity_send_pdf_via_email"
+            android:textColor="@color/text_color"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent"
             ads:layout_constraintTop_toBottomOf="@id/button_printQRCodes" />
@@ -115,6 +117,7 @@
             android:textSize="20sp"
             android:fontFamily="@font/proxima_nova_extra_condensed_bold"
             android:text="@string/PrintQRCodesActivity_skip"
+            android:textColor="@color/text_color"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent"
             ads:layout_constraintTop_toBottomOf="@id/button_sendPdfByEmail" />

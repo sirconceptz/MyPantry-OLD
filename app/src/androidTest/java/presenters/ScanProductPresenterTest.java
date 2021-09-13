@@ -17,6 +17,9 @@
 
 package presenters;
 
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+
 import android.Manifest;
 import android.preference.PreferenceManager;
 
@@ -42,9 +45,6 @@ import java.util.List;
 
 import models.ProductTestModel;
 
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-
 @RunWith(AndroidJUnit4.class)
 public class ScanProductPresenterTest {
 
@@ -63,7 +63,7 @@ public class ScanProductPresenterTest {
     @Before
     public void setUp(){
         activity = activityTestRule.getActivity();
-        presenter = new ScanProductPresenter(activity, PreferenceManager.getDefaultSharedPreferences(activity));
+        presenter = new ScanProductPresenter(activity, PreferenceManager.getDefaultSharedPreferences(activity), ProductDb.getInstance(activity.getApplicationContext()));
     }
 
     @Test

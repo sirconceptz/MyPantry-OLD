@@ -38,11 +38,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+/**
+ * <h1>FileManager</h1>
+ * Class used to create and manage PDF data with printable QR codes
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class FileManager {
 
     public static final String PDF_PATH = "Download/MyPantry";
 
-    public static File getPdfFile(String fileName) {
+    public static File getPdfFile(@NonNull String fileName) {
         File pdfFile;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             pdfFile = new File(Environment.getExternalStorageDirectory() + File.separator
@@ -54,9 +61,58 @@ public class FileManager {
         return pdfFile;
     }
 
-    public static PdfDocument createPdfDocument(@NonNull ArrayList<Bitmap> qrCodesArray,
-                                                @NonNull ArrayList<String> namesOfProductsArray,
-                                                @NonNull ArrayList<String> expirationDatesArray) {
+    public static PdfDocument createPdfDocumentBigQrCodes(@NonNull ArrayList<Bitmap> qrCodesArray,
+                                                          @NonNull ArrayList<String> namesOfProductsArray,
+                                                          @NonNull ArrayList<String> expirationDatesArray,
+                                                          @NonNull ArrayList<String> productionDatesArray) {
+        int pageNumber = 1;
+        int widthCounter = 0;
+        int topCounter = 0;
+        int codesOnPageCounter = 0;
+
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint canvasPaint = new Paint();
+        Paint textPaint = new Paint();
+
+        canvasPaint.setColor(Color.WHITE);
+        canvasPaint.setStyle(Paint.Style.FILL);
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(8);
+
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNumber).create();
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
+        canvas.drawPaint(canvasPaint);
+        for (int counter = 0; counter < qrCodesArray.size(); counter++) {
+            if (codesOnPageCounter == 20) {
+                pageNumber++;
+                pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNumber).create();
+                pdfDocument.finishPage(page);
+                page = pdfDocument.startPage(pageInfo);
+                canvas = page.getCanvas();
+                canvas.drawPaint(canvasPaint);
+                codesOnPageCounter = 0;
+                widthCounter = 0;
+                topCounter = 0;
+            }
+            if (widthCounter == 4) {
+                topCounter++;
+                widthCounter = 0;
+            }
+            canvas.drawBitmap(qrCodesArray.get(counter), 20 + widthCounter * 130, (20 + topCounter * 150), null);
+            canvas.drawText(namesOfProductsArray.get(counter), (widthCounter * 130) + 40, (20 + topCounter * 150) + 120, textPaint);
+            canvas.drawText("EXP: " + expirationDatesArray.get(counter), (widthCounter * 130) + 40, (20 + topCounter * 150) + 130, textPaint);
+            canvas.drawText("PRO: " + productionDatesArray.get(counter), (widthCounter * 130) + 40, (20 + topCounter * 150) + 140, textPaint);
+            widthCounter++;
+            codesOnPageCounter++;
+        }
+        pdfDocument.finishPage(page);
+        return pdfDocument;
+    }
+
+    public static PdfDocument createPdfDocumentSmallQrCodes(@NonNull ArrayList<Bitmap> qrCodesArray,
+                                                          @NonNull ArrayList<String> namesOfProductsArray,
+                                                          @NonNull ArrayList<String> expirationDatesArray) {
         int pageNumber = 1;
         int widthCounter = 0;
         int topCounter = 0;
@@ -93,7 +149,7 @@ public class FileManager {
             }
             canvas.drawBitmap(qrCodesArray.get(counter), widthCounter * 80, (topCounter * 120), null);
             canvas.drawText(namesOfProductsArray.get(counter), (widthCounter * 80) + 20, (topCounter * 120) + 90, textPaint);
-            canvas.drawText(expirationDatesArray.get(counter), (widthCounter * 80) + 20, (topCounter * 120) + 100, textPaint);
+            canvas.drawText("EXP: " + expirationDatesArray.get(counter), (widthCounter * 80) + 20, (topCounter * 120) + 100, textPaint);
             widthCounter++;
             codesOnPageCounter++;
         }

@@ -28,14 +28,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * <h1>ProductDb/h1>
- * Database class
+ * Product database class
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
-@Database(entities = {Product.class}, version = 4)
+@Database(entities = {Product.class}, version = 5)
 public abstract class ProductDb extends RoomDatabase {
 
     public abstract ProductsDao productsDao();
@@ -43,7 +41,7 @@ public abstract class ProductDb extends RoomDatabase {
     private static ProductDb INSTANCE;
     private static final Object sLock = new Object();
 
-    public static ProductDb getInstance(Context context) {
+    public static ProductDb getInstance(@NonNull Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
@@ -61,6 +59,14 @@ public abstract class ProductDb extends RoomDatabase {
             return INSTANCE;
         }
     }
+
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL(
+                    "ALTER TABLE products ADD COLUMN barcode TEXT DEFAULT ''");
+        }
+    };
 
     static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
@@ -91,5 +97,5 @@ public abstract class ProductDb extends RoomDatabase {
     };
 
     private static final Migration[] ALL_MIGRATIONS = new Migration[]{
-            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4};
+            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5};
 }

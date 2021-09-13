@@ -17,11 +17,22 @@
 
 package com.hermanowicz.pantry.db.category;
 
+import androidx.annotation.Keep;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
+/**
+ * <h1>Category/h1>
+ * Category model.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+@Keep
 @Entity(tableName = "categories")
-public class Category {
+public class Category implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;

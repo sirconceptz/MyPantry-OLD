@@ -17,15 +17,15 @@
 
 package com.hermanowicz.pantry.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class DateHelperTest {
 
-    private DateHelper dateHelper = new DateHelper("2020-01-03");
+    private final DateHelper dateHelper = new DateHelper("2020-01-03");
 
     @Test
     void getDayFromDate() {

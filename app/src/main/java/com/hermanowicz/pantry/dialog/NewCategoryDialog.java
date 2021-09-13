@@ -37,8 +37,14 @@ import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.interfaces.DialogCategoryListener;
 import com.hermanowicz.pantry.interfaces.NewCategoryView;
 import com.hermanowicz.pantry.model.CategoryModel;
-import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.presenter.NewCategoryPresenter;
+
+/**
+ * <h1>NewCategoryDialog</h1>
+ * The dialog window used to add new category
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class NewCategoryDialog extends AppCompatDialogFragment implements NewCategoryView {
 
@@ -76,8 +82,7 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
         categoryName = binding.edittextName;
         categoryDescription = binding.edittextDescription;
 
-        DatabaseOperations databaseOperations = new DatabaseOperations(activity.getApplicationContext());
-        presenter = new NewCategoryPresenter(this, new CategoryModel(databaseOperations));
+        presenter = new NewCategoryPresenter(this, new CategoryModel(getActivity().getApplicationContext()));
 
         view = binding.getRoot();
     }
@@ -125,7 +130,7 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
     }
 
     @Override
-    public void onAddCategory(Category category) {
+    public void onAddCategory(@NonNull Category category) {
         dialogListener.onAddCategory(category);
     }
 

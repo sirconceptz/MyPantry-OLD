@@ -22,11 +22,11 @@ import com.hermanowicz.pantry.db.product.Product;
 import java.util.List;
 
 public interface NewProductView {
-    void navigateToPrintQRCodesActivity(List<Product> productList);
+    void navigateToPrintQRCodesActivity(List<Product> productList, List<Product> allProductList);
 
     void onClickAddProduct();
 
-    void onProductsAdd(List<Product> products);
+    void reCreateNotifications();
 
     void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);
 
@@ -45,4 +45,8 @@ public interface NewProductView {
     void showCancelProductAddDialog();
 
     boolean isFormNotFilled();
+
+    void setProductData(Product product);
+
+    void chooseProductToCopy(String[] namesProductList);
 }

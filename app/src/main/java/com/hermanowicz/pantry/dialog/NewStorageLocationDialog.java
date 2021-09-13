@@ -36,9 +36,15 @@ import com.hermanowicz.pantry.databinding.DialogNewStorageLocationBinding;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.DialogStorageLocationListener;
 import com.hermanowicz.pantry.interfaces.NewStorageLocationView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.model.StorageLocationModel;
 import com.hermanowicz.pantry.presenter.NewStorageLocationPresenter;
+
+/**
+ * <h1>NewStorageLocationDialog</h1>
+ * The dialog window used to add new storage location
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class NewStorageLocationDialog extends AppCompatDialogFragment implements NewStorageLocationView {
 
@@ -76,8 +82,7 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
         storageLocationName = binding.edittextName;
         storageLocationDescription = binding.edittextDescription;
 
-        DatabaseOperations databaseOperations = new DatabaseOperations(activity.getApplicationContext());
-        presenter = new NewStorageLocationPresenter(this, new StorageLocationModel(databaseOperations));
+        presenter = new NewStorageLocationPresenter(this, new StorageLocationModel(getActivity().getApplicationContext()));
 
         view = binding.getRoot();
     }
@@ -125,7 +130,7 @@ public class NewStorageLocationDialog extends AppCompatDialogFragment implements
     }
 
     @Override
-    public void onAddStorageLocation(StorageLocation storageLocation) {
+    public void onAddStorageLocation(@NonNull StorageLocation storageLocation) {
         dialogListener.onAddStorageLocation(storageLocation);
     }
 

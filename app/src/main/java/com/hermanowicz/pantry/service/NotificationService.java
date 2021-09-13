@@ -51,9 +51,8 @@ import java.util.HashMap;
  * expiration dates of products. Notification can be showed by push or email.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
+
 public class NotificationService extends IntentService {
 
     private static final String PREFERENCES_EMAIL_ADDRESS = "EMAIL_ADDRESS";
@@ -66,7 +65,7 @@ public class NotificationService extends IntentService {
     static final String API_MAIL_FILE = "mail.php";
 
     private String productName;
-    private int daysToNotification;
+    private String daysToNotification;
 
     public NotificationService(){
         super("NotificationService");
@@ -85,8 +84,8 @@ public class NotificationService extends IntentService {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         productName = intent.getStringExtra("product_name");
         int productID = intent.getIntExtra("product_id", 0);
-        daysToNotification = 3;
-        daysToNotification = preferences.getInt(
+        daysToNotification = "3";
+        daysToNotification = preferences.getString(
                 PREFERENCES_DAYS_TO_NOTIFICATIONS, com.hermanowicz.pantry.util.Notification.NOTIFICATION_DEFAULT_DAYS);
 
         if (preferences.getBoolean(PREFERENCES_PUSH_NOTIFICATIONS,

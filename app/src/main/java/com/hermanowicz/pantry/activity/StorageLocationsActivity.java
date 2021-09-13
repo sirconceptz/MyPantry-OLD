@@ -17,10 +17,13 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,34 +42,40 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityStorageLocationsBinding;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.dialog.NewStorageLocationDialog;
 import com.hermanowicz.pantry.interfaces.DialogStorageLocationListener;
+import com.hermanowicz.pantry.interfaces.StorageLocationDbResponse;
 import com.hermanowicz.pantry.interfaces.StorageLocationView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
-import com.hermanowicz.pantry.model.StorageLocationModel;
 import com.hermanowicz.pantry.presenter.StorageLocationPresenter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.RecyclerClickListener;
 import com.hermanowicz.pantry.util.StorageLocationsAdapter;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
 /**
- * <h1>CategoriesActivity</h1>
- * Categories activity - user can create own categories to user's pantry.
+ * <h1>StorageLocationActivity</h1>
+ * StorageLocation activity - user can see all storage locations and create new one.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.5
- * @since   1.5
  */
 
-public class StorageLocationsActivity extends AppCompatActivity implements DialogStorageLocationListener, StorageLocationView {
+public class StorageLocationsActivity extends AppCompatActivity implements DialogStorageLocationListener,
+        StorageLocationView, StorageLocationDbResponse {
 
     private ActivityStorageLocationsBinding binding;
     private StorageLocationPresenter presenter;
@@ -74,7 +83,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     private final StorageLocationsAdapter storageLocationsAdapter = new StorageLocationsAdapter();
 
     private AdView adView;
-    private RecyclerView storageLocationRecyclerView;
+    private RecyclerView storageLocationsRecyclerView;
     private TextView statement;
 
     @Override
@@ -82,7 +91,6 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
@@ -96,30 +104,58 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
 
         Toolbar toolbar = binding.toolbar;
         adView = binding.adview;
-        storageLocationRecyclerView = binding.recyclerviewStorageLocations;
+        storageLocationsRecyclerView = binding.recyclerviewStorageLocations;
         statement = binding.textStatement;
 
         setSupportActionBar(toolbar);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
 
-        DatabaseOperations databaseOperations = new DatabaseOperations(context);
-        presenter = new StorageLocationPresenter(this, new StorageLocationModel(databaseOperations));
-        presenter.updateStorageLocationList();
+        presenter = new StorageLocationPresenter(this, context, this);
+        setOnlineDbStorageLocationList(this);
 
-        storageLocationRecyclerView.setAdapter(storageLocationsAdapter);
-        storageLocationRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-        storageLocationRecyclerView.setHasFixedSize(true);
-        storageLocationRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
+        presenter.updateStorageLocationListView();
+        storageLocationsRecyclerView.setAdapter(storageLocationsAdapter);
+        storageLocationsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+        storageLocationsRecyclerView.setHasFixedSize(true);
+        storageLocationsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    @Override
+    public void setOnlineDbStorageLocationList(StorageLocationDbResponse response) {
+        DatabaseReference ref;
+        List<StorageLocation> onlineStorageLocationList = new ArrayList<>();
+        ref = FirebaseDatabase.getInstance().getReference().child("storage_locations/" + FirebaseAuth.getInstance().getUid());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists())
+                    onlineStorageLocationList.clear();
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    StorageLocation storageLocation = dataSnapshot.getValue(StorageLocation.class);
+                    onlineStorageLocationList.add(storageLocation);
+                }
+                response.onResponse(onlineStorageLocationList);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("FirebaseDB", error.getMessage());
+            }
+        });
     }
 
     private void setListeners() {
-        storageLocationRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this, binding.recyclerviewStorageLocations, new RecyclerClickListener.OnItemClickListener() {
+        storageLocationsRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this,
+                binding.recyclerviewStorageLocations, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 List<StorageLocation> storageLocationList = presenter.getStorageLocationList();
                 Intent intent = new Intent(context, StorageLocationDetailsActivity.class)
-                        .putExtra("storage_location_id", storageLocationList.get(position).getId());
+                        .putExtra("storage_location", (Serializable) storageLocationList.get(position));
                 startActivity(intent);
                 CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }
@@ -150,7 +186,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     }
 
     @Override
-    public void onAddStorageLocation(StorageLocation storageLocation) {
+    public void onAddStorageLocation(@NonNull StorageLocation storageLocation) {
         presenter.addStorageLocation(storageLocation);
     }
 
@@ -162,8 +198,9 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
             statement.setVisibility(View.INVISIBLE);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void updateStorageLocationList(List<StorageLocation> storageLocationList) {
+    public void updateStorageLocationViewAdapter(@NonNull List<StorageLocation> storageLocationList) {
         storageLocationsAdapter.setData(storageLocationList);
         storageLocationsAdapter.notifyDataSetChanged();
     }
@@ -174,7 +211,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     }
 
     @Override
-    public void onErrorAddNewStorageLocation() {
+    public void showErrorAddNewStorageLocation() {
         Toast.makeText(this, R.string.Error_wrong_data, Toast.LENGTH_SHORT).show();
     }
 
@@ -183,6 +220,20 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void onResponse(List<StorageLocation> storageLocationList) {
+        presenter.setOnlineDbStorageLocationList(storageLocationList);
+        presenter.updateStorageLocationListView();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMainActivity();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

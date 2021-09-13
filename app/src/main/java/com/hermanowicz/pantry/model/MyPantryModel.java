@@ -19,81 +19,43 @@ package com.hermanowicz.pantry.model;
 
 import android.content.Context;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Keep
 public class MyPantryModel {
 
+    private final ProductDb productDb;
     private LiveData<List<Product>> productLiveData;
     private final MutableLiveData<FilterModel> product = new MutableLiveData<>();
     private FilterModel filterProduct = new FilterModel();
     private Filter filter;
+    private List<Photo> photoList;
     private List<Product> productList;
+    private List<Product> allProductList;
     private List<Product> selectedProductsGroupList = new ArrayList<>();
-    private final List<GroupProducts> groupProductsList = new ArrayList<>();
+    private List<GroupProducts> groupProductsList = new ArrayList<>();
     private boolean isMultiSelect = false;
-    private final DatabaseOperations databaseOperations;
+    private String databaseMode;
 
-    public MyPantryModel(Context context){
-        databaseOperations = new DatabaseOperations(context);
-    }
-
-    private void groupProducts(@NonNull List<Product> productList){
-        groupProductsList.clear();
-        List<GroupProducts> toAddGroupProductsList = new ArrayList<>();
-        List<GroupProducts> toRemoveGroupProductsList = new ArrayList<>();
-
-        for (Product product: productList){
-            boolean productOnList = false;
-            GroupProducts testedGroupProducts = new GroupProducts(product, 1);
-            for (GroupProducts groupProducts : groupProductsList) {
-                if (groupProducts.getProduct().getName().toLowerCase().contains(product.getName().toLowerCase())
-                        && groupProducts.getProduct().getExpirationDate().equals(product.getExpirationDate())
-                        && groupProducts.getProduct().getProductFeatures().equals(product.getProductFeatures())
-                        && groupProducts.getProduct().getComposition().equals(product.getComposition())
-                        && groupProducts.getProduct().getHealingProperties().equals(product.getHealingProperties())
-                        && groupProducts.getProduct().getDosage().equals(product.getDosage())
-                        && groupProducts.getProduct().getVolume() == product.getVolume()
-                        && groupProducts.getProduct().getWeight() == product.getWeight()
-                        && groupProducts.getProduct().getTypeOfProduct().equals(product.getTypeOfProduct())
-                        && groupProducts.getProduct().getProductFeatures().equals(product.getProductFeatures())
-                        && groupProducts.getProduct().getHasSalt() == product.getHasSalt()
-                        && groupProducts.getProduct().getHasSugar() == product.getHasSugar()
-                        && groupProducts.getProduct().getIsBio() == product.getIsBio()
-                        && groupProducts.getProduct().getIsVege() == product.getIsVege()
-                        && groupProducts.getProduct().getTaste().equals(product.getTaste())) {
-                    productOnList = true;
-                    testedGroupProducts = groupProducts;
-                    break;
-                }
-            }
-            if(productOnList) {
-                toRemoveGroupProductsList.add(testedGroupProducts);
-                testedGroupProducts.setQuantity(testedGroupProducts.getQuantity() + 1);
-                toAddGroupProductsList.add(testedGroupProducts);
-            }
-            else {
-                GroupProducts newGroupProduct = new GroupProducts(product, 1);
-                toAddGroupProductsList.add(newGroupProduct);
-            }
-            groupProductsList.removeAll(toRemoveGroupProductsList);
-            groupProductsList.addAll(toAddGroupProductsList);
-            toAddGroupProductsList.clear();
-            toRemoveGroupProductsList.clear();
-        }
+    public MyPantryModel(@NonNull Context context){
+        this.productDb = ProductDb.getInstance(context);
     }
 
     public void deleteSelectedProducts(){
-        databaseOperations.deleteProducts(getAllSelectedProductList());
+        productDb.productsDao().deleteProducts(getAllSelectedProductList());
     }
 
     public LiveData<List<Product>> getProductLiveData() {
@@ -119,7 +81,7 @@ public class MyPantryModel {
     public List<Product> getAllSelectedProductList(){
         List<Product> productList = new ArrayList<>();
         for (Product product : selectedProductsGroupList){
-            List<Product> similarProducts = databaseOperations.getSimilarProductsList(product);
+            List<Product> similarProducts = Product.getSimilarProductsList(product, allProductList);
             productList.addAll(similarProducts);
         }
         return productList;
@@ -129,24 +91,40 @@ public class MyPantryModel {
         this.selectedProductsGroupList = new ArrayList<>();
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(@NonNull List<Product> productList) {
         this.productList = productList;
-        groupProductsList.clear();
         filter = new Filter(this.productList);
-        groupProducts(productList);
+        groupProductsList = GroupProducts.getGroupProducts(productList);
     }
 
-    public void setAllProductsList(){
-        this.productList = databaseOperations.getAllProducts();
-        groupProducts(productList);
+    public void setAllProductsList(@NonNull List<Product> productList){
+        allProductList = productList;
     }
 
-    public List<Product> getProductList(){
-        return this.productList;
+    public void setOfflineDbProductsList(){
+        List<Product> productList = productDb.productsDao().getAllProductsList();
+        setProductList(productList);
     }
 
-    public void setProductsLiveData(){
-        this.productLiveData = databaseOperations.getProductLiveData();
+    public List<Product> getAllProductsList(){
+        return allProductList;
+    }
+
+    public void setProductsLiveData() {
+        if(databaseMode.equals("local"))
+            setProductsOfflineLiveData();
+        else
+            setProductsOnlineLiveData();
+    }
+
+    public void setProductsOnlineLiveData() {
+        MutableLiveData<List<Product>> productListMutableLiveData = new MutableLiveData<>();
+        productListMutableLiveData.setValue(allProductList);
+        productLiveData = productListMutableLiveData;
+    }
+
+    public void setProductsOfflineLiveData() {
+        this.productLiveData = productDb.productsDao().getAllProductsLivedata();
     }
 
     public void addMultiSelect(int position) {
@@ -201,7 +179,8 @@ public class MyPantryModel {
         productLiveData = Transformations.switchMap(product, filter::filterByProduct);
     }
 
-    public void filterProductListByProductFeatures(Filter.Set fltrHasSugar, Filter.Set fltrHasSalt, Filter.Set fltrIsBio, Filter.Set fltrIsVege) {
+    public void filterProductListByProductFeatures(Filter.Set fltrHasSugar, Filter.Set fltrHasSalt,
+                                                   Filter.Set fltrIsBio, Filter.Set fltrIsVege) {
         filterProduct.setHasSugar(fltrHasSugar);
         filterProduct.setHasSalt(fltrHasSalt);
         filterProduct.setIsBio(fltrIsBio);
@@ -218,5 +197,21 @@ public class MyPantryModel {
 
     public FilterModel getFilterProduct(){
         return filterProduct;
+    }
+
+    public void setDatabaseMode(@NonNull String databaseMode) {
+        this.databaseMode = databaseMode;
+    }
+
+    public String getDatabaseMode() {
+        return databaseMode;
+    }
+
+    public void setPhotoList(List<Photo> photoList) {
+        this.photoList = photoList;
+    }
+
+    public List<Photo> getPhotoList() {
+        return photoList;
     }
 }

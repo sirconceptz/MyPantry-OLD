@@ -506,6 +506,7 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/PrintQRCodesActivity_print_qr_codes"
+                android:textColor="@color/text_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_productDosageValue" />
@@ -520,6 +521,7 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_edit_product"
+                android:textColor="@color/text_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/button_printQRCode" />
 
@@ -533,9 +535,9 @@
                 android:textSize="20sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/AddPhotoActivity_take_photo_of_product"
+                android:textColor="@color/text_color"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/button_editProduct" />
-
 
             <Button
                 android:id="@+id/button_deleteProduct"
@@ -546,6 +548,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:textSize="20sp"
+                android:textColor="@color/text_color"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/ProductDetailsActivity_delete_product"
                 app:layout_constraintStart_toStartOf="parent"

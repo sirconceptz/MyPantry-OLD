@@ -24,11 +24,36 @@
     <PreferenceCategory android:title="@string/AppSettingsActivity_general_settings">
 
         <Preference
+            android:icon="@drawable/ic_shopping_cart"
+            android:selectable="true"
+            android:enabled="false"
+            android:key="@string/PreferencesKey_go_premium"
+            android:title="@string/AppSettingsActivity_go_premium"/>
+
+        <Preference
             android:icon="@drawable/ic_person"
             android:selectable="true"
             android:enabled="true"
             android:key="@string/PreferencesKey_active_user"
             android:title="@string/AppSettingsActivity_active_user"/>
+
+        <ListPreference
+            android:dialogTitle="@string/AppSettingsActivity_database_mode"
+            android:defaultValue="local"
+            android:selectable="true"
+            android:enabled="false"
+            android:entries="@array/AppSettingsActivity_database_mode"
+            android:entryValues="@array/AppSettingsActivity_database_mode_value"
+            android:icon="@drawable/ic_backup"
+            android:key="@string/PreferencesKey_database_mode"
+            android:title="@string/AppSettingsActivity_database_mode" />
+
+        <Preference
+            android:icon="@drawable/ic_restore"
+            android:selectable="true"
+            android:enabled="true"
+            android:key="@string/PreferencesKey_import_db"
+            android:title="@string/AppSettingsActivity_import_db"/>
 
         <ListPreference
             android:dialogTitle="@string/AppSettingsActivity_which_theme_user_prefer"
@@ -47,6 +72,14 @@
             android:icon="@drawable/ic_camera"
             android:key="@string/PreferencesKey_scan_camera"
             android:title="@string/AppSettingsActivity_which_camera_to_scan_products" />
+
+        <SwitchPreference
+            android:dialogTitle="@string/AppSettingsActivity_qr_code_sizes"
+            android:icon="@drawable/ic_qr_code_sizes"
+            android:summaryOff="@string/AppSettingsActivity_qr_code_size_small"
+            android:summaryOn="@string/AppSettingsActivity_qr_code_size_big"
+            android:key="@string/PreferencesKey_qr_code_size"
+            android:title="@string/AppSettingsActivity_qr_code_sizes" />
 
         <SwitchPreference
             android:defaultValue="true"

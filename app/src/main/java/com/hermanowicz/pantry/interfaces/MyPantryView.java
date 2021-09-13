@@ -36,9 +36,9 @@ public interface MyPantryView {
 
     void updateSelectsRecyclerViewAdapter();
 
-    void updateProductsRecyclerViewAdapter();
+    void updateProductsViewAdapter();
 
-    void onPrintProducts(List<Product> productList);
+    void onPrintProducts(List<Product> productList, List<Product> allProductList);
 
     void onDeleteProducts(List<Product> productList);
 }

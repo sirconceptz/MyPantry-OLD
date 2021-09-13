@@ -17,11 +17,22 @@
 
 package com.hermanowicz.pantry.db.storagelocation;
 
+import androidx.annotation.Keep;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
+/**
+ * <h1>StorageLocation/h1>
+ * Storage location model.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
+@Keep
 @Entity(tableName = "storage_locations")
-public class StorageLocation {
+public class StorageLocation implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;

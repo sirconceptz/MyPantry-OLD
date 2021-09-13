@@ -44,6 +44,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * <h1>ProductsAdapter</h1>
+ * View's adapter for products view
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class ProductsAdapter extends
         RecyclerView.Adapter<ProductsAdapter.ViewHolder> {
 

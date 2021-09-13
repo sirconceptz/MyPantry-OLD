@@ -40,14 +40,12 @@ import java.util.List;
  * Class to support the notification in the application.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
 public class Notification {
 
     public static final int NOTIFICATION_DEFAULT_HOUR = 12;
-    public static final int NOTIFICATION_DEFAULT_DAYS = 3;
+    public static final String NOTIFICATION_DEFAULT_DAYS = "3";
     private static final String PREFERENCES_DAYS_TO_NOTIFICATIONS = "HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?";
 
     private static Calendar createCalendar(@NonNull Context context, @NonNull String expirationDate){
@@ -62,7 +60,7 @@ public class Notification {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.add(Calendar.DAY_OF_MONTH, -Integer.parseInt(preferences.getString(
-                PREFERENCES_DAYS_TO_NOTIFICATIONS, String.valueOf(Notification.NOTIFICATION_DEFAULT_DAYS))));
+                PREFERENCES_DAYS_TO_NOTIFICATIONS, Notification.NOTIFICATION_DEFAULT_DAYS)));
 
         return calendar;
     }
@@ -75,8 +73,7 @@ public class Notification {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, product.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager)(context.getSystemService(Context.ALARM_SERVICE));
 
-        if(!product.getExpirationDate().equals("-"))
-        {
+        if(!product.getExpirationDate().equals("-")) {
             Calendar calendar = createCalendar(context, product.getExpirationDate());
             assert alarmManager != null;
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,
@@ -84,16 +81,16 @@ public class Notification {
         }
     }
 
-    public static void createNotificationsForAllProducts(@NonNull Context context){
-        ProductDb productDb = ProductDb.getInstance(context);
-        List<Product> productsList = productDb.productsDao().getAllProductsList();
-
-        for(int counter=0; counter < productsList.size(); counter++){
-            Product selectedProduct = productsList.get(counter);
-            String expirationDate = selectedProduct.getExpirationDate();
-            if (Date.valueOf(expirationDate).after(new Date(System.currentTimeMillis())))
-                Notification.createNotification(context, selectedProduct);
-        }
+    public static void createNotificationsForAllProducts(@NonNull Context context, List<Product> productList){
+        for(int counter=0; counter < productList.size(); counter++){
+            Product selectedProduct = productList.get(counter);
+            String productExpiration = selectedProduct.getExpirationDate();
+            if(!productExpiration.equals("-")){
+                Date expirationDate = Date.valueOf(productExpiration);
+                Date currentTime = new Date(System.currentTimeMillis());
+                if (expirationDate.after(currentTime))
+                    Notification.createNotification(context, selectedProduct);
+        }}
     }
 
     public static void cancelNotification(@NonNull Context context, @NonNull Product product) {

@@ -34,6 +34,13 @@ import com.hermanowicz.pantry.db.category.Category;
 
 import java.util.List;
 
+/**
+ * <h1>CategoriesAdapter</h1>
+ * View's adapter for categories view
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
     private RvSingleCategoryBinding binding;

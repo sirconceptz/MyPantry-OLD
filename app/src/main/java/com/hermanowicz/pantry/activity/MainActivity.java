@@ -19,57 +19,66 @@ package com.hermanowicz.pantry.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
+import androidx.preference.PreferenceManager;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityMainBinding;
+import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.dialog.AuthorDialog;
 import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.MainView;
+import com.hermanowicz.pantry.interfaces.ProductDbResponse;
 import com.hermanowicz.pantry.presenter.MainPresenter;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>MainActivity</h1>
- * Main activity - main window of the application. First window after launching this application.
+ * Main activity - main window of the application.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
 
-public class MainActivity extends AppCompatActivity implements MainView, AccountView {
+public class MainActivity extends AppCompatActivity implements MainView, AccountView, ProductDbResponse {
 
-    private final int RC_SIGN_IN = 10;
 
-    private ActivityMainBinding binding;
     private MainPresenter presenter;
     private Context context;
     private long pressedTime;
 
     private CardView myPantry, scanProduct, newProduct, ownCategories, storageLocations, appSettings;
     private TextView loggedUser;
-    private ImageView login, authorInfo;
+    private ImageView authorInfo;
     private AdView adView;
 
     @Override
@@ -83,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     }
 
     private void initView() {
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        com.hermanowicz.pantry.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
@@ -98,14 +107,52 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         ownCategories = binding.ownCategoriesCV;
         storageLocations = binding.storageLocationsCV;
         appSettings = binding.appSettingsCV;
-        login = binding.login;
         loggedUser = binding.loggedUser;
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
-        presenter = new MainPresenter(this, this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        presenter = new MainPresenter(this, this, sharedPreferences);
+        presenter.setPremiumAccess(new PremiumAccess(context));
         presenter.updateUserData();
+
+        //if(!presenter.isPremium()) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+
+            adView.loadAd(adRequest);
+        //}
+
+        setOnlineDbProductList(this);
+
+        if (presenter.isOfflineDb()) {
+            ProductDb db = ProductDb.getInstance(context);
+            List<Product> productList = db.productsDao().getAllProductsList();
+            presenter.restoreNotifications(context, productList);
+        }
+    }
+
+    private void setOnlineDbProductList(ProductDbResponse response) {
+        if(!presenter.isOfflineDb()) {
+            List<Product> onlineProductList = new ArrayList<>();
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference().child("products/" +
+                    FirebaseAuth.getInstance().getUid());
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists())
+                        onlineProductList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Product product = dataSnapshot.getValue(Product.class);
+                        onlineProductList.add(product);
+                    }
+                    response.onProductResponse(onlineProductList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("FirebaseDB", error.getMessage());
+                }
+            });
+        }
     }
 
     private void setListeners() {
@@ -116,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         storageLocations.setOnClickListener(view -> presenter.navigateToStorageLocationsActivity());
         appSettings.setOnClickListener(view -> presenter.navigateToAppSettingsActivity());
         authorInfo.setOnClickListener(view -> presenter.showAuthorInfoDialog());
-        login.setOnClickListener(view -> presenter.signInOrSignOut());
     }
 
     @Override
@@ -183,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        int RC_SIGN_IN = 10;
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 presenter.updateUserData();
@@ -192,39 +239,32 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
 
     @Override
     public void signIn() {
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build());
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setTheme(R.style.AppTheme)
-                        .build(),
-                RC_SIGN_IN);
     }
 
     @Override
     public void signOut() {
-        AuthUI.getInstance().signOut(this);
     }
 
     @Override
     public void updateUserData(String userEmail) {
         if(userEmail == null)
-            loggedUser.setText("Wylogowany");
+            loggedUser.setText(String.format("%s: %s", getString(R.string.General_user), getString(R.string.General_loggedOut)));
         else
-            loggedUser.setText("Zalogowany: " + userEmail);
+            loggedUser.setText(String.format("%s: %s", getString(R.string.General_user), userEmail));
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        adView.resume();
+        if(!presenter.isPremium())
+            adView.resume();
     }
 
     @Override
     public void onPause() {
-        adView.pause();
+        super.onResume();
+        if(!presenter.isPremium())
+            adView.pause();
         super.onPause();
     }
 
@@ -238,5 +278,10 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     public void finish() {
         super.finish();
         CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void onProductResponse(List<Product> productList) {
+        presenter.restoreNotifications(context, productList);
     }
 }

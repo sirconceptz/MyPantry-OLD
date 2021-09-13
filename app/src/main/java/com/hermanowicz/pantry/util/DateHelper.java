@@ -24,6 +24,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * <h1>DateHelper</h1>
+ * Class used to get date in specific formats
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class DateHelper {
 
     private final Calendar calendar = Calendar.getInstance();

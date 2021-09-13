@@ -23,18 +23,40 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
+import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.PrintQRCodesModel;
+import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
+
+/**
+ * <h1>PrintQRCodesPresenter</h1>
+ * Presenter for PrintQRCodesActivity
+ *
+ * @author  Mateusz Hermanowicz
+ */
 
 public class PrintQRCodesPresenter {
 
     private final PrintQRCodesView view;
-    private final PrintQRCodesModel model = new PrintQRCodesModel();
+    private final PrintQRCodesModel model;
+    private final AppSettingsModel appSettingsModel;
+    private final AppCompatActivity activity;
+    private PremiumAccess premiumAccess;
 
-    public PrintQRCodesPresenter(@NonNull PrintQRCodesView view) {
+    public PrintQRCodesPresenter(@NonNull PrintQRCodesView view,
+                                 @NonNull AppSettingsModel appSettingsModel,
+                                 @NonNull AppCompatActivity activity) {
         this.view = view;
+        this.activity = activity;
+        this.model = new PrintQRCodesModel(activity);
+        this.appSettingsModel = appSettingsModel;
+    }
+
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+        this.premiumAccess = premiumAccess;
     }
 
     private boolean createAndSavePDF() {
@@ -44,14 +66,6 @@ public class PrintQRCodesPresenter {
         else
             model.requestWritePermission();
         return result;
-    }
-
-    public void setProductList(@NonNull List<Product> productList){
-        model.setProductList(productList);
-    }
-
-    public void setActivity(@NonNull AppCompatActivity activity) {
-        model.setActivity(activity);
     }
 
     public void showQRCodeImage() {
@@ -75,5 +89,25 @@ public class PrintQRCodesPresenter {
 
     public void navigateToMainActivity() {
         view.navigateToMainActivity();
+    }
+
+    public boolean isPremium(){
+        return premiumAccess.isPremium();
+    }
+
+    public boolean isOfflineDb() {
+        return appSettingsModel.getDatabaseMode().equals("local");
+    }
+
+    public void setAllProductList(List<Product> productList) {
+        if(isOfflineDb()) {
+            ProductDb db = ProductDb.getInstance(activity);
+            productList = db.productsDao().getAllProductsList();
+        }
+        model.setAllProductList(productList);
+    }
+
+    public void setProductList(List<Product> productList) {
+        model.setProductList(productList);
     }
 }

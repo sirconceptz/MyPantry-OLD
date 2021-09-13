@@ -25,6 +25,13 @@ import androidx.room.Update;
 
 import java.util.List;
 
+/**
+ * <h1>CategoryDao</h1>
+ * Categories dao needed to support database.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 @Dao
 public interface CategoryDao {
     @Query("SELECT * FROM categories WHERE id = (:id)")

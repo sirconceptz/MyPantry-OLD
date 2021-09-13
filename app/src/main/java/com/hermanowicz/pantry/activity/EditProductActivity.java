@@ -46,19 +46,21 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityEditProductBinding;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.model.GroupProducts;
-import com.hermanowicz.pantry.model.ProductDataModel;
 import com.hermanowicz.pantry.presenter.EditProductPresenter;
 import com.hermanowicz.pantry.util.DateHelper;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import maes.tech.intentanim.CustomIntent;
@@ -68,8 +70,6 @@ import maes.tech.intentanim.CustomIntent;
  * Activity for edit product details.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.3
  */
 
 public class EditProductActivity extends AppCompatActivity implements EditProductView, ProductDataView {
@@ -79,7 +79,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private Context context;
     private Resources resources;
     private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
-    private ArrayAdapter<CharSequence> productCategoryAdapter, productStorageLocationAdapter;
+    private ArrayAdapter<CharSequence> productCategoryAdapter;
     private int day, month, year;
     private boolean isTypeOfProductTouched;
 
@@ -108,13 +108,16 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
 
         context = EditProductActivity.this;
         resources = context.getResources();
-        ProductDataModel model = new ProductDataModel(context, resources);
-        presenter = new EditProductPresenter(this, this, model);
+        presenter = new EditProductPresenter(this, this, context);
+        presenter.setPremiumAccess(new PremiumAccess(context));
 
         adView = binding.adview;
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
 
         setSupportActionBar(binding.toolbar);
 
@@ -152,11 +155,14 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
 
         Intent myPantryActivityIntent = getIntent();
         int productId = myPantryActivityIntent.getIntExtra("product_id", 1);
+        List<Product> productList = (List<Product>) myPantryActivityIntent.getSerializableExtra("product_list");
+
+        presenter.setProductList(productList);
 
         ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
         binding.productEdit.spinnerProductType.setAdapter(productTypeAdapter);
 
-        productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
+        ArrayAdapter<CharSequence> productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
         productStorageLocationAdapter.notifyDataSetChanged();
         productStorageLocation.setAdapter(productStorageLocationAdapter);
 
@@ -378,13 +384,12 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.action_save_product:
-                presenter.onClickSaveProductButton();
-                return true;
-            case R.id.action_cancel:
-                presenter.onClickCancelButton();
-                return true;
+        if (id == R.id.action_save_product) {
+            presenter.onClickSaveProductButton();
+            return true;
+        } else if (id == R.id.action_cancel) {
+            presenter.onClickCancelButton();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

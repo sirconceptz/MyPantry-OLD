@@ -15,16 +15,12 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.model;
+package com.hermanowicz.pantry.interfaces;
 
-import androidx.annotation.NonNull;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 
-public class User {
+import java.util.List;
 
-    public String name, email;
-
-    public User(@NonNull String name, @NonNull String email){
-        this.name = name;
-        this.email = email;
-    }
+public interface StorageLocationDbResponse {
+    void onResponse(List<StorageLocation> storageLocationList);
 }

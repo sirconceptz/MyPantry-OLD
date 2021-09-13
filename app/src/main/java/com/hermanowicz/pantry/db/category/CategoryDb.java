@@ -25,6 +25,13 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+/**
+ * <h1>CategoryDb/h1>
+ * Category database class
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 @Database(entities = {Category.class}, version = 1)
 public abstract class CategoryDb extends RoomDatabase {
 
@@ -33,7 +40,7 @@ public abstract class CategoryDb extends RoomDatabase {
     private static CategoryDb INSTANCE;
     private static final Object sLock = new Object();
 
-    public static CategoryDb getInstance(Context context) {
+    public static CategoryDb getInstance(@NonNull Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),

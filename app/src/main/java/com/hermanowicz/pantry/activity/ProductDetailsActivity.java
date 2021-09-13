@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,20 +39,29 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding;
+import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.interfaces.PhotoDbResponse;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
-import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.model.GroupProducts;
-import com.hermanowicz.pantry.model.ProductDataModel;
 import com.hermanowicz.pantry.presenter.ProductDetailsPresenter;
 import com.hermanowicz.pantry.util.DateHelper;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -63,16 +73,15 @@ import maes.tech.intentanim.CustomIntent;
  * scanning the QR code of product.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.0
- * @since   1.0
  */
-public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView {
 
-    private ActivityProductDetailsBinding binding;
+public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView,
+        PhotoDbResponse {
+
     private ProductDetailsPresenter presenter;
     private Context context;
     private int productId;
-
+    private String hashCode;
     private TextView productType, productCategory, productStorageLocation, productExpirationDate,
             productProductionDate, productComposition, productHealingProperties, productDosage,
             productVolume, productWeight, productQuantity, productHasSugar, productHasSalt,
@@ -80,7 +89,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     private ImageView photoIv;
     private Button deleteProduct, printQrCode, addPhoto, editProduct;
     private AdView adView;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,10 +98,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
-            }
+    }
 
     private void initView() {
-        binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
+        com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
@@ -122,27 +130,59 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         addPhoto = binding.buttonAddPhoto;
         adView = binding.adview;
 
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
-
         setSupportActionBar(toolbar);
 
-        presenter = new ProductDetailsPresenter(this, new ProductDataModel(context,
-                getResources()), new DatabaseOperations(context));
+        presenter = new ProductDetailsPresenter(this, this);
+        presenter.setPremiumAccess(new PremiumAccess(context));
+
+        setOnlineDbPhotoList(this);
+
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
 
         Intent myPantryActivityIntent = getIntent();
+        List<Product> productList = (List<Product>) myPantryActivityIntent.getSerializableExtra("product_list");
+        presenter.setProductList(productList);
         productId = myPantryActivityIntent.getIntExtra("product_id", 1);
-        String hashCode = myPantryActivityIntent.getStringExtra("hash_code");
-
+        hashCode = myPantryActivityIntent.getStringExtra("hash_code");
         presenter.setProductId(productId);
-        presenter.showProductDetails(hashCode);
+
+        if(presenter.isOfflineDb())
+            presenter.showProductDetails(hashCode);
     }
 
     private void setListeners() {
-        deleteProduct.setOnClickListener(view -> presenter.onClickDeleteProduct(productId));
+        deleteProduct.setOnClickListener(view -> presenter.onClickDeleteProduct());
         printQrCode.setOnClickListener(view -> presenter.onClickPrintQRCodes());
         editProduct.setOnClickListener(view -> presenter.onClickEditProduct(productId));
         addPhoto.setOnClickListener(view -> presenter.onClickTakePhoto());
+    }
+
+    private void setOnlineDbPhotoList(PhotoDbResponse response) {
+        if(!presenter.isOfflineDb()) {
+            List<Photo> onlinePhotoList = new ArrayList<>();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("photos/" + FirebaseAuth.getInstance().getUid());
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists())
+                        onlinePhotoList.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        Photo photo = dataSnapshot.getValue(Photo.class);
+                        onlinePhotoList.add(photo);
+                    }
+                    response.onPhotoResponse(onlinePhotoList);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.d("FirebaseDB - Photos", error.getMessage());
+                }
+            });
+        }
     }
 
     @Override
@@ -155,7 +195,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         else
             productStorageLocation.setText(groupProducts.getProduct().getStorageLocation());
         productQuantity.setText(String.valueOf(groupProducts.getQuantity()));
-        productCategory.setText(groupProducts.getProduct().getProductFeatures());
+        if(!groupProducts.getProduct().getProductFeatures().equals("null"))
+            productCategory.setText(groupProducts.getProduct().getProductFeatures());
         productExpirationDate.setText(dateHelper.getDateInLocalFormat());
         dateHelper = new DateHelper(groupProducts.getProduct().getProductionDate());
         productProductionDate.setText(dateHelper.getDateInLocalFormat());
@@ -195,9 +236,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void navigateToEditProductActivity(int productId) {
+    public void navigateToEditProductActivity(int productId, List<Product> productList) {
         Intent editProductActivityIntent = new Intent(context, EditProductActivity.class)
-                .putExtra("product_id", productId);
+                .putExtra("product_id", productId)
+                .putExtra("product_list", (Serializable) productList);
         startActivity(editProductActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
@@ -210,7 +252,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void navigateToAddPhotoActivity(List<Product> productList) {
+    public void navigateToAddPhotoActivity(List<Product> productList, List<Photo> photoList) {
         Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
                 .putExtra("product_list", (Serializable) productList);
         startActivity(addPhotoActivityIntent);
@@ -226,19 +268,18 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.action_take_photo:
-                presenter.onClickTakePhoto();
-                return true;
-            case R.id.action_print_codes:
-                presenter.onClickPrintQRCodes();
-                return true;
-            case R.id.action_edit_product:
-                presenter.onClickEditProduct(productId);
-                return true;
-            case R.id.action_delete_product:
-                presenter.onClickDeleteProduct(productId);
-                return true;
+        if (id == R.id.action_take_photo) {
+            presenter.onClickTakePhoto();
+            return true;
+        } else if (id == R.id.action_print_codes) {
+            presenter.onClickPrintQRCodes();
+            return true;
+        } else if (id == R.id.action_edit_product) {
+            presenter.onClickEditProduct(productId);
+            return true;
+        } else if (id == R.id.action_delete_product) {
+            presenter.onClickDeleteProduct();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -259,6 +300,12 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onPhotoResponse(List<Photo> photoList) {
+        presenter.setPhotoList(photoList);
+        presenter.showProductDetails(hashCode);
     }
 
     @Override

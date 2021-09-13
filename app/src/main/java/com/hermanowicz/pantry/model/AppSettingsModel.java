@@ -22,8 +22,15 @@ import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hermanowicz.pantry.BuildConfig;
+import com.hermanowicz.pantry.db.category.Category;
+import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class AppSettingsModel {
@@ -32,6 +39,46 @@ public class AppSettingsModel {
 
     public AppSettingsModel(@NonNull SharedPreferences preferences) {
         this.preferences = preferences;
+    }
+
+    public void cleanOnlineDb(){
+        FirebaseDatabase.getInstance().getReference()
+                .child("products/"+ FirebaseAuth.getInstance().getUid()).removeValue();
+        FirebaseDatabase.getInstance().getReference()
+                .child("categories/"+ FirebaseAuth.getInstance().getUid()).removeValue();
+        FirebaseDatabase.getInstance().getReference()
+                .child("storage_locations/"+ FirebaseAuth.getInstance().getUid()).removeValue();
+    }
+
+    public void importDbOfflineToOnline(List<Product> productList, List<Category> categoryList,
+                                        List<StorageLocation> storageLocationsList){
+        importProductDb(productList);
+        importCategoryDb(categoryList);
+        importStorageLocationDb(storageLocationsList);
+    }
+
+    private void importStorageLocationDb(List<StorageLocation> storageLocationsList) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child("storage_locations/"+ FirebaseAuth.getInstance().getUid());
+        for(StorageLocation storageLocation : storageLocationsList){
+            ref.child(String.valueOf(storageLocation.getId())).setValue(storageLocation);
+        }
+    }
+
+    private void importCategoryDb(List<Category> categoryList) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child("categories/"+ FirebaseAuth.getInstance().getUid());
+        for(Category category : categoryList){
+            ref.child(String.valueOf(category.getId())).setValue(category);
+        }
+    }
+
+    private void importProductDb(List<Product> productList) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child("products/"+ FirebaseAuth.getInstance().getUid());
+        for(Product product : productList){
+            ref.child(String.valueOf(product.getId())).setValue(product);
+        }
     }
 
     public int getSelectedAppTheme() {
@@ -78,5 +125,21 @@ public class AppSettingsModel {
 
     public static void deleteOldSettings(@NonNull SharedPreferences preferences){
         preferences.edit().clear().putBoolean("SETTINGS_UPDATED", true).apply();
+    }
+
+    public String getDatabaseMode() {
+        return preferences.getString("DATABASE_MODE", "local");
+    }
+
+    public void setDatabaseMode(String databaseMode) {
+        preferences.edit().putString("DATABASE_MODE", databaseMode).apply();
+    }
+
+    public void setPremiumIsRestored() {
+        preferences.edit().putBoolean("PREMIUM_IS_RESTORED", true).apply();
+    }
+
+    public boolean isPremiumRestored() {
+        return preferences.getBoolean("PREMIUM_IS_RESTORED", false);
     }
 }

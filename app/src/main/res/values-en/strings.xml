@@ -26,6 +26,7 @@
     <string name="title_activity_edit_product">Edit product</string>
     <string name="title_activity_add_photo">Add photo</string>
     <!--General-->
+    <string name="General_choose">Choose</string>
     <string name="General_char_counter">Max characters</string>
     <string name="General_press_back_agait_to_exit">Press back again to exit</string>
     <string name="General_required">(Required)</string>
@@ -33,6 +34,10 @@
     <string name="General_cancel">Cancel</string>
     <string name="General_author_label">Author</string>
     <string name="General_save">Save</string>
+    <string name="General_user_is_premium">The user is already Premium ;-)</string>
+    <string name="General_user">User</string>
+    <string name="General_loggedOut">Logged out</string>
+    <string name="General_premium_purchase_done">Thank you for your premium purchase! Wish you enjoy your use!</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">My pantry</string>
     <string name="MainActivity_scan_product_button">Scan the product\'s QR code</string>
@@ -52,8 +57,13 @@
     <string name="MyPantryActivity_with_sugar">+Sugar</string>
     <string name="MyPantryActivity_with_salt">+Salt</string>
     <!--ScanProductActivity-->
+    <string name="ScanProductActivity_choose_scan_type">Choose whether you want to scan the QR of the product created by the application or scan the barcode of the store product.</string>
+    <string name="ScanProductActivity_choose_product_to_copy">The barcode has been added to the following products. Select the product you want to add from the list.</string>
     <string name="ScanProductActivity_scan_qr_code">Scan QR code of the product</string>
+    <string name="ScanProductActivity_scan_barcode">Scan the product barcode</string>
+    <string name="ScanProductActivity_enter_barcode_manually">Enter the barcode manually</string>
     <string name="ScanProductActivity_product_not_found">Product was not found.</string>
+    <string name="ScanProductActivity_scanner_hint">Important: The barcode scanner does not search for products that have not been previously added to the application.</string>
     <!--NewProductActivity-->
     <string name="NewProductActivity_add_a_product">Add a product</string>
     <string name="NewProductActivity_product_added_successful">The product has been added to the product database.</string>
@@ -235,6 +245,7 @@
     <string name="AppSettingsActivity_notifications_settings">Notifications settings</string>
     <string name="AppSettingsActivity_enabled">Enabled</string>
     <string name="AppSettingsActivity_disabled">Disabled</string>
+    <string name="AppSettingsActivity_qr_code_sizes">Size of printed QR code labels</string>
     <string name="AppSettingsActivity_which_theme_user_prefer">Choose application mode</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Camera for scanning QR codes</string>
     <string name="AppSettingsActivity_scanner_vibration_mode">Vibration on scan</string>
@@ -266,6 +277,13 @@
     <string name="AppSettingsActivity_db_backup_has_been_made">The backup has been created</string>
     <string name="AppSettingsActivity_db_has_been_restored">The backup has been restored</string>
     <string name="AppSettingsActivity_db_has_been_clear">The database has been cleared</string>
+    <string name="AppSettingsActivity_active_user">Active user</string>
+    <string name="AppSettingsActivity_go_premium">Switch to Premium Account</string>
+    <string name="AppSettingsActivity_database_mode">Product database mode</string>
+    <string name="AppSettingsActivity_qr_code_size_big">Big</string>
+    <string name="AppSettingsActivity_qr_code_size_small">Small</string>
+    <string name="AppSettingsActivity_import_db">Import database from phone to cloud</string>
+    <string name="AppSettingsActivity_import_db_statement">Import the product database from the device to the cloud (to an internet account). CURRENTLY SAVED DATA IN THE CLOUD WILL BE DELETED AND REPLACED BY PHONE PRODUCTS.</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Rear camera</item>
         <item>Front camera</item>
@@ -274,6 +292,10 @@
         <item>Automatic</item>
         <item>Day</item>
         <item>Night</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_database_mode">
+        <item>Local (in phone)</item>
+        <item>Online</item>
     </string-array>
     <!--Notifications-->
     <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
@@ -285,6 +307,8 @@
     <string name="Error_category_not_selected">Category was not selected</string>
     <string name="Error_product_name_is_required">Name of product is required</string>
     <string name="Error_char_counter">Wrong value</string>
+    <string name="Error_for_premium_users_only">Function for premium user only</string>
+    <string name="Error_billing_client_not_ready">Payment feature currently unavailable</string>
     <!--Author-->
     <string name="Author_contact_with_author">Contact with author</string>
 </resources>

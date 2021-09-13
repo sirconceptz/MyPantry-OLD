@@ -19,6 +19,8 @@ package com.hermanowicz.pantry.model;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.ebner.roomdatabasebackup.core.RoomBackup;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.category.CategoryDb;
@@ -28,13 +30,13 @@ import com.hermanowicz.pantry.util.DateHelper;
 
 public class DatabaseBackup {
 
-    public static void backupProductDb(Context context) {
+    public static void backupProductDb(@NonNull Context context) {
         final RoomBackup roomBackup = new RoomBackup();
         String currentTime = DateHelper.getTimeStamp();
         roomBackup.context(context);
         roomBackup.database(ProductDb.getInstance(context));
         roomBackup.customBackupFileName("ProductDbBackup:" + currentTime);
-        roomBackup.customEncryptPassword(context.getString(R.string.database_secretcode));
+        roomBackup.customEncryptPassword(context.getString(R.string.database_encrypt_code));
         roomBackup.enableLogDebug(true);
         roomBackup.backupIsEncrypted(true);
         roomBackup.useExternalStorage(true);
@@ -42,13 +44,13 @@ public class DatabaseBackup {
         roomBackup.backup();
     }
 
-    public static void backupCategoryDb(Context context) {
+    public static void backupCategoryDb(@NonNull Context context) {
         final RoomBackup roomBackup = new RoomBackup();
         String currentTime = DateHelper.getTimeStamp();
         roomBackup.context(context);
         roomBackup.database(CategoryDb.getInstance(context));
         roomBackup.customBackupFileName("CategoryDbBackup:" + currentTime);
-        roomBackup.customEncryptPassword(context.getString(R.string.database_secretcode));
+        roomBackup.customEncryptPassword(context.getString(R.string.database_encrypt_code));
         roomBackup.enableLogDebug(true);
         roomBackup.backupIsEncrypted(true);
         roomBackup.useExternalStorage(true);
@@ -56,13 +58,13 @@ public class DatabaseBackup {
         roomBackup.backup();
     }
 
-    public static void backupStorageLocationDb(Context context) {
+    public static void backupStorageLocationDb(@NonNull Context context) {
         final RoomBackup roomBackup = new RoomBackup();
         String currentTime = DateHelper.getTimeStamp();
         roomBackup.context(context);
         roomBackup.database(StorageLocationDb.getInstance(context));
         roomBackup.customBackupFileName("StorageLocationDbBackup:" + currentTime);
-        roomBackup.customEncryptPassword(context.getString(R.string.database_secretcode));
+        roomBackup.customEncryptPassword(context.getString(R.string.database_encrypt_code));
         roomBackup.enableLogDebug(true);
         roomBackup.backupIsEncrypted(true);
         roomBackup.useExternalStorage(true);
@@ -70,11 +72,11 @@ public class DatabaseBackup {
         roomBackup.backup();
     }
 
-    public static void restoreProductDb(Context context){
+    public static void restoreProductDb(@NonNull Context context){
         final RoomBackup roomBackup = new RoomBackup();
         roomBackup.context(context);
         roomBackup.database(ProductDb.getInstance(context));
-        roomBackup.customEncryptPassword(context.getString(R.string.database_secretcode));
+        roomBackup.customEncryptPassword(context.getString(R.string.database_encrypt_code));
         roomBackup.customRestoreDialogTitle(context.getString(R.string.AppSettingsActivity_choose_file_to_restore));
         roomBackup.enableLogDebug(true);
         roomBackup.backupIsEncrypted(true);
@@ -82,11 +84,11 @@ public class DatabaseBackup {
         roomBackup.restore();
     }
 
-    public static void restoreCategoryDb(Context context){
+    public static void restoreCategoryDb(@NonNull Context context){
         final RoomBackup roomBackup = new RoomBackup();
         roomBackup.context(context);
         roomBackup.database(CategoryDb.getInstance(context));
-        roomBackup.customEncryptPassword(context.getString(R.string.database_secretcode));
+        roomBackup.customEncryptPassword(context.getString(R.string.database_encrypt_code));
         roomBackup.customRestoreDialogTitle(context.getString(R.string.AppSettingsActivity_choose_file_to_restore));
         roomBackup.enableLogDebug(true);
         roomBackup.backupIsEncrypted(true);
@@ -94,11 +96,11 @@ public class DatabaseBackup {
         roomBackup.restore();
     }
 
-    public static void restoreStorageLocationDb(Context context){
+    public static void restoreStorageLocationDb(@NonNull Context context){
         final RoomBackup roomBackup = new RoomBackup();
         roomBackup.context(context);
         roomBackup.database(StorageLocationDb.getInstance(context));
-        roomBackup.customEncryptPassword(context.getString(R.string.database_secretcode));
+        roomBackup.customEncryptPassword(context.getString(R.string.database_encrypt_code));
         roomBackup.customRestoreDialogTitle(context.getString(R.string.AppSettingsActivity_choose_file_to_restore));
         roomBackup.enableLogDebug(true);
         roomBackup.backupIsEncrypted(true);
@@ -106,15 +108,15 @@ public class DatabaseBackup {
         roomBackup.restore();
     }
 
-    public static void clearProductDb (Context context){
+    public static void clearProductDb (@NonNull Context context){
         ProductDb.getInstance(context).productsDao().clearDb();
     }
 
-    public static void clearCategoryDb (Context context){
+    public static void clearCategoryDb (@NonNull Context context){
         CategoryDb.getInstance(context).categoryDao().clearDb();
     }
 
-    public static void clearStorageLocationDb (Context context){
+    public static void clearStorageLocationDb (@NonNull Context context){
         StorageLocationDb.getInstance(context).storageLocationDao().clearDb();
     }
 }

@@ -20,6 +20,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.hermanowicz.pantry">
 
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission
         android:name="android.permission.CAMERA"
         android:required="true" />
@@ -68,12 +69,13 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-4025776034769422~3797748160" />
+            android:value="@string/ads_app_id" />
 
         <activity
             android:name=".activity.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -87,6 +89,11 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <activity
+            android:name=".activity.MyPantryActivity"
+            android:label="@string/title_activity_my_pantry"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.NewProductActivity"
             android:label="@string/title_activity_new_product"
@@ -143,7 +150,6 @@
             android:name=".activity.EditProductActivity"
             android:label="@string/title_activity_edit_product"
             android:parentActivityName=".activity.MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service
@@ -181,5 +187,4 @@
                 android:resource="@xml/provider_paths" />
         </provider>
     </application>
-
 </manifest>

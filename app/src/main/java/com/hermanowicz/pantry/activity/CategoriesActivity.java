@@ -17,10 +17,12 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,35 +42,40 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityCategoriesBinding;
 import com.hermanowicz.pantry.db.category.Category;
-import com.hermanowicz.pantry.db.category.CategoryDb;
 import com.hermanowicz.pantry.dialog.NewCategoryDialog;
+import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.CategoryView;
 import com.hermanowicz.pantry.interfaces.DialogCategoryListener;
-import com.hermanowicz.pantry.model.CategoryModel;
-import com.hermanowicz.pantry.model.DatabaseOperations;
 import com.hermanowicz.pantry.presenter.CategoryPresenter;
 import com.hermanowicz.pantry.util.CategoriesAdapter;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.RecyclerClickListener;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>CategoriesActivity</h1>
- * Categories activity - user can create own categories to user's pantry.
+ * Categories activity - user can see all own categories and create new category.
  *
  * @author  Mateusz Hermanowicz
- * @version 1.5
- * @since   1.5
  */
 
-public class CategoriesActivity extends AppCompatActivity implements DialogCategoryListener, CategoryView {
+public class CategoriesActivity extends AppCompatActivity implements DialogCategoryListener,
+        CategoryView, CategoryDbResponse {
 
     private ActivityCategoriesBinding binding;
     private CategoryPresenter presenter;
@@ -84,7 +91,6 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         if(Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        MobileAds.initialize(getApplicationContext());
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
@@ -102,26 +108,54 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
         statement = binding.textStatement;
 
         setSupportActionBar(toolbar);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
 
-        DatabaseOperations databaseOperations = new DatabaseOperations(context);
-        presenter = new CategoryPresenter(this, new CategoryModel(databaseOperations));
-        presenter.updateCategoryList();
+        presenter = new CategoryPresenter(this, context, this);
+        setOnlineDbCategoryList(this);
 
+        if(!presenter.isPremium()) {
+            MobileAds.initialize(context);
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+
+        presenter.updateCategoryListView();
         categoryRecyclerView.setAdapter(categoriesAdapter);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         categoryRecyclerView.setHasFixedSize(true);
         categoryRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
+    @Override
+    public void setOnlineDbCategoryList(CategoryDbResponse response) {
+        DatabaseReference ref;
+        List<Category> onlineCategoryList = new ArrayList<>();
+        ref = FirebaseDatabase.getInstance().getReference().child("categories/"+ FirebaseAuth.getInstance().getUid());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists())
+                    onlineCategoryList.clear();
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    Category category = dataSnapshot.getValue(Category.class);
+                    onlineCategoryList.add(category);
+                }
+                response.onResponse(onlineCategoryList);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("FirebaseDB", error.getMessage());
+            }
+        });
+    }
+
     private void setListeners() {
-        categoryRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this, binding.recyclerviewCategories, new RecyclerClickListener.OnItemClickListener() {
+        categoryRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this,
+                binding.recyclerviewCategories, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                List<Category> categoryList = CategoryDb.getInstance(context).categoryDao().getAllOwnCategories();
+                List<Category> categoryList = presenter.getCategoryList();
                 Intent intent = new Intent(context, CategoryDetailsActivity.class)
-                        .putExtra("category_id", categoryList.get(position).getId());
+                        .putExtra("category", (Serializable) categoryList.get(position));
                 startActivity(intent);
                 CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }
@@ -164,8 +198,9 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
             statement.setVisibility(View.INVISIBLE);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void updateCategoryList(@NonNull List<Category> categoryList) {
+    public void updateCategoryViewAdapter(@NonNull List<Category> categoryList) {
         categoriesAdapter.setData(categoryList);
         categoriesAdapter.notifyDataSetChanged();
     }
@@ -176,7 +211,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     }
 
     @Override
-    public void onErrorAddNewCategory() {
+    public void showErrorAddNewCategory() {
         Toast.makeText(this, R.string.Error_wrong_data, Toast.LENGTH_SHORT).show();
     }
 
@@ -185,6 +220,20 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void onResponse(List<Category> categoryList) {
+        presenter.setOnlineCategoryList(categoryList);
+        presenter.updateCategoryListView();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            presenter.navigateToMainActivity();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -203,14 +252,6 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     public void onDestroy() {
         adView.destroy();
         super.onDestroy();
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, @NonNull KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            presenter.navigateToMainActivity();
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

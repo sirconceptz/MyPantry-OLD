@@ -27,6 +27,7 @@
     <string name="title_activity_edit_product">Edytuj produkt</string>
     <string name="title_activity_add_photo">Dodaj zdjęcie</string>
     <!--General-->
+    <string name="General_choose">Wybierz</string>
     <string name="General_char_counter">Maksymalna ilość znaków</string>
     <string name="General_press_back_agait_to_exit">Wciśnij przycisk powrotu ponownie, aby wyjść z aplikacji</string>
     <string name="General_required">(Wymagane)</string>
@@ -34,6 +35,10 @@
     <string name="General_cancel">Anuluj</string>
     <string name="General_author_label">Autor</string>
     <string name="General_save">Zapisz</string>
+    <string name="General_user_is_premium">Użytkownik jest już Premium ;-)</string>
+    <string name="General_user">Użytkownik</string>
+    <string name="General_loggedOut">Wylogowany</string>
+    <string name="General_premium_purchase_done">Dziękuję za zakup premium! Życzę miłego użytkowania!</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Moja spiżarnia</string>
     <string name="MainActivity_scan_product_button">Skanuj kod QR produktu</string>
@@ -53,8 +58,13 @@
     <string name="MyPantryActivity_with_sugar">+Cukier</string>
     <string name="MyPantryActivity_with_salt">+Sól</string>
     <!--ScanProductActivity-->
+    <string name="ScanProductActivity_choose_scan_type">Wybierz czy chcesz zeskanować QR produktu stworzony przez aplikację czy zeskanować kod kreskowy produktu sklepowego.</string>
+    <string name="ScanProductActivity_choose_product_to_copy">Kod kreskowy został dodanych do następujących produktów. Wybierz z listy produkt który chcesz dodać.</string>
     <string name="ScanProductActivity_scan_qr_code">Skanuj kod QR produktu</string>
+    <string name="ScanProductActivity_scan_barcode">Skanuj kod kreskowy produktu sklepowego</string>
+    <string name="ScanProductActivity_enter_barcode_manually">Wpisz kod kreskowy ręcznie</string>
     <string name="ScanProductActivity_product_not_found">Produkt nie został znaleziony.</string>
+    <string name="ScanProductActivity_scanner_hint">Ważne: Skaner kodów kreskowych nie wyszukuje produktów, które wcześniej nie zostały dodane do aplikacji.</string>
     <!--NewProductActivity-->
     <string name="NewProductActivity_add_a_product">Dodaj produkt</string>
     <string name="NewProductActivity_product_added_successful">Produkt został dodany pomyślnie do bazy produktów.</string>
@@ -236,6 +246,7 @@
     <string name="AppSettingsActivity_notifications_settings">Ustawienia powiadomień</string>
     <string name="AppSettingsActivity_enabled">Włączone</string>
     <string name="AppSettingsActivity_disabled">Wyłączone</string>
+    <string name="AppSettingsActivity_qr_code_sizes">Wielkość drukowanych etykiet kodów QR</string>
     <string name="AppSettingsActivity_which_theme_user_prefer">Wybierz tryb aplikacji</string>
     <string name="AppSettingsActivity_which_camera_to_scan_products">Aparat do skanowania kodów QR</string>
     <string name="AppSettingsActivity_scanner_vibration_mode">Wibracja skanowania</string>
@@ -267,6 +278,13 @@
     <string name="AppSettingsActivity_db_backup_has_been_made">Kopia zapasowa została utworzona</string>
     <string name="AppSettingsActivity_db_has_been_restored">Kopia zapasowa została przywrócona</string>
     <string name="AppSettingsActivity_db_has_been_clear">Baza danych została wyczyszczona</string>
+    <string name="AppSettingsActivity_active_user">Aktywny użytkownik</string>
+    <string name="AppSettingsActivity_go_premium">Przejdź na konto Premium</string>
+    <string name="AppSettingsActivity_database_mode">Tryb bazy danych produktów</string>
+    <string name="AppSettingsActivity_qr_code_size_big">Duże</string>
+    <string name="AppSettingsActivity_qr_code_size_small">Małe</string>
+    <string name="AppSettingsActivity_import_db">Importuj bazę produktów do chmury</string>
+    <string name="AppSettingsActivity_import_db_statement">Importuj bazę produktów z urządzenia do chmury (do konta internetowego). AKTUALNIE ZAPISANE DANE W CHMURZE ZOSTANĄ USUNIĘTE I ZASTĄPIONE PRODUKTAMI Z TELEFONU.</string>
     <string-array name="AppSettingsActivity_camera_to_scan">
         <item>Tylni aparat</item>
         <item>Przedni aparat</item>
@@ -275,6 +293,10 @@
         <item>Automatyczny</item>
         <item>Dzienny</item>
         <item>Nocny</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_database_mode">
+        <item>Lokalny (w telefonie)</item>
+        <item>Online (w internecie)</item>
     </string-array>
     <!--Notifications-->
     <string name="Notifications_title">[Moja Spiżarnia] Produkt wkrótce się przeterminuje.</string>
@@ -286,6 +308,8 @@
     <string name="Error_category_not_selected">Brak wybranej kategorii produktu</string>
     <string name="Error_product_name_is_required">Nazwa produktu jest wymagana</string>
     <string name="Error_char_counter">Nieprawidłowa wartość</string>
+    <string name="Error_for_premium_users_only">Funkcja tylko dla użytkowników premium</string>
+    <string name="Error_billing_client_not_ready">Funkcja płatności aktualnie niedostępna</string>
     <!--Author-->
     <string name="Author_contact_with_author">Kontakt z autorem</string>
 </resources>

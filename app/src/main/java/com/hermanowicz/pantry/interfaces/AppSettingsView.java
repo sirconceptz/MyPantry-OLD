@@ -33,6 +33,8 @@ public interface AppSettingsView {
 
     void showActiveUser(String activeUser);
 
+    void showDatatabaseMode(String databaseLocation);
+
     void showVersionCode(String version);
 
     void setEmailPreferences();
@@ -60,4 +62,18 @@ public interface AppSettingsView {
     void showDbHasBeenRestored();
 
     void showDbHasBeenClear();
+
+    void refreshActivity();
+
+    void showInfoUserIsPremium();
+
+    void enableDatabaseModeSelection(Boolean isEnabled);
+
+    void buyPremiumFeatures();
+
+    void showDialogImportDatabase();
+
+    void enableImportDatabaseSelection(boolean isEnabled);
+
+    void showBillingClientNotReady();
 }

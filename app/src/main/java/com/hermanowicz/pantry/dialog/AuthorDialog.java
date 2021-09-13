@@ -32,20 +32,19 @@ import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.DialogAuthorBinding;
 
+/**
+ * <h1>AuthorDialog</h1>
+ * The dialog window showing information about the application's author.
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class AuthorDialog extends AppCompatDialogFragment {
 
     private DialogAuthorBinding binding;
     private Activity activity;
     private View view;
     private ImageView linkedInProfile, facebookProfile;
-
-    public static AuthorDialog newInstance(int title) {
-        AuthorDialog frag = new AuthorDialog();
-        Bundle args = new Bundle();
-        args.putInt("title", title);
-        frag.setArguments(args);
-        return frag;
-    }
 
     @NotNull
     @Override

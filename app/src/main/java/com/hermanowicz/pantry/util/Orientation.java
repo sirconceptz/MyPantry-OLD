@@ -20,6 +20,13 @@ package com.hermanowicz.pantry.util;
 import android.app.Activity;
 import android.content.res.Configuration;
 
+/**
+ * <h1>Orientation</h1>
+ * The class used to check the user's device - whether it is a tablet or a smartphone
+ *
+ * @author  Mateusz Hermanowicz
+ */
+
 public class Orientation {
     public static boolean isTablet(Activity activity) {
         return ((activity.getResources().getConfiguration().screenLayout
