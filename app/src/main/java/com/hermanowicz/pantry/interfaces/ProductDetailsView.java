@@ -34,6 +34,8 @@ public interface ProductDetailsView {
 
     void onDeletedProduct();
 
+    void showDialogOnDeleteProduct();
+
     void navigateToPrintQRCodeActivity(List<Product> productList);
 
     void navigateToEditProductActivity(int productId, List<Product> productList);
@@ -41,4 +43,6 @@ public interface ProductDetailsView {
     void navigateToMyPantryActivity();
 
     void navigateToAddPhotoActivity(List<Product> productList, List<Photo> photoList);
+
+    void navigateToScanProductActivity(List<Product> productList);
 }

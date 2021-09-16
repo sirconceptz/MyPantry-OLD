@@ -38,6 +38,7 @@
     <string name="General_user">User</string>
     <string name="General_loggedOut">Logged out</string>
     <string name="General_premium_purchase_done">Thank you for your premium purchase! Wish you enjoy your use!</string>
+    <string name="General_are_you_sure_delete_product">Are you sure you want to delete this product?</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">My pantry</string>
     <string name="MainActivity_scan_product_button">Scan the product\'s QR code</string>
@@ -64,6 +65,7 @@
     <string name="ScanProductActivity_enter_barcode_manually">Enter the barcode manually</string>
     <string name="ScanProductActivity_product_not_found">Product was not found.</string>
     <string name="ScanProductActivity_scanner_hint">Important: The barcode scanner does not search for products that have not been previously added to the application.</string>
+    <string name="ScanProductActivity_barcode_is_updated">Barcode has been updated</string>
     <!--NewProductActivity-->
     <string name="NewProductActivity_add_a_product">Add a product</string>
     <string name="NewProductActivity_product_added_successful">The product has been added to the product database.</string>
@@ -236,6 +238,7 @@
     <string name="ProductDetailsActivity_no">No</string>
     <string name="ProductDetailsActivity_product_has_been_removed">The product has been removed.</string>
     <string name="ProductDetailsActivity_edit_product">Edit product</string>
+    <string name="ProductDetailsActivity_add_barcode_to_product">Add barcode</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Print QR codes</string>
     <string name="PrintQRCodesActivity_skip">Skip</string>
@@ -309,6 +312,7 @@
     <string name="Error_char_counter">Wrong value</string>
     <string name="Error_for_premium_users_only">Function for premium user only</string>
     <string name="Error_billing_client_not_ready">Payment feature currently unavailable</string>
+    <string name="Error_incorrect_barcode_value">Invalid barcode</string>
     <!--Author-->
     <string name="Author_contact_with_author">Contact with author</string>
 </resources>

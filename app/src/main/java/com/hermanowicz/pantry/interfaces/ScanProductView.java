@@ -24,7 +24,7 @@ import java.util.List;
 public interface ScanProductView {
     void setScanner(boolean scannerSoundMode, String message);
 
-    void navigateToProductDetailsActivity(List<Integer> decodedScanResults);
+    void navigateToProductDetailsActivity(List<Integer> decodedScanResults, List<Product> productList);
 
     void showErrorProductNotFound();
 
@@ -37,4 +37,8 @@ public interface ScanProductView {
     void navigateToNewProductActivity(Product product);
 
     void onSelectedEnterBarcodeManually();
+
+    void showErrorBarcodeIsIncorrect();
+
+    void showIsBarcodeUpdated();
 }

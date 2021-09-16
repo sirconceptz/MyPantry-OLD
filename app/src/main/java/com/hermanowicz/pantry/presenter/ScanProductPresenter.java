@@ -55,15 +55,34 @@ public class ScanProductPresenter {
     public void onScanResult(@NonNull String scanResult) {
         model.setScanResult(scanResult);
         if(model.isBarcodeScan()){
-            List<Product> productList = model.getProductListWithBarcode(scanResult);
-            view.navigateToNewProductActivity(scanResult, productList);
+            try {
+                List<Product> productListToAddBarcode = model.getProductListToAddBarcode();
+                if(productListToAddBarcode == null) {
+                    long parsedBarcode = Long.parseLong(scanResult);
+                    List<Product> productList = model.getProductListWithBarcode(scanResult);
+                    view.navigateToNewProductActivity(String.valueOf(parsedBarcode), productList);
+                }
+                else {
+                    long parsedBarcode = Long.parseLong(scanResult);
+                    model.setBarcodeToProductList(String.valueOf(parsedBarcode));
+                    model.updateProductListWithBarcode();
+                    view.showIsBarcodeUpdated();
+                    view.navigateToMainActivity();
+                }
+
+            }
+            catch (NumberFormatException nfe){
+                view.showErrorBarcodeIsIncorrect();
+                view.navigateToMainActivity();
+            }
         }
         else {
             List<Integer> decodedQRCodeAsList = model.decodeScanResult(scanResult);
+            List<Product> productList = model.getProductList();
             if (decodedQRCodeAsList.size() > 1) {
                 if (appSettingsModel.getScannerVibrationMode())
                     view.onVibration();
-                view.navigateToProductDetailsActivity(decodedQRCodeAsList);
+                view.navigateToProductDetailsActivity(decodedQRCodeAsList, productList);
             } else {
                 view.showErrorProductNotFound();
                 view.navigateToMainActivity();
@@ -121,5 +140,11 @@ public class ScanProductPresenter {
 
     public void setOfflineAllProductList() {
         model.setOfflineAllProductList();
+    }
+
+    public void addBarcodeToProductList(@NonNull List<Product> productListToAddBarcode,
+                                        @NonNull Resources resources) {
+        model.setProductListToAddBarcode(productListToAddBarcode);
+        initScanner(true, resources);
     }
 }

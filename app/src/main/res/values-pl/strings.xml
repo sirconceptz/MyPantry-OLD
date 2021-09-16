@@ -39,6 +39,7 @@
     <string name="General_user">Użytkownik</string>
     <string name="General_loggedOut">Wylogowany</string>
     <string name="General_premium_purchase_done">Dziękuję za zakup premium! Życzę miłego użytkowania!</string>
+    <string name="General_are_you_sure_delete_product">Czy jesteś pewny, że chcesz usunąć ten produkt?</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Moja spiżarnia</string>
     <string name="MainActivity_scan_product_button">Skanuj kod QR produktu</string>
@@ -65,6 +66,7 @@
     <string name="ScanProductActivity_enter_barcode_manually">Wpisz kod kreskowy ręcznie</string>
     <string name="ScanProductActivity_product_not_found">Produkt nie został znaleziony.</string>
     <string name="ScanProductActivity_scanner_hint">Ważne: Skaner kodów kreskowych nie wyszukuje produktów, które wcześniej nie zostały dodane do aplikacji.</string>
+    <string name="ScanProductActivity_barcode_is_updated">Kod kreskowy został zaktualizowany</string>
     <!--NewProductActivity-->
     <string name="NewProductActivity_add_a_product">Dodaj produkt</string>
     <string name="NewProductActivity_product_added_successful">Produkt został dodany pomyślnie do bazy produktów.</string>
@@ -237,6 +239,7 @@
     <string name="ProductDetailsActivity_no">Nie</string>
     <string name="ProductDetailsActivity_product_has_been_removed">Produkt został usunięty.</string>
     <string name="ProductDetailsActivity_edit_product">Edytuj produkt</string>
+    <string name="ProductDetailsActivity_add_barcode_to_product">Dodaj kod kreskowy</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Drukuj kody QR</string>
     <string name="PrintQRCodesActivity_skip">Pomiń</string>
@@ -310,6 +313,7 @@
     <string name="Error_char_counter">Nieprawidłowa wartość</string>
     <string name="Error_for_premium_users_only">Funkcja tylko dla użytkowników premium</string>
     <string name="Error_billing_client_not_ready">Funkcja płatności aktualnie niedostępna</string>
+    <string name="Error_incorrect_barcode_value">Nieprawidłowy kod kreskowy</string>
     <!--Author-->
     <string name="Author_contact_with_author">Kontakt z autorem</string>
 </resources>

@@ -23,6 +23,11 @@
         android:title=""
         app:showAsAction="always"/>
 
+    <item android:id="@+id/action_add_barcode"
+        android:icon="@drawable/ic_new_product_white"
+        android:title=""
+        app:showAsAction="always"/>
+
     <item android:id="@+id/action_print_codes"
         android:icon="@drawable/ic_print"
         android:title=""

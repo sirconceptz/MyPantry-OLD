@@ -104,6 +104,7 @@ public class MyPantryModel {
     public void setOfflineDbProductsList(){
         List<Product> productList = productDb.productsDao().getAllProductsList();
         setProductList(productList);
+        setAllProductsList(productList);
     }
 
     public List<Product> getAllProductsList(){

@@ -87,12 +87,7 @@ public class ProductDetailsPresenter {
     }
 
     public void onClickDeleteProduct() {
-        if(appSettingsModel.getDatabaseMode().equals("local"))
-            model.deleteSimilarOfflineProducts();
-        else
-            model.deleteSimilarOnlineProducts();
-        view.onDeletedProduct();
-        view.navigateToMyPantryActivity();
+        view.showDialogOnDeleteProduct();
     }
 
     public void onClickPrintQRCodes() {
@@ -129,5 +124,19 @@ public class ProductDetailsPresenter {
 
     public boolean isOfflineDb() {
         return appSettingsModel.getDatabaseMode().equals("local");
+    }
+
+    public void onConfirmDeleteProduct() {
+        if(appSettingsModel.getDatabaseMode().equals("local"))
+            model.deleteSimilarOfflineProducts();
+        else
+            model.deleteSimilarOnlineProducts();
+        view.onDeletedProduct();
+        view.navigateToMyPantryActivity();
+    }
+
+    public void onClickAddBarcode() {
+        List<Product> productList = model.getProductList();
+        view.navigateToScanProductActivity(productList);
     }
 }

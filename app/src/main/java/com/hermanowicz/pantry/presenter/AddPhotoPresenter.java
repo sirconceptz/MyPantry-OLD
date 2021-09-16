@@ -58,12 +58,14 @@ public class AddPhotoPresenter{
         this.premiumAccess = premiumAccess;
     }
 
-    public void setProductList(@NonNull List<Product> productList){
-        model.setProductList(productList);
-        Product singleProduct = productList.get(0);
-        if(!(singleProduct.getPhotoDescription() == null)){
-            model.setPhotoFile(singleProduct.getPhotoName());
-            view.showPhoto(singleProduct, model.getPhotoBitmap());
+    public void setProductList(@Nullable List<Product> productList){
+        if(productList != null) {
+            model.setProductList(productList);
+            Product singleProduct = productList.get(0);
+            if(!(singleProduct.getPhotoDescription() == null)) {
+                model.setPhotoFile(singleProduct.getPhotoName());
+                view.showPhoto(singleProduct, model.getPhotoBitmap());
+            }
         }
     }
 

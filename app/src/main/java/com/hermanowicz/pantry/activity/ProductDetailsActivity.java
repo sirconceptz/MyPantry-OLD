@@ -23,6 +23,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -87,7 +89,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             productVolume, productWeight, productQuantity, productHasSugar, productHasSalt,
             productIsVege, productIsBio, productTaste;
     private ImageView photoIv;
-    private Button deleteProduct, printQrCode, addPhoto, editProduct;
+    private Button deleteProduct, printQrCode, addBarcode, addPhoto, editProduct;
     private AdView adView;
 
     @Override
@@ -101,7 +103,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     private void initView() {
-        com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
+        ActivityProductDetailsBinding binding = ActivityProductDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
@@ -127,6 +129,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         deleteProduct = binding.buttonDeleteProduct;
         printQrCode = binding.buttonPrintQRCode;
         editProduct = binding.buttonEditProduct;
+        addBarcode = binding.buttonAddBarcode;
         addPhoto = binding.buttonAddPhoto;
         adView = binding.adview;
 
@@ -155,6 +158,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     private void setListeners() {
+        addBarcode.setOnClickListener(view -> presenter.onClickAddBarcode());
         deleteProduct.setOnClickListener(view -> presenter.onClickDeleteProduct());
         printQrCode.setOnClickListener(view -> presenter.onClickPrintQRCodes());
         editProduct.setOnClickListener(view -> presenter.onClickEditProduct(productId));
@@ -228,34 +232,53 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
+    public void showDialogOnDeleteProduct() {
+        new AlertDialog.Builder(new ContextThemeWrapper(ProductDetailsActivity.this, R.style.AppThemeDialog))
+                .setMessage(R.string.General_are_you_sure_delete_product)
+                .setPositiveButton(android.R.string.yes, (dialog, which) ->
+                        presenter.onConfirmDeleteProduct())
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    @Override
     public void navigateToPrintQRCodeActivity(@NonNull List<Product> productList) {
-        Intent printQRCodesActivityIntent = new Intent(context, PrintQRCodesActivity.class)
+        Intent intent = new Intent(context, PrintQRCodesActivity.class)
                 .putExtra("product_list", (Serializable) productList);
-        startActivity(printQRCodesActivityIntent);
+        startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void navigateToEditProductActivity(int productId, List<Product> productList) {
-        Intent editProductActivityIntent = new Intent(context, EditProductActivity.class)
+        Intent intent = new Intent(context, EditProductActivity.class)
                 .putExtra("product_id", productId)
                 .putExtra("product_list", (Serializable) productList);
-        startActivity(editProductActivityIntent);
+        startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void navigateToMyPantryActivity() {
-        Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
-        startActivity(myPantryActivityIntent);
+        Intent intent = new Intent(context, MyPantryActivity.class);
+        startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
     public void navigateToAddPhotoActivity(List<Product> productList, List<Photo> photoList) {
-        Intent addPhotoActivityIntent = new Intent(context, AddPhotoActivity.class)
+        Intent intent = new Intent(context, AddPhotoActivity.class)
                 .putExtra("product_list", (Serializable) productList);
-        startActivity(addPhotoActivityIntent);
+        startActivity(intent);
+        CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void navigateToScanProductActivity(List<Product> productList) {
+        Intent intent = new Intent(context, ScanProductActivity.class)
+                .putExtra("product_list_to_add_barcode", (Serializable) productList);
+        startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
@@ -276,6 +299,9 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             return true;
         } else if (id == R.id.action_edit_product) {
             presenter.onClickEditProduct(productId);
+            return true;
+        } else if (id == R.id.action_add_barcode) {
+            presenter.onClickAddBarcode();
             return true;
         } else if (id == R.id.action_delete_product) {
             presenter.onClickDeleteProduct();

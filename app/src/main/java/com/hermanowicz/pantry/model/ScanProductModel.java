@@ -21,6 +21,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
 
@@ -36,6 +39,7 @@ public class ScanProductModel {
     private String scanResult;
     private List<Product> productList;
     private String databaseMode;
+    private List<Product> productListToAddBarcode;
 
     public ScanProductModel(@NonNull ProductDb productDb){
         this.productDb = productDb;
@@ -95,5 +99,37 @@ public class ScanProductModel {
 
     public void setOfflineAllProductList() {
         this.productList = productDb.productsDao().getAllProductsList();
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductListToAddBarcode(List<Product> productListToAddBarcode) {
+        this.productListToAddBarcode = productListToAddBarcode;
+    }
+
+    public List<Product> getProductListToAddBarcode() {
+        return productListToAddBarcode;
+    }
+
+    public void setBarcodeToProductList(String barcode) {
+        for(Product product : productListToAddBarcode) {
+            product.setBarcode(barcode);
+        }
+    }
+
+    public void updateProductListWithBarcode() {
+        if(databaseMode.equals("local")) {
+            for (Product product : productListToAddBarcode)
+                productDb.productsDao().updateProduct(product);
+        }
+        else {
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
+            for (Product product : productListToAddBarcode) {
+                ref.child(String.valueOf(product.getId())).setValue(product);
+            }
+        }
     }
 }

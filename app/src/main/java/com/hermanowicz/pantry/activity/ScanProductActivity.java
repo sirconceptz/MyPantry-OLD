@@ -129,6 +129,11 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
 
         if(presenter.isOfflineDb())
             presenter.setOfflineAllProductList();
+
+        List<Product> productListToAddBarcode = (List<Product>) getIntent().getSerializableExtra("product_list_to_add_barcode");
+        if(productListToAddBarcode != null) {
+            presenter.addBarcodeToProductList(productListToAddBarcode, getResources());
+        }
     }
 
     private void setListeners() {
@@ -176,9 +181,10 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
     }
 
     @Override
-    public void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList) {
+    public void navigateToProductDetailsActivity(List<Integer> decodedScanResultAsList, List<Product> productList) {
         Intent productDetailsIntent = new Intent(context, ProductDetailsActivity.class);
         productDetailsIntent.putExtra("product_id", decodedScanResultAsList.get(0));
+        productDetailsIntent.putExtra("product_list", (Serializable) productList);
         productDetailsIntent.putExtra("hash_code", String.valueOf(decodedScanResultAsList.get(1)));
         startActivity(productDetailsIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
@@ -221,6 +227,16 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
                 })
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, click) -> dialog.cancel())
                 .show();
+    }
+
+    @Override
+    public void showErrorBarcodeIsIncorrect() {
+        Toast.makeText(context, R.string.Error_incorrect_barcode_value, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showIsBarcodeUpdated() {
+        Toast.makeText(context, R.string.ScanProductActivity_barcode_is_updated, Toast.LENGTH_LONG).show();
     }
 
     @Override

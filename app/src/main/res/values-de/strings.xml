@@ -39,6 +39,7 @@
     <string name="General_user">Benutzer</string>
     <string name="General_loggedOut">Abgemeldet</string>
     <string name="General_premium_purchase_done">Vielen Dank für Ihren Premium-Kauf! Ich wünsche Ihnen viel Spaß bei der Verwendung!</string>
+    <string name="General_are_you_sure_delete_product">Möchten Sie dieses Produkt wirklich löschen?</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Meine speisekammer</string>
     <string name="MainActivity_scan_product_button">Scannen Sie den QR-Code des Produkts</string>
@@ -65,6 +66,7 @@
     <string name="ScanProductActivity_enter_barcode_manually">Geben Sie den Barcode manuell ein</string>
     <string name="ScanProductActivity_product_not_found">Das Produkt wurde nicht gefunden.</string>
     <string name="ScanProductActivity_scanner_hint">Wichtig: Der Barcode-Scanner sucht nicht nach Produkten, die noch nicht der Anwendung hinzugefügt wurden.</string>
+    <string name="ScanProductActivity_barcode_is_updated">Barcode wurde aktualisiert</string>
     <!--NewProductActivity-->
     <string name="NewProductActivity_add_a_product">Produkt hinzufügen</string>
     <string name="NewProductActivity_product_added_successful">Das Produkt wurde erfolgreich zur Produktdatenbank hinzugefügt.</string>
@@ -237,6 +239,7 @@
     <string name="ProductDetailsActivity_no">Nein</string>
     <string name="ProductDetailsActivity_product_has_been_removed">Das Produkt wurde entfernt.</string>
     <string name="ProductDetailsActivity_edit_product">Produkt bearbeiten</string>
+    <string name="ProductDetailsActivity_add_barcode_to_product">Strichcode hinzufügen</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">QR-Codes drucken</string>
     <string name="PrintQRCodesActivity_skip">überspringen</string>
@@ -310,6 +313,7 @@
     <string name="Error_char_counter">Falscher Wert</string>
     <string name="Error_for_premium_users_only">Funktion nur für Premium-Benutzer</string>
     <string name="Error_billing_client_not_ready">Zahlungsfunktion derzeit nicht verfügbar</string>
+    <string name="Error_incorrect_barcode_value">Ungültiger Strichcode</string>
     <!--Author-->
     <string name="Author_contact_with_author">Contact with author</string>
 </resources>
