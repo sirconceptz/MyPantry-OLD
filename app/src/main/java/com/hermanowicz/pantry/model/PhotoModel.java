@@ -113,26 +113,31 @@ public class PhotoModel {
             if (productList.get(0).getPhotoName().equals(product.getPhotoName())) {
                 isPhotoToRemove = false;
             }
-            for(Photo photo : photoList) {
-                if(photo.getName().equals(product.getPhotoName()))
+            for (Photo photo : photoList) {
+                if (photo.getName().equals(product.getPhotoName()))
                     photoToRemove = photo;
             }
-            if(isPhotoToRemove) {
+            if (isPhotoToRemove) {
                 ref.child(String.valueOf(photoToRemove.getId())).removeValue();
             }
         }
         ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
-        for(Product product : productList) {
-            product.setPhotoName("");
-            product.setPhotoDescription("");
+        deletePhotoData();
+        for (Product product : productList) {
             ref.child(String.valueOf(product.getId())).setValue(product);
         }
     }
 
-    private void deleteOfflinePhotoFromDb() {
-        for(Product product : productList) {
+    private void deletePhotoData() {
+        for (Product product : productList) {
             product.setPhotoName("");
             product.setPhotoDescription("");
+        }
+    }
+
+    private void deleteOfflinePhotoFromDb() {
+        deletePhotoData();
+        for (Product product : productList) {
             productDb.productsDao().updateProduct(product);
         }
     }

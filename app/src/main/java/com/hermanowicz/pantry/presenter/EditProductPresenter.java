@@ -143,11 +143,15 @@ public class EditProductPresenter {
         view.onClickSaveProductButton();
     }
 
-    public boolean isPremium(){
+    public boolean isPremium() {
         return premiumAccess.isPremium();
     }
 
     public void setProductList(List<Product> productList) {
         model.setProductList(productList);
+    }
+
+    public void setAllProductList(List<Product> allProductList) {
+        model.setAllProductList(allProductList);
     }
 }

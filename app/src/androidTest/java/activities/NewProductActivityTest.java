@@ -21,13 +21,8 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.core.Is.is;
 
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,16 +39,13 @@ import com.hermanowicz.pantry.activity.NewProductActivity;
 import com.hermanowicz.pantry.activity.PrintQRCodesActivity;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
+import com.hermanowicz.pantry.util.DateHelper;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import models.ProductTestModel;
 
@@ -62,12 +54,12 @@ public class NewProductActivityTest {
 
     private NewProductActivity activity;
 
-    private EditText    name, expirationDate, productionDate, quantity, composition, healingProperties,
-                        dosage, volume, weight;
-    private Spinner     typeOfProduct;
-    private RadioButton isSweet, isSour, isSweetAndSour, isBitter, isSalty;
-    private Button      addProduct;
-    private Product     product;
+    private EditText name, expirationDate, productionDate, quantity, composition, healingProperties,
+            dosage, volume, weight;
+    private Spinner typeOfProduct;
+    private RadioButton isSweet;
+    private Button addProduct;
+    private Product product;
 
     @Rule
     public IntentsTestRule<NewProductActivity>
@@ -87,25 +79,24 @@ public class NewProductActivityTest {
         volume = activity.findViewById(R.id.edittext_volume);
         weight = activity.findViewById(R.id.edittext_weight);
         isSweet = activity.findViewById(R.id.radiobtn_isSweet);
-        isSour = activity.findViewById(R.id.radiobtn_isSour);
-        isSweetAndSour = activity.findViewById(R.id.radiobtn_isSweetAndSour);
-        isBitter = activity.findViewById(R.id.radiobtn_isBitter);
-        isSalty = activity.findViewById(R.id.radiobtn_isSalty);
         addProduct = activity.findViewById(R.id.button_addProduct);
         product = ProductTestModel.getTestProduct1();
     }
 
     @Test
-    public void notSpecifyingTheProductNameShouldDisplayAnError(){
+    public void notSpecifyingTheProductNameShouldDisplayAnError() {
+        DateHelper dateHelperExpirationDate = new DateHelper(product.getExpirationDate());
+        DateHelper dateHelperProductionDate = new DateHelper(product.getProductionDate());
+
         activity.runOnUiThread(() -> {
             quantity.requestFocus();
             quantity.setText("5");
             typeOfProduct.requestFocus();
             typeOfProduct.setSelection(4);
             expirationDate.requestFocus();
-            expirationDate.setText(getDateInLocalFormat(product.getExpirationDate()));
+            expirationDate.setText(dateHelperExpirationDate.getDateInLocalFormat());
             productionDate.requestFocus();
-            productionDate.setText(getDateInLocalFormat(product.getProductionDate()));
+            productionDate.setText(dateHelperProductionDate.getDateInLocalFormat());
             composition.requestFocus();
             composition.setText(product.getComposition());
             healingProperties.requestFocus();
@@ -124,41 +115,17 @@ public class NewProductActivityTest {
     }
 
     @Test
-    public void notSpecifyingTheTypeOfProductShouldDisplayAnError(){
-        activity.runOnUiThread(() -> {
-            name.requestFocus();
-            name.setText(product.getName());
-            quantity.requestFocus();
-            quantity.setText("5");
-            expirationDate.requestFocus();
-            expirationDate.setText(getDateInLocalFormat(product.getExpirationDate()));
-            productionDate.requestFocus();
-            productionDate.setText(getDateInLocalFormat(product.getProductionDate()));
-            composition.requestFocus();
-            composition.setText(product.getComposition());
-            healingProperties.requestFocus();
-            healingProperties.setText(product.getHealingProperties());
-            dosage.requestFocus();
-            dosage.setText(product.getDosage());
-            volume.requestFocus();
-            volume.setText(String.valueOf(product.getVolume()));
-            weight.requestFocus();
-            weight.setText(String.valueOf(product.getWeight()));
-            isSweet.requestFocus();
-            isSweet.setChecked(true);
-            addProduct.performClick();
-        });
-        onView(withText(R.string.Error_category_not_selected)).inRoot(withDecorView(not(is(activity.getWindow().getDecorView())))).check(matches(isDisplayed()));
-    }
-
-    @Test
     public void onPressedBackNavigateToMainActivity(){
+        Espresso.pressBack();
         Espresso.pressBack();
         intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
-    public void addingTheProductShouldNavigateToPrintQRDetailsActivity(){
+    public void addingTheProductShouldNavigateToPrintQRDetailsActivity() {
+        DateHelper dateHelperExpirationDate = new DateHelper(product.getExpirationDate());
+        DateHelper dateHelperProductionDate = new DateHelper(product.getProductionDate());
+
         activity.runOnUiThread(() -> {
             name.requestFocus();
             name.setText(product.getName());
@@ -167,9 +134,9 @@ public class NewProductActivityTest {
             quantity.requestFocus();
             quantity.setText("5");
             expirationDate.requestFocus();
-            expirationDate.setText(getDateInLocalFormat(product.getExpirationDate()));
+            expirationDate.setText(dateHelperExpirationDate.getDateInLocalFormat());
             productionDate.requestFocus();
-            productionDate.setText(getDateInLocalFormat(product.getProductionDate()));
+            productionDate.setText(dateHelperProductionDate.getDateInLocalFormat());
             composition.requestFocus();
             composition.setText(product.getComposition());
             healingProperties.requestFocus();
@@ -185,15 +152,6 @@ public class NewProductActivityTest {
             addProduct.performClick();
         });
         intended(hasComponent(PrintQRCodesActivity.class.getName()));
-    }
-
-    private String getDateInLocalFormat(String dateToConvert){
-        DateFormat localDateFormat = DateFormat.getDateInstance();
-        Calendar calendar = Calendar.getInstance();
-        String[] dateArray = dateToConvert.split("-");
-        calendar.set(Integer.parseInt(dateArray[0]), Integer.parseInt(dateArray[1])-1, Integer.parseInt(dateArray[2]));
-        Date date = calendar.getTime();
-        return localDateFormat.format(date);
     }
 
     @After

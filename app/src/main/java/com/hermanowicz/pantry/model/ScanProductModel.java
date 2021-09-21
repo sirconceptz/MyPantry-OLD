@@ -114,22 +114,29 @@ public class ScanProductModel {
     }
 
     public void setBarcodeToProductList(String barcode) {
-        for(Product product : productListToAddBarcode) {
+        for (Product product : productListToAddBarcode) {
             product.setBarcode(barcode);
         }
     }
 
     public void updateProductListWithBarcode() {
-        if(databaseMode.equals("local")) {
-            for (Product product : productListToAddBarcode)
-                productDb.productsDao().updateProduct(product);
+        if (databaseMode.equals("local")) {
+            updateLocalDb();
+        } else {
+            updateOnlineDb();
         }
-        else {
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
-            for (Product product : productListToAddBarcode) {
-                ref.child(String.valueOf(product.getId())).setValue(product);
-            }
+    }
+
+    private void updateOnlineDb() {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
+        for (Product product : productListToAddBarcode) {
+            ref.child(String.valueOf(product.getId())).setValue(product);
         }
+    }
+
+    private void updateLocalDb() {
+        for (Product product : productListToAddBarcode)
+            productDb.productsDao().updateProduct(product);
     }
 }

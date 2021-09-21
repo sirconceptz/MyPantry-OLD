@@ -35,7 +35,9 @@ public class ProductTestModel {
         product.setWeight(1000);
         product.setHasSugar(true);
         product.setHasSalt(false);
+        product.setBarcode("");
         product.setTaste("Sweet");
+        product.setStorageLocation("");
         product.setHashCode(String.valueOf(product.hashCode()));
         return product;
     }
@@ -54,7 +56,9 @@ public class ProductTestModel {
         product.setWeight(9000);
         product.setHasSugar(false);
         product.setHasSalt(true);
+        product.setBarcode("");
         product.setTaste("Salty");
+        product.setStorageLocation("");
         product.setHashCode(String.valueOf(product.hashCode()));
         return product;
     }
@@ -73,6 +77,9 @@ public class ProductTestModel {
         product.setWeight(5000);
         product.setHasSugar(false);
         product.setHasSalt(false);
+        product.setBarcode("");
+        product.setTaste("");
+        product.setStorageLocation("");
         product.setHashCode(String.valueOf(product.hashCode()));
         return product;
     }

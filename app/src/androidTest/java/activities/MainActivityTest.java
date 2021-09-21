@@ -21,17 +21,18 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static junit.framework.TestCase.assertNotNull;
 
-import android.widget.Button;
-
+import androidx.cardview.widget.CardView;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activity.AppSettingsActivity;
+import com.hermanowicz.pantry.activity.CategoriesActivity;
 import com.hermanowicz.pantry.activity.MainActivity;
 import com.hermanowicz.pantry.activity.MyPantryActivity;
 import com.hermanowicz.pantry.activity.NewProductActivity;
 import com.hermanowicz.pantry.activity.ScanProductActivity;
+import com.hermanowicz.pantry.activity.StorageLocationsActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -53,7 +54,7 @@ public class MainActivityTest {
 
     @Test
     public void shouldGoToMyPantryActivity(){
-        Button myPantry = activity.findViewById(R.id.myPantryCV);
+        CardView myPantry = activity.findViewById(R.id.myPantryCV);
         assertNotNull(myPantry);
         activity.runOnUiThread(() -> myPantry.performClick());
         intended(hasComponent(MyPantryActivity.class.getName()));
@@ -61,23 +62,39 @@ public class MainActivityTest {
 
     @Test
     public void shouldGoToScanProductActivity(){
-        Button scanProduct = activity.findViewById(R.id.scanProductCV);
+        CardView scanProduct = activity.findViewById(R.id.scanProductCV);
         assertNotNull(scanProduct);
         activity.runOnUiThread(() -> scanProduct.performClick());
         intended(hasComponent(ScanProductActivity.class.getName()));
     }
 
     @Test
-    public void shouldGoToNewProductActivity(){
-        Button newProduct = activity.findViewById(R.id.newProductCV);
+    public void shouldGoToNewProductActivity() {
+        CardView newProduct = activity.findViewById(R.id.newProductCV);
         assertNotNull(newProduct);
         activity.runOnUiThread(() -> newProduct.performClick());
         intended(hasComponent(NewProductActivity.class.getName()));
     }
 
     @Test
-    public void shouldGoToAppSettingsActivity(){
-        Button appSettings = activity.findViewById(R.id.appSettingsCV);
+    public void shouldGoToOwnCategoriesActivity() {
+        CardView ownCategories = activity.findViewById(R.id.ownCategoriesCV);
+        assertNotNull(ownCategories);
+        activity.runOnUiThread(() -> ownCategories.performClick());
+        intended(hasComponent(CategoriesActivity.class.getName()));
+    }
+
+    @Test
+    public void shouldGoToStorageLocationsActivity() {
+        CardView storageLocations = activity.findViewById(R.id.storageLocationsCV);
+        assertNotNull(storageLocations);
+        activity.runOnUiThread(() -> storageLocations.performClick());
+        intended(hasComponent(StorageLocationsActivity.class.getName()));
+    }
+
+    @Test
+    public void shouldGoToAppSettingsActivity() {
+        CardView appSettings = activity.findViewById(R.id.appSettingsCV);
         assertNotNull(appSettings);
         activity.runOnUiThread(() -> appSettings.performClick());
         intended(hasComponent(AppSettingsActivity.class.getName()));

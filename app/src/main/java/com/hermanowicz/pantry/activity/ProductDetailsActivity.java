@@ -140,20 +140,23 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         setOnlineDbPhotoList(this);
 
-        if(!presenter.isPremium()) {
+        if (!presenter.isPremium()) {
             MobileAds.initialize(context);
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
         }
 
-        Intent myPantryActivityIntent = getIntent();
-        List<Product> productList = (List<Product>) myPantryActivityIntent.getSerializableExtra("product_list");
+        Intent intent = getIntent();
+        List<Product> productList = (List<Product>) intent.getSerializableExtra("product_list");
+        List<Product> allProductList = (List<Product>) intent.getSerializableExtra("all_product_list");
+
+        presenter.setAllProductList(allProductList);
         presenter.setProductList(productList);
-        productId = myPantryActivityIntent.getIntExtra("product_id", 1);
-        hashCode = myPantryActivityIntent.getStringExtra("hash_code");
+        productId = intent.getIntExtra("product_id", 1);
+        hashCode = intent.getStringExtra("hash_code");
         presenter.setProductId(productId);
 
-        if(presenter.isOfflineDb())
+        if (presenter.isOfflineDb())
             presenter.showProductDetails(hashCode);
     }
 
@@ -251,10 +254,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void navigateToEditProductActivity(int productId, List<Product> productList) {
+    public void navigateToEditProductActivity(int productId, List<Product> productList, List<Product> allProductList) {
         Intent intent = new Intent(context, EditProductActivity.class)
                 .putExtra("product_id", productId)
-                .putExtra("product_list", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList)
+                .putExtra("all_product_list", (Serializable) allProductList);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }

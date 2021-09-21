@@ -20,12 +20,10 @@ package activities;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.widget.Button;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -38,14 +36,13 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activity.MainActivity;
 import com.hermanowicz.pantry.activity.PrintQRCodesActivity;
 import com.hermanowicz.pantry.db.product.Product;
-import com.hermanowicz.pantry.util.PrintQRData;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +55,8 @@ public class PrintQRCodesActivityTest {
 
     private Button printQrCodes, sendPdfByEmail, skip;
     private UiDevice uiDevice;
-    private final Product product = ProductTestModel.getTestProduct1();
+    private final Product product1 = ProductTestModel.getTestProduct1();
+    private final Product product2 = ProductTestModel.getTestProduct2();
 
     @Rule
     public GrantPermissionRule readPermissionRule =
@@ -76,16 +74,12 @@ public class PrintQRCodesActivityTest {
         protected Intent getActivityIntent() {
             Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
             List<Product> productList = new ArrayList<>();
-            productList.add(product);
-
-            ArrayList<String> textToQrCode = PrintQRData.getTextToQRCodeList(productList, 0);
-            ArrayList<String> namesOfProducts = PrintQRData.getNamesOfProductsList(productList);
-            ArrayList<String> expirationDates = PrintQRData.getExpirationDatesList(productList);
+            productList.add(product1);
+            productList.add(product2);
 
             return new Intent(targetContext, PrintQRCodesActivity.class)
-                    .putStringArrayListExtra("text_to_qr_code", textToQrCode)
-                    .putStringArrayListExtra("names_of_products", namesOfProducts)
-                    .putStringArrayListExtra("expiration_dates", expirationDates);
+                    .putExtra("all_product_list", (Serializable) productList)
+                    .putExtra("product_list", (Serializable) productList);
         }
     };
 
@@ -105,8 +99,9 @@ public class PrintQRCodesActivityTest {
         activity.runOnUiThread(() -> printQrCodes.performClick());
         Thread.sleep(3000);
         uiDevice.pressBack();
-        File pdfFile = new File(Environment.getExternalStorageDirectory(), "qrcodes-mypantry.pdf");
-        assertTrue(pdfFile.exists());
+        uiDevice.pressBack();
+        uiDevice.pressBack();
+        intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
@@ -115,6 +110,9 @@ public class PrintQRCodesActivityTest {
         activity.runOnUiThread(() -> sendPdfByEmail.performClick());
         Thread.sleep(2000);
         uiDevice.pressBack();
+        uiDevice.pressBack();
+        uiDevice.pressBack();
+        intended(hasComponent(MainActivity.class.getName()));
     }
 
     @Test
@@ -126,6 +124,7 @@ public class PrintQRCodesActivityTest {
 
     @Test
     public void onPressedBackNavigateToMainActivity() {
+        uiDevice.pressBack();
         uiDevice.pressBack();
         intended(hasComponent(MainActivity.class.getName()));
     }

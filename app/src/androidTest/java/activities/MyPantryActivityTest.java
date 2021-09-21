@@ -17,6 +17,22 @@
 
 package activities;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.AllOf.allOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
@@ -39,6 +55,7 @@ import com.hermanowicz.pantry.activity.MyPantryActivity;
 import com.hermanowicz.pantry.activity.ProductDetailsActivity;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
+import com.hermanowicz.pantry.util.DateHelper;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -52,19 +69,6 @@ import java.util.List;
 import java.util.Objects;
 
 import models.ProductTestModel;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.typeText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.core.AllOf.allOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 //Tests MyPantryActivity, ProductDetailActivity, EditProductActivity
 
@@ -113,34 +117,39 @@ public class MyPantryActivityTest {
         List<Product> productList = ProductDb.getInstance(activity).productsDao()
                 .getAllProductsList();
 
+        Product product = productList.get(0);
+        DateHelper dateExpiration = new DateHelper(product.getExpirationDate());
+        DateHelper dateProduction = new DateHelper(product.getProductionDate());
+        String expirationDate = dateExpiration.getDateInLocalFormat();
+        String productionDate = dateProduction.getDateInLocalFormat();
+
         onView(withId(R.id.recyclerview_products))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         Thread.sleep(1000);
         intended(hasComponent(ProductDetailsActivity.class.getName()));
-        onView(withId(R.id.button_editProduct)).check(matches(isDisplayed()))
-                .perform(click());
+        onView(withId(R.id.button_editProduct)).perform(scrollTo(), click());
         intended(hasComponent(EditProductActivity.class.getName()));
-
-        onView(withId(R.id.edittext_name))
-                .check(matches(withText(productList.get(0).getName())));
-        onView(withId(R.id.spinner_productType))
-                .check(matches(withText(productList.get(0).getTypeOfProduct())));
-        onView(withId(R.id.spinner_productCategory))
-                .check(matches(withText(productList.get(0).getProductFeatures())));
-        onView(withId(R.id.edittext_expirationDate))
-                .check(matches(withText(productList.get(0).getExpirationDate())));
-        onView(withId(R.id.edittext_productionDate))
-                .check(matches(withText(productList.get(0).getProductionDate())));
-        onView(withId(R.id.edittext_composition))
-                .check(matches(withText(productList.get(0).getComposition())));
-        onView(withId(R.id.edittext_healingProperties))
-                .check(matches(withText(productList.get(0).getHealingProperties())));
-        onView(withId(R.id.edittext_dosage))
-                .check(matches(withText(productList.get(0).getDosage())));
-        onView(withId(R.id.edittext_volume))
-                .check(matches(withText(productList.get(0).getVolume())));
-        onView(withId(R.id.edittext_weight))
-                .check(matches(withText(productList.get(0).getWeight())));
+        onView(ViewMatchers.isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.edittext_name)).perform(scrollTo())
+                .check(matches(withText(product.getName())));
+        onView(withId(R.id.spinner_productType)).perform(scrollTo())
+                .check(matches(withSpinnerText(product.getTypeOfProduct())));
+        onView(withId(R.id.spinner_productCategory)).perform(scrollTo())
+                .check(matches(withSpinnerText(product.getProductFeatures())));
+        onView(withId(R.id.edittext_expirationDate)).perform(scrollTo())
+                .check(matches(withText(expirationDate)));
+        onView(withId(R.id.edittext_productionDate)).perform(scrollTo())
+                .check(matches(withText(productionDate)));
+        onView(withId(R.id.edittext_composition)).perform(scrollTo())
+                .check(matches(withText(product.getComposition())));
+        onView(withId(R.id.edittext_healingProperties)).perform(scrollTo())
+                .check(matches(withText(product.getHealingProperties())));
+        onView(withId(R.id.edittext_dosage)).perform(scrollTo())
+                .check(matches(withText(product.getDosage())));
+        onView(withId(R.id.edittext_volume)).perform(scrollTo())
+                .check(matches(withText(String.valueOf(product.getVolume()))));
+        onView(withId(R.id.edittext_weight)).perform(scrollTo())
+                .check(matches(withText(String.valueOf(product.getWeight()))));
 
         ProductDb.getInstance(activity).productsDao().clearDb();
     }
@@ -218,6 +227,7 @@ public class MyPantryActivityTest {
 
     @Test
     public void onPressedBackNavigateToMainActivity() {
+        Espresso.pressBack();
         Espresso.pressBack();
         intended(hasComponent(MainActivity.class.getName()));
     }

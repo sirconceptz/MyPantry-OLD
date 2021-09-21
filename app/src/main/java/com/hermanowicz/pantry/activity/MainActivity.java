@@ -114,11 +114,10 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         presenter.setPremiumAccess(new PremiumAccess(context));
         presenter.updateUserData();
 
-        //if(!presenter.isPremium()) {
+        if (!presenter.isPremium()) {
             AdRequest adRequest = new AdRequest.Builder().build();
-
             adView.loadAd(adRequest);
-        //}
+        }
 
         setOnlineDbProductList(this);
 

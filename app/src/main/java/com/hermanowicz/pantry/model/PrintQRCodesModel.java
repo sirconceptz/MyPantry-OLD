@@ -19,7 +19,6 @@ package com.hermanowicz.pantry.model;
 
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.pdf.PdfDocument;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,7 +27,8 @@ import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.product.Product;
-import com.hermanowicz.pantry.util.FileManager;
+import com.hermanowicz.pantry.util.PdfData;
+import com.hermanowicz.pantry.util.PdfFile;
 import com.hermanowicz.pantry.util.PermissionsHandler;
 import com.hermanowicz.pantry.util.PrintQRData;
 
@@ -55,7 +55,8 @@ public class PrintQRCodesModel {
 
     public int getIdLastProductInDb() {
         int lastId = 0;
-        if(allProductList != null) {
+        assert allProductList != null;
+        if (allProductList.size() > 0) {
             int allProductListSize = allProductList.size();
             lastId = allProductList.get(allProductListSize - 1).getId();
         }
@@ -84,14 +85,15 @@ public class PrintQRCodesModel {
     public void createAndSavePDF() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         boolean isBigQrCodePrint = sharedPreferences.getBoolean(activity.getString(R.string.PreferencesKey_qr_code_size), true);
-        pdfFileName = FileManager.generatePdfFileName();
+        pdfFileName = PdfFile.generatePdfFileName();
         ArrayList<Bitmap> qrCodeBitmapArray = PrintQRData.getQrCodeBitmapArray(textToQRCodeArray, isBigQrCodePrint);
-        PdfDocument pdfDocument;
-        if(isBigQrCodePrint)
-            pdfDocument = FileManager.createPdfDocumentBigQrCodes(qrCodeBitmapArray, namesOfProductsArray, expirationDatesArray, productionDatesArray);
+        android.graphics.pdf.PdfDocument pdfDocument;
+        PdfData pdfData = new PdfData();
+        if (isBigQrCodePrint)
+            pdfDocument = pdfData.createPdfDocumentBigQrCodes(qrCodeBitmapArray, namesOfProductsArray, expirationDatesArray, productionDatesArray);
         else
-            pdfDocument = FileManager.createPdfDocumentSmallQrCodes(qrCodeBitmapArray, namesOfProductsArray, expirationDatesArray);
-        FileManager.savePdf(activity, pdfDocument, pdfFileName);
+            pdfDocument = pdfData.createPdfDocumentSmallQrCodes(qrCodeBitmapArray, namesOfProductsArray, expirationDatesArray);
+        PdfFile.savePdf(activity, pdfDocument, pdfFileName);
         pdfDocument.close();
     }
 

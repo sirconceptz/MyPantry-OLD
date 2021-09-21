@@ -41,15 +41,15 @@ import java.util.List;
  * A class used to prepare data from a list of products
  * that needed to print stickers with QR codes.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class PrintQRData {
 
     private static final int SMALL_QR_CODE_WIDTH = 100;
     private static final int SMALL_QR_CODE_HEIGHT = 100;
-    private static final int BIG_QR_CODE_WIDTH = 130;
-    private static final int BIG_QR_CODE_HEIGHT = 130;
+    private static final int BIG_QR_CODE_WIDTH = 120;
+    private static final int BIG_QR_CODE_HEIGHT = 120;
 
     public static ArrayList<String> getTextToQRCodeList(@Nullable List<Product> productList, int idOfLastProductInDb) {
         ArrayList<String> textToQRCodeList = new ArrayList<>();
@@ -57,7 +57,7 @@ public class PrintQRData {
         int counter = 0;
         assert productList != null;
         for (Product product : productList) {
-            try{
+            try {
                 if (product.getId() > 0)
                     jsonObject.put("product_id", product.getId());
                 else

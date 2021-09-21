@@ -25,6 +25,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
@@ -43,26 +46,36 @@ public class MyPantryModel {
     private FilterModel filterProduct = new FilterModel();
     private Filter filter;
     private List<Photo> photoList;
-    private List<Product> productList;
     private List<Product> allProductList;
     private List<Product> selectedProductsGroupList = new ArrayList<>();
     private List<GroupProducts> groupProductsList = new ArrayList<>();
     private boolean isMultiSelect = false;
     private String databaseMode;
 
-    public MyPantryModel(@NonNull Context context){
+    public MyPantryModel(@NonNull Context context) {
         this.productDb = ProductDb.getInstance(context);
     }
 
-    public void deleteSelectedProducts(){
-        productDb.productsDao().deleteProducts(getAllSelectedProductList());
+    public void deleteSelectedProducts() {
+        if (databaseMode.equals("local"))
+            productDb.productsDao().deleteProducts(getAllSelectedProductList());
+        else {
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
+            for (Product product : selectedProductsGroupList) {
+                List<Product> productToRemove = Product.getSimilarProductsList(product, allProductList);
+                for (Product product1 : productToRemove) {
+                    ref.child(String.valueOf(product1.getId())).removeValue();
+                }
+            }
+        }
     }
 
     public LiveData<List<Product>> getProductLiveData() {
         return productLiveData;
     }
 
-    public List<GroupProducts> getGroupProductsList(){
+    public List<GroupProducts> getGroupProductsList() {
         return groupProductsList;
     }
 
@@ -92,8 +105,7 @@ public class MyPantryModel {
     }
 
     public void setProductList(@NonNull List<Product> productList) {
-        this.productList = productList;
-        filter = new Filter(this.productList);
+        filter = new Filter(productList);
         groupProductsList = GroupProducts.getGroupProducts(productList);
     }
 

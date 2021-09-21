@@ -33,6 +33,7 @@ import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocationDb;
+import com.hermanowicz.pantry.util.ProductId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,7 @@ public class ProductDataModel {
     private List<Product> productList = new ArrayList<>();
     private int oldProductsQuantity;
     private String databaseMode;
+    private List<Product> allProductList;
 
     public ProductDataModel(@NonNull Context context){
         productDb = ProductDb.getInstance(context);
@@ -225,152 +227,117 @@ public class ProductDataModel {
         return correctTypeOfProduct;
     }
 
-    public void updateProductsQuantityInOnlineDb(int newProductsQuantity, @NonNull GroupProducts groupProducts) {
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
-        for(Product product : productList){
-            product.setName(groupProducts.getProduct().getName());
-            product.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
-            product.setProductFeatures(groupProducts.getProduct().getProductFeatures());
-            product.setStorageLocation(groupProducts.getProduct().getStorageLocation());
-            product.setHealingProperties(groupProducts.getProduct().getHealingProperties());
-            product.setComposition(groupProducts.getProduct().getComposition());
-            product.setDosage(groupProducts.getProduct().getDosage());
-            product.setWeight(groupProducts.getProduct().getWeight());
-            product.setVolume(groupProducts.getProduct().getVolume());
-            product.setHasSugar(groupProducts.getProduct().getHasSugar());
-            product.setHasSalt(groupProducts.getProduct().getHasSugar());
-            product.setIsBio(groupProducts.getProduct().getIsBio());
-            product.setIsVege(groupProducts.getProduct().getIsVege());
-            product.setBarcode(groupProducts.getProduct().getBarcode());
-            product.setPhotoName(groupProducts.getProduct().getPhotoName());
-            product.setPhotoDescription(groupProducts.getProduct().getPhotoDescription());
+    public List<Product> editProductList(@NonNull GroupProducts groupProducts) {
+        Product productNewData = groupProducts.getProduct();
+        for (Product product : productList) {
+            product.setName(productNewData.getName());
+            product.setTypeOfProduct(productNewData.getTypeOfProduct());
+            if (product.getProductFeatures().equals(resources.getString(R.string.Product_choose)))
+                product.setProductFeatures("");
+            else
+                product.setProductFeatures(productNewData.getProductFeatures());
+            if (product.getStorageLocation().equals("null"))
+                product.setStorageLocation("");
+            else
+                product.setStorageLocation(productNewData.getStorageLocation());
+            product.setHealingProperties(productNewData.getHealingProperties());
+            product.setComposition(productNewData.getComposition());
+            product.setDosage(productNewData.getDosage());
+            product.setWeight(productNewData.getWeight());
+            product.setVolume(productNewData.getVolume());
+            product.setHasSugar(productNewData.getHasSugar());
+            product.setHasSalt(productNewData.getHasSugar());
+            product.setIsBio(productNewData.getIsBio());
+            product.setIsVege(productNewData.getIsVege());
+            product.setBarcode(productNewData.getBarcode());
+            product.setPhotoName(productNewData.getPhotoName());
+            product.setPhotoDescription(productNewData.getPhotoDescription());
             product.setProductionDate(productionDate);
             product.setExpirationDate(expirationDate);
             product.setTaste(taste);
+        }
+        return productList;
+    }
+
+    public void updateProductsQuantityInOnlineDb(int newProductsQuantity, @NonNull GroupProducts groupProducts) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
+        editProductList(groupProducts);
+        for (Product product : productList) {
             ref.child(String.valueOf(product.getId())).setValue(product);
         }
         List<Product> newProductList = new ArrayList<>();
         int productListSize = productList.size();
         int nextId = productList.get(productListSize - 1).getId();
-        if(newProductsQuantity > oldProductsQuantity) {
+        if (newProductsQuantity > oldProductsQuantity) {
             for (int newProductsCount = newProductsQuantity - oldProductsQuantity; newProductsCount > 0; newProductsCount--) {
                 nextId++;
-                Product newProduct = new Product();
+                while (ProductId.isIdExists(allProductList, nextId)) {
+                    nextId++;
+                }
+                Product newProduct = getNewProduct(groupProducts);
                 newProduct.setId(nextId);
-                newProduct.setName(groupProducts.getProduct().getName());
-                newProduct.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
-                newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
-                newProduct.setStorageLocation(groupProducts.getProduct().getStorageLocation());
-                newProduct.setExpirationDate(expirationDate);
-                newProduct.setProductionDate(productionDate);
-                newProduct.setVolume(groupProducts.getProduct().getVolume());
-                newProduct.setWeight(groupProducts.getProduct().getWeight());
-                newProduct.setComposition(groupProducts.getProduct().getComposition());
-                newProduct.setHealingProperties(groupProducts.getProduct().getHealingProperties());
-                newProduct.setDosage(groupProducts.getProduct().getDosage());
-                newProduct.setHasSugar(groupProducts.getProduct().getHasSugar());
-                newProduct.setHasSalt(groupProducts.getProduct().getHasSalt());
-                newProduct.setIsVege(groupProducts.getProduct().getIsVege());
-                newProduct.setIsBio(groupProducts.getProduct().getIsBio());
-                newProduct.setBarcode(groupProducts.getProduct().getBarcode());
-                newProduct.setPhotoName(groupProducts.getProduct().getPhotoName());
-                newProduct.setPhotoDescription(groupProducts.getProduct().getPhotoDescription());
-                newProduct.setTaste(taste);
-                newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
-                if (groupProducts.getProduct().getProductFeatures().equals(resources.getString(R.string.Product_choose)))
-                    newProduct.setProductFeatures("");
-                else
-                    newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
                 newProductList.add(newProduct);
             }
             for (Product product : newProductList) {
                 ref.child(String.valueOf(product.getId())).setValue(product);
             }
         }
-        if(oldProductsQuantity > newProductsQuantity) {
-            List<Product> productListToRemove = new ArrayList<>();
-            int quantityToRemove = oldProductsQuantity - newProductsQuantity;
-            for(; quantityToRemove > 0; quantityToRemove--) {
-                productListToRemove.add(productList.get(quantityToRemove-1));
-            }
-            for(Product product : productListToRemove) {
+        if (oldProductsQuantity > newProductsQuantity) {
+            List<Product> productListToRemove = getProductListToRemove(newProductsQuantity);
+            for (Product product : productListToRemove) {
                 ref.child(String.valueOf(product.getId())).removeValue();
             }
         }
     }
 
+    private Product getNewProduct(@NonNull GroupProducts groupProducts) {
+        Product newProduct = groupProducts.getProduct();
+        newProduct.setExpirationDate(expirationDate);
+        newProduct.setProductionDate(productionDate);
+        newProduct.setTaste(taste);
+        newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
+        if (groupProducts.getProduct().getProductFeatures().equals(resources.getString(R.string.Product_choose)))
+            newProduct.setProductFeatures("");
+        else
+            newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
+        return newProduct;
+    }
+
     private void updateProductsQuantityInOfflineDb(int newProductsQuantity, @NonNull GroupProducts groupProducts) {
-        for(Product product : productList){
-            product.setName(groupProducts.getProduct().getName());
-            product.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
-            product.setProductFeatures(groupProducts.getProduct().getProductFeatures());
-            product.setStorageLocation(groupProducts.getProduct().getStorageLocation());
-            product.setHealingProperties(groupProducts.getProduct().getHealingProperties());
-            product.setComposition(groupProducts.getProduct().getComposition());
-            product.setDosage(groupProducts.getProduct().getDosage());
-            product.setWeight(groupProducts.getProduct().getWeight());
-            product.setVolume(groupProducts.getProduct().getVolume());
-            product.setHasSugar(groupProducts.getProduct().getHasSugar());
-            product.setHasSalt(groupProducts.getProduct().getHasSugar());
-            product.setIsBio(groupProducts.getProduct().getIsBio());
-            product.setIsVege(groupProducts.getProduct().getIsVege());
-            product.setBarcode(groupProducts.getProduct().getBarcode());
-            product.setPhotoName(groupProducts.getProduct().getPhotoName());
-            product.setPhotoDescription(groupProducts.getProduct().getPhotoDescription());
-            product.setProductionDate(productionDate);
-            product.setExpirationDate(expirationDate);
-            product.setTaste(taste);
+        editProductList(groupProducts);
+        for (Product product : productList) {
             productDb.productsDao().updateProduct(product);
         }
         List<Product> newProductList = new ArrayList<>();
-        if(newProductsQuantity > oldProductsQuantity){
-            for(int newProductsCount = newProductsQuantity - oldProductsQuantity; newProductsCount > 0 ; newProductsCount--){
-                Product newProduct = new Product();
-                newProduct.setName(groupProducts.getProduct().getName());
-                newProduct.setTypeOfProduct(groupProducts.getProduct().getTypeOfProduct());
-                newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
-                newProduct.setStorageLocation(groupProducts.getProduct().getStorageLocation());
-                newProduct.setExpirationDate(expirationDate);
-                newProduct.setProductionDate(productionDate);
-                newProduct.setVolume(groupProducts.getProduct().getVolume());
-                newProduct.setWeight(groupProducts.getProduct().getWeight());
-                newProduct.setComposition(groupProducts.getProduct().getComposition());
-                newProduct.setHealingProperties(groupProducts.getProduct().getHealingProperties());
-                newProduct.setDosage(groupProducts.getProduct().getDosage());
-                newProduct.setHasSugar(groupProducts.getProduct().getHasSugar());
-                newProduct.setHasSalt(groupProducts.getProduct().getHasSalt());
-                newProduct.setIsVege(groupProducts.getProduct().getIsVege());
-                newProduct.setIsBio(groupProducts.getProduct().getIsBio());
-                newProduct.setBarcode(groupProducts.getProduct().getBarcode());
-                newProduct.setPhotoName(groupProducts.getProduct().getPhotoName());
-                newProduct.setPhotoDescription(groupProducts.getProduct().getPhotoDescription());
-                newProduct.setTaste(taste);
-                newProduct.setHashCode(String.valueOf(newProduct.hashCode()));
-                if(groupProducts.getProduct().getProductFeatures().equals(resources.getString(R.string.Product_choose)))
-                    newProduct.setProductFeatures("");
-                else
-                    newProduct.setProductFeatures(groupProducts.getProduct().getProductFeatures());
+        if (newProductsQuantity > oldProductsQuantity) {
+            for (int newProductsCount = newProductsQuantity - oldProductsQuantity; newProductsCount > 0; newProductsCount--) {
+                Product newProduct = getNewProduct(groupProducts);
+                newProduct.setId(0);
                 newProductList.add(newProduct);
             }
             productDb.productsDao().addProducts(newProductList);
         }
-        if(oldProductsQuantity > newProductsQuantity){
-            List<Product> productListToRemove = new ArrayList<>();
-            int quantityToRemove = oldProductsQuantity - newProductsQuantity;
-            for(; quantityToRemove > 0; quantityToRemove--){
-                productListToRemove.add(productList.get(quantityToRemove-1));
-            }
+        if (oldProductsQuantity > newProductsQuantity) {
+            List<Product> productListToRemove = getProductListToRemove(newProductsQuantity);
             productDb.productsDao().deleteProducts(productListToRemove);
         }
     }
 
-    public void updateDatabase(@NonNull GroupProducts groupProducts){
-        int newProductsQuantity = groupProducts.getQuantity();
-        if(databaseMode.equals("local")) {
-            updateProductsQuantityInOfflineDb(newProductsQuantity, groupProducts);
+    private List<Product> getProductListToRemove(int newProductsQuantity) {
+        List<Product> productListToRemove = new ArrayList<>();
+        int quantityToRemove = oldProductsQuantity - newProductsQuantity;
+        for (; quantityToRemove > 0; quantityToRemove--) {
+            productListToRemove.add(productList.get(quantityToRemove - 1));
         }
-        else
+        return productListToRemove;
+    }
+
+    public void updateDatabase(@NonNull GroupProducts groupProducts) {
+        int newProductsQuantity = groupProducts.getQuantity();
+        if (databaseMode.equals("local")) {
+            updateProductsQuantityInOfflineDb(newProductsQuantity, groupProducts);
+        } else
             updateProductsQuantityInOnlineDb(newProductsQuantity, groupProducts);
     }
 
@@ -389,5 +356,13 @@ public class ProductDataModel {
 
     public void setProductList(List<Product> productList) {
         this.productList = productList;
+    }
+
+    public List<Product> getAllProductList() {
+        return allProductList;
+    }
+
+    public void setAllProductList(List<Product> allProductList) {
+        this.allProductList = allProductList;
     }
 }

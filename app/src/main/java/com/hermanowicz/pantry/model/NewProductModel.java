@@ -51,7 +51,6 @@ public class NewProductModel {
     private String barcode;
     private List<Product> productList = new ArrayList<>();
     private String databaseMode;
-    private List<Product> onlineProductList;
     private List<Product> allProductList;
 
     public NewProductModel(@NonNull Context context) {
@@ -103,13 +102,13 @@ public class NewProductModel {
         DatabaseReference ref = db.getReference().child("products/" + FirebaseAuth.getInstance().getUid());
         int counter = 0;
         int onlineProductListSize = 0;
-        if(onlineProductList != null)
-            onlineProductListSize = onlineProductList.size();
+        if (allProductList != null)
+            onlineProductListSize = allProductList.size();
         for (Product product : productList) {
             counter++;
             int nextId = counter;
             if (onlineProductListSize > 0)
-                nextId = nextId + onlineProductList.get(onlineProductListSize - 1).getId();
+                nextId = nextId + allProductList.get(onlineProductListSize - 1).getId();
             product.setId(nextId);
             ref.child(String.valueOf(nextId)).setValue(product);
         }

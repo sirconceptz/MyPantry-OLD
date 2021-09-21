@@ -49,8 +49,8 @@ import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.PrintQRCodesView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.presenter.PrintQRCodesPresenter;
-import com.hermanowicz.pantry.util.FileManager;
 import com.hermanowicz.pantry.util.Orientation;
+import com.hermanowicz.pantry.util.PdfFile;
 import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
@@ -135,7 +135,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     @Override
     public void openPDF(String fileName) {
-        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", FileManager.getPdfFile(fileName));
+        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", PdfFile.getPdfFile(fileName));
         Intent pdfDocumentIntent = new Intent(Intent.ACTION_VIEW);
         pdfDocumentIntent.setDataAndType(pdfUri, "application/pdf");
         pdfDocumentIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -145,7 +145,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
 
     @Override
     public void sendPDFByEmail(String fileName) {
-        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", FileManager.getPdfFile(fileName));
+        Uri pdfUri = getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", PdfFile.getPdfFile(fileName));
         final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
         emailIntent.setType("plain/text");
         if (pdfUri != null) {

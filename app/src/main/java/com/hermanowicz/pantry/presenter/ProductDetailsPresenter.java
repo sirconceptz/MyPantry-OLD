@@ -97,7 +97,8 @@ public class ProductDetailsPresenter {
 
     public void onClickEditProduct(int productId){
         List<Product> productList = model.getProductList();
-        view.navigateToEditProductActivity(productId, productList);
+        List<Product> allProductList = model.getAllProductList();
+        view.navigateToEditProductActivity(productId, productList, allProductList);
     }
 
     public void onClickTakePhoto() {
@@ -110,12 +111,16 @@ public class ProductDetailsPresenter {
         view.navigateToMyPantryActivity();
     }
 
-    public boolean isPremium(){
+    public boolean isPremium() {
         return premiumAccess.isPremium();
     }
 
     public void setProductList(List<Product> productList) {
         model.setProductList(productList);
+    }
+
+    public void setAllProductList(List<Product> allProductList) {
+        model.setAllProductList(allProductList);
     }
 
     public void setPhotoList(List<Photo> photoList) {

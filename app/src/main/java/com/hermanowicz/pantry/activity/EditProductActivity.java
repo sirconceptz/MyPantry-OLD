@@ -44,9 +44,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityEditProductBinding;
 import com.hermanowicz.pantry.db.product.Product;
@@ -90,7 +87,6 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private RadioButton productIsSweet, productIsSour, productIsSweetAndSour, productIsBitter,
             productIsSalty;
     private Button saveProduct, cancelButton;
-    private AdView adView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstantState) {
@@ -110,14 +106,6 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         resources = context.getResources();
         presenter = new EditProductPresenter(this, this, context);
         presenter.setPremiumAccess(new PremiumAccess(context));
-
-        adView = binding.adview;
-
-        if(!presenter.isPremium()) {
-            MobileAds.initialize(context);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        }
 
         setSupportActionBar(binding.toolbar);
 
@@ -153,10 +141,12 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productHealingProperties.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         productDosage.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
-        Intent myPantryActivityIntent = getIntent();
-        int productId = myPantryActivityIntent.getIntExtra("product_id", 1);
-        List<Product> productList = (List<Product>) myPantryActivityIntent.getSerializableExtra("product_list");
+        Intent intent = getIntent();
+        int productId = intent.getIntExtra("product_id", 1);
+        List<Product> productList = (List<Product>) intent.getSerializableExtra("product_list");
+        List<Product> allProductList = (List<Product>) intent.getSerializableExtra("all_product_list");
 
+        presenter.setAllProductList(allProductList);
         presenter.setProductList(productList);
 
         ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
@@ -397,18 +387,15 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     public void onResume() {
         super.onResume();
-        adView.resume();
     }
 
     @Override
     public void onPause() {
-        adView.pause();
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        adView.destroy();
         super.onDestroy();
     }
 

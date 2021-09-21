@@ -41,13 +41,21 @@ public class AppSettingsModel {
         this.preferences = preferences;
     }
 
-    public void cleanOnlineDb(){
+    public static boolean isSettingsUpdated(@NonNull SharedPreferences preferences) {
+        return preferences.getBoolean("SETTINGS_UPDATED", false);
+    }
+
+    public static void deleteOldSettings(@NonNull SharedPreferences preferences) {
+        preferences.edit().clear().putBoolean("SETTINGS_UPDATED", true).apply();
+    }
+
+    public void cleanOnlineDb() {
         FirebaseDatabase.getInstance().getReference()
-                .child("products/"+ FirebaseAuth.getInstance().getUid()).removeValue();
+                .child("products/" + FirebaseAuth.getInstance().getUid()).removeValue();
         FirebaseDatabase.getInstance().getReference()
-                .child("categories/"+ FirebaseAuth.getInstance().getUid()).removeValue();
+                .child("categories/" + FirebaseAuth.getInstance().getUid()).removeValue();
         FirebaseDatabase.getInstance().getReference()
-                .child("storage_locations/"+ FirebaseAuth.getInstance().getUid()).removeValue();
+                .child("storage_locations/" + FirebaseAuth.getInstance().getUid()).removeValue();
     }
 
     public void importDbOfflineToOnline(List<Product> productList, List<Category> categoryList,
@@ -102,7 +110,7 @@ public class AppSettingsModel {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(address).matches();
     }
-    
+
     public String getAppVersion(){
         return BuildConfig.VERSION_NAME;
     }
@@ -117,14 +125,6 @@ public class AppSettingsModel {
 
     public void clearEmailAddress(){
         preferences.edit().putString("EMAIL_ADDRESS", "").apply();
-    }
-
-    public static boolean isSettingsUpdated(@NonNull SharedPreferences preferences){
-        return preferences.getBoolean("SETTINGS_UPDATED", false);
-    }
-
-    public static void deleteOldSettings(@NonNull SharedPreferences preferences){
-        preferences.edit().clear().putBoolean("SETTINGS_UPDATED", true).apply();
     }
 
     public String getDatabaseMode() {

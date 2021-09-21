@@ -247,4 +247,8 @@ public class MyPantryPresenter {
     public List<Photo> getPhotoList() {
         return model.getPhotoList();
     }
+
+    public List<Product> getAllProductList() {
+        return model.getAllProductsList();
+    }
 }

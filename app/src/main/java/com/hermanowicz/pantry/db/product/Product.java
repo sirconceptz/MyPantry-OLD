@@ -30,7 +30,7 @@ import java.util.List;
  * <h1>Product/h1>
  * Product model.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 @Keep
@@ -39,26 +39,26 @@ public class Product implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private String name;
-    private String hashCode;
-    private String typeOfProduct;
-    private String productFeatures;
-    private String storageLocation;
-    private String expirationDate;
-    private String productionDate;
-    private String composition;
-    private String healingProperties;
-    private String dosage;
+    private String name = "";
+    private String hashCode = "";
+    private String typeOfProduct = "";
+    private String productFeatures = "";
+    private String storageLocation = "";
+    private String expirationDate = "";
+    private String productionDate = "";
+    private String composition = "";
+    private String healingProperties = "";
+    private String dosage = "";
     private int volume;
     private int weight;
     private boolean hasSugar;
     private boolean hasSalt;
     private boolean isVege;
     private boolean isBio;
-    private String taste;
-    private String photoName;
-    private String photoDescription;
-    private String barcode;
+    private String taste = "";
+    private String photoName = "";
+    private String photoDescription = "";
+    private String barcode = "";
 
     public int getId() {
         return id;

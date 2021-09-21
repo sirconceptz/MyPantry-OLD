@@ -38,7 +38,7 @@ public interface ProductDetailsView {
 
     void navigateToPrintQRCodeActivity(List<Product> productList);
 
-    void navigateToEditProductActivity(int productId, List<Product> productList);
+    void navigateToEditProductActivity(int productId, List<Product> productList, List<Product> allProductList);
 
     void navigateToMyPantryActivity();
 

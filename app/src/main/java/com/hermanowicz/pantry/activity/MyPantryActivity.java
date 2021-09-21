@@ -176,7 +176,9 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 else {
                     List<GroupProducts> groupProductsList = presenter.getGroupProductsList();
                     List<Product> productList = presenter.getProductList();
+                    List<Product> allProductList = presenter.getAllProductList();
                     Intent productDetailsActivityIntent = new Intent(context, ProductDetailsActivity.class)
+                            .putExtra("all_product_list", (Serializable) allProductList)
                             .putExtra("product_list", (Serializable) productList)
                             .putExtra("product_id", groupProductsList.get(position).getProduct().getId())
                             .putExtra("hash_code", groupProductsList.get(position).getProduct().getHashCode());

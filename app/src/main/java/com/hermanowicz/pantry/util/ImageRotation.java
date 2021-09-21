@@ -20,7 +20,6 @@ package com.hermanowicz.pantry.util;
 import android.media.ExifInterface;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -47,9 +46,6 @@ public class ImageRotation {
             { return 90; }
             return 0;
 
-        } catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
         } catch (IOException e)
         {
             e.printStackTrace();

@@ -26,9 +26,9 @@ import java.util.List;
 
 /**
  * <h1>GroupProducts</h1>
- * Model class
+ * Model class for group product
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public final class GroupProducts {
@@ -62,43 +62,18 @@ public final class GroupProducts {
         List<GroupProducts> groupProductsList = new ArrayList<>();
         List<GroupProducts> toAddGroupProductsList = new ArrayList<>();
         List<GroupProducts> toRemoveGroupProductsList = new ArrayList<>();
-        for (Product product: productList){
-            boolean productOnList = false;
-            if(product.getPhotoName() == null)
+        for (Product product: productList) {
+            if (product.getPhotoName() == null)
                 product.setPhotoName("");
-            if(product.getPhotoDescription() == null)
+            if (product.getPhotoDescription() == null)
                 product.setPhotoDescription("");
-            GroupProducts testedGroupProducts = new GroupProducts(product, 1);
-            for (GroupProducts groupProduct : groupProductsList) {
-                if (groupProduct.getProduct().getName().toLowerCase().contains(product.getName().toLowerCase())
-                        && groupProduct.getProduct().getExpirationDate().equals(product.getExpirationDate())
-                        && groupProduct.getProduct().getProductFeatures().equals(product.getProductFeatures())
-                        && groupProduct.getProduct().getComposition().equals(product.getComposition())
-                        && groupProduct.getProduct().getHealingProperties().equals(product.getHealingProperties())
-                        && groupProduct.getProduct().getDosage().equals(product.getDosage())
-                        && groupProduct.getProduct().getVolume() == product.getVolume()
-                        && groupProduct.getProduct().getWeight() == product.getWeight()
-                        && groupProduct.getProduct().getTypeOfProduct().equals(product.getTypeOfProduct())
-                        && groupProduct.getProduct().getProductFeatures().equals(product.getProductFeatures())
-                        && groupProduct.getProduct().getHasSalt() == product.getHasSalt()
-                        && groupProduct.getProduct().getHasSugar() == product.getHasSugar()
-                        && groupProduct.getProduct().getIsBio() == product.getIsBio()
-                        && groupProduct.getProduct().getIsVege() == product.getIsVege()
-                        && groupProduct.getProduct().getBarcode().equals(product.getBarcode())
-                        && groupProduct.getProduct().getPhotoName().equals(product.getPhotoName())
-                        && groupProduct.getProduct().getPhotoDescription().equals(product.getPhotoDescription())
-                        && groupProduct.getProduct().getTaste().equals(product.getTaste())) {
-                    productOnList = true;
-                    testedGroupProducts = groupProduct;
-                    break;
-                }
-            }
-            if(productOnList) {
+            GroupProducts testedGroupProducts = getGroupIfOnList(product, groupProductsList);
+
+            if (testedGroupProducts != null) {
                 toRemoveGroupProductsList.add(testedGroupProducts);
                 testedGroupProducts.setQuantity(testedGroupProducts.getQuantity() + 1);
                 toAddGroupProductsList.add(testedGroupProducts);
-            }
-            else {
+            } else {
                 GroupProducts newGroupProduct = new GroupProducts(product, 1);
                 toAddGroupProductsList.add(newGroupProduct);
             }
@@ -108,5 +83,34 @@ public final class GroupProducts {
             toRemoveGroupProductsList.clear();
         }
         return groupProductsList;
+    }
+
+    private static GroupProducts getGroupIfOnList(Product product, List<GroupProducts> groupProductList) {
+        GroupProducts groupProductReturned = null;
+        for (GroupProducts groupProducts : groupProductList) {
+            Product groupProduct = groupProducts.getProduct();
+            if (groupProduct.getName().toLowerCase().contains(product.getName().toLowerCase())
+                    && groupProduct.getExpirationDate().equals(product.getExpirationDate())
+                    && groupProduct.getProductFeatures().equals(product.getProductFeatures())
+                    && groupProduct.getComposition().equals(product.getComposition())
+                    && groupProduct.getHealingProperties().equals(product.getHealingProperties())
+                    && groupProduct.getDosage().equals(product.getDosage())
+                    && groupProduct.getVolume() == product.getVolume()
+                    && groupProduct.getWeight() == product.getWeight()
+                    && groupProduct.getTypeOfProduct().equals(product.getTypeOfProduct())
+                    && groupProduct.getProductFeatures().equals(product.getProductFeatures())
+                    && groupProduct.getHasSalt() == product.getHasSalt()
+                    && groupProduct.getHasSugar() == product.getHasSugar()
+                    && groupProduct.getIsBio() == product.getIsBio()
+                    && groupProduct.getIsVege() == product.getIsVege()
+                    && groupProduct.getBarcode().equals(product.getBarcode())
+                    && groupProduct.getPhotoName().equals(product.getPhotoName())
+                    && groupProduct.getPhotoDescription().equals(product.getPhotoDescription())
+                    && groupProduct.getTaste().equals(product.getTaste())) {
+                groupProductReturned = groupProducts;
+                break;
+            }
+        }
+        return groupProductReturned;
     }
 }
