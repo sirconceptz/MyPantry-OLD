@@ -46,6 +46,7 @@ public class MainPresenter {
     private final AccountView accountView;
     private final SharedPreferences sharedPreferences;
     private PremiumAccess premiumAccess;
+    private long pressedBackTime;
 
     public MainPresenter(@NonNull MainView view,
                          @NonNull AccountView accountView, @NonNull SharedPreferences sharedPreferences) {
@@ -105,5 +106,13 @@ public class MainPresenter {
     public boolean isOfflineDb() {
         AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
         return appSettingsModel.getDatabaseMode().equals("local");
+    }
+
+    public long getPressedBackTime() {
+        return pressedBackTime;
+    }
+
+    public void setPressedBackTime(long pressedTime) {
+        this.pressedBackTime = pressedTime;
     }
 }

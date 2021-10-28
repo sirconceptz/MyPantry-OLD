@@ -64,7 +64,7 @@ import maes.tech.intentanim.CustomIntent;
  * Activity to print QR codes. Uses zxing library. User will be asked. The user gets a query if
  * he wants to print QR codes for added products.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCodesView {
@@ -73,12 +73,14 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     private Context context;
 
     private ImageView qrCodeImage;
-    private Button printQrCodes, sendPdfByEmail, skip;
+    private Button printQrCodes;
+    private Button sendPdfByEmail;
+    private Button skip;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
@@ -86,7 +88,7 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
     }
 
     private void initView() {
-        com.hermanowicz.pantry.databinding.ActivityPrintQrcodesBinding binding = ActivityPrintQrcodesBinding.inflate(getLayoutInflater());
+        ActivityPrintQrcodesBinding binding = ActivityPrintQrcodesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();

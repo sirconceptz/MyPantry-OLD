@@ -49,7 +49,7 @@ import maes.tech.intentanim.CustomIntent;
  * <h1>StorageLocationActivity</h1>
  * Activity for add new storage location.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class StorageLocationDetailsActivity extends AppCompatActivity implements StorageLocationDetailsView {
@@ -57,13 +57,17 @@ public class StorageLocationDetailsActivity extends AppCompatActivity implements
     private StorageLocationDetailsPresenter presenter;
     private Context context;
 
-    private TextView storageLocationName, storageLocationDescription, nameCharCounter, descriptionCharCounter;
-    private Button updateStorageLocation, deleteStorageLocation;
+    private TextView storageLocationName;
+    private TextView storageLocationDescription;
+    private TextView nameCharCounter;
+    private TextView descriptionCharCounter;
+    private Button updateStorageLocation;
+    private Button deleteStorageLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();

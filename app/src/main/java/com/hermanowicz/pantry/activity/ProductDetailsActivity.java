@@ -74,7 +74,7 @@ import maes.tech.intentanim.CustomIntent;
  * Activity with details of product. Is opened after choose a product in MyPantryActivity or after
  * scanning the QR code of product.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView,
@@ -82,20 +82,35 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
     private ProductDetailsPresenter presenter;
     private Context context;
-    private int productId;
-    private String hashCode;
-    private TextView productType, productCategory, productStorageLocation, productExpirationDate,
-            productProductionDate, productComposition, productHealingProperties, productDosage,
-            productVolume, productWeight, productQuantity, productHasSugar, productHasSalt,
-            productIsVege, productIsBio, productTaste;
+
     private ImageView photoIv;
-    private Button deleteProduct, printQrCode, addBarcode, addPhoto, editProduct;
+    private TextView productType;
+    private TextView productCategory;
+    private TextView productStorageLocation;
+    private TextView productExpirationDate;
+    private TextView productProductionDate;
+    private TextView productComposition;
+    private TextView productHealingProperties;
+    private TextView productDosage;
+    private TextView productVolume;
+    private TextView productWeight;
+    private TextView productQuantity;
+    private TextView productHasSugar;
+    private TextView productHasSalt;
+    private TextView productIsVege;
+    private TextView productIsBio;
+    private TextView productTaste;
+    private Button deleteProduct;
+    private Button printQrCode;
+    private Button addBarcode;
+    private Button addPhoto;
+    private Button editProduct;
     private AdView adView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
@@ -152,19 +167,20 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         presenter.setAllProductList(allProductList);
         presenter.setProductList(productList);
-        productId = intent.getIntExtra("product_id", 1);
-        hashCode = intent.getStringExtra("hash_code");
+        int productId = intent.getIntExtra("product_id", 1);
+        String hashCode = intent.getStringExtra("hash_code");
         presenter.setProductId(productId);
+        presenter.setHashCode(hashCode);
 
         if (presenter.isOfflineDb())
-            presenter.showProductDetails(hashCode);
+            presenter.showProductDetails();
     }
 
     private void setListeners() {
         addBarcode.setOnClickListener(view -> presenter.onClickAddBarcode());
         deleteProduct.setOnClickListener(view -> presenter.onClickDeleteProduct());
         printQrCode.setOnClickListener(view -> presenter.onClickPrintQRCodes());
-        editProduct.setOnClickListener(view -> presenter.onClickEditProduct(productId));
+        editProduct.setOnClickListener(view -> presenter.onClickEditProduct());
         addPhoto.setOnClickListener(view -> presenter.onClickTakePhoto());
     }
 
@@ -302,7 +318,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             presenter.onClickPrintQRCodes();
             return true;
         } else if (id == R.id.action_edit_product) {
-            presenter.onClickEditProduct(productId);
+            presenter.onClickEditProduct();
             return true;
         } else if (id == R.id.action_add_barcode) {
             presenter.onClickAddBarcode();
@@ -335,7 +351,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public void onPhotoResponse(List<Photo> photoList) {
         presenter.setPhotoList(photoList);
-        presenter.showProductDetails(hashCode);
+        presenter.showProductDetails();
     }
 
     @Override

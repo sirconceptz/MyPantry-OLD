@@ -37,20 +37,19 @@ import com.hermanowicz.pantry.interfaces.ProductToCopyView;
  * <h1>WeightFilterDialog</h1>
  * The dialog window needed to set filters by weight of product to search for products in the pantry.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class ChooseProductToCopyDialog extends AppCompatDialogFragment {
 
-    private DialogChooseProductToCopyBinding binding;
     private Activity activity;
-    private View view;
-    private ProductToCopyView productToCopyView;
-
-    private Spinner chooseProductToCopySpinner;
     private final String[] namesProductList;
 
-    public ChooseProductToCopyDialog(@NonNull String[] namesProductList){
+    private View view;
+    private ProductToCopyView productToCopyView;
+    private Spinner chooseProductToCopySpinner;
+
+    public ChooseProductToCopyDialog(@NonNull String[] namesProductList) {
         this.namesProductList = namesProductList;
     }
 
@@ -71,7 +70,7 @@ public class ChooseProductToCopyDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogChooseProductToCopyBinding.inflate(activity.getLayoutInflater());
+        com.hermanowicz.pantry.databinding.DialogChooseProductToCopyBinding binding = DialogChooseProductToCopyBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
         chooseProductToCopySpinner = view.findViewById(R.id.spinner_chooseProductToCopy);
 

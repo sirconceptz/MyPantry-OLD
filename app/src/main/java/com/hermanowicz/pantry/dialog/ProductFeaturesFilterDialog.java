@@ -45,16 +45,18 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
 
-    private DialogProductFeaturesBinding binding;
     private Activity activity;
-    private View view;
     private FilterDialogListener dialogListener;
     private Filter.Set filterHasSugar;
     private Filter.Set filterHasSalt;
     private Filter.Set filterIsBio;
     private Filter.Set filterIsVege;
 
-    private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
+    private View view;
+    private CheckBox productHasSugar;
+    private CheckBox productHasSalt;
+    private CheckBox productIsBio;
+    private CheckBox productIsVege;
     private Button clearBtn;
 
     public ProductFeaturesFilterDialog(@NonNull FilterModel filterProduct) {
@@ -83,7 +85,7 @@ public class ProductFeaturesFilterDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogProductFeaturesBinding.inflate(activity.getLayoutInflater());
+        com.hermanowicz.pantry.databinding.DialogProductFeaturesBinding binding = DialogProductFeaturesBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         productHasSugar = binding.checkboxHasSugar;

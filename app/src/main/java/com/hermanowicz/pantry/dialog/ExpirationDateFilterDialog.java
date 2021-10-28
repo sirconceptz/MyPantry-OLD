@@ -53,17 +53,14 @@ import java.util.Date;
 
 public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
 
-    private DialogExpirationDateBinding binding;
     private Activity activity;
-    private View view;
     private FilterDialogListener dialogListener;
-    private Calendar calendar;
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String filterExpirationDateSince;
     private String filterExpirationDateFor;
     private DatePickerDialog.OnDateSetListener expirationDateSinceListener, expirationDateForListener;
-    private int year, month, day;
 
+    private View view;
     private EditText expirationDateSince, expirationDateFor;
     private Button clearBtn;
 
@@ -85,9 +82,9 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (binding.edittextExpirationDateSince.length() < 1)
+                    if (expirationDateSince.length() < 1)
                         filterExpirationDateSince = null;
-                    if (binding.edittextExpirationDateFor.length() < 1)
+                    if (expirationDateFor.length() < 1)
                         filterExpirationDateFor = null;
                     dialogListener.setFilterExpirationDate(filterExpirationDateSince, filterExpirationDateFor);
                 });
@@ -96,12 +93,10 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogExpirationDateBinding.inflate(activity.getLayoutInflater());
+        DialogExpirationDateBinding binding = DialogExpirationDateBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         dateFormat.setLenient(false);
-        calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
 
         expirationDateSince = binding.edittextExpirationDateSince;
         expirationDateFor = binding.edittextExpirationDateFor;
@@ -119,6 +114,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
 
     private void setListeners() {
         expirationDateSince.setOnClickListener(v -> {
+            int year, month, day;
             if (expirationDateSince.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
@@ -139,6 +135,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
         });
 
         expirationDateFor.setOnClickListener(v -> {
+            int year, month, day;
             if (expirationDateFor.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
@@ -161,6 +158,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
         });
 
         expirationDateSinceListener = (datePicker, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
@@ -169,6 +167,7 @@ public class ExpirationDateFilterDialog extends AppCompatDialogFragment {
         };
 
         expirationDateForListener = (datePicker, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));

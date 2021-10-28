@@ -40,18 +40,19 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * <h1>WeightFilterDialog</h1>
  * The dialog window needed to set filters by weight of product to search for products in the pantry.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class WeightFilterDialog extends AppCompatDialogFragment {
 
-    private DialogWeightBinding binding;
     private Activity activity;
-    private View view;
     private FilterDialogListener dialogListener;
-    private int filterWeightSince, filterWeightFor; // state "-1" for disabled
+    private int filterWeightSince;  // state "-1" for disabled
+    private int filterWeightFor;    // state "-1" for disabled
 
-    private EditText weightSince, weightFor;
+    private View view;
+    private EditText weightSince;
+    private EditText weightFor;
     private Button clearBtn;
 
     public WeightFilterDialog(@NonNull FilterModel filterProduct) {
@@ -77,7 +78,7 @@ public class WeightFilterDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogWeightBinding.inflate(activity.getLayoutInflater());
+        com.hermanowicz.pantry.databinding.DialogWeightBinding binding = DialogWeightBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         weightSince = binding.edittextWeightSince;

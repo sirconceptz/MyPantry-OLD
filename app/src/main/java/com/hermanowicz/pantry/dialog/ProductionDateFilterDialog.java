@@ -53,18 +53,16 @@ import java.util.Date;
 
 public class ProductionDateFilterDialog extends AppCompatDialogFragment {
 
-    private DialogProductionDateBinding binding;
     private Activity activity;
-    private View view;
     private FilterDialogListener dialogListener;
-    private Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String filterProductionDateSince;
     private String filterProductionDateFor;
     private DatePickerDialog.OnDateSetListener productionDateSinceListener, productionDateForListener;
-    private int year, month, day;
 
-    private EditText productionDateSince, productionDateFor;
+    private View view;
+    private EditText productionDateSince;
+    private EditText productionDateFor;
     private Button clearBtn;
 
     public ProductionDateFilterDialog(@NonNull FilterModel filterProduct) {
@@ -85,9 +83,9 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if (binding.edittextProductionDateSince.length() < 1)
+                    if (productionDateSince.length() < 1)
                         filterProductionDateSince = null;
-                    if (binding.edittextProductionDateFor.length() < 1)
+                    if (productionDateFor.length() < 1)
                         filterProductionDateFor = null;
                     dialogListener.setFilterProductionDate(filterProductionDateSince, filterProductionDateFor);
                 });
@@ -97,10 +95,8 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
     private void initView() {
         activity = getActivity();
         dateFormat.setLenient(false);
-        calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
 
-        binding = DialogProductionDateBinding.inflate(activity.getLayoutInflater());
+        DialogProductionDateBinding binding = DialogProductionDateBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         productionDateSince = binding.edittextProductionDateSince;
@@ -119,6 +115,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
 
     private void setListeners() {
         productionDateSince.setOnClickListener(v -> {
+            int year, month, day;
             if (productionDateSince.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
@@ -139,6 +136,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
         });
 
         productionDateFor.setOnClickListener(v -> {
+            int year, month, day;
             if (productionDateFor.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
@@ -161,6 +159,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
         });
 
         productionDateSinceListener = (datePicker, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));
@@ -169,6 +168,7 @@ public class ProductionDateFilterDialog extends AppCompatDialogFragment {
         };
 
         productionDateForListener = (datePicker, year, month, day) -> {
+            Calendar calendar = Calendar.getInstance();
             calendar.set(year, month, day);
             Date date = calendar.getTime();
             DateHelper dateHelper = new DateHelper(dateFormat.format(date));

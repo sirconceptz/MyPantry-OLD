@@ -44,12 +44,11 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 public class NameFilterDialog extends AppCompatDialogFragment {
 
-    private DialogNameBinding binding;
     private Activity activity;
-    private View view;
-    private FilterDialogListener dialogListener;
     private String filterName;
+    private FilterDialogListener dialogListener;
 
+    private View view;
     private EditText name;
     private Button clearBtn;
 
@@ -82,7 +81,7 @@ public class NameFilterDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogNameBinding.inflate(activity.getLayoutInflater());
+        DialogNameBinding binding = DialogNameBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         name = binding.edittextName;

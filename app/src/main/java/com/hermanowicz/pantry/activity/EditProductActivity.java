@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -71,7 +72,6 @@ import maes.tech.intentanim.CustomIntent;
 
 public class EditProductActivity extends AppCompatActivity implements EditProductView, ProductDataView {
 
-    private ActivityEditProductBinding binding;
     private EditProductPresenter presenter;
     private Context context;
     private Resources resources;
@@ -80,18 +80,35 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private int day, month, year;
     private boolean isTypeOfProductTouched;
 
-    private Spinner productType, productCategory, productStorageLocation;
-    private EditText productName, productExpirationDate, productProductionDate, productComposition,
-            productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
-    private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
-    private RadioButton productIsSweet, productIsSour, productIsSweetAndSour, productIsBitter,
-            productIsSalty;
-    private Button saveProduct, cancelButton;
+    private Spinner productType;
+    private Spinner productCategory;
+    private Spinner productStorageLocation;
+    private EditText productName;
+    private EditText productExpirationDate;
+    private EditText productProductionDate;
+    private EditText productComposition;
+    private EditText productHealingProperties;
+    private EditText productDosage;
+    private EditText productVolume;
+    private EditText productWeight;
+    private EditText productQuantity;
+    private CheckBox productHasSugar;
+    private CheckBox productHasSalt;
+    private CheckBox productIsBio;
+    private CheckBox productIsVege;
+    private RadioGroup tasteSelector;
+    private RadioButton productIsSweet;
+    private RadioButton productIsSour;
+    private RadioButton productIsSweetAndSour;
+    private RadioButton productIsBitter;
+    private RadioButton productIsSalty;
+    private Button saveProduct;
+    private Button cancelButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstantState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstantState);
         initView();
@@ -99,7 +116,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     }
 
     private void initView(){
-        binding = ActivityEditProductBinding.inflate(getLayoutInflater());
+        ActivityEditProductBinding binding = ActivityEditProductBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = EditProductActivity.this;
@@ -125,6 +142,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         productIsBio = binding.productEdit.checkboxIsBio;
         productIsVege = binding.productEdit.checkboxIsVege;
         productQuantity = binding.productEdit.edittextQuantity;
+        tasteSelector = binding.productEdit.radiogroupTaste;
         productIsSweet = binding.productEdit.radiobtnIsSweet;
         productIsSour = binding.productEdit.radiobtnIsSour;
         productIsSweetAndSour = binding.productEdit.radiobtnIsSweetAndSour;
@@ -238,7 +256,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
 
     @Override
     public void onClickSaveProductButton(){
-        int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
+        int selectedTasteId = tasteSelector.getCheckedRadioButtonId();
         RadioButton taste = findViewById(selectedTasteId);
 
         Product product = presenter.getGroupProducts().getProduct();
@@ -341,7 +359,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
             productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_other_products_array, R.layout.custom_spinner);
 
         productCategoryAdapter.notifyDataSetChanged();
-        binding.productEdit.spinnerProductCategory.setAdapter(productCategoryAdapter);
+        productCategory.setAdapter(productCategoryAdapter);
     }
 
     @Override

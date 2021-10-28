@@ -56,7 +56,7 @@ public class ProductDetailsPresenter {
         photoModel.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
-    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess) {
         this.premiumAccess = premiumAccess;
     }
 
@@ -64,16 +64,16 @@ public class ProductDetailsPresenter {
         model.setProduct(productId);
     }
 
-    public void showProductDetails(@NonNull String hashCode) {
+    public void showProductDetails() {
+        String hashCode = model.getHashCode();
         if (model.isProductListEmpty()) {
             view.showErrorWrongData();
             view.navigateToMyPantryActivity();
-        }
-        else if(model.isCorrectHashCode(hashCode)) {
+        } else if (model.isCorrectHashCode(hashCode)) {
             GroupProducts groupProducts = model.getGroupProducts();
             view.showProductDetails(groupProducts);
             String photo = "";
-            if(groupProducts.getProduct().getPhotoName() != null)
+            if (groupProducts.getProduct().getPhotoName() != null)
                 photo = groupProducts.getProduct().getPhotoName();
             if (!photo.equals("")) {
                 photoModel.setPhotoFile(String.valueOf(groupProducts.getProduct().getPhotoName()));
@@ -95,9 +95,10 @@ public class ProductDetailsPresenter {
         view.navigateToPrintQRCodeActivity(productList);
     }
 
-    public void onClickEditProduct(int productId){
+    public void onClickEditProduct() {
         List<Product> productList = model.getProductList();
         List<Product> allProductList = model.getAllProductList();
+        int productId = model.getProductId();
         view.navigateToEditProductActivity(productId, productList, allProductList);
     }
 
@@ -143,5 +144,9 @@ public class ProductDetailsPresenter {
     public void onClickAddBarcode() {
         List<Product> productList = model.getProductList();
         view.navigateToScanProductActivity(productList);
+    }
+
+    public void setHashCode(String hashCode) {
+        model.setHashCode(hashCode);
     }
 }

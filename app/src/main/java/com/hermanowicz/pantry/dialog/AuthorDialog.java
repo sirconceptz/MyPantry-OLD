@@ -36,15 +36,16 @@ import com.hermanowicz.pantry.databinding.DialogAuthorBinding;
  * <h1>AuthorDialog</h1>
  * The dialog window showing information about the application's author.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class AuthorDialog extends AppCompatDialogFragment {
 
-    private DialogAuthorBinding binding;
     private Activity activity;
+
     private View view;
-    private ImageView linkedInProfile, facebookProfile;
+    private ImageView linkedInProfile;
+    private ImageView facebookProfile;
 
     @NotNull
     @Override
@@ -65,7 +66,7 @@ public class AuthorDialog extends AppCompatDialogFragment {
     private void initView() {
         activity = getActivity();
         assert activity != null;
-        binding = DialogAuthorBinding.inflate(activity.getLayoutInflater());
+        com.hermanowicz.pantry.databinding.DialogAuthorBinding binding = DialogAuthorBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
         linkedInProfile = binding.linkedIn;
         facebookProfile = binding.facebook;

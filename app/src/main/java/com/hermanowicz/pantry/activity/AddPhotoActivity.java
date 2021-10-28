@@ -87,7 +87,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
 
     private Context context;
     private AddPhotoPresenter presenter;
-    private List<Product> productList;
 
     private ImageView imageViewPhoto;
     private EditText description;
@@ -104,7 +103,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
     }
 
     private void initView() {
-        com.hermanowicz.pantry.databinding.ActivityAddPhotoBinding binding = ActivityAddPhotoBinding.inflate(getLayoutInflater());
+        ActivityAddPhotoBinding binding = ActivityAddPhotoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = AddPhotoActivity.this;
@@ -120,8 +119,9 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
 
         setOnlineDbPhotoList(this);
 
-        productList = (List<Product>) getIntent().getSerializableExtra("product_list");
+        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
         presenter.setProductList(productList);
+        presenter.setAllProductList(productList);
         presenter.setPremiumAccess(new PremiumAccess(context));
 
         if(!presenter.isPremium()) {
@@ -297,6 +297,5 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
     @Override
     public void onPhotoResponse(List<Photo> photoList) {
         presenter.setPhotoList(photoList);
-        presenter.setAllProductList(productList);
     }
 }

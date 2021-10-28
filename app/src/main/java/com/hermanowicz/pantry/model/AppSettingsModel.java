@@ -90,11 +90,19 @@ public class AppSettingsModel {
     }
 
     public int getSelectedAppTheme() {
-        return Integer.parseInt(preferences.getString("SELECTED_APPLICATION_THEME", "0"));
+        try {
+            return Integer.parseInt(preferences.getString("SELECTED_APPLICATION_THEME", "0"));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public int getSelectedScanCamera() {
-        return Integer.parseInt(preferences.getString("SCAN_CAMERA", "0"));
+        try {
+            return Integer.parseInt(preferences.getString("SCAN_CAMERA", "0"));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public boolean getScannerVibrationMode() {
@@ -120,7 +128,11 @@ public class AppSettingsModel {
     }
 
     public int getDaysToNotification() {
-        return Integer.parseInt(preferences.getString("HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?", "3"));
+        try {
+            return Integer.parseInt(preferences.getString("HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?", "3"));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public void clearEmailAddress(){
@@ -128,7 +140,11 @@ public class AppSettingsModel {
     }
 
     public String getDatabaseMode() {
-        return preferences.getString("DATABASE_MODE", "local");
+        String databaseMode = preferences.getString("DATABASE_MODE", "local");
+        if (databaseMode.equals("local") || databaseMode.equals("online"))
+            return databaseMode;
+        else
+            return "local";
     }
 
     public void setDatabaseMode(String databaseMode) {

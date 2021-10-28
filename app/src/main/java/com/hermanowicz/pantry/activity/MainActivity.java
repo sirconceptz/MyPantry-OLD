@@ -66,7 +66,7 @@ import maes.tech.intentanim.CustomIntent;
  * <h1>MainActivity</h1>
  * Main activity - main window of the application.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class MainActivity extends AppCompatActivity implements MainView, AccountView, ProductDbResponse {
@@ -74,9 +74,13 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
 
     private MainPresenter presenter;
     private Context context;
-    private long pressedTime;
 
-    private CardView myPantry, scanProduct, newProduct, ownCategories, storageLocations, appSettings;
+    private CardView myPantry;
+    private CardView scanProduct;
+    private CardView newProduct;
+    private CardView ownCategories;
+    private CardView storageLocations;
+    private CardView appSettings;
     private TextView loggedUser;
     private ImageView authorInfo;
     private AdView adView;
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
@@ -214,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
+        long pressedTime = presenter.getPressedBackTime();
         if (pressedTime + 2000 > System.currentTimeMillis()) {
             moveTaskToBack(true);
             android.os.Process.killProcess(android.os.Process.myPid());
@@ -222,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
             Toast.makeText(getApplicationContext(), getString(R.string.General_press_back_agait_to_exit), Toast.LENGTH_SHORT).show();
         }
         pressedTime = System.currentTimeMillis();
+        presenter.setPressedBackTime(pressedTime);
         return false;
     }
 

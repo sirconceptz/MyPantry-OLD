@@ -66,21 +66,24 @@ import maes.tech.intentanim.CustomIntent;
  * <h1>ScanProductActivity/h1>
  * Activity to scan QR code. Uses camera and zxing library.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class ScanProductActivity extends AppCompatActivity implements ScanProductView, ProductDbResponse {
 
-    private Context context;
     private ScanProductPresenter presenter;
-    private CardView scanBarcode, scanQrCode, enterBarcodeManually;
+    private Context context;
+
+    private CardView scanBarcode;
+    private CardView scanQrCode;
+    private CardView enterBarcodeManually;
 
     static final int VIBRATE_DURATION = 1000;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
@@ -114,7 +117,7 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
     }
 
     private void initView() {
-        com.hermanowicz.pantry.databinding.ActivityScanProductBinding binding = ActivityScanProductBinding.inflate(getLayoutInflater());
+        ActivityScanProductBinding binding = ActivityScanProductBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         scanBarcode = findViewById(R.id.cardview_scanBarCode);

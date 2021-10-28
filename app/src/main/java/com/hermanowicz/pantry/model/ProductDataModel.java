@@ -44,6 +44,8 @@ public class ProductDataModel {
     private final CategoryDb categoryDb;
     private final StorageLocationDb storageLocationDb;
     private final Resources resources;
+    private int productId;
+    private String hashCode;
     private String taste;
     private String productionDate = "-";
     private String expirationDate = "-";
@@ -52,7 +54,7 @@ public class ProductDataModel {
     private String databaseMode;
     private List<Product> allProductList;
 
-    public ProductDataModel(@NonNull Context context){
+    public ProductDataModel(@NonNull Context context) {
         productDb = ProductDb.getInstance(context);
         categoryDb = CategoryDb.getInstance(context);
         storageLocationDb = StorageLocationDb.getInstance(context);
@@ -86,6 +88,7 @@ public class ProductDataModel {
     }
 
     public void setProduct(int productId){
+        this.productId = productId;
         Product product = getProduct(productId);
         expirationDate = product.getExpirationDate();
         productionDate = product.getProductionDate();
@@ -364,5 +367,17 @@ public class ProductDataModel {
 
     public void setAllProductList(List<Product> allProductList) {
         this.allProductList = allProductList;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public String getHashCode() {
+        return hashCode;
+    }
+
+    public void setHashCode(String hashCode) {
+        this.hashCode = hashCode;
     }
 }

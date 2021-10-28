@@ -28,6 +28,7 @@ import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.category.CategoryDb;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CategoryModel {
@@ -49,7 +50,10 @@ public class CategoryModel {
     }
 
     public List<Category> getCategoryList() {
-        return categoryList;
+        if (categoryList != null)
+            return categoryList;
+        else
+            return Collections.emptyList();
     }
 
     public void setCategory(@NonNull Category category) {
@@ -144,11 +148,15 @@ public class CategoryModel {
         return categoryDescription.length() > MAX_CHAR_CATEGORY_DESCRIPTION;
     }
 
-    public void setDatabaseMode(String databaseMode) {
-        this.databaseMode = databaseMode;
+    @NonNull
+    public String getDatabaseMode() {
+        if (databaseMode != null)
+            return databaseMode;
+        else
+            return "";
     }
 
-    public String getDatabaseMode() {
-        return databaseMode;
+    public void setDatabaseMode(@NonNull String databaseMode) {
+        this.databaseMode = databaseMode;
     }
 }

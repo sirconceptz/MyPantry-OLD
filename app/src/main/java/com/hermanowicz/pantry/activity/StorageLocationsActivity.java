@@ -61,7 +61,6 @@ import com.hermanowicz.pantry.util.RecyclerClickListener;
 import com.hermanowicz.pantry.util.StorageLocationsAdapter;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,14 +76,13 @@ import maes.tech.intentanim.CustomIntent;
 public class StorageLocationsActivity extends AppCompatActivity implements DialogStorageLocationListener,
         StorageLocationView, StorageLocationDbResponse {
 
-    private ActivityStorageLocationsBinding binding;
     private StorageLocationPresenter presenter;
     private Context context;
     private final StorageLocationsAdapter storageLocationsAdapter = new StorageLocationsAdapter();
 
-    private AdView adView;
     private RecyclerView storageLocationsRecyclerView;
     private TextView statement;
+    private AdView adView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,7 +95,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     }
 
     private void initView() {
-        binding = ActivityStorageLocationsBinding.inflate(getLayoutInflater());
+        ActivityStorageLocationsBinding binding = ActivityStorageLocationsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
@@ -150,12 +148,12 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
 
     private void setListeners() {
         storageLocationsRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this,
-                binding.recyclerviewStorageLocations, new RecyclerClickListener.OnItemClickListener() {
+                storageLocationsRecyclerView, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 List<StorageLocation> storageLocationList = presenter.getStorageLocationList();
                 Intent intent = new Intent(context, StorageLocationDetailsActivity.class)
-                        .putExtra("storage_location", (Serializable) storageLocationList.get(position));
+                        .putExtra("storage_location", storageLocationList.get(position));
                 startActivity(intent);
                 CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }

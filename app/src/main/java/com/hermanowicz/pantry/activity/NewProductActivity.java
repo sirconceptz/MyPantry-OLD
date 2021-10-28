@@ -42,6 +42,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -93,32 +94,43 @@ import maes.tech.intentanim.CustomIntent;
  * giving quantity. After inserting a new product to database user will be asked (in different
  * activity) to print a QR code to scan in the future.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class NewProductActivity extends AppCompatActivity implements OnItemSelectedListener,
         DatePickerDialog.OnDateSetListener, NewProductView, ProductToCopyView, ProductDbResponse {
 
-    private ActivityNewProductBinding binding;
     private NewProductPresenter presenter;
     private Context context;
-    private Resources resources;
-    private int day, month, year;
     private boolean isTypeOfProductTouched;
-    private DatePickerDialog.OnDateSetListener productionDateListener, expirationDateListener;
+    private DatePickerDialog.OnDateSetListener productionDateListener;
+    private DatePickerDialog.OnDateSetListener expirationDateListener;
     private ArrayAdapter<CharSequence> productCategoryAdapter;
 
-    private Spinner productType, productCategory, productStorageLocation;
-    private EditText productName, productExpirationDate, productProductionDate, productComposition,
-            productHealingProperties, productDosage, productVolume, productWeight, productQuantity;
-    private CheckBox productHasSugar, productHasSalt, productIsBio, productIsVege;
+    private Spinner productType;
+    private Spinner productCategory;
+    private Spinner productStorageLocation;
+    private EditText productName;
+    private EditText productExpirationDate;
+    private EditText productProductionDate;
+    private EditText productComposition;
+    private EditText productHealingProperties;
+    private EditText productDosage;
+    private EditText productVolume;
+    private EditText productWeight;
+    private EditText productQuantity;
+    private RadioGroup tasteSelector;
+    private CheckBox productHasSugar;
+    private CheckBox productHasSalt;
+    private CheckBox productIsBio;
+    private CheckBox productIsVege;
     private Button addProduct;
     private AdView adView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
@@ -127,11 +139,10 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     }
 
     private void initView(){
-        binding = ActivityNewProductBinding.inflate(getLayoutInflater());
+        ActivityNewProductBinding binding = ActivityNewProductBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = NewProductActivity.this;
-        resources = context.getResources();
 
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
@@ -152,6 +163,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         productHasSalt = binding.productEdit.checkboxHasSalt;
         productIsBio = binding.productEdit.checkboxIsBio;
         productIsVege = binding.productEdit.checkboxIsVege;
+        tasteSelector = binding.productEdit.radiogroupTaste;
         productQuantity = binding.productEdit.edittextQuantity;
         TextView volumeLabel = binding.productEdit.textVolumeLabel;
         TextView weightLabel = binding.productEdit.textWeightLabel;
@@ -198,6 +210,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         addProduct.setOnClickListener(view -> presenter.onClickAddProduct());
 
         productExpirationDate.setOnClickListener(v -> {
+            int day, month, year;
             if (productExpirationDate.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
@@ -224,6 +237,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         };
 
         productProductionDate.setOnClickListener(v -> {
+            int day, month, year;
             if (productProductionDate.length() < 1) {
                 year = DateHelper.getActualYear();
                 month = DateHelper.getActualMonth();
@@ -301,7 +315,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void onClickAddProduct() {
-        int selectedTasteId = binding.productEdit.radiogroupTaste.getCheckedRadioButtonId();
+        int selectedTasteId = tasteSelector.getCheckedRadioButtonId();
         RadioButton taste = findViewById(selectedTasteId);
 
         Product product = new Product();
@@ -360,6 +374,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     @Override
     public void updateProductFeaturesAdapter(String productTypeSpinnerValue) {
+        Resources resources = getResources();
         String[] productTypesArray = resources.getStringArray(R.array.Product_type_of_product_array);
         if (productTypeSpinnerValue.equals(productTypesArray[0]))
             productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);

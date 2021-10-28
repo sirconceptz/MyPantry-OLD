@@ -49,25 +49,24 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
 
-    private DialogTypeOfProductBinding binding;
     private Activity activity;
-    private View view;
     private Context context;
-    private Resources resources;
-    private CategoryDb categoryDb;
+    private final String[] allCategoryNameListArray;
     private FilterDialogListener dialogListener;
     private String filterTypeOfProduct, filterProductFeatures, selectedProductType;
     private String[] productTypeArray, productCategoryArray;
-    private ArrayAdapter<CharSequence> typeOfProductAdapter;
     private ArrayAdapter<CharSequence> productCategoryAdapter;
     private boolean isTypeOfProductTouched;
 
-    private Spinner productType, productCategory;
+    private View view;
+    private Spinner productType;
+    private Spinner productCategory;
     private Button clearBtn;
 
-    public TypeOfProductFilterDialog(@NonNull FilterModel filterProduct) {
+    public TypeOfProductFilterDialog(@NonNull FilterModel filterProduct, @NonNull String[] allCategoryNameListArray) {
         this.filterTypeOfProduct = filterProduct.getTypeOfProduct();
         this.filterProductFeatures = filterProduct.getProductCategory();
+        this.allCategoryNameListArray = allCategoryNameListArray;
     }
 
     @NotNull
@@ -99,10 +98,10 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     private void initView() {
         activity = getActivity();
         context = activity.getApplicationContext();
-        resources = context.getResources();
-        categoryDb = CategoryDb.getInstance(context);
+        Resources resources = context.getResources();
+        CategoryDb categoryDb = CategoryDb.getInstance(context);
 
-        binding = DialogTypeOfProductBinding.inflate(activity.getLayoutInflater());
+        com.hermanowicz.pantry.databinding.DialogTypeOfProductBinding binding = DialogTypeOfProductBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         productType = binding.spinnerProductType;
@@ -113,7 +112,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         productTypeArray = resources.getStringArray(R.array.Product_type_of_product_array);
         productCategoryArray = resources.getStringArray(R.array.Product_choose_array);
 
-        typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
+        ArrayAdapter<CharSequence> typeOfProductAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
         productType.setAdapter(typeOfProductAdapter);
 
         productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
@@ -151,6 +150,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         productType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Resources resources = getResources();
                 if (isTypeOfProductTouched) {
                     selectedProductType = String.valueOf(productType.getSelectedItem());
                     productTypeArray = resources.getStringArray(R.array.Product_type_of_product_array);
@@ -175,10 +175,10 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
     }
 
     private void updateProductFeaturesSpinnerAndSelectTypeOfProduct() {
+        Resources resources = getResources();
         if(filterTypeOfProduct != null) {
             if (filterTypeOfProduct.equals(productTypeArray[1])) {
-                String[] categoryArray = categoryDb.categoryDao().getAllCategoriesArray();
-                productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, categoryArray);
+                productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, allCategoryNameListArray);
                 productType.setSelection(1, false);
             }
             else if (filterTypeOfProduct.equals(productTypeArray[2])) {
@@ -234,7 +234,7 @@ public class TypeOfProductFilterDialog extends AppCompatDialogFragment {
         if (selectedProductType.equals(productTypeArray[0]))
             productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.Product_choose_array, R.layout.custom_spinner);
         else if (selectedProductType.equals(productTypeArray[1]))
-            productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, categoryDb.categoryDao().getAllCategoriesArray());
+            productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, allCategoryNameListArray);
         else if (selectedProductType.equals(productTypeArray[2]))
             productCategoryAdapter = ArrayAdapter.createFromResource(context, R.array.ProductDetailsActivity_store_products_array, R.layout.custom_spinner);
         else if (selectedProductType.equals(productTypeArray[3]))

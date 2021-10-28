@@ -108,6 +108,10 @@ public class AppSettingsActivity extends AppCompatActivity {
         private final int RC_SIGN_IN = 10;
 
         private AppSettingsPresenter presenter;
+        private final List<String> skuList = Collections.singletonList("premium");
+        private BillingClient billingClient;
+        private SkuDetails skuDetails;
+
         private Preference qr;
         private Preference scanCamera;
         private Preference emailAddress;
@@ -127,9 +131,6 @@ public class AppSettingsActivity extends AppCompatActivity {
         private Preference activeUser;
         private Preference databaseMode;
         private Preference importDb;
-        private BillingClient billingClient;
-        private final List<String> skuList = Collections.singletonList("premium");
-        private SkuDetails skuDetails;
 
         @Override
         public void onCreate(final Bundle savedInstanceState)

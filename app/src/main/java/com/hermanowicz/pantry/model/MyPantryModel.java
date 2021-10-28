@@ -28,7 +28,7 @@ import androidx.lifecycle.Transformations;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.hermanowicz.pantry.db.photo.Photo;
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.filter.Filter;
@@ -45,12 +45,12 @@ public class MyPantryModel {
     private final MutableLiveData<FilterModel> product = new MutableLiveData<>();
     private FilterModel filterProduct = new FilterModel();
     private Filter filter;
-    private List<Photo> photoList;
-    private List<Product> allProductList;
+    private List<Product> allProductList = new ArrayList<>();
     private List<Product> selectedProductsGroupList = new ArrayList<>();
     private List<GroupProducts> groupProductsList = new ArrayList<>();
     private boolean isMultiSelect = false;
-    private String databaseMode;
+    private String databaseMode = "";
+    private String[] allCategoryNameList = new String[0];
 
     public MyPantryModel(@NonNull Context context) {
         this.productDb = ProductDb.getInstance(context);
@@ -217,14 +217,26 @@ public class MyPantryModel {
     }
 
     public String getDatabaseMode() {
-        return databaseMode;
+        if (databaseMode != null)
+            return databaseMode;
+        else
+            return "";
     }
 
-    public void setPhotoList(List<Photo> photoList) {
-        this.photoList = photoList;
+    public String[] getAllCategoryNameList() {
+        if (allCategoryNameList != null)
+            return allCategoryNameList;
+        else
+            return new String[0];
     }
 
-    public List<Photo> getPhotoList() {
-        return photoList;
+    public void setAllCategoryNameList(List<Category> categoryList) {
+        int categoryListSize = categoryList.size();
+        allCategoryNameList = new String[categoryListSize];
+        for (int counter = 0; counter <= categoryListSize; counter++) {
+            Category category = categoryList.get(counter);
+            String categoryName = category.getName();
+            allCategoryNameList[counter] = categoryName;
+        }
     }
 }

@@ -61,7 +61,6 @@ import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.RecyclerClickListener;
 import com.hermanowicz.pantry.util.ThemeMode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,6 @@ import maes.tech.intentanim.CustomIntent;
 public class CategoriesActivity extends AppCompatActivity implements DialogCategoryListener,
         CategoryView, CategoryDbResponse {
 
-    private ActivityCategoriesBinding binding;
     private CategoryPresenter presenter;
     private Context context;
     private final CategoriesAdapter categoriesAdapter = new CategoriesAdapter();
@@ -97,7 +95,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
     }
 
     private void initView() {
-        binding = ActivityCategoriesBinding.inflate(getLayoutInflater());
+        ActivityCategoriesBinding binding = ActivityCategoriesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         context = getApplicationContext();
@@ -150,12 +148,12 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
 
     private void setListeners() {
         categoryRecyclerView.addOnItemTouchListener(new RecyclerClickListener(this,
-                binding.recyclerviewCategories, new RecyclerClickListener.OnItemClickListener() {
+                categoryRecyclerView, new RecyclerClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 List<Category> categoryList = presenter.getCategoryList();
                 Intent intent = new Intent(context, CategoryDetailsActivity.class)
-                        .putExtra("category", (Serializable) categoryList.get(position));
+                        .putExtra("category", categoryList.get(position));
                 startActivity(intent);
                 CustomIntent.customType(view.getContext(), "fadein-to-fadeout");
             }

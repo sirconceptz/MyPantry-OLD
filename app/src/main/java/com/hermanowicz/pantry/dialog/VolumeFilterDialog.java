@@ -40,18 +40,19 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
  * <h1>VolumeFilterDialog</h1>
  * The dialog window needed to set filters by volume of product to search for products in the pantry.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class VolumeFilterDialog extends AppCompatDialogFragment {
 
-    private DialogVolumeBinding binding;
     private Activity activity;
-    private View view;
     private FilterDialogListener dialogListener;
-    private int filterVolumeSince, filterVolumeFor; // state "-1" for disabled
+    private int filterVolumeSince;  // state "-1" for disabled
+    private int filterVolumeFor;    // state "-1" for disabled
 
-    private EditText volumeSince, volumeFor;
+    private View view;
+    private EditText volumeSince;
+    private EditText volumeFor;
     private Button clearBtn;
 
     public VolumeFilterDialog(@NonNull FilterModel filterProduct) {
@@ -77,7 +78,7 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogVolumeBinding.inflate(activity.getLayoutInflater());
+        DialogVolumeBinding binding = DialogVolumeBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         volumeSince = binding.edittextVolumeSince;
@@ -90,8 +91,8 @@ public class VolumeFilterDialog extends AppCompatDialogFragment {
 
     private void setListeners() {
         clearBtn.setOnClickListener(view18 -> {
-            binding.edittextVolumeSince.setText("");
-            binding.edittextVolumeFor.setText("");
+            volumeSince.setText("");
+            volumeFor.setText("");
         });
     }
 

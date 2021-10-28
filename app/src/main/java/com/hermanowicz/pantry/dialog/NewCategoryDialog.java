@@ -43,17 +43,18 @@ import com.hermanowicz.pantry.presenter.NewCategoryPresenter;
  * <h1>NewCategoryDialog</h1>
  * The dialog window used to add new category
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class NewCategoryDialog extends AppCompatDialogFragment implements NewCategoryView {
 
-    private DialogNewCategoryBinding binding;
     private NewCategoryPresenter presenter;
     private Activity activity;
-    private View view;
     private DialogCategoryListener dialogListener;
-    private EditText categoryName, categoryDescription;
+
+    private View view;
+    private EditText categoryName;
+    private EditText categoryDescription;
 
     @NotNull
     @Override
@@ -77,7 +78,7 @@ public class NewCategoryDialog extends AppCompatDialogFragment implements NewCat
 
     private void initView() {
         activity = getActivity();
-        binding = DialogNewCategoryBinding.inflate(activity.getLayoutInflater());
+        com.hermanowicz.pantry.databinding.DialogNewCategoryBinding binding = DialogNewCategoryBinding.inflate(activity.getLayoutInflater());
 
         categoryName = binding.edittextName;
         categoryDescription = binding.edittextDescription;

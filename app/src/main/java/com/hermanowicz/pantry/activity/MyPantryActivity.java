@@ -59,6 +59,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.MyPantryDrawerLayoutBinding;
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.dialog.ExpirationDateFilterDialog;
 import com.hermanowicz.pantry.dialog.NameFilterDialog;
@@ -69,6 +70,7 @@ import com.hermanowicz.pantry.dialog.TypeOfProductFilterDialog;
 import com.hermanowicz.pantry.dialog.VolumeFilterDialog;
 import com.hermanowicz.pantry.dialog.WeightFilterDialog;
 import com.hermanowicz.pantry.filter.Filter;
+import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.DeleteProductsDialogListener;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
@@ -93,11 +95,11 @@ import maes.tech.intentanim.CustomIntent;
  * Activity for My Pantry. In this activity is available the list view with products from database.
  * The user can filter search results using product attributes. After a long click on the product, the multiselect mode is activated.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class MyPantryActivity extends AppCompatActivity implements MyPantryView, FilterDialogListener,
-        DeleteProductsDialogListener, ProductDbResponse {
+        DeleteProductsDialogListener, ProductDbResponse, CategoryDbResponse {
 
     private MyPantryPresenter presenter;
     private Context context;
@@ -131,6 +133,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         presenter.setPremiumAccess(new PremiumAccess(context));
 
         setOnlineDbProductList(this);
+        setOnlineDbCategoryList(this);
 
         adView = binding.include.adview;
         loadingBar = binding.include.loadingBar;
@@ -240,12 +243,35 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         }
     }
 
+    public void setOnlineDbCategoryList(CategoryDbResponse response) {
+        DatabaseReference ref;
+        List<Category> onlineCategoryList = new ArrayList<>();
+        ref = FirebaseDatabase.getInstance().getReference().child("categories/" + FirebaseAuth.getInstance().getUid());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists())
+                    onlineCategoryList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Category category = dataSnapshot.getValue(Category.class);
+                    onlineCategoryList.add(category);
+                }
+                response.onResponse(onlineCategoryList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("FirebaseDB", error.getMessage());
+            }
+        });
+    }
+
     private void multiSelect(int position) {
-        if(!presenter.getIsMultiSelect())
+        if (!presenter.getIsMultiSelect())
             toolbar.startActionMode(actionModeCallback);
         if (actionMode != null) {
             presenter.addMultiSelectProduct(position);
-            if(presenter.getGroupsProductsSelectList().size() == 0)
+            if (presenter.getGroupsProductsSelectList().size() == 0)
                 actionMode.finish();
             else
                 actionMode.setTitle(String.valueOf(presenter.getGroupsProductsSelectList().size()));
@@ -262,7 +288,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         } else if (typeOfDialog == R.id.filter_production_date) {
             dialog = new ProductionDateFilterDialog(presenter.getFilterProduct());
         } else if (typeOfDialog == R.id.filter_product_type) {
-            dialog = new TypeOfProductFilterDialog(presenter.getFilterProduct());
+            dialog = new TypeOfProductFilterDialog(presenter.getFilterProduct(), presenter.getAllCategoryNameList());
         } else if (typeOfDialog == R.id.filter_volume) {
             dialog = new VolumeFilterDialog(presenter.getFilterProduct());
         } else if (typeOfDialog == R.id.filter_weight) {
@@ -499,5 +525,10 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     public void finish() {
         super.finish();
         CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void onResponse(List<Category> categoryList) {
+        presenter.setAllCategoryList(categoryList);
     }
 }

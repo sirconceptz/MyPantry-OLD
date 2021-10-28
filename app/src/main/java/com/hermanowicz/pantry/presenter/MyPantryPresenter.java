@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.preference.PreferenceManager;
 
-import com.hermanowicz.pantry.db.photo.Photo;
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
@@ -240,15 +240,15 @@ public class MyPantryPresenter {
         return model.getAllProductsList();
     }
 
-    public void setAllPhotoList(List<Photo> photoList) {
-        model.setPhotoList(photoList);
-    }
-
-    public List<Photo> getPhotoList() {
-        return model.getPhotoList();
-    }
-
     public List<Product> getAllProductList() {
         return model.getAllProductsList();
+    }
+
+    public String[] getAllCategoryNameList() {
+        return model.getAllCategoryNameList();
+    }
+
+    public void setAllCategoryList(List<Category> categoryList) {
+        model.setAllCategoryNameList(categoryList);
     }
 }

@@ -49,7 +49,7 @@ import maes.tech.intentanim.CustomIntent;
  * <h1>CategoriesActivity</h1>
  * Activity for add new category.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class CategoryDetailsActivity extends AppCompatActivity implements CategoryDetailsView {
@@ -57,13 +57,17 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
     private CategoryDetailsPresenter presenter;
     private Context context;
 
-    private TextView categoryName, categoryDescription, nameCharCounter, descriptionCharCounter;
-    private Button updateCategory, deleteCategory;
+    private TextView categoryName;
+    private TextView categoryDescription;
+    private TextView nameCharCounter;
+    private TextView descriptionCharCounter;
+    private Button updateCategory;
+    private Button deleteCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
@@ -72,7 +76,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
     private void initView() {
         context = getApplicationContext();
-        com.hermanowicz.pantry.databinding.ActivityCategoryDetailsBinding binding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
+        ActivityCategoryDetailsBinding binding = ActivityCategoryDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Toolbar toolbar = binding.toolbar;
@@ -91,7 +95,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         presenter.setCategory(category);
     }
 
-    private void setListeners(){
+    private void setListeners() {
         updateCategory.setOnClickListener(view -> onClickUpdateCategory());
         deleteCategory.setOnClickListener(view -> onClickDeleteCategory());
 
@@ -126,7 +130,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
         });
     }
 
-    private void onClickUpdateCategory(){
+    private void onClickUpdateCategory() {
         Category category = presenter.getCategory();
         category.setName(categoryName.getText().toString());
         category.setDescription(categoryDescription.getText().toString());
@@ -184,7 +188,7 @@ public class CategoryDetailsActivity extends AppCompatActivity implements Catego
 
     @Override
     public void navigateToCategoriesActivity() {
-        Intent intent = new Intent (getApplicationContext(), CategoriesActivity.class);
+        Intent intent = new Intent(getApplicationContext(), CategoriesActivity.class);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }

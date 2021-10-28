@@ -47,13 +47,12 @@ import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 
 public class TasteFilterDialog extends AppCompatDialogFragment {
 
-    private DialogTasteBinding binding;
     private Activity activity;
-    private View view;
     private FilterDialogListener dialogListener;
     private String filterTaste;
     private String[] tasteArray;
 
+    private View view;
     private Spinner productTaste;
     private Button clearBtn;
 
@@ -74,8 +73,8 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
                 .setNegativeButton(getString(R.string.General_cancel), (dialog, which) -> {
                 })
                 .setPositiveButton(getString(R.string.MyPantryActivity_set), (dialog, which) -> {
-                    if(!String.valueOf(binding.spinnerTaste.getSelectedItem()).equals(tasteArray[0]))
-                        filterTaste = String.valueOf(binding.spinnerTaste.getSelectedItem());
+                    if (!String.valueOf(productTaste.getSelectedItem()).equals(tasteArray[0]))
+                        filterTaste = String.valueOf(productTaste.getSelectedItem());
                     dialogListener.setFilterTaste(filterTaste);
                 });
         return builder.create();
@@ -83,7 +82,7 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
 
     private void initView() {
         activity = getActivity();
-        binding = DialogTasteBinding.inflate(activity.getLayoutInflater());
+        DialogTasteBinding binding = DialogTasteBinding.inflate(activity.getLayoutInflater());
         view = binding.getRoot();
 
         productTaste = binding.spinnerTaste;
@@ -121,8 +120,8 @@ public class TasteFilterDialog extends AppCompatDialogFragment {
         });
 
         clearBtn.setOnClickListener(view14 -> {
-            binding.spinnerTaste.setSelection(0);
-            binding.spinnerTaste.setBackgroundColor(Color.TRANSPARENT);
+            productTaste.setSelection(0);
+            productTaste.setBackgroundColor(Color.TRANSPARENT);
             filterTaste = null;
         });
     }
