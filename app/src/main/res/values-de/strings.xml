@@ -19,7 +19,7 @@
 <resources>
     <string name="app_name">Meine Speisekammer</string>
     <string name="title_activity_my_pantry">Meine Speisekammer</string>
-    <string name="title_activity_scan_the_product">Scannen Sie den QR-Code des Produkts</string>
+    <string name="title_activity_scan_the_product">Scannen Sie den Code des Produkts</string>
     <string name="title_activity_new_product">Neues produkt</string>
     <string name="title_activity_app_settings">Anwendungseinstellungen</string>
     <string name="title_activity_print_qrcodes">QR-Codes drucken</string>
@@ -42,7 +42,7 @@
     <string name="General_are_you_sure_delete_product">Möchten Sie dieses Produkt wirklich löschen?</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Meine speisekammer</string>
-    <string name="MainActivity_scan_product_button">Scannen Sie den QR-Code des Produkts</string>
+    <string name="MainActivity_scan_product_button">Scannen Sie den Code des Produkts</string>
     <string name="MainActivity_new_product_button">Neues produkt</string>
     <string name="MainActivity_own_categories_button">Eigene Produktkategorien</string>
     <string name="MainActivity_storage_locations_button">Lagerorte</string>

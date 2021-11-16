@@ -19,7 +19,7 @@
     <string name="app_name">My Pantry</string>
     <string name="title_activity_my_pantry">My Pantry</string>
     <string name="title_activity_new_product">New Product</string>
-    <string name="title_activity_scan_the_product">Scan the product\'s QR code</string>
+    <string name="title_activity_scan_the_product">Scan the product\'s code</string>
     <string name="title_activity_app_settings">Application settings</string>
     <string name="title_activity_print_qrcodes">Print QR Codes</string>
     <string name="title_activity_product_details">Product details</string>
@@ -41,7 +41,7 @@
     <string name="General_are_you_sure_delete_product">Are you sure you want to delete this product?</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">My pantry</string>
-    <string name="MainActivity_scan_product_button">Scan the product\'s QR code</string>
+    <string name="MainActivity_scan_product_button">Scan the product\'s code</string>
     <string name="MainActivity_new_product_button">New product</string>
     <string name="MainActivity_own_categories_button">Own product categories</string>
     <string name="MainActivity_storage_locations_button">Storage locations</string>

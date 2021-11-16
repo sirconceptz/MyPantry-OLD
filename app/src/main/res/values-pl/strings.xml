@@ -19,7 +19,7 @@
 <resources>
     <string name="app_name">Moja spiżarnia</string>
     <string name="title_activity_my_pantry">Moja spiżarnia</string>
-    <string name="title_activity_scan_the_product">Skanuj kod QR produktu</string>
+    <string name="title_activity_scan_the_product">Skanuj kod produktu</string>
     <string name="title_activity_new_product">Nowy produkt</string>
     <string name="title_activity_app_settings">Ustawienia aplikacji</string>
     <string name="title_activity_print_qrcodes">Drukuj kody QR</string>
@@ -42,7 +42,7 @@
     <string name="General_are_you_sure_delete_product">Czy jesteś pewny, że chcesz usunąć ten produkt?</string>
     <!--MainActivity-->
     <string name="MainActivity_my_pantry_button">Moja spiżarnia</string>
-    <string name="MainActivity_scan_product_button">Skanuj kod QR produktu</string>
+    <string name="MainActivity_scan_product_button">Skanuj kod produktu</string>
     <string name="MainActivity_new_product_button">Nowy produkt</string>
     <string name="MainActivity_own_categories_button">Własne kategorie produktów</string>
     <string name="MainActivity_storage_locations_button">Własne miejsca przechowywania</string>

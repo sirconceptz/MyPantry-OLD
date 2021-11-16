@@ -130,8 +130,8 @@ public class AppSettingsModel {
     public int getDaysToNotification() {
         try {
             return Integer.parseInt(preferences.getString("HOW_MANY_DAYS_BEFORE_EXPIRATION_DATE_SEND_A_NOTIFICATION?", "3"));
-        } catch (Exception e) {
-            return 0;
+        } catch (NumberFormatException e) {
+            return 3;
         }
     }
 

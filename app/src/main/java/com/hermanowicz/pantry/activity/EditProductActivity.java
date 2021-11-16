@@ -257,7 +257,14 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     @Override
     public void onClickSaveProductButton(){
         int selectedTasteId = tasteSelector.getCheckedRadioButtonId();
+        int quantity;
         RadioButton taste = findViewById(selectedTasteId);
+
+        try {
+            quantity = Integer.parseInt(productQuantity.getText().toString());
+        } catch (NumberFormatException e) {
+            quantity = 1;
+        }
 
         Product product = presenter.getGroupProducts().getProduct();
         product.setName(productName.getText().toString());
@@ -273,7 +280,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         product.setIsBio(productIsBio.isChecked());
         product.setIsVege(productIsVege.isChecked());
         product.setStorageLocation(String.valueOf(productStorageLocation.getSelectedItem()));
-        GroupProducts groupProducts = new GroupProducts(product, Integer.parseInt(productQuantity.getText().toString()));
+        GroupProducts groupProducts = new GroupProducts(product, quantity);
         presenter.setTaste(taste);
         presenter.saveProduct(groupProducts);
     }
