@@ -20,6 +20,7 @@ package com.hermanowicz.pantry.util;
 import androidx.annotation.NonNull;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,12 +88,25 @@ public class DateHelper {
         return calendar.get(Calendar.MONTH);
     }
 
-    public static int getActualYear(){
+    public static int getActualYear() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.YEAR);
     }
 
-    public static String getTimeStamp(){
+    public static String getTimeStamp() {
         return new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    }
+
+    public static String getFullTimestampInLocalFormat(String timestamp) {
+        String fullTimestamp = "";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat localDateFormat = DateFormat.getDateTimeInstance();
+        try {
+            Date date = format.parse(timestamp);
+            fullTimestamp = localDateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return fullTimestamp;
     }
 }

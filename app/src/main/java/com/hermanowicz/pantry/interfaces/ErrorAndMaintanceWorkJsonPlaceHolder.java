@@ -17,20 +17,15 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MainView {
-    void onNavigationToMyPantryActivity();
+import com.hermanowicz.pantry.model.WPError;
 
-    void onNavigationToScanProductActivity();
+import java.util.List;
 
-    void onNavigationToNewProductActivity();
+import retrofit2.Call;
+import retrofit2.http.GET;
 
-    void onNavigationToCategoriesActivity();
+public interface ErrorAndMaintanceWorkJsonPlaceHolder {
 
-    void onNavigationToStorageLocationsActivity();
-
-    void onNavigationToAppSettingsActivity();
-
-    void showAuthorInfoDialog();
-
-    void onNavigationToErrorActivity(String responseString);
+    @GET("posts?categories=52")
+    Call<List<WPError>> getErrorsAndMaintanceWork();
 }

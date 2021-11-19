@@ -26,6 +26,7 @@
     <string name="title_activity_product_details">Szczegóły produktu</string>
     <string name="title_activity_edit_product">Edytuj produkt</string>
     <string name="title_activity_add_photo">Dodaj zdjęcie</string>
+    <string name="title_activity_error_and_maintenance_work">Błędy i prace serwisowe</string>
     <!--General-->
     <string name="General_choose">Wybierz</string>
     <string name="General_char_counter">Maksymalna ilość znaków</string>
@@ -301,6 +302,10 @@
         <item>Lokalny (w telefonie)</item>
         <item>Online (w internecie)</item>
     </string-array>
+    <!--ErrorActivity-->
+    <string name="ErrorActivity_title">Tytuł</string>
+    <string name="ErrorActivity_date">Data</string>
+    <string name="ErrorActivity_content">Treść</string>
     <!--Notifications-->
     <string name="Notifications_title">[Moja Spiżarnia] Produkt wkrótce się przeterminuje.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% wkrótce się przeterminuje. Zostało Ci mniej niż %DAYS% dni, aby zdążyć przed tą datą.</string>

@@ -25,6 +25,7 @@
     <string name="title_activity_product_details">Product details</string>
     <string name="title_activity_edit_product">Edit product</string>
     <string name="title_activity_add_photo">Add photo</string>
+    <string name="title_activity_error_and_maintenance_work">Errors and maintenance work</string>
     <!--General-->
     <string name="General_choose">Choose</string>
     <string name="General_char_counter">Max characters</string>
@@ -300,6 +301,10 @@
         <item>Local (in phone)</item>
         <item>Online</item>
     </string-array>
+    <!--ErrorActivity-->
+    <string name="ErrorActivity_title">Title</string>
+    <string name="ErrorActivity_date">Date</string>
+    <string name="ErrorActivity_content">Content</string>
     <!--Notifications-->
     <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% is overdue. You have less than %DAYS% days to make it before this date.</string>

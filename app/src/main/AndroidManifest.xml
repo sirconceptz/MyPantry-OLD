@@ -151,6 +151,11 @@
             android:label="@string/title_activity_edit_product"
             android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ErrorActivity"
+            android:label="@string/title_activity_error_and_maintenance_work"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.NotificationService"

@@ -26,6 +26,7 @@
     <string name="title_activity_product_details">Angaben zum Produkt</string>
     <string name="title_activity_edit_product">Produkt bearbeiten</string>
     <string name="title_activity_add_photo">Bild hinzufügen</string>
+    <string name="title_activity_error_and_maintenance_work">Fehler und Wartungsarbeiten</string>
     <!--General-->
     <string name="General_choose">Wählen</string>
     <string name="General_char_counter">Max. Zeichen</string>
@@ -301,6 +302,10 @@
         <item>Lokal (im Telefon)</item>
         <item>Online</item>
     </string-array>
+    <!--ErrorActivity-->
+    <string name="ErrorActivity_title">Titel</string>
+    <string name="ErrorActivity_date">Datum</string>
+    <string name="ErrorActivity_content">Inhalt</string>
     <!--Notifications-->
     <string name="Notifications_title">[Meine Speisekammer] Das Produkt wird bald verfallen.</string>
     <string name="Notifications_statement">%PRODUCT_NAME% läuft bald ab. Sie haben noch %DAYS% Tage bis zu diesem Datum.</string>

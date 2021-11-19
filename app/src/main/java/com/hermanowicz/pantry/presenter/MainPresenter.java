@@ -47,12 +47,14 @@ public class MainPresenter {
     private final SharedPreferences sharedPreferences;
     private PremiumAccess premiumAccess;
     private long pressedBackTime;
+    private final AppSettingsModel appSettingsModel;
 
     public MainPresenter(@NonNull MainView view,
                          @NonNull AccountView accountView, @NonNull SharedPreferences sharedPreferences) {
         this.view = view;
         this.accountView = accountView;
         this.sharedPreferences = sharedPreferences;
+        this.appSettingsModel = new AppSettingsModel(sharedPreferences);
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
@@ -114,5 +116,12 @@ public class MainPresenter {
 
     public void setPressedBackTime(long pressedTime) {
         this.pressedBackTime = pressedTime;
+    }
+
+    public void setFoundError(@NonNull String responseString) {
+        if (!appSettingsModel.getIsErrorShowed()) {
+            appSettingsModel.setErrorIsShowed(true);
+            view.onNavigationToErrorActivity(responseString);
+        }
     }
 }

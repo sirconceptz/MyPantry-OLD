@@ -24,6 +24,7 @@
     <string name="title_activity_product_details">Product details</string>
     <string name="title_activity_edit_product">Edit product</string>
     <string name="title_activity_add_photo">Add photo</string>
+    <string name="title_activity_error_and_maintenance_work">Errors and maintenance work</string>
     <!--General-->
     <string name="General_choose">Choose</string>
     <string name="General_char_counter">Max characters</string>
@@ -315,6 +316,10 @@
         <item>local</item>
         <item>online</item>
     </string-array>
+    <!--ErrorActivity-->
+    <string name="ErrorActivity_title">Title</string>
+    <string name="ErrorActivity_date">Date</string>
+    <string name="ErrorActivity_content">Content</string>
     <!--PreferencesKeys-->
     <string name="PreferencesKey_selected_application_theme" translatable="false">SELECTED_APPLICATION_THEME</string>
     <string name="PreferencesKey_scan_camera" translatable="false">SCAN_CAMERA</string>

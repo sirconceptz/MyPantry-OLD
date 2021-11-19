@@ -15,22 +15,34 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.model;
 
-public interface MainView {
-    void onNavigationToMyPantryActivity();
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    void onNavigationToScanProductActivity();
+public class WPContent {
 
-    void onNavigationToNewProductActivity();
+    @SerializedName("rendered")
+    @Expose
+    private String rendered;
 
-    void onNavigationToCategoriesActivity();
+    @SerializedName("protected")
+    @Expose
+    private Boolean _protected;
 
-    void onNavigationToStorageLocationsActivity();
+    public String getRendered() {
+        return rendered;
+    }
 
-    void onNavigationToAppSettingsActivity();
+    public void setRendered(String rendered) {
+        this.rendered = rendered;
+    }
 
-    void showAuthorInfoDialog();
+    public Boolean getProtected() {
+        return _protected;
+    }
 
-    void onNavigationToErrorActivity(String responseString);
+    public void setProtected(Boolean _protected) {
+        this._protected = _protected;
+    }
 }

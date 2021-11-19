@@ -53,6 +53,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
         super.onCreate(savedInstanceState);
         initView();
+        clearErrorShowFlag();
         delayAndGoToLoginActivity();
     }
 
@@ -83,10 +84,15 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     private void updateSettingsData() {
         SharedPreferences preferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        if(!AppSettingsModel.isSettingsUpdated(preferences))
+        if (!AppSettingsModel.isSettingsUpdated(preferences))
             AppSettingsModel.deleteOldSettings(preferences);
     }
 
+    private void clearErrorShowFlag() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
+        appSettingsModel.setErrorIsShowed(false);
+    }
 
     private void goToMainActivity() {
         Intent i = new Intent(SplashScreenActivity.this, MainActivity.class);

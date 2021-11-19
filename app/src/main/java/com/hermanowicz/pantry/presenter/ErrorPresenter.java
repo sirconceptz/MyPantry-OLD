@@ -15,22 +15,21 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.presenter;
 
-public interface MainView {
-    void onNavigationToMyPantryActivity();
+import androidx.annotation.NonNull;
 
-    void onNavigationToScanProductActivity();
+import com.hermanowicz.pantry.interfaces.ErrorView;
 
-    void onNavigationToNewProductActivity();
+public class ErrorPresenter {
 
-    void onNavigationToCategoriesActivity();
+    private final ErrorView view;
 
-    void onNavigationToStorageLocationsActivity();
+    public ErrorPresenter(@NonNull ErrorView view) {
+        this.view = view;
+    }
 
-    void onNavigationToAppSettingsActivity();
-
-    void showAuthorInfoDialog();
-
-    void onNavigationToErrorActivity(String responseString);
+    public void showErrors(@NonNull String response) {
+        view.showErrors(response);
+    }
 }

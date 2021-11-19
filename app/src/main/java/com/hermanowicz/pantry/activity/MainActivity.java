@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.ImageView;
@@ -50,9 +51,12 @@ import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.dialog.AuthorDialog;
 import com.hermanowicz.pantry.interfaces.AccountView;
+import com.hermanowicz.pantry.interfaces.ErrorAndMaintanceWorkJsonPlaceHolder;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.interfaces.ProductDbResponse;
+import com.hermanowicz.pantry.model.WPError;
 import com.hermanowicz.pantry.presenter.MainPresenter;
+import com.hermanowicz.pantry.util.DateHelper;
 import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
@@ -61,6 +65,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import maes.tech.intentanim.CustomIntent;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * <h1>MainActivity</h1>
@@ -69,7 +78,7 @@ import maes.tech.intentanim.CustomIntent;
  * @author Mateusz Hermanowicz
  */
 
-public class MainActivity extends AppCompatActivity implements MainView, AccountView, ProductDbResponse {
+public class MainActivity extends AppCompatActivity implements MainView, AccountView, ProductDbResponse, Callback<List<WPError>> {
 
 
     private MainPresenter presenter;
@@ -93,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        initRetrofit();
     }
 
     private void initView() {
@@ -132,8 +142,22 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         }
     }
 
+    private void initRetrofit() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.mypantry.eu/wp-json/wp/v2/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+
+        ErrorAndMaintanceWorkJsonPlaceHolder errorAndMaintanceWorkJsonPlaceHolder
+                = retrofit.create(ErrorAndMaintanceWorkJsonPlaceHolder.class);
+
+        Call<List<WPError>> call = errorAndMaintanceWorkJsonPlaceHolder
+                .getErrorsAndMaintanceWork();
+
+        call.enqueue(this);
+    }
+
     private void setOnlineDbProductList(ProductDbResponse response) {
-        if(!presenter.isOfflineDb()) {
+        if (!presenter.isOfflineDb()) {
             List<Product> onlineProductList = new ArrayList<>();
             FirebaseDatabase db = FirebaseDatabase.getInstance();
             DatabaseReference ref = db.getReference().child("products/" +
@@ -166,6 +190,35 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         storageLocations.setOnClickListener(view -> presenter.navigateToStorageLocationsActivity());
         appSettings.setOnClickListener(view -> presenter.navigateToAppSettingsActivity());
         authorInfo.setOnClickListener(view -> presenter.showAuthorInfoDialog());
+    }
+
+    @Override
+    public void onResponse(Call<List<WPError>> call, Response<List<WPError>> response) {
+        StringBuilder retrofitResponse = new StringBuilder();
+        if (!response.isSuccessful()) {
+            Toast.makeText(context, "Code: " + response.code(), Toast.LENGTH_LONG).show();
+        }
+        List<WPError> errors = response.body();
+
+        for (WPError error : errors) {
+            String content = "";
+            String date = DateHelper.getFullTimestampInLocalFormat(error.getDate());
+            content += getString(R.string.ErrorActivity_title) +
+                    ": " + error.getTitle().getRendered() + "\n";
+            content += getString(R.string.ErrorActivity_date) +
+                    ": " + date + "\n";
+            content += getString(R.string.ErrorActivity_content) +
+                    ": " + Html.fromHtml(error.getContent().getRendered()) + "\n\n";
+
+            retrofitResponse.append(content);
+            String responseString = retrofitResponse.toString();
+            presenter.setFoundError(responseString);
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<WPError>> call, Throwable t) {
+        Toast.makeText(context, "Code: " + t.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -214,6 +267,14 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     public void showAuthorInfoDialog() {
         AuthorDialog authorDialog = new AuthorDialog();
         authorDialog.show(getSupportFragmentManager(), "");
+    }
+
+    @Override
+    public void onNavigationToErrorActivity(String responseString) {
+        Intent errorActivity = new Intent(MainActivity.this, ErrorActivity.class);
+        errorActivity.putExtra("response", responseString);
+        startActivity(errorActivity);
+        CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override

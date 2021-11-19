@@ -15,22 +15,24 @@
  * limitations under the License.
  */
 
-package com.hermanowicz.pantry.interfaces;
+package com.hermanowicz.pantry.model;
 
-public interface MainView {
-    void onNavigationToMyPantryActivity();
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
-    void onNavigationToScanProductActivity();
+public class WPTitle {
 
-    void onNavigationToNewProductActivity();
+    @SerializedName("rendered")
+    @Expose
+    private String rendered;
 
-    void onNavigationToCategoriesActivity();
+    public String getRendered() {
+        return rendered;
+    }
 
-    void onNavigationToStorageLocationsActivity();
+    public void setRendered(String rendered) {
+        this.rendered = rendered;
+    }
 
-    void onNavigationToAppSettingsActivity();
 
-    void showAuthorInfoDialog();
-
-    void onNavigationToErrorActivity(String responseString);
 }

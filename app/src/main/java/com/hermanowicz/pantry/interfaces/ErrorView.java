@@ -17,20 +17,6 @@
 
 package com.hermanowicz.pantry.interfaces;
 
-public interface MainView {
-    void onNavigationToMyPantryActivity();
-
-    void onNavigationToScanProductActivity();
-
-    void onNavigationToNewProductActivity();
-
-    void onNavigationToCategoriesActivity();
-
-    void onNavigationToStorageLocationsActivity();
-
-    void onNavigationToAppSettingsActivity();
-
-    void showAuthorInfoDialog();
-
-    void onNavigationToErrorActivity(String responseString);
+public interface ErrorView {
+    void showErrors(String errors);
 }

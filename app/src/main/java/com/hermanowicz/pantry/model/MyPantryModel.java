@@ -233,7 +233,7 @@ public class MyPantryModel {
     public void setAllCategoryNameList(List<Category> categoryList) {
         int categoryListSize = categoryList.size();
         allCategoryNameList = new String[categoryListSize];
-        for (int counter = 0; counter <= categoryListSize; counter++) {
+        for (int counter = 0; counter < categoryListSize; counter++) {
             Category category = categoryList.get(counter);
             String categoryName = category.getName();
             allCategoryNameList[counter] = categoryName;

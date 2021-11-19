@@ -158,4 +158,12 @@ public class AppSettingsModel {
     public boolean isPremiumRestored() {
         return preferences.getBoolean("PREMIUM_IS_RESTORED", false);
     }
+
+    public void setErrorIsShowed(boolean state) {
+        preferences.edit().putBoolean("ERRORS_SHOWED", state).apply();
+    }
+
+    public boolean getIsErrorShowed() {
+        return preferences.getBoolean("ERRORS_SHOWED", false);
+    }
 }
