@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019-2021
+  ~ Copyright (c) 2019-2022
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -22,24 +22,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.NewProductActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -57,9 +57,9 @@
             <include
                 android:id="@+id/product_edit"
                 layout="@layout/product_edit"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/button_addProduct"
@@ -73,10 +73,10 @@
                 android:textColor="@color/text_color"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
                 android:text="@string/NewProductActivity_add_a_product"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/product_edit"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toBottomOf="@id/product_edit" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -87,10 +87,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:adSize="BANNER"
-        app:adUnitId="@string/banner_ad_unit_id"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

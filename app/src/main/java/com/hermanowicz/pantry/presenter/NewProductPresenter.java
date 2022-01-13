@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -25,8 +25,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.NewProductView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.GroupProducts;
@@ -42,7 +44,7 @@ import java.util.List;
  * <h1>NewProductPresenter</h1>
  * Presenter for NewProductActivity
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class NewProductPresenter {
@@ -63,7 +65,7 @@ public class NewProductPresenter {
         model.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
-    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
+    public void setPremiumAccess(@NonNull PremiumAccess premiumAccess) {
         this.premiumAccess = premiumAccess;
     }
 
@@ -87,11 +89,11 @@ public class NewProductPresenter {
         view.showProductionDate(dateFormat.format(date));
     }
 
-    public void setTaste(@Nullable RadioButton selectedTasteButton){
+    public void setTaste(@Nullable RadioButton selectedTasteButton) {
         model.setTaste(selectedTasteButton);
     }
 
-    public void setQuantity(@NonNull String quantity){
+    public void setQuantity(@NonNull String quantity) {
         model.parseQuantityProducts(quantity);
     }
 
@@ -115,12 +117,8 @@ public class NewProductPresenter {
         view.updateProductFeaturesAdapter(typeOfProductSpinnerValue);
     }
 
-    public String[] getOwnCategoryArray(){
+    public String[] getOwnCategoryArray() {
         return model.getOwnCategoriesArray();
-    }
-
-    public String[] getStorageLocationsArray(){
-        return model.getStorageLocationsArray();
     }
 
     public int[] getExpirationDateArray() {
@@ -147,7 +145,7 @@ public class NewProductPresenter {
         view.showCancelProductAddDialog();
     }
 
-    public boolean isPremium(){
+    public boolean isPremium() {
         return premiumAccess.isPremium();
     }
 
@@ -159,9 +157,9 @@ public class NewProductPresenter {
         model.setProductList(productList);
         List<GroupProducts> groupProductsList = model.getGroupProductList();
         int groupProductsListSize = groupProductsList.size();
-        if(groupProductsListSize == 1)
+        if (groupProductsListSize == 1)
             view.setProductData(productList.get(0));
-        else if(groupProductsListSize > 1) {
+        else if (groupProductsListSize > 1) {
             String[] namesOfProducts = model.getNamesProductList();
             view.chooseProductToCopy(namesOfProducts);
         }
@@ -178,11 +176,21 @@ public class NewProductPresenter {
         return model.getDatabaseMode().equals("local");
     }
 
-    public void setAllProductList(List<Product> allProductList) {
-        if(isOfflineDb()) {
+    public void setAllProductList(@Nullable List<Product> allProductList) {
+        if (isOfflineDb()) {
             ProductDb db = ProductDb.getInstance(context);
             allProductList = db.productsDao().getAllProductsList();
         }
         model.setAllProductList(allProductList);
+    }
+
+    public void setOnlineStorageLocationList(@NonNull List<StorageLocation> list) {
+        model.setStorageLocationList(list);
+        String[] storageLocationArray = model.getStorageLocationsArray();
+        view.updateStorageLocationAdapter(storageLocationArray);
+    }
+
+    public void setOnlineCategoryList(@NonNull List<Category> list) {
+        model.setCategoryList(list);
     }
 }

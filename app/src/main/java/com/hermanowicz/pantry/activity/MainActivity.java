@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -39,11 +39,11 @@ import androidx.preference.PreferenceManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityMainBinding;
@@ -53,7 +53,6 @@ import com.hermanowicz.pantry.dialog.AuthorDialog;
 import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.ErrorAndMaintanceWorkJsonPlaceHolder;
 import com.hermanowicz.pantry.interfaces.MainView;
-import com.hermanowicz.pantry.interfaces.ProductDbResponse;
 import com.hermanowicz.pantry.model.WPError;
 import com.hermanowicz.pantry.presenter.MainPresenter;
 import com.hermanowicz.pantry.util.DateHelper;
@@ -64,6 +63,11 @@ import com.hermanowicz.pantry.util.ThemeMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -78,9 +82,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author Mateusz Hermanowicz
  */
 
-public class MainActivity extends AppCompatActivity implements MainView, AccountView, ProductDbResponse, Callback<List<WPError>> {
+public class MainActivity extends AppCompatActivity implements MainView, AccountView, Callback<List<WPError>> {
 
+    private final String TAG = "ProductsRxJava";
 
+    private final CompositeDisposable disposables = new CompositeDisposable();
     private MainPresenter presenter;
     private Context context;
 
@@ -133,12 +139,35 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
             adView.loadAd(adRequest);
         }
 
-        setOnlineDbProductList(this);
-
         if (presenter.isOfflineDb()) {
             ProductDb db = ProductDb.getInstance(context);
             List<Product> productList = db.productsDao().getAllProductsList();
             presenter.restoreNotifications(context, productList);
+        } else
+            setProductListObserver();
+    }
+
+    private void setProductListObserver() {
+        if (!presenter.isOfflineDb()) {
+            disposables.add(productList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Product>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Product> productList) {
+                            Log.i(TAG, "onNext()");
+                        }
+                    }));
         }
     }
 
@@ -156,30 +185,30 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         call.enqueue(this);
     }
 
-    private void setOnlineDbProductList(ProductDbResponse response) {
-        if (!presenter.isOfflineDb()) {
-            List<Product> onlineProductList = new ArrayList<>();
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference().child("products/" +
-                    FirebaseAuth.getInstance().getUid());
-            ref.addValueEventListener(new ValueEventListener() {
+    private Observable<List<Product>> productList() {
+        return Observable.create(emitter -> {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            Query query = database.getReference().child("products");
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists())
-                        onlineProductList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    List<Product> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
                         Product product = dataSnapshot.getValue(Product.class);
-                        onlineProductList.add(product);
+                        list.add(product);
                     }
-                    response.onProductResponse(onlineProductList);
+                    emitter.onNext(list);
+                    onProductResponse(list);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("FirebaseDB", error.getMessage());
+                    emitter.onError(new FirebaseException(error.getMessage()));
                 }
             });
-        }
+        });
     }
 
     private void setListeners() {
@@ -322,20 +351,21 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     @Override
     public void onResume() {
         super.onResume();
-        if(!presenter.isPremium())
-            adView.resume();
+        assert adView != null;
+        adView.resume();
     }
 
     @Override
     public void onPause() {
         super.onResume();
-        if(!presenter.isPremium())
-            adView.pause();
+        assert adView != null;
+        adView.pause();
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
+        assert adView != null;
         adView.destroy();
         super.onDestroy();
     }
@@ -346,7 +376,6 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    @Override
     public void onProductResponse(List<Product> productList) {
         presenter.restoreNotifications(context, productList);
     }

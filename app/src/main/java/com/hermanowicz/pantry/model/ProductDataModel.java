@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -379,5 +379,16 @@ public class ProductDataModel {
 
     public void setHashCode(String hashCode) {
         this.hashCode = hashCode;
+    }
+
+    public void deleteSingleOfflineProduct() {
+        Product product = getProduct(productId);
+        productDb.productsDao().deleteProduct(product);
+    }
+
+    public void deleteSingleOnlineProduct() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().
+                child("products/" + FirebaseAuth.getInstance().getUid());
+        ref.child(String.valueOf(productId)).removeValue();
     }
 }

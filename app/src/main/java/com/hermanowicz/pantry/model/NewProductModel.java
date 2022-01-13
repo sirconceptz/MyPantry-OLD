@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -29,9 +29,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.category.CategoryDb;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocationDb;
 
 import java.util.ArrayList;
@@ -52,6 +54,8 @@ public class NewProductModel {
     private List<Product> productList = new ArrayList<>();
     private String databaseMode;
     private List<Product> allProductList;
+    private List<StorageLocation> storageLocationList = new ArrayList<>();
+    private List<Category> categoryList = new ArrayList<>();
 
     public NewProductModel(@NonNull Context context) {
         this.resources = context.getResources();
@@ -199,10 +203,42 @@ public class NewProductModel {
     }
 
     public String[] getOwnCategoriesArray() {
+        if (databaseMode.equals("online"))
+            return getOwnCategoriesOnline();
+        else
+            return getOwnCategoriesOffline();
+    }
+
+    private String[] getOwnCategoriesOnline() {
+        int listSize = categoryList.size();
+        String[] list = new String[listSize];
+        for (int counter = 0; counter < listSize; counter++) {
+            list[counter] = categoryList.get(counter).getName();
+        }
+        return list;
+    }
+
+    private String[] getStorageLocationsOnlineArray() {
+        int listSize = storageLocationList.size();
+        String[] list = new String[listSize];
+        for (int counter = 0; counter < listSize; counter++) {
+            list[counter] = storageLocationList.get(counter).getName();
+        }
+        return list;
+    }
+
+    private String[] getOwnCategoriesOffline() {
         return categoryDb.categoryDao().getAllCategoriesArray();
     }
 
     public String[] getStorageLocationsArray() {
+        if (databaseMode.equals("online"))
+            return getStorageLocationsOnlineArray();
+        else
+            return getStorageLocationsOfflineArray();
+    }
+
+    public String[] getStorageLocationsOfflineArray() {
         return storageLocationDb.storageLocationDao().getAllStorageLocationsArray();
     }
 
@@ -210,11 +246,11 @@ public class NewProductModel {
         return productList;
     }
 
-    public void setBarcode(String barcode) {
+    public void setBarcode(@NonNull String barcode) {
         this.barcode = barcode;
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(@NonNull List<Product> productList) {
         this.productList = productList;
     }
 
@@ -222,11 +258,19 @@ public class NewProductModel {
         return databaseMode;
     }
 
-    public void setAllProductList(List<Product> allProductList) {
+    public void setAllProductList(@Nullable List<Product> allProductList) {
         this.allProductList = allProductList;
     }
 
     public List<Product> getAllProductList() {
         return allProductList;
+    }
+
+    public void setCategoryList(@NonNull List<Category> list) {
+        this.categoryList = list;
+    }
+
+    public void setStorageLocationList(@NonNull List<StorageLocation> list) {
+        this.storageLocationList = list;
     }
 }

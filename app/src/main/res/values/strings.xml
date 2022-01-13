@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2019-2021
+  ~ Copyright (c) 2019-2022
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -242,6 +242,9 @@
     <string name="ProductDetailsActivity_product_has_been_removed">The product has been removed.</string>
     <string name="ProductDetailsActivity_edit_product">Edit product</string>
     <string name="ProductDetailsActivity_add_barcode_to_product">Add barcode</string>
+    <string name="ProductDetailsActivity_delete_similar_products">All products</string>
+    <string name="ProductDetailsActivity_delete_single_product">Single product</string>
+    <string name="ProductDetailsActivity_delete_one_or_all">Do you only want to delete just one product or all?</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">Print QR codes</string>
     <string name="PrintQRCodesActivity_skip">Skip</string>

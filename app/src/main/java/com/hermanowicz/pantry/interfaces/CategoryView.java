@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -31,6 +31,4 @@ public interface CategoryView {
     void showErrorAddNewCategory();
 
     void navigateToMainActivity();
-
-    void setOnlineDbCategoryList(CategoryDbResponse response);
 }

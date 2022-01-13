@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -38,11 +38,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -50,7 +51,6 @@ import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityScanProductBinding;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
-import com.hermanowicz.pantry.interfaces.ProductDbResponse;
 import com.hermanowicz.pantry.interfaces.ScanProductView;
 import com.hermanowicz.pantry.presenter.ScanProductPresenter;
 import com.hermanowicz.pantry.util.Orientation;
@@ -60,6 +60,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
@@ -69,10 +74,13 @@ import maes.tech.intentanim.CustomIntent;
  * @author Mateusz Hermanowicz
  */
 
-public class ScanProductActivity extends AppCompatActivity implements ScanProductView, ProductDbResponse {
+public class ScanProductActivity extends AppCompatActivity implements ScanProductView {
+
+    private final String TAG = "ProductsRxJava";
 
     private ScanProductPresenter presenter;
     private Context context;
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private CardView scanBarcode;
     private CardView scanQrCode;
@@ -88,32 +96,7 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
-    }
-
-    private void setOnlineDbProductList(ProductDbResponse response) {
-        if(!presenter.isOfflineDb()) {
-            List<Product> onlineProductList = new ArrayList<>();
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference().child("products/" +
-                    FirebaseAuth.getInstance().getUid());
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists())
-                        onlineProductList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Product product = dataSnapshot.getValue(Product.class);
-                        onlineProductList.add(product);
-                    }
-                    response.onProductResponse(onlineProductList);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("FirebaseDB", error.getMessage());
-                }
-            });
-        }
+        setProductListObserver();
     }
 
     private void initView() {
@@ -127,8 +110,6 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         context = getApplicationContext();
 
         presenter = new ScanProductPresenter(this, PreferenceManager.getDefaultSharedPreferences(context), ProductDb.getInstance(context));
-
-        setOnlineDbProductList(this);
 
         if(presenter.isOfflineDb())
             presenter.setOfflineAllProductList();
@@ -144,6 +125,58 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         scanBarcode.setOnClickListener(click -> presenter.initScanner(true, resources));
         scanQrCode.setOnClickListener(click -> presenter.initScanner(false, resources));
         enterBarcodeManually.setOnClickListener(click -> presenter.enterBarcodeManually());
+    }
+
+    private Observable<List<Product>> productList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("products").child(user);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<Product> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        Product product = dataSnapshot.getValue(Product.class);
+                        list.add(product);
+                    }
+                    emitter.onNext(list);
+                    onProductResponse(list);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
+                }
+            });
+        });
+    }
+
+    private void setProductListObserver() {
+        if (!presenter.isOfflineDb()) {
+            disposables.add(productList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Product>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Product> productList) {
+                            Log.i(TAG, "onNext()");
+                        }
+                    }));
+        }
     }
 
     @Override
@@ -248,7 +281,6 @@ public class ScanProductActivity extends AppCompatActivity implements ScanProduc
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    @Override
     public void onProductResponse(List<Product> productList) {
         presenter.setProductList(productList);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -18,12 +18,12 @@
 package com.hermanowicz.pantry.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.category.Category;
-import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.CategoryView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.CategoryModel;
@@ -35,28 +35,23 @@ import java.util.List;
  * <h1>CategoryPresenter</h1>
  * Presenter for CategoriesActivity
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
-public class CategoryPresenter implements CategoryDbResponse {
+public class CategoryPresenter {
 
     private final CategoryView view;
     private final CategoryModel model;
     private final PremiumAccess premiumAccess;
-    private final AppSettingsModel appSettingsModel;
-    private final CategoryDbResponse dbResponse;
 
-    public CategoryPresenter (@NonNull CategoryView view, @NonNull Context context
-            , @NonNull CategoryDbResponse dbResponse){
+    public CategoryPresenter(@NonNull CategoryView view, @NonNull Context context) {
         this.view = view;
         this.model = new CategoryModel(context);
-        this.appSettingsModel = new AppSettingsModel(PreferenceManager.
-                getDefaultSharedPreferences(context));
         this.premiumAccess = new PremiumAccess(context);
-        this.dbResponse = dbResponse;
-
-        model.setDatabaseMode(getDatabaseMode());
-        if(getDatabaseMode().equals("local")){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        if (isOfflineDb()) {
             model.setOfflineDbCategoryList();
         }
     }
@@ -71,8 +66,7 @@ public class CategoryPresenter implements CategoryDbResponse {
     public void addCategory(@NonNull Category category) {
         if(model.addCategory(category)) {
             view.onSuccessAddNewCategory();
-            view.setOnlineDbCategoryList(dbResponse);
-            if(getDatabaseMode().equals("local")){
+            if (isOfflineDb()) {
                 model.setOfflineDbCategoryList();
             }
             updateCategoryListView();
@@ -94,19 +88,17 @@ public class CategoryPresenter implements CategoryDbResponse {
     }
 
     public void setOnlineCategoryList(@NonNull List<Category> categoryList) {
-        if(getDatabaseMode().equals("online")) {
+        if (!isOfflineDb()) {
             model.setCategoryList(categoryList);
             view.showEmptyCategoryListStatement(categoryList.size() == 0);
-        }
-        else
+        } else
             model.setOfflineDbCategoryList();
     }
 
-    public String getDatabaseMode(){
-        return appSettingsModel.getDatabaseMode();
+    public boolean isOfflineDb() {
+        return model.getDatabaseMode().equals("local");
     }
 
-    @Override
     public void onResponse(List<Category> categoryList) {
         model.setCategoryList(categoryList);
     }

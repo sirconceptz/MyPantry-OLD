@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
-import com.hermanowicz.pantry.interfaces.StorageLocationDbResponse;
 import com.hermanowicz.pantry.interfaces.StorageLocationDetailsView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.StorageLocationModel;
@@ -34,10 +33,10 @@ import java.util.List;
  * <h1>StorageLocationDetailsPresenter</h1>
  * Presenter for StorageLocationDetailsActivity
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
-public class StorageLocationDetailsPresenter implements StorageLocationDbResponse {
+public class StorageLocationDetailsPresenter {
 
     private final StorageLocationModel model;
     private final StorageLocationDetailsView view;
@@ -88,7 +87,6 @@ public class StorageLocationDetailsPresenter implements StorageLocationDbRespons
             view.showStorageLocationDescriptionError();
     }
 
-    @Override
     public void onResponse(List<StorageLocation> storageLocationList) {
         model.setStorageLocation(storageLocationList.get(0));
     }

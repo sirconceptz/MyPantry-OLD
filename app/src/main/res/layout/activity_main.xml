@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019-2021
+  ~ Copyright (c) 2019-2022
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -21,7 +21,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.MainActivity">
 
     <ScrollView
@@ -38,9 +38,10 @@
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            ads:layout_constraintTop_toTopOf="parent"
             android:background="@color/color_primary_statusbar"
             android:paddingBottom="15dp">
+
             <TextView
                 android:id="@+id/appName"
                 android:layout_width="wrap_content"
@@ -50,9 +51,9 @@
                 android:textColor="@color/text_title"
                 android:textSize="26sp"
                 android:fontFamily="@font/proxima_nova_extra_condensed_bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/author_info"
@@ -60,17 +61,17 @@
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_info" />
+                ads:layout_constraintBottom_toBottomOf="parent"
+                ads:layout_constraintStart_toStartOf="parent"
+                ads:layout_constraintTop_toTopOf="parent"
+                ads:srcCompat="@drawable/ic_info" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/user"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintTop_toTopOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -84,42 +85,45 @@
                 android:textColor="@color/text_color"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                ads:layout_constraintEnd_toEndOf="parent"
+                ads:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.gridlayout.widget.GridLayout
-                android:id="@+id/gridLayout"
-                android:layout_width="match_parent"
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            ads:columnCount="2"
+            ads:rowCount="3">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/myPantryCV"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:columnCount="2"
-                app:rowCount="3">
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/myPantryCV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/background_field"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="6dp"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="10dp"
-                            app:srcCompat="@drawable/ic_pantry" />
+                android:layout_margin="10dp"
+                ads:cardBackgroundColor="@color/background_field"
+                ads:cardCornerRadius="15dp"
+                ads:cardElevation="6dp"
+                ads:layout_columnWeight="1"
+                ads:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        ads:srcCompat="@drawable/ic_pantry" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -131,30 +135,33 @@
                             android:textSize="20sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/scanProductCV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/background_field"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="6dp"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="10dp"
-                            app:srcCompat="@drawable/ic_scan_qr_code" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/scanProductCV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                ads:cardBackgroundColor="@color/background_field"
+                ads:cardCornerRadius="15dp"
+                ads:cardElevation="6dp"
+                ads:layout_columnWeight="1"
+                ads:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        ads:srcCompat="@drawable/ic_scan_qr_code" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -166,30 +173,33 @@
                             android:textSize="20sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/newProductCV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/background_field"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="6dp"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="10dp"
-                            app:srcCompat="@drawable/ic_new_product" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/newProductCV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                ads:cardBackgroundColor="@color/background_field"
+                ads:cardCornerRadius="15dp"
+                ads:cardElevation="6dp"
+                ads:layout_columnWeight="1"
+                ads:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        ads:srcCompat="@drawable/ic_new_product" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -201,30 +211,33 @@
                             android:textSize="20sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/ownCategoriesCV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/background_field"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="6dp"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="10dp"
-                            app:srcCompat="@drawable/ic_own_categories" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ownCategoriesCV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                ads:cardBackgroundColor="@color/background_field"
+                ads:cardCornerRadius="15dp"
+                ads:cardElevation="6dp"
+                ads:layout_columnWeight="1"
+                ads:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        ads:srcCompat="@drawable/ic_own_categories" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -236,30 +249,33 @@
                             android:textSize="20sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/storageLocationsCV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/background_field"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="6dp"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="10dp"
-                            app:srcCompat="@drawable/ic_own_categories" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/storageLocationsCV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                ads:cardBackgroundColor="@color/background_field"
+                ads:cardCornerRadius="15dp"
+                ads:cardElevation="6dp"
+                ads:layout_columnWeight="1"
+                ads:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        ads:srcCompat="@drawable/ic_own_categories" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -271,30 +287,33 @@
                             android:textSize="20sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/appSettingsCV"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    app:cardBackgroundColor="@color/background_field"
-                    app:cardCornerRadius="15dp"
-                    app:cardElevation="6dp"
-                    app:layout_columnWeight="1"
-                    app:layout_rowWeight="1"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginTop="10dp"
-                            app:srcCompat="@drawable/ic_app_settings" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/appSettingsCV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                ads:cardBackgroundColor="@color/background_field"
+                ads:cardCornerRadius="15dp"
+                ads:cardElevation="6dp"
+                ads:layout_columnWeight="1"
+                ads:layout_rowWeight="1"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="10dp"
+                        ads:srcCompat="@drawable/ic_app_settings" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -317,10 +336,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:adSize="BANNER"
-        app:adUnitId="@string/banner_ad_unit_id"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

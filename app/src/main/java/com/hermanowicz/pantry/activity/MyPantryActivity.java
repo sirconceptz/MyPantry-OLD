@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -51,11 +51,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.MyPantryDrawerLayoutBinding;
@@ -70,11 +71,9 @@ import com.hermanowicz.pantry.dialog.TypeOfProductFilterDialog;
 import com.hermanowicz.pantry.dialog.VolumeFilterDialog;
 import com.hermanowicz.pantry.dialog.WeightFilterDialog;
 import com.hermanowicz.pantry.filter.Filter;
-import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.DeleteProductsDialogListener;
 import com.hermanowicz.pantry.interfaces.FilterDialogListener;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
-import com.hermanowicz.pantry.interfaces.ProductDbResponse;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.presenter.MyPantryPresenter;
 import com.hermanowicz.pantry.util.Notification;
@@ -88,6 +87,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
@@ -99,12 +103,17 @@ import maes.tech.intentanim.CustomIntent;
  */
 
 public class MyPantryActivity extends AppCompatActivity implements MyPantryView, FilterDialogListener,
-        DeleteProductsDialogListener, ProductDbResponse, CategoryDbResponse {
+        DeleteProductsDialogListener {
+
+    private final String CATEGORY_TAG = "CategoriesRxJava";
+    private final String PRODUCTS_TAG = "ProductsRxJava";
 
     private MyPantryPresenter presenter;
     private Context context;
     private ActionMode actionMode;
     private ProductsAdapter adapterProductRecyclerView;
+    private final CompositeDisposable productsDisposables = new CompositeDisposable();
+    private final CompositeDisposable categoriesDisposables = new CompositeDisposable();
 
     private RecyclerView productRecyclerView;
     private NavigationView navView;
@@ -117,11 +126,12 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        setObservers();
     }
 
     private void initView() {
@@ -132,8 +142,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         presenter = new MyPantryPresenter(this, context);
         presenter.setPremiumAccess(new PremiumAccess(context));
 
-        setOnlineDbProductList(this);
-        setOnlineDbCategoryList(this);
 
         adView = binding.include.adview;
         loadingBar = binding.include.loadingBar;
@@ -149,7 +157,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
             actionbar.setDisplayHomeAsUpEnabled(true);
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        if(presenter.isOfflineDb()) {
+        if (presenter.isOfflineDb()) {
             presenter.setAllProductsOfflineList();
             presenter.setProductsLiveData();
             presenter.getProductLiveData().observe(this, productList -> presenter.setProductList(productList));
@@ -163,7 +171,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         productRecyclerView.setHasFixedSize(true);
         productRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        if(!presenter.isPremium()) {
+        if (!presenter.isPremium()) {
             MobileAds.initialize(context);
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
@@ -206,10 +214,9 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         navView.setNavigationItemSelectedListener(
                 menuItem -> {
                     int typeOfDialog = menuItem.getItemId();
-                    if (typeOfDialog == R.id.filter_clear){
+                    if (typeOfDialog == R.id.filter_clear) {
                         presenter.clearFilters();
-                    }
-                    else{
+                    } else {
                         presenter.openDialog(typeOfDialog);
                     }
                     drawerLayout.closeDrawers();
@@ -217,52 +224,103 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
                 });
     }
 
-    private void setOnlineDbProductList(ProductDbResponse response) {
-        if(!presenter.isOfflineDb()) {
-            List<Product> onlineProductList = new ArrayList<>();
-            FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference ref = db.getReference().child("products/" +
-                    FirebaseAuth.getInstance().getUid());
-            ref.addValueEventListener(new ValueEventListener() {
+    private void setObservers() {
+        if (!presenter.isOfflineDb()) {
+            categoriesDisposables.add(categoryList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Category>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(CATEGORY_TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(CATEGORY_TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Category> categoryList) {
+                            Log.i(CATEGORY_TAG, "onNext()");
+                        }
+                    }));
+
+            productsDisposables.add(productList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Product>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(PRODUCTS_TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(PRODUCTS_TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Product> productList) {
+                            Log.i(PRODUCTS_TAG, "onNext()");
+                        }
+                    }));
+        }
+    }
+
+    private Observable<List<Category>> categoryList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("categories").child(user);
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists())
-                        onlineProductList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Product product = dataSnapshot.getValue(Product.class);
-                        onlineProductList.add(product);
+                    List<Category> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        Category category = dataSnapshot.getValue(Category.class);
+                        list.add(category);
                     }
-                    response.onProductResponse(onlineProductList);
+                    emitter.onNext(list);
+                    onCategoryResponse(list);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("FirebaseDB", error.getMessage());
+                    emitter.onError(new FirebaseException(error.getMessage()));
                 }
             });
-        }
+        });
     }
 
-    public void setOnlineDbCategoryList(CategoryDbResponse response) {
-        DatabaseReference ref;
-        List<Category> onlineCategoryList = new ArrayList<>();
-        ref = FirebaseDatabase.getInstance().getReference().child("categories/" + FirebaseAuth.getInstance().getUid());
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists())
-                    onlineCategoryList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Category category = dataSnapshot.getValue(Category.class);
-                    onlineCategoryList.add(category);
-                }
-                response.onResponse(onlineCategoryList);
-            }
+    private Observable<List<Product>> productList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("products").child(user);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<Product> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("FirebaseDB", error.getMessage());
-            }
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        Product product = dataSnapshot.getValue(Product.class);
+                        list.add(product);
+                    }
+                    emitter.onNext(list);
+                    onProductResponse(list);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
+                }
+            });
         });
     }
 
@@ -279,7 +337,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         updateSelectsRecyclerViewAdapter();
     }
 
-    private AppCompatDialogFragment createDialog(int typeOfDialog){
+    private AppCompatDialogFragment createDialog(int typeOfDialog) {
         AppCompatDialogFragment dialog = null;
         if (typeOfDialog == R.id.filter_name) {
             dialog = new NameFilterDialog(presenter.getFilterProduct());
@@ -298,10 +356,10 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         } else if (typeOfDialog == R.id.filter_product_features) {
             dialog = new ProductFeaturesFilterDialog(presenter.getFilterProduct());
         }
-            return dialog;
+        return dialog;
     }
 
-    public void showDialogDeleteProducts(){
+    public void showDialogDeleteProducts() {
         new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.AppThemeDialog))
                 .setMessage(R.string.MyPantryActivity_do_you_want_to_delete_products)
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.deleteSelectedProducts())
@@ -327,7 +385,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public void showProductsNotFound(boolean noProducts) {
-        if(noProducts)
+        if (noProducts)
             statement.setText(getString(R.string.MyPantryActivity_products_not_found));
         else
             statement.setText("");
@@ -374,7 +432,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
 
     @Override
     public void onDeleteProducts(@NonNull List<Product> productList) {
-        for(Product product : productList) {
+        for (Product product : productList) {
             Notification.cancelNotification(context, product);
         }
         updateProductsViewAdapter();
@@ -487,7 +545,6 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         }
     };
 
-    @Override
     public void onProductResponse(List<Product> productList) {
         loadingBar.setVisibility(View.GONE);
         presenter.setAllProductList(productList);
@@ -527,8 +584,7 @@ public class MyPantryActivity extends AppCompatActivity implements MyPantryView,
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    @Override
-    public void onResponse(List<Category> categoryList) {
+    public void onCategoryResponse(List<Category> categoryList) {
         presenter.setAllCategoryList(categoryList);
     }
 }

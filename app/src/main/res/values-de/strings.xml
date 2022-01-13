@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2019-2021
+  ~ Copyright (c) 2019-2022
   ~ Mateusz Hermanowicz - All rights reserved.
   ~ My Pantry
   ~ https://www.mypantry.eu
@@ -241,6 +241,9 @@
     <string name="ProductDetailsActivity_product_has_been_removed">Das Produkt wurde entfernt.</string>
     <string name="ProductDetailsActivity_edit_product">Produkt bearbeiten</string>
     <string name="ProductDetailsActivity_add_barcode_to_product">Strichcode hinzufügen</string>
+    <string name="ProductDetailsActivity_delete_similar_products">Alle Produkte</string>
+    <string name="ProductDetailsActivity_delete_single_product">Einzelnes Produkt</string>
+    <string name="ProductDetailsActivity_delete_one_or_all">Möchten Sie nur ein Produkt oder alle löschen?</string>
     <!--PrintQRCodesActivity-->
     <string name="PrintQRCodesActivity_print_qr_codes">QR-Codes drucken</string>
     <string name="PrintQRCodesActivity_skip">überspringen</string>

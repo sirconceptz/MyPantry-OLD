@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -29,8 +29,8 @@ android {
         applicationId "com.hermanowicz.pantry"
         minSdkVersion 23
         targetSdkVersion 31
-        versionCode 50
-        versionName "2.0.8"
+        versionCode 53
+        versionName "2.1.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testOptions.unitTests.includeAndroidResources = true
         multiDexEnabled true
@@ -73,34 +73,37 @@ android {
         sourceCompatibility = "1.8"
         targetCompatibility = "1.8"
     }
+    lintOptions {
+        checkReleaseBuilds false
+    }
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.core:core:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'androidx.room:room-runtime:2.4.1'
     implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
     implementation 'androidx.annotation:annotation:1.3.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'com.google.firebase:firebase-analytics:20.0.0'
-    implementation 'com.google.firebase:firebase-core:20.0.0'
+    implementation 'com.google.firebase:firebase-analytics:20.0.2'
+    implementation 'com.google.firebase:firebase-core:20.0.2'
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
-    implementation 'com.google.firebase:firebase-ads:20.4.0'
+    implementation 'com.google.firebase:firebase-ads:20.5.0'
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
     implementation 'com.google.firebase:firebase-auth:21.0.1'
-    implementation 'com.google.firebase:firebase-database:20.0.2'
-    implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+    implementation 'com.google.firebase:firebase-database:20.0.3'
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
     implementation 'com.android.billingclient:billing:4.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation 'com.google.android.gms:play-services-auth:20.0.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.zxing:core:3.4.0'
     implementation 'com.google.zxing:javase:3.4.0'
@@ -117,6 +120,11 @@ dependencies {
     implementation 'com.takisoft.preferencex:preferencex:1.1.0'
     implementation 'com.github.rafi0101:Android-Room-Database-Backup:1.0.0-beta06'
     implementation 'com.google.code.gson:gson:2.8.8'
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.4.0"
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.0'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.4.0"
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     testImplementation 'androidx.test:core:1.4.0'
     testImplementation 'androidx.test:rules:1.4.0'
@@ -140,5 +148,5 @@ dependencies {
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
-    annotationProcessor 'androidx.room:room-compiler:2.3.0'
+    annotationProcessor 'androidx.room:room-compiler:2.4.1'
 }

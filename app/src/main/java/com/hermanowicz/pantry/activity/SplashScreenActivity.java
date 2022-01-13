@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -30,9 +30,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.google.android.gms.ads.MobileAds;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivitySplashScreenBinding;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.util.AppOpenManager;
 import com.hermanowicz.pantry.util.ThemeMode;
 
 import maes.tech.intentanim.CustomIntent;
@@ -41,11 +43,13 @@ import maes.tech.intentanim.CustomIntent;
  * <h1>SplashScreen</h1>
  * Splash screen to welcome the user back with logo of application and current version.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 @SuppressLint("CustomSplashScreen")
 public class SplashScreenActivity extends AppCompatActivity {
+
+    private static AppOpenManager appOpenManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initView();
         clearErrorShowFlag();
+        initAds();
         delayAndGoToLoginActivity();
+    }
+
+    private void initAds() {
+        MobileAds.initialize(
+                this,
+                initializationStatus -> {
+                });
+        appOpenManager = new AppOpenManager(this);
     }
 
     @Override

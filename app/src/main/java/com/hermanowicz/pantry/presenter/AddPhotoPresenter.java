@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -17,6 +17,7 @@
 
 package com.hermanowicz.pantry.presenter;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import androidx.annotation.NonNull;
@@ -47,10 +48,11 @@ public class AddPhotoPresenter{
     private final PhotoModel model;
     private PremiumAccess premiumAccess;
 
-    public AddPhotoPresenter(@NonNull AddPhotoView view, @NonNull AppCompatActivity activity){
+    public AddPhotoPresenter(@NonNull AddPhotoView view, @NonNull AppCompatActivity activity) {
         this.view = view;
         this.model = new PhotoModel(activity);
-        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(activity));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
         model.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 

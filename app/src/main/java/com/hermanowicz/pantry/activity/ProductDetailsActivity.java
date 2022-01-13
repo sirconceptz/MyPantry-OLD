@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -42,18 +42,18 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityProductDetailsBinding;
 import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
-import com.hermanowicz.pantry.interfaces.PhotoDbResponse;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.presenter.ProductDetailsPresenter;
@@ -65,8 +65,12 @@ import com.hermanowicz.pantry.util.ThemeMode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
@@ -77,13 +81,16 @@ import maes.tech.intentanim.CustomIntent;
  * @author Mateusz Hermanowicz
  */
 
-public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView,
-        PhotoDbResponse {
+public class ProductDetailsActivity extends AppCompatActivity implements ProductDetailsView {
+
+    private final String TAG = "PhotosRxJava";
 
     private ProductDetailsPresenter presenter;
     private Context context;
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private ImageView photoIv;
+    private TextView productName;
     private TextView productType;
     private TextView productCategory;
     private TextView productStorageLocation;
@@ -115,6 +122,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        setPhotoListObserver();
     }
 
     private void initView() {
@@ -125,6 +133,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         Toolbar toolbar = binding.toolbar;
         photoIv = binding.imageviewPhoto;
+        productName = binding.textProductName;
         productType = binding.textProductTypeValue;
         productCategory = binding.textProductCategoryValue;
         productStorageLocation = binding.textProductStorageLocationValue;
@@ -152,8 +161,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
 
         presenter = new ProductDetailsPresenter(this, this);
         presenter.setPremiumAccess(new PremiumAccess(context));
-
-        setOnlineDbPhotoList(this);
 
         if (!presenter.isPremium()) {
             MobileAds.initialize(context);
@@ -184,55 +191,90 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         addPhoto.setOnClickListener(view -> presenter.onClickTakePhoto());
     }
 
-    private void setOnlineDbPhotoList(PhotoDbResponse response) {
-        if(!presenter.isOfflineDb()) {
-            List<Photo> onlinePhotoList = new ArrayList<>();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("photos/" + FirebaseAuth.getInstance().getUid());
-            ref.addValueEventListener(new ValueEventListener() {
+    private void setPhotoListObserver() {
+        if (!presenter.isOfflineDb()) {
+            disposables.add(photoList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Photo>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Photo> photoList) {
+                            Log.i(TAG, "onNext()");
+                        }
+                    }));
+        }
+    }
+
+    private Observable<List<Photo>> photoList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("photos").child(user);
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists())
-                        onlinePhotoList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    List<Photo> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
                         Photo photo = dataSnapshot.getValue(Photo.class);
-                        onlinePhotoList.add(photo);
+                        list.add(photo);
                     }
-                    response.onPhotoResponse(onlinePhotoList);
+                    emitter.onNext(list);
+                    onPhotoResponse(list);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("FirebaseDB - Photos", error.getMessage());
+                    emitter.onError(new FirebaseException(error.getMessage()));
                 }
             });
-        }
+        });
     }
 
     @Override
     public void showProductDetails(@NotNull GroupProducts groupProducts) {
         DateHelper dateHelper = new DateHelper(groupProducts.getProduct().getExpirationDate());
-        Objects.requireNonNull(getSupportActionBar()).setTitle(groupProducts.getProduct().getName());
-        productType.setText(groupProducts.getProduct().getTypeOfProduct());
-        if(groupProducts.getProduct().getStorageLocation().equals("null"))
+        Product product = groupProducts.getProduct();
+        int quantity = groupProducts.getQuantity();
+
+        productName.setText(product.getName());
+        productType.setText(product.getTypeOfProduct());
+        if (product.getStorageLocation().equals("null"))
             productStorageLocation.setText(R.string.ProductDetailsActivity_not_set);
         else
-            productStorageLocation.setText(groupProducts.getProduct().getStorageLocation());
-        productQuantity.setText(String.valueOf(groupProducts.getQuantity()));
-        if(!groupProducts.getProduct().getProductFeatures().equals("null"))
-            productCategory.setText(groupProducts.getProduct().getProductFeatures());
+            productStorageLocation.setText(product.getStorageLocation());
+        productQuantity.setText(String.valueOf(quantity));
+        if (!product.getProductFeatures().equals("null"))
+            productCategory.setText(product.getProductFeatures());
         productExpirationDate.setText(dateHelper.getDateInLocalFormat());
-        dateHelper = new DateHelper(groupProducts.getProduct().getProductionDate());
+        dateHelper = new DateHelper(product.getProductionDate());
         productProductionDate.setText(dateHelper.getDateInLocalFormat());
-        productComposition.setText(groupProducts.getProduct().getComposition());
-        productHealingProperties.setText(groupProducts.getProduct().getHealingProperties());
-        productDosage.setText(groupProducts.getProduct().getDosage());
-        productVolume.setText(String.format("%s%s", groupProducts.getProduct().getVolume(), getString(R.string.Product_volume_unit)));
-        productWeight.setText(String.format("%s%s", groupProducts.getProduct().getWeight(), getString(R.string.Product_weight_unit)));
-        productTaste.setText(groupProducts.getProduct().getTaste());
-        if (groupProducts.getProduct().getHasSugar()) productHasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
-        if (groupProducts.getProduct().getHasSalt()) productHasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
-        if (groupProducts.getProduct().getIsBio()) productIsBio.setText(getString(R.string.ProductDetailsActivity_yes));
-        if (groupProducts.getProduct().getIsVege()) productIsVege.setText(getString(R.string.ProductDetailsActivity_yes));
+        productComposition.setText(product.getComposition());
+        productHealingProperties.setText(product.getHealingProperties());
+        productDosage.setText(product.getDosage());
+        productVolume.setText(String.format("%s%s", product.getVolume(), getString(R.string.Product_volume_unit)));
+        productWeight.setText(String.format("%s%s", product.getWeight(), getString(R.string.Product_weight_unit)));
+        productTaste.setText(product.getTaste());
+        if (product.getHasSugar())
+            productHasSugar.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (product.getHasSalt())
+            productHasSalt.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (product.getIsBio())
+            productIsBio.setText(getString(R.string.ProductDetailsActivity_yes));
+        if (product.getIsVege())
+            productIsVege.setText(getString(R.string.ProductDetailsActivity_yes));
     }
 
     @Override
@@ -253,10 +295,11 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     @Override
     public void showDialogOnDeleteProduct() {
         new AlertDialog.Builder(new ContextThemeWrapper(ProductDetailsActivity.this, R.style.AppThemeDialog))
-                .setMessage(R.string.General_are_you_sure_delete_product)
-                .setPositiveButton(android.R.string.yes, (dialog, which) ->
-                        presenter.onConfirmDeleteProduct())
-                .setNegativeButton(android.R.string.no, null)
+                .setMessage(R.string.ProductDetailsActivity_delete_one_or_all)
+                .setPositiveButton(getString(R.string.ProductDetailsActivity_delete_similar_products), (dialog, which) ->
+                        presenter.onConfirmDeleteSimilarProducts())
+                .setNegativeButton(getString(R.string.ProductDetailsActivity_delete_single_product), (dialog, which) ->
+                        presenter.onConfirmDeleteSingleProduct())
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
@@ -348,7 +391,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         super.onDestroy();
     }
 
-    @Override
     public void onPhotoResponse(List<Photo> photoList) {
         presenter.setPhotoList(photoList);
         presenter.showProductDetails();

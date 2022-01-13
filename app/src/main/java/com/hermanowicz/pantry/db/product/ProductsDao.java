@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -49,6 +49,9 @@ public interface ProductsDao {
 
     @Insert
     void addProducts(List<Product> products);
+
+    @Delete
+    void deleteProduct(Product product);
 
     @Delete
     void deleteProducts(List<Product> product);

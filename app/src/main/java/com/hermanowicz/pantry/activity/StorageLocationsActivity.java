@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -42,18 +42,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityStorageLocationsBinding;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.dialog.NewStorageLocationDialog;
 import com.hermanowicz.pantry.interfaces.DialogStorageLocationListener;
-import com.hermanowicz.pantry.interfaces.StorageLocationDbResponse;
 import com.hermanowicz.pantry.interfaces.StorageLocationView;
 import com.hermanowicz.pantry.presenter.StorageLocationPresenter;
 import com.hermanowicz.pantry.util.Orientation;
@@ -64,21 +64,30 @@ import com.hermanowicz.pantry.util.ThemeMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>StorageLocationActivity</h1>
  * StorageLocation activity - user can see all storage locations and create new one.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class StorageLocationsActivity extends AppCompatActivity implements DialogStorageLocationListener,
-        StorageLocationView, StorageLocationDbResponse {
+        StorageLocationView {
+
+    private final String TAG = "StorageLocationsRxJava";
+
 
     private StorageLocationPresenter presenter;
     private Context context;
     private final StorageLocationsAdapter storageLocationsAdapter = new StorageLocationsAdapter();
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private RecyclerView storageLocationsRecyclerView;
     private TextView statement;
@@ -87,11 +96,12 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(ThemeMode.getThemeMode(this));
-        if(Orientation.isTablet(this))
+        if (Orientation.isTablet(this))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        setStorageLocationListObserver();
     }
 
     private void initView() {
@@ -107,10 +117,9 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
 
         setSupportActionBar(toolbar);
 
-        presenter = new StorageLocationPresenter(this, context, this);
-        setOnlineDbStorageLocationList(this);
+        presenter = new StorageLocationPresenter(this, context);
 
-        if(!presenter.isPremium()) {
+        if (!presenter.isPremium()) {
             MobileAds.initialize(context);
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
@@ -123,26 +132,55 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
         storageLocationsRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    @Override
-    public void setOnlineDbStorageLocationList(StorageLocationDbResponse response) {
-        DatabaseReference ref;
-        List<StorageLocation> onlineStorageLocationList = new ArrayList<>();
-        ref = FirebaseDatabase.getInstance().getReference().child("storage_locations/" + FirebaseAuth.getInstance().getUid());
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists())
-                    onlineStorageLocationList.clear();
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    StorageLocation storageLocation = dataSnapshot.getValue(StorageLocation.class);
-                    onlineStorageLocationList.add(storageLocation);
+    private void setStorageLocationListObserver() {
+        if (!presenter.isOfflineDb()) {
+            disposables.add(storageLocationList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<StorageLocation>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<StorageLocation> storageLocationList) {
+                            Log.i(TAG, "onNext()");
+                        }
+                    }));
+        }
+    }
+
+    private Observable<List<StorageLocation>> storageLocationList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("storage_locations").child(user);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<StorageLocation> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        StorageLocation storageLocation = dataSnapshot.getValue(StorageLocation.class);
+                        list.add(storageLocation);
+                    }
+                    emitter.onNext(list);
+                    onResponse(list);
                 }
-                response.onResponse(onlineStorageLocationList);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("FirebaseDB", error.getMessage());
-            }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
+                }
+            });
         });
     }
 
@@ -190,7 +228,7 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
 
     @Override
     public void showEmptyStorageLocationListStatement(boolean visible) {
-        if(visible)
+        if (visible)
             statement.setVisibility(View.VISIBLE);
         else
             statement.setVisibility(View.INVISIBLE);
@@ -220,7 +258,6 @@ public class StorageLocationsActivity extends AppCompatActivity implements Dialo
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    @Override
     public void onResponse(List<StorageLocation> storageLocationList) {
         presenter.setOnlineDbStorageLocationList(storageLocationList);
         presenter.updateStorageLocationListView();

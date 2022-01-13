@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -49,18 +49,18 @@ import androidx.core.content.FileProvider;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityAddPhotoBinding;
 import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AddPhotoView;
-import com.hermanowicz.pantry.interfaces.PhotoDbResponse;
 import com.hermanowicz.pantry.presenter.AddPhotoPresenter;
 import com.hermanowicz.pantry.util.ImageRotation;
 import com.hermanowicz.pantry.util.Orientation;
@@ -72,21 +72,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>AppSettingsActivity</h1>
  * Activity for add and remove photo for products.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
-public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView, PhotoDbResponse {
+public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView {
 
+    private final String TAG = "PhotosRxJava";
     private static final int REQUEST_IMAGE_CAPTURE_CODE = 42;
 
     private Context context;
     private AddPhotoPresenter presenter;
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private ImageView imageViewPhoto;
     private EditText description;
@@ -100,6 +107,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        setPhotoListObserver();
     }
 
     private void initView() {
@@ -117,8 +125,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
         savePhoto = binding.buttonSavePhoto;
         deletePhoto = binding.buttonDeletePhoto;
 
-        setOnlineDbPhotoList(this);
-
         List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
         presenter.setProductList(productList);
         presenter.setAllProductList(productList);
@@ -131,30 +137,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
         }
 
         setSupportActionBar(toolbar);
-    }
-
-    private void setOnlineDbPhotoList(PhotoDbResponse response) {
-        if(!presenter.isOfflineDb()) {
-            List<Photo> onlinePhotoList = new ArrayList<>();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("photos/" + FirebaseAuth.getInstance().getUid());
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists())
-                        onlinePhotoList.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        Photo photo = dataSnapshot.getValue(Photo.class);
-                        onlinePhotoList.add(photo);
-                    }
-                    response.onPhotoResponse(onlinePhotoList);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.d("FirebaseDB - Photos", error.getMessage());
-                }
-            });
-        }
     }
 
     private void setListeners() {
@@ -171,11 +153,63 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
                 public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
                 }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                presenter.isPhotoDescriptionCorrect(description.getText().toString());
+            }
+        });
+    }
+
+    private void setPhotoListObserver() {
+        if (!presenter.isOfflineDb()) {
+            disposables.add(photoList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Photo>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Photo> photoList) {
+                            Log.i(TAG, "onNext()");
+                        }
+                    }));
+        }
+    }
+
+    private Observable<List<Photo>> photoList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("photos").child(user);
+            query.addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                    presenter.isPhotoDescriptionCorrect(description.getText().toString());
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<Photo> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        Photo photo = dataSnapshot.getValue(Photo.class);
+                        list.add(photo);
+                    }
+                    emitter.onNext(list);
+                    onPhotoResponse(list);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
                 }
             });
+        });
     }
 
     @Override
@@ -183,10 +217,9 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri fileProvider = FileProvider.getUriForFile(context, "com.hermanowicz.pantry.provider", photoFile);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-        if(takePictureIntent.resolveActivity(this.getPackageManager()) != null){
+        if (takePictureIntent.resolveActivity(this.getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE_CODE);
-        }
-        else
+        } else
             Toast.makeText(this, getText(R.string.AddPhotoActivity_no_camera_access), Toast.LENGTH_LONG).show();
     }
 
@@ -294,7 +327,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView,
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    @Override
     public void onPhotoResponse(List<Photo> photoList) {
         presenter.setPhotoList(photoList);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -18,12 +18,12 @@
 package com.hermanowicz.pantry.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
-import com.hermanowicz.pantry.interfaces.StorageLocationDbResponse;
 import com.hermanowicz.pantry.interfaces.StorageLocationView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.StorageLocationModel;
@@ -35,34 +35,25 @@ import java.util.List;
  * <h1>StorageLocationPresenter</h1>
  * Presenter for StorageLocationActivity
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
-public class StorageLocationPresenter implements StorageLocationDbResponse {
+public class StorageLocationPresenter {
 
     private final StorageLocationView view;
     private final StorageLocationModel model;
     private final PremiumAccess premiumAccess;
-    private final AppSettingsModel appSettingsModel;
-    private final StorageLocationDbResponse dbResponse;
 
-    public StorageLocationPresenter (@NonNull StorageLocationView view, @NonNull Context context,
-                                     @NonNull StorageLocationDbResponse dbResponse){
+    public StorageLocationPresenter(@NonNull StorageLocationView view, @NonNull Context context) {
         this.view = view;
         this.model = new StorageLocationModel(context);
-        this.appSettingsModel = new AppSettingsModel(PreferenceManager.
-                getDefaultSharedPreferences(context));
         this.premiumAccess = new PremiumAccess(context);
-        this.dbResponse = dbResponse;
-
-        model.setDatabaseMode(getDatabaseMode());
-        if(getDatabaseMode().equals("local")){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
+        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        if (isOfflineDb()) {
             model.setOfflineDbStorageLocationList();
         }
-    }
-
-    public String getDatabaseMode(){
-        return appSettingsModel.getDatabaseMode();
     }
 
     public void updateStorageLocationListView(){
@@ -74,8 +65,7 @@ public class StorageLocationPresenter implements StorageLocationDbResponse {
     public void addStorageLocation(@NonNull StorageLocation storageLocation) {
         if(model.addStorageLocation(storageLocation)) {
             view.onSuccessAddNewStorageLocation();
-            view.setOnlineDbStorageLocationList(dbResponse);
-            if(getDatabaseMode().equals("local")){
+            if (isOfflineDb()) {
                 model.setOfflineDbStorageLocationList();
             }
             updateStorageLocationListView();
@@ -97,13 +87,16 @@ public class StorageLocationPresenter implements StorageLocationDbResponse {
     }
 
     public void setOnlineDbStorageLocationList(@NonNull List<StorageLocation> storageLocationList) {
-        if (getDatabaseMode().equals("online")) {
+        if (!isOfflineDb()) {
             model.setStorageLocationList(storageLocationList);
             updateStorageLocationListView();
         }
     }
 
-    @Override
+    public boolean isOfflineDb() {
+        return model.getDatabaseMode().equals("local");
+    }
+
     public void onResponse(List<StorageLocation> storageLocationList) {
         model.setStorageLocationList(storageLocationList);
     }

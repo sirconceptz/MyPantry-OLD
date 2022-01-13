@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -42,17 +42,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityCategoriesBinding;
 import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.dialog.NewCategoryDialog;
-import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.CategoryView;
 import com.hermanowicz.pantry.interfaces.DialogCategoryListener;
 import com.hermanowicz.pantry.presenter.CategoryPresenter;
@@ -64,21 +64,29 @@ import com.hermanowicz.pantry.util.ThemeMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
  * <h1>CategoriesActivity</h1>
  * Categories activity - user can see all own categories and create new category.
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
 public class CategoriesActivity extends AppCompatActivity implements DialogCategoryListener,
-        CategoryView, CategoryDbResponse {
+        CategoryView {
+
+    private final String TAG = "CategoriesRxJava";
 
     private CategoryPresenter presenter;
     private Context context;
     private final CategoriesAdapter categoriesAdapter = new CategoriesAdapter();
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     private AdView adView;
     private RecyclerView categoryRecyclerView;
@@ -92,6 +100,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
         super.onCreate(savedInstanceState);
         initView();
         setListeners();
+        setCategoryListObserver();
     }
 
     private void initView() {
@@ -107,8 +116,7 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
 
         setSupportActionBar(toolbar);
 
-        presenter = new CategoryPresenter(this, context, this);
-        setOnlineDbCategoryList(this);
+        presenter = new CategoryPresenter(this, context);
 
         if(!presenter.isPremium()) {
             MobileAds.initialize(context);
@@ -123,26 +131,55 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
         categoryRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
-    @Override
-    public void setOnlineDbCategoryList(CategoryDbResponse response) {
-        DatabaseReference ref;
-        List<Category> onlineCategoryList = new ArrayList<>();
-        ref = FirebaseDatabase.getInstance().getReference().child("categories/"+ FirebaseAuth.getInstance().getUid());
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists())
-                    onlineCategoryList.clear();
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Category category = dataSnapshot.getValue(Category.class);
-                    onlineCategoryList.add(category);
+    private void setCategoryListObserver() {
+        if (!presenter.isOfflineDb()) {
+            disposables.add(categoryList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Category>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Category> categoryList) {
+                            Log.i(TAG, "onNext()");
+                        }
+                    }));
+        }
+    }
+
+    private Observable<List<Category>> categoryList() {
+        return Observable.create(emitter -> {
+            String user = FirebaseAuth.getInstance().getUid();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            assert user != null;
+            Query query = database.getReference().child("categories").child(user);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<Category> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        Category category = dataSnapshot.getValue(Category.class);
+                        list.add(category);
+                    }
+                    emitter.onNext(list);
+                    onResponse(list);
                 }
-                response.onResponse(onlineCategoryList);
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("FirebaseDB", error.getMessage());
-            }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
+                }
+            });
         });
     }
 
@@ -220,7 +257,6 @@ public class CategoriesActivity extends AppCompatActivity implements DialogCateg
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
-    @Override
     public void onResponse(List<Category> categoryList) {
         presenter.setOnlineCategoryList(categoryList);
         presenter.updateCategoryListView();

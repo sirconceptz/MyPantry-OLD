@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -26,6 +26,7 @@ import com.hermanowicz.pantry.model.GroupProducts;
 import java.util.List;
 
 public interface ProductDetailsView {
+
     void showProductDetails(GroupProducts groupProducts);
 
     void showPhoto(Bitmap photo);

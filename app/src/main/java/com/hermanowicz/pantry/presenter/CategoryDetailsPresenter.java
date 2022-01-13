@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.hermanowicz.pantry.db.category.Category;
-import com.hermanowicz.pantry.interfaces.CategoryDbResponse;
 import com.hermanowicz.pantry.interfaces.CategoryDetailsView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.CategoryModel;
@@ -34,16 +33,16 @@ import java.util.List;
  * <h1>CategoryDetailsPresenter</h1>
  * Presenter for CategoryDetailsActivity
  *
- * @author  Mateusz Hermanowicz
+ * @author Mateusz Hermanowicz
  */
 
-public class CategoryDetailsPresenter implements CategoryDbResponse {
+public class CategoryDetailsPresenter {
 
     private final CategoryModel model;
     private final CategoryDetailsView view;
 
-    public CategoryDetailsPresenter (@NonNull CategoryDetailsView view,
-                                     @NonNull Context context) {
+    public CategoryDetailsPresenter(@NonNull CategoryDetailsView view,
+                                    @NonNull Context context) {
         this.model = new CategoryModel(context);
         this.view = view;
         AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.
@@ -90,7 +89,6 @@ public class CategoryDetailsPresenter implements CategoryDbResponse {
         view.updateDescriptionCharCounter(categoryDescription.length(), model.MAX_CHAR_CATEGORY_DESCRIPTION);
     }
 
-    @Override
     public void onResponse(List<Category> categoryList) {
         model.setCategory(categoryList.get(0));
     }

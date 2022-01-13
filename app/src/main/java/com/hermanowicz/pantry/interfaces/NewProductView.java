@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2021
+ * Copyright (c) 2019-2022
  * Mateusz Hermanowicz - All rights reserved.
  * My Pantry
  * https://www.mypantry.eu
@@ -29,6 +29,10 @@ public interface NewProductView {
     void reCreateNotifications();
 
     void updateProductFeaturesAdapter(String typeOfProductSpinnerValue);
+
+    void updateProductCategoryAdapter(String[] categoryArray);
+
+    void updateStorageLocationAdapter(String[] storageLocationArray);
 
     void showStatementOnAreProductsAdded(String statementToShow);
 
