@@ -26,6 +26,7 @@ import androidx.preference.PreferenceManager;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.StorageLocationView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.StorageLocationModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
@@ -42,6 +43,7 @@ public class StorageLocationPresenter {
 
     private final StorageLocationView view;
     private final StorageLocationModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final PremiumAccess premiumAccess;
 
     public StorageLocationPresenter(@NonNull StorageLocationView view, @NonNull Context context) {
@@ -50,7 +52,7 @@ public class StorageLocationPresenter {
         this.premiumAccess = new PremiumAccess(context);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
         if (isOfflineDb()) {
             model.setOfflineDbStorageLocationList();
         }
@@ -63,7 +65,7 @@ public class StorageLocationPresenter {
     }
 
     public void addStorageLocation(@NonNull StorageLocation storageLocation) {
-        if(model.addStorageLocation(storageLocation)) {
+        if(model.addStorageLocation(storageLocation, dbMode)) {
             view.onSuccessAddNewStorageLocation();
             if (isOfflineDb()) {
                 model.setOfflineDbStorageLocationList();
@@ -94,7 +96,7 @@ public class StorageLocationPresenter {
     }
 
     public boolean isOfflineDb() {
-        return model.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public void onResponse(List<StorageLocation> storageLocationList) {

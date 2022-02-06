@@ -23,10 +23,13 @@ import android.widget.RadioButton;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.ProductDataModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
@@ -47,6 +50,7 @@ public class EditProductPresenter {
 
     private final EditProductView view;
     private final ProductDataModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final ProductDataView productDataView;
     private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
@@ -57,7 +61,7 @@ public class EditProductPresenter {
         this.view = view;
         this.productDataView = productDataView;
         AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(context));
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
@@ -68,7 +72,7 @@ public class EditProductPresenter {
         model.setProduct(productId);
         GroupProducts groupProducts = model.getGroupProducts();
         int productTypeSpinnerPosition = model.getProductTypeSpinnerPosition();
-        int productFeaturesSpinnerPosition = model.getProductFeaturesSpinnerPosition(productTypeSpinnerPosition);
+        int productFeaturesSpinnerPosition = model.getProductFeaturesSpinnerPosition(productTypeSpinnerPosition, dbMode);
         int productStorageLocationSpinnerPosition = model.getProductStorageLocationPosition();
         view.setSpinnerSelections(productTypeSpinnerPosition, productFeaturesSpinnerPosition, productStorageLocationSpinnerPosition);
         view.showProductData(groupProducts);
@@ -89,14 +93,14 @@ public class EditProductPresenter {
         else if (!model.isTypeOfProductValid(groupProducts.getProduct()))
             productDataView.showErrorCategoryNotSelected();
         else {
-            model.updateDatabase(groupProducts);
+            model.updateDatabase(groupProducts, dbMode);
             view.onSavedProduct();
             view.navigateToMyPantryActivity();
         }
     }
 
     public String[] getStorageLocationsArray(){
-        return model.getStorageLocationsArray();
+        return model.getStorageLocationsArray(dbMode);
     }
 
     public void setExpirationDate(int year, int month, int day) {
@@ -132,7 +136,7 @@ public class EditProductPresenter {
     }
 
     public String[] getOwnCategoryArray(){
-        return model.getOwnCategoriesArray();
+        return model.getOwnCategoriesArray(dbMode);
     }
 
     public void onClickCancelButton(){
@@ -153,5 +157,21 @@ public class EditProductPresenter {
 
     public void setAllProductList(List<Product> allProductList) {
         model.setAllProductList(allProductList);
+    }
+
+    public boolean isOfflineDb() {
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
+    }
+
+    public void setOnlineStorageLocationList(@NonNull List<StorageLocation> list) {
+        model.setStorageLocationList(list);
+        String[] storageLocationArray = model.getStorageLocationsArray(dbMode);
+        view.updateStorageLocationAdapter(storageLocationArray);
+    }
+
+    public void setOnlineCategoryList(@NonNull List<Category> list) {
+        model.setCategoryList(list);
+        String[] categoryArray = model.getOwnCategoriesArray(dbMode);
+        view.updateProductCategoryAdapter(categoryArray);
     }
 }

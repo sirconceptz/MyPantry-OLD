@@ -29,6 +29,7 @@ import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AddPhotoView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.PhotoModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
@@ -46,6 +47,7 @@ public class AddPhotoPresenter{
 
     private final AddPhotoView view;
     private final PhotoModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private PremiumAccess premiumAccess;
 
     public AddPhotoPresenter(@NonNull AddPhotoView view, @NonNull AppCompatActivity activity) {
@@ -53,7 +55,7 @@ public class AddPhotoPresenter{
         this.model = new PhotoModel(activity);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
@@ -118,7 +120,7 @@ public class AddPhotoPresenter{
     }
 
     public boolean isOfflineDb() {
-        return model.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public void setIsNewPhoto(boolean isNewPhoto) {

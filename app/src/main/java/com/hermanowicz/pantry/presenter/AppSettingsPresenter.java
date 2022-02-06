@@ -37,6 +37,7 @@ import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.PremiumUserView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.DatabaseBackup;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
@@ -90,18 +91,16 @@ public class AppSettingsPresenter {
         else {
             view.showActiveUser(null);
             view.enableDatabaseModeSelection(false);
-            if(model.getDatabaseMode().equals("online"))
-                model.setDatabaseMode("local");
+            model.setDatabaseMode(DatabaseMode.Mode.LOCAL);
         }
     }
 
     public void showDatabaseMode(@NonNull Resources resources) {
         String[] databaseModeList = resources.getStringArray(R.array.AppSettingsActivity_database_mode);
-        String[] databaseModeValueList = resources.getStringArray(R.array.AppSettingsActivity_database_mode_value);
-        if(model.getDatabaseMode().equals(databaseModeValueList[0]))
-            view.showDatatabaseMode(databaseModeList[0]);
-        else
+        if(model.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
             view.showDatatabaseMode(databaseModeList[1]);
+        else
+            view.showDatatabaseMode(databaseModeList[0]);
     }
 
     public void showSelectedTheme() {
@@ -233,8 +232,8 @@ public class AppSettingsPresenter {
             if (user == null)
                 accountView.signIn();
             else {
-                if(model.getDatabaseMode().equals("online"))
-                    model.setDatabaseMode("local");
+                if(model.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
+                    model.setDatabaseMode(DatabaseMode.Mode.LOCAL);
                 accountView.signOut();
                 updateUserData();
                 view.refreshActivity();
@@ -254,10 +253,6 @@ public class AppSettingsPresenter {
 
     public void goPremium() {
         view.buyPremiumFeatures();
-    }
-
-    public void setDatabaseMode(@NonNull String databaseMode) {
-        model.setDatabaseMode(databaseMode);
     }
 
     public void onClickImportDb() {
@@ -292,5 +287,9 @@ public class AppSettingsPresenter {
 
     public boolean isPremiumRestored() {
         return model.isPremiumRestored();
+    }
+
+    public void setDatabaseMode(String mode) {
+        model.setDatabaseMode(mode);
     }
 }

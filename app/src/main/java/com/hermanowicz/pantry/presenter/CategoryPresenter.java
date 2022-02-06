@@ -27,6 +27,7 @@ import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.interfaces.CategoryView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.CategoryModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class CategoryPresenter {
 
     private final CategoryView view;
     private final CategoryModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final PremiumAccess premiumAccess;
 
     public CategoryPresenter(@NonNull CategoryView view, @NonNull Context context) {
@@ -50,7 +52,7 @@ public class CategoryPresenter {
         this.premiumAccess = new PremiumAccess(context);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
         if (isOfflineDb()) {
             model.setOfflineDbCategoryList();
         }
@@ -64,7 +66,7 @@ public class CategoryPresenter {
     }
 
     public void addCategory(@NonNull Category category) {
-        if(model.addCategory(category)) {
+        if(model.addCategory(category, dbMode)) {
             view.onSuccessAddNewCategory();
             if (isOfflineDb()) {
                 model.setOfflineDbCategoryList();
@@ -96,7 +98,7 @@ public class CategoryPresenter {
     }
 
     public boolean isOfflineDb() {
-        return model.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public void onResponse(List<Category> categoryList) {

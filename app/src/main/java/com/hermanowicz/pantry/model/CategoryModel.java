@@ -39,7 +39,6 @@ public class CategoryModel {
     private final CategoryDb db;
     private Category category;
     private List<Category> categoryList = new ArrayList<>();
-    private String databaseMode;
 
     public CategoryModel(@NonNull Context context) {
         this.db = CategoryDb.getInstance(context);
@@ -68,8 +67,8 @@ public class CategoryModel {
         setCategoryList(categoryList);
     }
 
-    public void updateCategory(@NonNull Category category) {
-        if(databaseMode.equals("local"))
+    public void updateCategory(@NonNull Category category, DatabaseMode databaseMode) {
+        if(databaseMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL)
             updateOfflineCategory(category);
         else
             updateOnlineCategory(category);
@@ -94,9 +93,9 @@ public class CategoryModel {
         ref.child(String.valueOf(category.getId())).removeValue();
     }
 
-    public boolean addCategory(@NonNull Category newCategory){
+    public boolean addCategory(@NonNull Category newCategory, @NonNull DatabaseMode dbMode){
         boolean result;
-        if(databaseMode.equals("local"))
+        if(dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL)
             result = addOfflineDbCategory(newCategory);
         else
             result = addOnlineDbCategory(newCategory);
@@ -146,17 +145,5 @@ public class CategoryModel {
 
     public boolean isCategoryDescriptionNotCorrect(@NonNull String categoryDescription) {
         return categoryDescription.length() > MAX_CHAR_CATEGORY_DESCRIPTION;
-    }
-
-    @NonNull
-    public String getDatabaseMode() {
-        if (databaseMode != null)
-            return databaseMode;
-        else
-            return "";
-    }
-
-    public void setDatabaseMode(@NonNull String databaseMode) {
-        this.databaseMode = databaseMode;
     }
 }

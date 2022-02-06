@@ -85,6 +85,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements MainView, AccountView, Callback<List<WPError>> {
 
     private final String TAG = "ProductsRxJava";
+    private final String ANIM_TYPE = "fadein-to-fadeout";
 
     private final CompositeDisposable disposables = new CompositeDisposable();
     private MainPresenter presenter;
@@ -254,42 +255,42 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     public void onNavigationToMyPantryActivity() {
         Intent myPantryActivityIntent = new Intent(MainActivity.this, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
     public void onNavigationToScanProductActivity() {
         Intent scanProductActivityIntent = new Intent(MainActivity.this, ScanProductActivity.class);
         startActivity(scanProductActivityIntent);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
     public void onNavigationToNewProductActivity() {
         Intent newProductActivityIntent = new Intent(MainActivity.this, NewProductActivity.class);
         startActivity(newProductActivityIntent);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
     public void onNavigationToCategoriesActivity() {
         Intent categoriesActivity = new Intent(MainActivity.this, CategoriesActivity.class);
         startActivity(categoriesActivity);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
     public void onNavigationToStorageLocationsActivity() {
         Intent storageLocationsActivity = new Intent(MainActivity.this, StorageLocationsActivity.class);
         startActivity(storageLocationsActivity);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
     public void onNavigationToAppSettingsActivity() {
         Intent appSettingsActivityIntent = new Intent(MainActivity.this, AppSettingsActivity.class);
         startActivity(appSettingsActivityIntent);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
@@ -303,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
         Intent errorActivity = new Intent(MainActivity.this, ErrorActivity.class);
         errorActivity.putExtra("response", responseString);
         startActivity(errorActivity);
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     @Override
@@ -373,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements MainView, Account
     @Override
     public void finish() {
         super.finish();
-        CustomIntent.customType(this, "fadein-to-fadeout");
+        CustomIntent.customType(this, ANIM_TYPE);
     }
 
     public void onProductResponse(List<Product> productList) {

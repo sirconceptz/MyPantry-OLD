@@ -27,6 +27,7 @@ import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.interfaces.ScanProductView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.ScanProductModel;
 
@@ -43,13 +44,14 @@ public class ScanProductPresenter {
 
     private final ScanProductView view;
     private final ScanProductModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final AppSettingsModel appSettingsModel;
 
     public ScanProductPresenter(@NonNull ScanProductView view, @NonNull SharedPreferences sharedPreferences, @NonNull ProductDb productDb) {
         this.view = view;
         this.model = new ScanProductModel(productDb);
         this.appSettingsModel = new AppSettingsModel(sharedPreferences);
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void onScanResult(@NonNull String scanResult) {
@@ -135,7 +137,7 @@ public class ScanProductPresenter {
     }
 
     public boolean isOfflineDb() {
-        return model.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public void setOfflineAllProductList() {

@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hermanowicz.pantry.R;
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.category.CategoryDb;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.db.product.ProductDb;
@@ -51,18 +52,15 @@ public class ProductDataModel {
     private String expirationDate = "-";
     private List<Product> productList = new ArrayList<>();
     private int oldProductsQuantity;
-    private String databaseMode;
     private List<Product> allProductList;
+    private List<Category> categoryList = new ArrayList<>();
+    private List<StorageLocation> storageLocationList = new ArrayList<>();
 
     public ProductDataModel(@NonNull Context context) {
         productDb = ProductDb.getInstance(context);
         categoryDb = CategoryDb.getInstance(context);
         storageLocationDb = StorageLocationDb.getInstance(context);
         this.resources = context.getResources();
-    }
-
-    public void setDatabaseMode(@NonNull String databaseMode) {
-     this.databaseMode = databaseMode;
     }
 
     public void deleteSimilarOfflineProducts(){
@@ -133,11 +131,11 @@ public class ProductDataModel {
         return selection;
     }
 
-    public int getProductFeaturesSpinnerPosition(int productTypeSpinnerPosition){
+    public int getProductFeaturesSpinnerPosition(int productTypeSpinnerPosition, DatabaseMode dbMode){
         String[] productFeaturesArray;
         int selection = 0;
         if(productTypeSpinnerPosition == 1)
-            productFeaturesArray = getOwnCategoriesArray();
+            productFeaturesArray = getOwnCategoriesArray(dbMode);
         else if(productTypeSpinnerPosition == 2)
             productFeaturesArray = resources.getStringArray(R.array.ProductDetailsActivity_store_products_array);
         else if(productTypeSpinnerPosition == 3)
@@ -216,18 +214,13 @@ public class ProductDataModel {
     }
 
     public boolean isProductNameNotValid(@NonNull Product product) {
-        boolean correctProductName = false;
-        if (product.getName().length() > 0)
-            correctProductName = true;
+        boolean correctProductName = product.getName().length() > 0;
         return !correctProductName;
     }
 
     public boolean isTypeOfProductValid(@NonNull Product product) {
         String[] typeOfProductsArray = resources.getStringArray(R.array.Product_type_of_product_array);
-        boolean correctTypeOfProduct = false;
-        if (!product.getTypeOfProduct().equals(typeOfProductsArray[0]))
-            correctTypeOfProduct = true;
-        return correctTypeOfProduct;
+        return !product.getTypeOfProduct().equals(typeOfProductsArray[0]);
     }
 
     public List<Product> editProductList(@NonNull GroupProducts groupProducts) {
@@ -336,19 +329,51 @@ public class ProductDataModel {
         return productListToRemove;
     }
 
-    public void updateDatabase(@NonNull GroupProducts groupProducts) {
+    public void updateDatabase(@NonNull GroupProducts groupProducts, @NonNull DatabaseMode dbMode) {
         int newProductsQuantity = groupProducts.getQuantity();
-        if (databaseMode.equals("local")) {
+        if (dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL) {
             updateProductsQuantityInOfflineDb(newProductsQuantity, groupProducts);
         } else
             updateProductsQuantityInOnlineDb(newProductsQuantity, groupProducts);
     }
 
-    public String[] getOwnCategoriesArray(){
+    public String[] getOwnCategoriesArray(DatabaseMode dbMode) {
+        if (dbMode.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
+            return getOwnCategoriesOnline();
+        else
+            return getOwnCategoriesOffline();
+    }
+
+    private String[] getOwnCategoriesOnline() {
+        int listSize = categoryList.size();
+        String[] list = new String[listSize];
+        for (int counter = 0; counter < listSize; counter++) {
+            list[counter] = categoryList.get(counter).getName();
+        }
+        return list;
+    }
+
+    private String[] getStorageLocationsOnlineArray() {
+        int listSize = storageLocationList.size();
+        String[] list = new String[listSize];
+        for (int counter = 0; counter < listSize; counter++) {
+            list[counter] = storageLocationList.get(counter).getName();
+        }
+        return list;
+    }
+
+    private String[] getOwnCategoriesOffline() {
         return categoryDb.categoryDao().getAllCategoriesArray();
     }
 
-    public String[] getStorageLocationsArray() {
+    public String[] getStorageLocationsArray(DatabaseMode dbMode) {
+        if (dbMode.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
+            return getStorageLocationsOnlineArray();
+        else
+            return getStorageLocationsOfflineArray();
+    }
+
+    public String[] getStorageLocationsOfflineArray() {
         return storageLocationDb.storageLocationDao().getAllStorageLocationsArray();
     }
 
@@ -390,5 +415,13 @@ public class ProductDataModel {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().
                 child("products/" + FirebaseAuth.getInstance().getUid());
         ref.child(String.valueOf(productId)).removeValue();
+    }
+
+    public void setCategoryList(@NonNull List<Category> list) {
+        this.categoryList = list;
+    }
+
+    public void setStorageLocationList(@NonNull List<StorageLocation> list) {
+        this.storageLocationList = list;
     }
 }

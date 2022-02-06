@@ -26,6 +26,7 @@ import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.interfaces.CategoryDetailsView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
 import com.hermanowicz.pantry.model.CategoryModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class CategoryDetailsPresenter {
 
     private final CategoryModel model;
     private final CategoryDetailsView view;
+    private DatabaseMode dbMode = new DatabaseMode();
 
     public CategoryDetailsPresenter(@NonNull CategoryDetailsView view,
                                     @NonNull Context context) {
@@ -47,7 +49,7 @@ public class CategoryDetailsPresenter {
         this.view = view;
         AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.
                 getDefaultSharedPreferences(context));
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setCategory(@NonNull Category category) {
@@ -60,7 +62,7 @@ public class CategoryDetailsPresenter {
     }
 
     public void deleteCategory() {
-        if(model.getDatabaseMode().equals("local"))
+        if(dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL)
             model.deleteOfflineDbCategory(model.getCategory());
         else
             model.deleteOnlineCategory(model.getCategory());
@@ -71,7 +73,7 @@ public class CategoryDetailsPresenter {
         if(model.isCategoryNameNotCorrect(category.getName()) || model.isCategoryDescriptionNotCorrect(category.getDescription()))
             view.showErrorOnUpdateCategory();
         else {
-            model.updateCategory(category);
+            model.updateCategory(category, dbMode);
             view.showCategoryUpdated();
             view.navigateToCategoriesActivity();
         }

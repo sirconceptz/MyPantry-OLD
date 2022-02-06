@@ -26,6 +26,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,9 +46,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.databinding.ActivityEditProductBinding;
+import com.hermanowicz.pantry.db.category.Category;
 import com.hermanowicz.pantry.db.product.Product;
+import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.EditProductView;
 import com.hermanowicz.pantry.interfaces.ProductDataView;
 import com.hermanowicz.pantry.model.GroupProducts;
@@ -57,10 +67,16 @@ import com.hermanowicz.pantry.util.Orientation;
 import com.hermanowicz.pantry.util.PremiumAccess;
 import com.hermanowicz.pantry.util.ThemeMode;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.observers.DisposableObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import maes.tech.intentanim.CustomIntent;
 
 /**
@@ -72,6 +88,9 @@ import maes.tech.intentanim.CustomIntent;
 
 public class EditProductActivity extends AppCompatActivity implements EditProductView, ProductDataView {
 
+    private final String CATEGORIES_TAG = "CategoriesRxJava";
+    private final String STORAGE_LOCATIONS_TAG = "StorageLocationsRxJava";
+
     private EditProductPresenter presenter;
     private Context context;
     private Resources resources;
@@ -79,6 +98,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
     private ArrayAdapter<CharSequence> productCategoryAdapter;
     private int day, month, year;
     private boolean isTypeOfProductTouched;
+    private final CompositeDisposable categoriesDisposables = new CompositeDisposable();
+    private final CompositeDisposable storageLocationsDisposables = new CompositeDisposable();
 
     private Spinner productType;
     private Spinner productCategory;
@@ -113,6 +134,7 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         super.onCreate(savedInstantState);
         initView();
         setListeners();
+        setObservers();
     }
 
     private void initView(){
@@ -253,6 +275,103 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
             }
         });
     }
+    private void setObservers() {
+        if (!presenter.isOfflineDb()) {
+            categoriesDisposables.add(categoryList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<Category>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(CATEGORIES_TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(CATEGORIES_TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<Category> categoryList) {
+                            Log.i(CATEGORIES_TAG, "onNext()");
+                        }
+                    }));
+
+            storageLocationsDisposables.add(storageLocationList()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableObserver<List<StorageLocation>>() {
+                        @Override
+                        public void onComplete() {
+                            Log.d(STORAGE_LOCATIONS_TAG, "onComplete()");
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Log.e(STORAGE_LOCATIONS_TAG, "onError()", e);
+                        }
+
+                        @Override
+                        public void onNext(@NonNull List<StorageLocation> categoryList) {
+                            Log.i(STORAGE_LOCATIONS_TAG, "onNext()");
+                        }
+                    }));
+        }
+    }
+
+    private Observable<List<Category>> categoryList() {
+        return Observable.create(emitter -> {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            Query query = database.getReference().child("categories/" +
+                    FirebaseAuth.getInstance().getUid());
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<Category> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        Category category = dataSnapshot.getValue(Category.class);
+                        list.add(category);
+                    }
+                    emitter.onNext(list);
+                    presenter.setOnlineCategoryList(list);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
+                }
+            });
+        });
+    }
+
+    private Observable<List<StorageLocation>> storageLocationList() {
+        return Observable.create(emitter -> {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            Query query = database.getReference().child("storage_locations/" +
+                    FirebaseAuth.getInstance().getUid());
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    List<StorageLocation> list = new ArrayList<>();
+                    Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
+
+                    for (DataSnapshot dataSnapshot : snapshotIterable) {
+                        StorageLocation storageLocation = dataSnapshot.getValue(StorageLocation.class);
+                        list.add(storageLocation);
+                    }
+                    emitter.onNext(list);
+                    presenter.setOnlineStorageLocationList(list);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    emitter.onError(new FirebaseException(error.getMessage()));
+                }
+            });
+        });
+    }
 
     @Override
     public void onClickSaveProductButton(){
@@ -335,6 +454,18 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
         Intent myPantryActivityIntent = new Intent(context, MyPantryActivity.class);
         startActivity(myPantryActivityIntent);
         CustomIntent.customType(this, "fadein-to-fadeout");
+    }
+
+    @Override
+    public void updateProductCategoryAdapter(String[] categoryArray) {
+        productCategoryAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, categoryArray);
+        productCategory.setAdapter(productCategoryAdapter);
+    }
+
+    @Override
+    public void updateStorageLocationAdapter(String[] storageLocationArray) {
+        ArrayAdapter<CharSequence> productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, storageLocationArray);
+        productStorageLocation.setAdapter(productStorageLocationAdapter);
     }
 
     @Override

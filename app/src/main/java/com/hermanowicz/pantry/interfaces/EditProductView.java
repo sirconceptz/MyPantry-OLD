@@ -29,4 +29,8 @@ public interface EditProductView {
     void onClickSaveProductButton();
 
     void navigateToMyPantryActivity();
+
+    void updateStorageLocationAdapter(String[] storageLocationArray);
+
+    void updateProductCategoryAdapter(String[] categoryArray);
 }

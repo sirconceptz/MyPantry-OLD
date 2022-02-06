@@ -52,7 +52,6 @@ public class NewProductModel {
     private int quantity;
     private String barcode;
     private List<Product> productList = new ArrayList<>();
-    private String databaseMode;
     private List<Product> allProductList;
     private List<StorageLocation> storageLocationList = new ArrayList<>();
     private List<Category> categoryList = new ArrayList<>();
@@ -84,12 +83,8 @@ public class NewProductModel {
         }
     }
 
-    public void setDatabaseMode(String databaseMode){
-        this.databaseMode = databaseMode;
-    }
-
-    public void addProducts(){
-        if(databaseMode.equals("online"))
+    public void addProducts(@NonNull DatabaseMode dbMode){
+        if(dbMode.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
             addProductsToOnlineDatabase();
         else
             addProductsToOfflineDatabase();
@@ -188,22 +183,17 @@ public class NewProductModel {
     }
 
     public boolean isProductNameNotValid(@NonNull Product product) {
-        boolean correctProductName = false;
-        if (product.getName().length() > 0)
-            correctProductName = true;
+        boolean correctProductName = product.getName().length() > 0;
         return !correctProductName;
     }
 
     public boolean isTypeOfProductValid(@NonNull Product product) {
         String[] typeOfProductsArray = resources.getStringArray(R.array.Product_type_of_product_array);
-        boolean correctTypeOfProduct = false;
-        if (!product.getTypeOfProduct().equals(typeOfProductsArray[0]))
-            correctTypeOfProduct = true;
-        return correctTypeOfProduct;
+        return !product.getTypeOfProduct().equals(typeOfProductsArray[0]);
     }
 
-    public String[] getOwnCategoriesArray() {
-        if (databaseMode.equals("online"))
+    public String[] getOwnCategoriesArray(DatabaseMode dbMode) {
+        if (dbMode.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
             return getOwnCategoriesOnline();
         else
             return getOwnCategoriesOffline();
@@ -231,8 +221,8 @@ public class NewProductModel {
         return categoryDb.categoryDao().getAllCategoriesArray();
     }
 
-    public String[] getStorageLocationsArray() {
-        if (databaseMode.equals("online"))
+    public String[] getStorageLocationsArray(DatabaseMode dbMode) {
+        if (dbMode.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
             return getStorageLocationsOnlineArray();
         else
             return getStorageLocationsOfflineArray();
@@ -252,10 +242,6 @@ public class NewProductModel {
 
     public void setProductList(@NonNull List<Product> productList) {
         this.productList = productList;
-    }
-
-    public String getDatabaseMode() {
-        return databaseMode;
     }
 
     public void setAllProductList(@Nullable List<Product> allProductList) {

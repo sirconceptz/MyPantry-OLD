@@ -28,6 +28,7 @@ import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.AccountView;
 import com.hermanowicz.pantry.interfaces.MainView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.util.Notification;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
@@ -44,6 +45,7 @@ public class MainPresenter {
 
     private final MainView view;
     private final AccountView accountView;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final SharedPreferences sharedPreferences;
     private PremiumAccess premiumAccess;
     private long pressedBackTime;
@@ -55,6 +57,7 @@ public class MainPresenter {
         this.accountView = accountView;
         this.sharedPreferences = sharedPreferences;
         this.appSettingsModel = new AppSettingsModel(sharedPreferences);
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
@@ -106,8 +109,7 @@ public class MainPresenter {
     }
 
     public boolean isOfflineDb() {
-        AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
-        return appSettingsModel.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public long getPressedBackTime() {

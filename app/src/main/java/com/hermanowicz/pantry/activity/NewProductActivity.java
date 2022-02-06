@@ -118,7 +118,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
     private DatePickerDialog.OnDateSetListener expirationDateListener;
     private ArrayAdapter<CharSequence> productCategoryAdapter;
     private final CompositeDisposable productsDisposables = new CompositeDisposable();
-    private final CompositeDisposable categoriesDsposables = new CompositeDisposable();
+    private final CompositeDisposable categoriesDisposables = new CompositeDisposable();
     private final CompositeDisposable storageLocationsDisposables = new CompositeDisposable();
 
     private Spinner productType;
@@ -157,7 +157,6 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
         setContentView(binding.getRoot());
 
         context = NewProductActivity.this;
-
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
 
@@ -212,6 +211,10 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
         ArrayAdapter<CharSequence> productTypeAdapter = ArrayAdapter.createFromResource(context, R.array.Product_type_of_product_array, R.layout.custom_spinner);
         productType.setAdapter(productTypeAdapter);
+
+        ArrayAdapter<CharSequence> productStorageLocationAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner, presenter.getStorageLocationsArray());
+        productStorageLocationAdapter.notifyDataSetChanged();
+        productStorageLocation.setAdapter(productStorageLocationAdapter);
     }
 
     private void setListeners() {
@@ -292,7 +295,7 @@ public class NewProductActivity extends AppCompatActivity implements OnItemSelec
 
     private void setObservers() {
         if (!presenter.isOfflineDb()) {
-            categoriesDsposables.add(categoryList()
+            categoriesDisposables.add(categoryList()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeWith(new DisposableObserver<List<Category>>() {

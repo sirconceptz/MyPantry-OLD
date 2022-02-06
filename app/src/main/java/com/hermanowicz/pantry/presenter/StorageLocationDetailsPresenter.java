@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.StorageLocationDetailsView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.StorageLocationModel;
 
 import java.util.List;
@@ -39,6 +40,7 @@ import java.util.List;
 public class StorageLocationDetailsPresenter {
 
     private final StorageLocationModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final StorageLocationDetailsView view;
 
     public StorageLocationDetailsPresenter(@NonNull StorageLocationDetailsView view,
@@ -47,7 +49,7 @@ public class StorageLocationDetailsPresenter {
         this.view = view;
         AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.
                 getDefaultSharedPreferences(context));
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public StorageLocation getStorageLocation(){
@@ -60,7 +62,7 @@ public class StorageLocationDetailsPresenter {
     }
 
     public void deleteStorageLocation() {
-        if(model.getDatabaseMode().equals("local"))
+        if(isOfflineDb())
             model.deleteOfflineDbStorageLocation(model.getStorageLocation());
         else
             model.deleteOnlineStorageLocation(model.getStorageLocation());
@@ -71,7 +73,7 @@ public class StorageLocationDetailsPresenter {
         if(model.isStorageLocationNameNotCorrect(storageLocation.getName()) || model.isStorageLocationDescriptionNotCorrect(storageLocation.getDescription()))
             view.showErrorOnUpdateStorageLocation();
         else {
-            model.updateStorageLocation(storageLocation);
+            model.updateStorageLocation(storageLocation, dbMode);
             view.showStorageLocationUpdated();
             view.navigateToStorageLocationActivity();
         }
@@ -89,5 +91,9 @@ public class StorageLocationDetailsPresenter {
 
     public void onResponse(List<StorageLocation> storageLocationList) {
         model.setStorageLocation(storageLocationList.get(0));
+    }
+
+    private boolean isOfflineDb(){
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 }

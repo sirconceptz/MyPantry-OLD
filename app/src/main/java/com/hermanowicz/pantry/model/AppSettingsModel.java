@@ -139,16 +139,25 @@ public class AppSettingsModel {
         preferences.edit().putString("EMAIL_ADDRESS", "").apply();
     }
 
-    public String getDatabaseMode() {
+    public DatabaseMode.Mode getDatabaseMode() {
         String databaseMode = preferences.getString("DATABASE_MODE", "local");
-        if (databaseMode.equals("local") || databaseMode.equals("online"))
-            return databaseMode;
+        if (databaseMode.equals("online"))
+            return DatabaseMode.Mode.ONLINE;
         else
-            return "local";
+            return DatabaseMode.Mode.LOCAL;
     }
 
-    public void setDatabaseMode(String databaseMode) {
-        preferences.edit().putString("DATABASE_MODE", databaseMode).apply();
+    public void setDatabaseMode(DatabaseMode.Mode dbMode) {
+        String dbModeString;
+        if(dbMode == DatabaseMode.Mode.LOCAL)
+            dbModeString = "local";
+        else
+            dbModeString = "online";
+        preferences.edit().putString("DATABASE_MODE", dbModeString).apply();
+    }
+
+    public void setDatabaseMode(String dbMode) {
+        preferences.edit().putString("DATABASE_MODE", dbMode).apply();
     }
 
     public void setPremiumIsRestored() {

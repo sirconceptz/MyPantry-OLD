@@ -38,7 +38,6 @@ public class StorageLocationModel {
     private final StorageLocationDb db;
     private StorageLocation storageLocation;
     private List<StorageLocation> storageLocationList = new ArrayList<>();
-    private String databaseMode;
 
     public StorageLocationModel(@NonNull Context context) {
         this.db = StorageLocationDb.getInstance(context);
@@ -65,8 +64,8 @@ public class StorageLocationModel {
         setStorageLocationList(storageLocationList);
     }
 
-    public void updateStorageLocation(@NonNull StorageLocation storageLocation) {
-        if(databaseMode.equals("local"))
+    public void updateStorageLocation(@NonNull StorageLocation storageLocation, DatabaseMode dbMode) {
+        if(dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL)
             updateOfflineStorageLocation(storageLocation);
         else
             updateOnlineStorageLocation(storageLocation);
@@ -91,9 +90,9 @@ public class StorageLocationModel {
         ref.child(String.valueOf(storageLocation.getId())).removeValue();
     }
 
-    public boolean addStorageLocation(@NonNull StorageLocation newStorageLocation){
+    public boolean addStorageLocation(@NonNull StorageLocation newStorageLocation, DatabaseMode dbMode){
         boolean result;
-        if(databaseMode.equals("local"))
+        if(dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL)
             result = addOfflineDbStorageLocation(newStorageLocation);
         else
             result = addOnlineDbStorageLocation(newStorageLocation);
@@ -143,13 +142,5 @@ public class StorageLocationModel {
 
     public boolean isStorageLocationDescriptionNotCorrect(@NonNull String description) {
         return description.length() > MAX_CHAR_STORAGE_LOCATION_DESCRIPTION;
-    }
-
-    public void setDatabaseMode(String databaseMode) {
-        this.databaseMode = databaseMode;
-    }
-
-    public String getDatabaseMode() {
-        return databaseMode;
     }
 }

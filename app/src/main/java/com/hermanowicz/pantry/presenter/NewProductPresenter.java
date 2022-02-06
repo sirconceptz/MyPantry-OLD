@@ -31,6 +31,7 @@ import com.hermanowicz.pantry.db.product.ProductDb;
 import com.hermanowicz.pantry.db.storagelocation.StorageLocation;
 import com.hermanowicz.pantry.interfaces.NewProductView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.NewProductModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
@@ -51,6 +52,7 @@ public class NewProductPresenter {
 
     private final NewProductView view;
     private final NewProductModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final Context context;
     private final Calendar calendar = Calendar.getInstance();
     private final DateFormat dateFormat = DateFormat.getDateInstance();
@@ -62,7 +64,7 @@ public class NewProductPresenter {
         this.context = context;
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         AppSettingsModel appSettingsModel = new AppSettingsModel(sharedPreferences);
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess) {
@@ -104,7 +106,7 @@ public class NewProductPresenter {
             view.showErrorCategoryNotSelected();
         else {
             model.createProductsList(product);
-            model.addProducts();
+            model.addProducts(dbMode);
             List<Product> productList = model.getProductList();
             List<Product> allProductList = model.getAllProductList();
             view.reCreateNotifications();
@@ -118,7 +120,7 @@ public class NewProductPresenter {
     }
 
     public String[] getOwnCategoryArray() {
-        return model.getOwnCategoriesArray();
+        return model.getOwnCategoriesArray(dbMode);
     }
 
     public int[] getExpirationDateArray() {
@@ -173,7 +175,7 @@ public class NewProductPresenter {
     }
 
     public boolean isOfflineDb() {
-        return model.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public void setAllProductList(@Nullable List<Product> allProductList) {
@@ -186,11 +188,15 @@ public class NewProductPresenter {
 
     public void setOnlineStorageLocationList(@NonNull List<StorageLocation> list) {
         model.setStorageLocationList(list);
-        String[] storageLocationArray = model.getStorageLocationsArray();
+        String[] storageLocationArray = model.getStorageLocationsArray(dbMode);
         view.updateStorageLocationAdapter(storageLocationArray);
     }
 
     public void setOnlineCategoryList(@NonNull List<Category> list) {
         model.setCategoryList(list);
+    }
+
+    public String[] getStorageLocationsArray() {
+        return model.getStorageLocationsArray(dbMode);
     }
 }

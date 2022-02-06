@@ -25,6 +25,7 @@ import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.interfaces.ProductDetailsView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.PhotoModel;
 import com.hermanowicz.pantry.model.ProductDataModel;
@@ -43,6 +44,7 @@ public class ProductDetailsPresenter {
 
     private final ProductDetailsView view;
     private final ProductDataModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private final PhotoModel photoModel;
     private PremiumAccess premiumAccess;
     private final AppSettingsModel appSettingsModel;
@@ -53,7 +55,7 @@ public class ProductDetailsPresenter {
         this.photoModel = new PhotoModel(activity);
         this.appSettingsModel = new AppSettingsModel(PreferenceManager.
                 getDefaultSharedPreferences(activity.getApplicationContext()));
-        photoModel.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess) {
@@ -129,11 +131,11 @@ public class ProductDetailsPresenter {
     }
 
     public boolean isOfflineDb() {
-        return appSettingsModel.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public void onConfirmDeleteSimilarProducts() {
-        if (appSettingsModel.getDatabaseMode().equals("local"))
+        if (isOfflineDb())
             model.deleteSimilarOfflineProducts();
         else
             model.deleteSimilarOnlineProducts();
@@ -142,7 +144,7 @@ public class ProductDetailsPresenter {
     }
 
     public void onConfirmDeleteSingleProduct() {
-        if (appSettingsModel.getDatabaseMode().equals("local"))
+        if (isOfflineDb())
             model.deleteSingleOfflineProduct();
         else
             model.deleteSingleOnlineProduct();

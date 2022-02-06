@@ -29,6 +29,7 @@ import com.hermanowicz.pantry.filter.Filter;
 import com.hermanowicz.pantry.filter.FilterModel;
 import com.hermanowicz.pantry.interfaces.MyPantryView;
 import com.hermanowicz.pantry.model.AppSettingsModel;
+import com.hermanowicz.pantry.model.DatabaseMode;
 import com.hermanowicz.pantry.model.GroupProducts;
 import com.hermanowicz.pantry.model.MyPantryModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
@@ -46,13 +47,14 @@ public class MyPantryPresenter {
 
     private final MyPantryView view;
     private final MyPantryModel model;
+    private final DatabaseMode dbMode = new DatabaseMode();
     private PremiumAccess premiumAccess;
 
     public MyPantryPresenter(@NonNull MyPantryView view, @NonNull Context context) {
         this.view = view;
         this.model = new MyPantryModel(context);
         AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.getDefaultSharedPreferences(context));
-        model.setDatabaseMode(appSettingsModel.getDatabaseMode());
+        dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
 
     public void setPremiumAccess(@NonNull PremiumAccess premiumAccess){
@@ -233,7 +235,7 @@ public class MyPantryPresenter {
     }
 
     public boolean isOfflineDb() {
-        return model.getDatabaseMode().equals("local");
+        return dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL;
     }
 
     public List<Product> getProductList() {
