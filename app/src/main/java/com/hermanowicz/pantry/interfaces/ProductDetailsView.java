@@ -37,7 +37,7 @@ public interface ProductDetailsView {
 
     void showDialogOnDeleteProduct();
 
-    void navigateToPrintQRCodeActivity(List<Product> productList);
+    void navigateToPrintQRCodeActivity(List<Product> productList, List<Product> allProductList);
 
     void navigateToEditProductActivity(int productId, List<Product> productList, List<Product> allProductList);
 

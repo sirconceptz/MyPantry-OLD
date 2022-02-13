@@ -56,7 +56,7 @@ public class MainActivityTest {
     public void shouldGoToMyPantryActivity(){
         CardView myPantry = activity.findViewById(R.id.myPantryCV);
         assertNotNull(myPantry);
-        activity.runOnUiThread(() -> myPantry.performClick());
+        activity.runOnUiThread(myPantry::performClick);
         intended(hasComponent(MyPantryActivity.class.getName()));
     }
 
@@ -64,7 +64,7 @@ public class MainActivityTest {
     public void shouldGoToScanProductActivity(){
         CardView scanProduct = activity.findViewById(R.id.scanProductCV);
         assertNotNull(scanProduct);
-        activity.runOnUiThread(() -> scanProduct.performClick());
+        activity.runOnUiThread(scanProduct::performClick);
         intended(hasComponent(ScanProductActivity.class.getName()));
     }
 
@@ -72,7 +72,7 @@ public class MainActivityTest {
     public void shouldGoToNewProductActivity() {
         CardView newProduct = activity.findViewById(R.id.newProductCV);
         assertNotNull(newProduct);
-        activity.runOnUiThread(() -> newProduct.performClick());
+        activity.runOnUiThread(newProduct::performClick);
         intended(hasComponent(NewProductActivity.class.getName()));
     }
 
@@ -80,7 +80,7 @@ public class MainActivityTest {
     public void shouldGoToOwnCategoriesActivity() {
         CardView ownCategories = activity.findViewById(R.id.ownCategoriesCV);
         assertNotNull(ownCategories);
-        activity.runOnUiThread(() -> ownCategories.performClick());
+        activity.runOnUiThread(ownCategories::performClick);
         intended(hasComponent(CategoriesActivity.class.getName()));
     }
 
@@ -88,7 +88,7 @@ public class MainActivityTest {
     public void shouldGoToStorageLocationsActivity() {
         CardView storageLocations = activity.findViewById(R.id.storageLocationsCV);
         assertNotNull(storageLocations);
-        activity.runOnUiThread(() -> storageLocations.performClick());
+        activity.runOnUiThread(storageLocations::performClick);
         intended(hasComponent(StorageLocationsActivity.class.getName()));
     }
 
@@ -96,7 +96,7 @@ public class MainActivityTest {
     public void shouldGoToAppSettingsActivity() {
         CardView appSettings = activity.findViewById(R.id.appSettingsCV);
         assertNotNull(appSettings);
-        activity.runOnUiThread(() -> appSettings.performClick());
+        activity.runOnUiThread(appSettings::performClick);
         intended(hasComponent(AppSettingsActivity.class.getName()));
     }
 }

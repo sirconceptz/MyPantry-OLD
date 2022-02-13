@@ -110,13 +110,13 @@ public class PrintQRCodesActivity extends AppCompatActivity implements PrintQRCo
         presenter.setProductList(productList);
         presenter.showQRCodeImage();
 
-        if(!presenter.isPremium()) {
+        if (!presenter.isPremium()) {
             MobileAds.initialize(context);
             AdRequest adRequest = new AdRequest.Builder().build();
             adView.loadAd(adRequest);
         }
 
-        if(presenter.isOfflineDb()) {
+        if (presenter.isOfflineDb()) {
             presenter.setAllProductList(null);
         }
 

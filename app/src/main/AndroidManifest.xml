@@ -36,7 +36,7 @@
         android:required="true" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29"
+        android:maxSdkVersion="28"
         android:required="true" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission
@@ -59,7 +59,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:appComponentFactory"
         android:hardwareAccelerated="true"
-        tools:targetApi="n">
+        tools:targetApi="p">
 
         <uses-library
             android:name="android.test.runner"

@@ -21,6 +21,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -41,17 +42,18 @@ public class PdfFile {
                                @NonNull String fileName) {
         try {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                OutputStream fos;
                 ContentResolver resolver = activity.getContentResolver();
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(MediaStore.Files.FileColumns.DISPLAY_NAME, fileName);
                 contentValues.put(MediaStore.Files.FileColumns.MIME_TYPE, "application/pdf");
                 contentValues.put(MediaStore.Files.FileColumns.RELATIVE_PATH, PDF_PATH);
-                Uri pdfUri = resolver.insert(MediaStore.Files.getContentUri("external"), contentValues);
-                fos = resolver.openOutputStream(pdfUri);
+                Uri target = MediaStore.Downloads.getContentUri("external");
+                Uri pdfUri = resolver.insert(target, contentValues);
+                OutputStream fos = resolver.openOutputStream(pdfUri);
                 pdfDocument.writeTo(fos);
                 fos.close();
-            } else {
+            }
+            else {
                 FileOutputStream pdfOutputStream = new FileOutputStream(Environment.getExternalStorageDirectory()
                         + File.separator + fileName, false);
                 pdfDocument.writeTo(pdfOutputStream);

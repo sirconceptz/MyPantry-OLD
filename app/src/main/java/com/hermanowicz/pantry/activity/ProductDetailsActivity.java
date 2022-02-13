@@ -305,9 +305,10 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void navigateToPrintQRCodeActivity(@NonNull List<Product> productList) {
+    public void navigateToPrintQRCodeActivity(@NonNull List<Product> productList, List<Product> allProductList) {
         Intent intent = new Intent(context, PrintQRCodesActivity.class)
-                .putExtra("product_list", (Serializable) productList);
+                .putExtra("product_list", (Serializable) productList)
+                .putExtra("all_product_list", (Serializable) allProductList);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }

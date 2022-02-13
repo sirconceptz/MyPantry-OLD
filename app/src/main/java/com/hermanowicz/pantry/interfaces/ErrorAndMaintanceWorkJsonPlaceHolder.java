@@ -26,6 +26,6 @@ import retrofit2.http.GET;
 
 public interface ErrorAndMaintanceWorkJsonPlaceHolder {
 
-    @GET("posts?categories=52")
+    @GET("posts?categories=54")
     Call<List<WPError>> getErrorsAndMaintanceWork();
 }

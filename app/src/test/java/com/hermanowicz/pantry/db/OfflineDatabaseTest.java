@@ -45,7 +45,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
-public class DatabaseTest {
+public class OfflineDatabaseTest {
 
     private ProductsDao productsDao;
     private ProductDb productDb;

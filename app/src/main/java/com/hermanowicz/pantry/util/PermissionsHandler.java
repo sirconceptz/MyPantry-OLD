@@ -36,6 +36,7 @@ import com.hermanowicz.pantry.interfaces.PermissionHandler;
  */
 
 public class PermissionsHandler implements PermissionHandler {
+
     @Override
     public boolean checkHasPermission(@NonNull AppCompatActivity activity, @NonNull String permission){
         return ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED;

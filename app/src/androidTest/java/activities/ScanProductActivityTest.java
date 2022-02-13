@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package presenters;
+package activities;
 
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -23,11 +23,13 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import android.Manifest;
 import android.preference.PreferenceManager;
 
+import androidx.cardview.widget.CardView;
 import androidx.room.Room;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.GrantPermissionRule;
 
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.activity.MainActivity;
 import com.hermanowicz.pantry.activity.ProductDetailsActivity;
 import com.hermanowicz.pantry.activity.ScanProductActivity;
@@ -46,15 +48,18 @@ import java.util.List;
 import models.ProductTestModel;
 
 @RunWith(AndroidJUnit4.class)
-public class ScanProductPresenterTest {
+public class ScanProductActivityTest {
 
     private ScanProductActivity activity;
     private ScanProductPresenter presenter;
 
+    private CardView scanBarcode;
+    private CardView scanQrCode;
+    private CardView enterBarcodeManually;
+
     @Rule
     public GrantPermissionRule readPermissionRule =
             GrantPermissionRule.grant(Manifest.permission.CAMERA);
-
 
     @Rule
     public IntentsTestRule<ScanProductActivity> activityTestRule =
@@ -63,7 +68,12 @@ public class ScanProductPresenterTest {
     @Before
     public void setUp(){
         activity = activityTestRule.getActivity();
-        presenter = new ScanProductPresenter(activity, PreferenceManager.getDefaultSharedPreferences(activity), ProductDb.getInstance(activity.getApplicationContext()));
+        presenter = new ScanProductPresenter(activity,
+                PreferenceManager.getDefaultSharedPreferences(activity),
+                ProductDb.getInstance(activity.getApplicationContext()));
+        scanQrCode = activity.findViewById(R.id.cardview_scanQrCode);
+        scanBarcode = activity.findViewById(R.id.cardview_scanBarCode);
+        enterBarcodeManually = activity.findViewById(R.id.cardview_enterBarcodeManually);
     }
 
     @Test
@@ -76,7 +86,8 @@ public class ScanProductPresenterTest {
         productDb.productsDao().addProducts(productList);
         productList = productDb.productsDao().getAllProductsList();
 
-        String happyScenario = "{\"product_id\":" + productList.get(0).getId() + ",\"hash_code\":" + productList.get(0).getHashCode() + "}";
+        String happyScenario = "{\"product_id\":" + productList.get(0).getId() + ",\"hash_code\":"
+                + productList.get(0).getHashCode() + "}";
         activity.runOnUiThread(() -> presenter.onScanResult(happyScenario));
         intended(hasComponent(ProductDetailsActivity.class.getName()));
     }

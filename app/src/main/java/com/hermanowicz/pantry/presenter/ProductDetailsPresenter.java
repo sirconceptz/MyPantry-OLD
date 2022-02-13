@@ -94,7 +94,8 @@ public class ProductDetailsPresenter {
 
     public void onClickPrintQRCodes() {
         List<Product> productList = model.getProductList();
-        view.navigateToPrintQRCodeActivity(productList);
+        List<Product> allProductList = model.getAllProductList();
+        view.navigateToPrintQRCodeActivity(productList, allProductList);
     }
 
     public void onClickEditProduct() {
