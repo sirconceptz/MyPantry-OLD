@@ -67,7 +67,7 @@ public class ScanProductPresenter {
                 else {
                     long parsedBarcode = Long.parseLong(scanResult);
                     model.setBarcodeToProductList(String.valueOf(parsedBarcode));
-                    model.updateProductListWithBarcode();
+                    model.updateProductListWithBarcode(dbMode);
                     view.showIsBarcodeUpdated();
                     view.navigateToMainActivity();
                 }

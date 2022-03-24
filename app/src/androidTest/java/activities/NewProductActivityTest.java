@@ -24,6 +24,7 @@ import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import android.content.res.Resources;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -68,6 +69,7 @@ public class NewProductActivityTest {
     @Before
     public void setUp() {
         activity = activityRule.getActivity();
+        Resources resources = activity.getResources();
         name = activity.findViewById(R.id.edittext_name);
         expirationDate = activity.findViewById(R.id.edittext_expirationDate);
         typeOfProduct = activity.findViewById(R.id.spinner_productType);
@@ -80,7 +82,7 @@ public class NewProductActivityTest {
         weight = activity.findViewById(R.id.edittext_weight);
         isSweet = activity.findViewById(R.id.radiobtn_isSweet);
         addProduct = activity.findViewById(R.id.button_addProduct);
-        product = ProductTestModel.getTestProduct1();
+        product = ProductTestModel.getTestProduct1(resources);
     }
 
     @Test

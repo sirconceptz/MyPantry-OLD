@@ -281,7 +281,7 @@
     <string name="AppSettingsActivity_category_db">Baza danych kategorii</string>
     <string name="AppSettingsActivity_storage_location_db">Baza danych miejch przechowywania</string>
     <string name="AppSettingsActivity_import_statement">Czy chcesz zaimportować bazy danych z pliku zewnętrznego? Spowoduje to utratę obecnie dodanych do aplikacji produktów.</string>
-    <string name="AppSettingsActivity_export_statement">Czy chcesz eksportować bazy danych z pliku zewnętrznego? Spowoduje to utratę obecnie dodanych do aplikacji produktów.</string>
+    <string name="AppSettingsActivity_export_statement">Czy chcesz eksportować bazy danych do pliku zewnętrznego?</string>
     <string name="AppSettingsActivity_db_backup_has_been_made">Kopia zapasowa została utworzona</string>
     <string name="AppSettingsActivity_db_has_been_restored">Kopia zapasowa została przywrócona</string>
     <string name="AppSettingsActivity_db_has_been_clear">Baza danych została wyczyszczona</string>

@@ -34,6 +34,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.view.View;
 import android.widget.TextView;
 
@@ -117,6 +118,9 @@ public class MyPantryActivityTest {
         List<Product> productList = ProductDb.getInstance(activity).productsDao()
                 .getAllProductsList();
 
+        String[] productType = activity.getResources().getStringArray(R.array.Product_type_of_product_array);
+        String[] productCategory = activity.getResources().getStringArray(R.array.Product_fruits_array);
+
         Product product = productList.get(0);
         DateHelper dateExpiration = new DateHelper(product.getExpirationDate());
         DateHelper dateProduction = new DateHelper(product.getProductionDate());
@@ -133,9 +137,9 @@ public class MyPantryActivityTest {
         onView(withId(R.id.edittext_name)).perform(scrollTo())
                 .check(matches(withText(product.getName())));
         onView(withId(R.id.spinner_productType)).perform(scrollTo())
-                .check(matches(withSpinnerText(product.getTypeOfProduct())));
+                .check(matches(withSpinnerText(productType[5])));
         onView(withId(R.id.spinner_productCategory)).perform(scrollTo())
-                .check(matches(withSpinnerText(product.getProductFeatures())));
+                .check(matches(withSpinnerText(productCategory[3])));
         onView(withId(R.id.edittext_expirationDate)).perform(scrollTo())
                 .check(matches(withText(expirationDate)));
         onView(withId(R.id.edittext_productionDate)).perform(scrollTo())
@@ -164,9 +168,11 @@ public class MyPantryActivityTest {
     @Test
     public void onSetNameFilterShouldShowProductsWithThisName() throws InterruptedException {
         insertTestProductsToDbAndRestartActivity();
+        Resources resources = activity.getResources();
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
         onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.filter_name));
-        onView(withId(R.id.edittext_name)).perform(typeText(ProductTestModel.getTestProduct1().getName()));
+        onView(withId(R.id.edittext_name)).perform(typeText(ProductTestModel.
+                getTestProduct1(resources).getName()));
         onView(withText(R.string.MyPantryActivity_set)).perform(click());
         Thread.sleep(300);
         int recyclerViewItems = getCountFromRecyclerView(R.id.recyclerview_products);
@@ -234,11 +240,12 @@ public class MyPantryActivityTest {
 
     private void insertTestProductsToDbAndRestartActivity() {
         ProductDb.getInstance(activity).productsDao().clearDb();
+        Resources resources = activity.getResources();
         List<Product> productList = new ArrayList<>();
         for (int counter = 0; 3 > counter; counter++) {
-            productList.add(ProductTestModel.getTestProduct1());
-            productList.add(ProductTestModel.getTestProduct2());
-            productList.add(ProductTestModel.getTestProduct3());
+            productList.add(ProductTestModel.getTestProduct1(resources));
+            productList.add(ProductTestModel.getTestProduct2(resources));
+            productList.add(ProductTestModel.getTestProduct3(resources));
         }
         ProductDb.getInstance(activity).productsDao().addProducts(productList);
         activityRule.finishActivity();

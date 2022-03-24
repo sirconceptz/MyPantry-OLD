@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019-2022
+  ~ Mateusz Hermanowicz - All rights reserved.
+  ~ My Pantry
+  ~ https://www.mypantry.eu
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+    <string name="app_name">Moje spíž</string>
+    <string name="title_activity_my_pantry">Moje spíž</string>
+    <string name="title_activity_new_product">Nový výrobek</string>
+    <string name="title_activity_scan_the_product">Naskenujte kód produktu</string>
+    <string name="title_activity_app_settings">Nastavení aplikace</string>
+    <string name="title_activity_print_qrcodes">Vytiskněte si QR kódy</string>
+    <string name="title_activity_product_details">Detaily produktu</string>
+    <string name="title_activity_edit_product">Upravit produkt</string>
+    <string name="title_activity_add_photo">Přidat fotku</string>
+    <string name="title_activity_error_and_maintenance_work">Chyby a údržbářské práce</string>
+    <!--General-->
+    <string name="General_choose">Vybrat</string>
+    <string name="General_char_counter">Max znaků</string>
+    <string name="General_press_back_agait_to_exit">Pro ukončení stiskněte znovu zpět</string>
+    <string name="General_required">(Požadované)</string>
+    <string name="General_not_required">(Není požadováno)</string>
+    <string name="General_cancel">Zrušit</string>
+    <string name="General_author_label">Autor</string>
+    <string name="General_save">Ušetřit</string>
+    <string name="General_user_is_premium">Uživatel je již Premium ;-)</string>
+    <string name="General_user">Uživatel</string>
+    <string name="General_loggedOut">Odhlásit</string>
+    <string name="General_premium_purchase_done">Děkujeme za váš prémiový nákup! Přejeme vám radost z používání!</string>
+    <string name="General_are_you_sure_delete_product">Opravdu chcete tento produkt smazat?</string>
+    <!--MainActivity-->
+    <string name="MainActivity_my_pantry_button">Moje spíž</string>
+    <string name="MainActivity_scan_product_button">Naskenujte kód produktu</string>
+    <string name="MainActivity_new_product_button">Nový výrobek</string>
+    <string name="MainActivity_own_categories_button">Vlastní kategorie produktů</string>
+    <string name="MainActivity_storage_locations_button">Skladovací místa</string>
+    <string name="MainActivity_app_settings_button">Nastavení aplikace</string>
+    <!--MyPantryActivity-->
+    <string name="MyPantryActivity_products_not_found">Jejda! Nenalezené produkty :(</string>
+    <string name="MyPantryActivity_clear">Vymazat</string>
+    <string name="MyPantryActivity_since">od</string>
+    <string name="MyPantryActivity_for">pro</string>
+    <string name="MyPantryActivity_set">Sada</string>
+    <string name="MyPantryActivity_clear_filters">Vymazat filtry</string>
+    <string name="MyPantryActivity_delete_products">Smazat produkty</string>
+    <string name="MyPantryActivity_do_you_want_to_delete_products">Chcete smazat vybrané produkty?</string>
+    <string name="MyPantryActivity_with_sugar">+Cukr</string>
+    <string name="MyPantryActivity_with_salt">+Sůl</string>
+    <!--ScanProductActivity-->
+    <string name="ScanProductActivity_choose_scan_type">Vyberte, zda chcete naskenovat QR produkt vytvořený aplikací nebo naskenovat čárový kód produktu obchodu.</string>
+    <string name="ScanProductActivity_choose_product_to_copy">Čárový kód byl přidán k následujícím produktům. Ze seznamu vyberte produkt, který chcete přidat.</string>
+    <string name="ScanProductActivity_scan_qr_code">Naskenujte QR kód produktu</string>
+    <string name="ScanProductActivity_scan_barcode">Naskenujte čárový kód produktu</string>
+    <string name="ScanProductActivity_enter_barcode_manually">Zadejte čárový kód ručně</string>
+    <string name="ScanProductActivity_product_not_found">Produkt nebyl nalezen.</string>
+    <string name="ScanProductActivity_scanner_hint">Důležité: Skener čárových kódů nevyhledává produkty, které nebyly dříve přidány do aplikace.</string>
+    <string name="ScanProductActivity_barcode_is_updated">Čárový kód byl aktualizován</string>
+    <!--NewProductActivity-->
+    <string name="NewProductActivity_add_a_product">Přidejte produkt</string>
+    <string name="NewProductActivity_product_added_successful">Produkt byl přidán do databáze produktů.</string>
+    <string name="NewProductActivity_products_added_successful">Produkty byly přidány do databáze produktů.</string>
+    <string name="NewProductActivity_cancel_product_adding">Chcete zrušit přidávání nového produktu?</string>
+    <!--StorageLocationsActivity-->
+    <string name="StorageLocationsActivity_new_storage_location">Nové skladovací místo</string>
+    <string name="StorageLocationsActivity_no_storage_locations_statement">Nebyla přidána žádná místa úložiště. Přidejte nové tlačítko v horní části obrazovky.</string>
+    <!--StorageLocationDetailsActivity-->
+    <string name="StorageLocationDetailsActivity_name">Název umístění úložiště</string>
+    <string name="StorageLocationDetailsActivity_description">Popis místa uložení</string>
+    <string name="StorageLocationDetailsActivity_update_storage_location">Uložit změny</string>
+    <string name="StorageLocationDetailsActivity_delete_storage_location">Smazat umístění úložiště</string>
+    <string name="StorageLocationDetailsActivity_storage_location_delete_warning">Opravdu chcete smazat toto místo úložiště?</string>
+    <string name="StorageLocationDetailsActivity_storage_location_was_saved">Místo úložiště bylo uloženo</string>
+    <!--CategoriesActivity-->
+    <string name="CategoriesActivity_new_category">Nová kategorie</string>
+    <string name="CategoriesActivity_no_categories_statement">Nebyly přidány žádné kategorie. Přidejte nové tlačítko v horní části obrazovky.</string>
+    <!--CategoriesActivity-->
+    <string name="CategoryDetailsActivity_name">Název Kategorie</string>
+    <string name="CategoryDetailsActivity_description">Popis kategorie</string>
+    <string name="CategoryDetailsActivity_update_category">Uložit změny</string>
+    <string name="CategoryDetailsActivity_delete_category">Smazat kategorii</string>
+    <string name="CategoryDetailsActivity_category_delete_warning">Opravdu chcete smazat tuto kategorii?</string>
+    <string name="CategoryDetailsActivity_category_was_saved">Kategorie byla uložena</string>
+    <!--EditProductActivity-->
+    <string name="EditProductActivity_save_product">Uložit produkt</string>
+    <string name="EditProductActivity_cancel">Zrušit</string>
+    <string name="EditProductActivity_product_was_updated">Produkt byl uložen</string>
+    <!--AddPhotoActivity-->
+    <string name="AddPhotoActivity_photo_description">Popis fotografie</string>
+    <string name="AddPhotoActivity_take_photo">Vyfotit</string>
+    <string name="AddPhotoActivity_save_photo">Uložit fotku</string>
+    <string name="AddPhotoActivity_delete_photo">Smazat fotku</string>
+    <string name="AddPhotoActivity_take_photo_of_product">Vyfoťte produkt</string>
+    <string name="AddPhotoActivity_no_camera_access">Žádný přístup k fotoaparátu</string>
+    <string name="AddPhotoActivity_invalid_photo_description">Neplatný popis fotografie</string>
+    <string name="AddPhotoActivity_add_photo_successful">Fotografie byla přidána</string>
+    <string name="AddPhotoActivity_add_photo_not_successful">Fotografie nebyla přidána</string>
+    <string name="AddPhotoActivity_delete_photo_successful">Fotografie byla smazána</string>
+    <!--Product-->
+    <string name="Product_name">Název</string>
+    <string name="Product_quantity">Množství</string>
+    <string name="Product_expiration_date">Datum spotřeby</string>
+    <string name="Product_production_date">Datum výroby</string>
+    <string name="Product_composition">Složení</string>
+    <string name="Product_features">Vlastnosti produktu</string>
+    <string name="Product_has_sugar">Má cukr?</string>
+    <string name="Product_has_salt">Má sůl?</string>
+    <string name="Product_bio">BIO</string>
+    <string name="Product_vege">VEGE</string>
+    <string name="Product_taste">Chuť</string>
+    <string name="Product_sweet">Sladký</string>
+    <string name="Product_sour">Kyselý</string>
+    <string name="Product_sweet_and_sour">Sladký a kyselý</string>
+    <string name="Product_bitter">Hořký</string>
+    <string name="Product_salty">Slaný</string>
+    <string name="Product_spicy">Pikantní</string>
+    <string name="Product_weight">Váha</string>
+    <string name="Product_weight_unit">g</string>
+    <string name="Product_volume">Objem</string>
+    <string name="Product_volume_unit">ml</string>
+    <string name="Product_healing_properties">Léčivé vlastnosti</string>
+    <string name="Product_dosage">Dávkování</string>
+    <string name="Product_type">Typ produktu</string>
+    <string-array name="Product_type_of_product_array">
+        <item>Vybrat</item>
+        <item>Own categories</item>
+        <item>Store products</item>
+        <item>Ready meals</item>
+        <item>Vegetables</item>
+        <item>Fruits</item>
+        <item>Herbs</item>
+        <item>Liqueurs</item>
+        <item>Wines</item>
+        <item>Mushrooms</item>
+        <item>Vinegars</item>
+        <item>Chemical products</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="Product_choose_array">
+        <item>Vybrat</item>
+    </string-array>
+    <string name="Product_choose">Vybrat</string>
+    <string name="Product_category">Kategorie produktů</string>
+    <string-array name="ProductDetailsActivity_store_products_array">
+        <item>Vybrat</item>
+        <item>Store products</item>
+    </string-array>
+    <string-array name="Product_ready_meals_array">
+        <item>Vybrat</item>
+        <item>Ready meals</item>
+    </string-array>
+    <string-array name="Product_vegetables_array">
+        <item>Vybrat</item>
+        <item>Preserved</item>
+        <item>Salads</item>
+        <item>Marinate</item>
+        <item>Ketchups</item>
+        <item>Fresh</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="Product_fruits_array">
+        <item>Vybrat</item>
+        <item>Džem</item>
+        <item>Džus</item>
+        <item>Sirup</item>
+        <item>Pěna</item>
+        <item>Kompot</item>
+        <item>Želé</item>
+        <item>Marmelády</item>
+        <item>Čerstvý</item>
+        <item>Jiný</item>
+    </string-array>
+    <string-array name="Product_herbs_array">
+        <item>Vybrat</item>
+        <item>Sušené</item>
+        <item>Jiný</item>
+    </string-array>
+    <string-array name="Product_liqueurs_array">
+        <item>Vybrat</item>
+        <item>Likéry</item>
+    </string-array>
+    <string-array name="Product_wines_type_array">
+        <item>Vybrat</item>
+        <item>Suché</item>
+        <item>Polosuché</item>
+        <item>Polosladké</item>
+        <item>Sladké</item>
+    </string-array>
+    <string-array name="Product_mushrooms_array">
+        <item>Vybrat</item>
+        <item>Marinovat</item>
+        <item>Sůl</item>
+        <item>Sušené</item>
+    </string-array>
+    <string-array name="Product_vinegars_array">
+        <item>Vybrat</item>
+        <item>Jablko</item>
+        <item>Bylina</item>
+        <item>Ovoce</item>
+        <item>Jiný</item>
+    </string-array>
+    <string-array name="Product_chemical_products_array">
+        <item>Vybrat</item>
+        <item>Čistící prostředky</item>
+        <item>Tekutiny</item>
+        <item>Prášky</item>
+        <item>Jiný</item>
+    </string-array>
+    <string-array name="Product_other_products_array">
+        <item>Vybrat</item>
+        <item>Jiný</item>
+    </string-array>
+    <string-array name="Product_taste_array">
+        <item>Vybrat</item>
+        <item>Sladký</item>
+        <item>Kyselý</item>
+        <item>Sladký a kyselý</item>
+        <item>Hořký</item>
+        <item>Slaný</item>
+        <item>Pikantní</item>
+    </string-array>
+    <string name="Product_storage_location">Skladovací místa</string>
+    <!--ProductDetailsActivity-->
+    <string name="ProductDetailsActivity_not_set">Nespecifikováno</string>
+    <string name="ProductDetailsActivity_delete_product">Smazat produkt</string>
+    <string name="ProductDetailsActivity_filter">Filtr</string>
+    <string name="ProductDetailsActivity_yes">Ano</string>
+    <string name="ProductDetailsActivity_no">Ne</string>
+    <string name="ProductDetailsActivity_product_has_been_removed">Produkt byl odstraněn.</string>
+    <string name="ProductDetailsActivity_edit_product">Upravit produkt</string>
+    <string name="ProductDetailsActivity_add_barcode_to_product">Přidejte čárový kód</string>
+    <string name="ProductDetailsActivity_delete_similar_products">Všechny produkty</string>
+    <string name="ProductDetailsActivity_delete_single_product">Jediný produkt</string>
+    <string name="ProductDetailsActivity_delete_one_or_all">Chcete smazat pouze jeden produkt nebo všechny?</string>
+    <!--PrintQRCodesActivity-->
+    <string name="PrintQRCodesActivity_print_qr_codes">Vytiskněte si QR kódy</string>
+    <string name="PrintQRCodesActivity_skip">Přeskočit</string>
+    <string name="PrintQRCodesActivity_send_pdf_via_email">Pošlete soubor PDF e-mailem</string>
+    <!--AppSettingsActivity-->
+    <string name="AppSettingsActivity_general_settings">Obecné nastavení</string>
+    <string name="AppSettingsActivity_notifications_settings">Nastavení oznámení</string>
+    <string name="AppSettingsActivity_enabled">Povoleno</string>
+    <string name="AppSettingsActivity_disabled">Zakázáno</string>
+    <string name="AppSettingsActivity_qr_code_sizes">Velikost tištěných štítků s QR kódem</string>
+    <string name="AppSettingsActivity_which_theme_user_prefer">Vyberte režim aplikace</string>
+    <string name="AppSettingsActivity_which_camera_to_scan_products">Kamera pro skenování QR kódů</string>
+    <string name="AppSettingsActivity_scanner_vibration_mode">Vibrace při skenování</string>
+    <string name="AppSettingsActivity_scanner_sound_mode">Zvuk při skenování</string>
+    <string name="AppSettingsActivity_notifications_push">Upozornění prostřednictvím push notifikací</string>
+    <string name="AppSettingsActivity_notifications_email">Oznámení prostřednictvím e-mailu</string>
+    <string name="AppSettingsActivity_give_email_adress">E-mailová adresa pro zasílání upozornění</string>
+    <string name="AppSettingsActivity_how_many_days_before_the_expiration_date_send_a_notification">Kolik dní před expirací?</string>
+    <string name="AppSettingsActivity_save_settings">Uložte nastavení</string>
+    <string name="AppSettingsActivity_import_product_database">Importujte databázi produktů</string>
+    <string name="AppSettingsActivity_export_product_database">Exportujte databázi produktů</string>
+    <string name="AppSettingsActivity_clear_product_database">Vymazat databázi produktů</string>
+    <string name="AppSettingsActivity_import_category_database">Importujte databázi kategorií</string>
+    <string name="AppSettingsActivity_export_category_database">Exportujte databázi kategorií</string>
+    <string name="AppSettingsActivity_clear_category_database">Vymazat databázi kategorií</string>
+    <string name="AppSettingsActivity_import_storage_location_database">Importujte databázi umístění úložiště</string>
+    <string name="AppSettingsActivity_export_storage_location_database">Exportujte databázi umístění úložiště</string>
+    <string name="AppSettingsActivity_clear_storage_location_database">Vymazat databázi umístění úložiště</string>
+    <string name="AppSettingsActivity_clear_database_statement">Chcete vymazat databázi? Všechny záznamy budou odstraněny a operace je nevratná.</string>
+    <string name="AppSettingsActivity_choose_file_to_restore">Vyberte databázový soubor, který chcete obnovit</string>
+    <string name="AppSettingsActivity_database_is_clear">Databáze je vymazána.</string>
+    <string name="AppSettingsActivity_database_backup">Zálohování databáze</string>
+    <string name="AppSettingsActivity_version">Verze</string>
+    <string name="AppSettingsActivity_product_db">Databáze produktů</string>
+    <string name="AppSettingsActivity_category_db">Databáze kategorií</string>
+    <string name="AppSettingsActivity_storage_location_db">Databáze umístění úložiště</string>
+    <string name="AppSettingsActivity_import_statement">Chcete importovat databáze z externího souboru? To bude mít za následek ztrátu produktů aktuálně přidaných do aplikace.</string>
+    <string name="AppSettingsActivity_export_statement">Chcete exportovat databáze do externího souboru?</string>
+    <string name="AppSettingsActivity_db_backup_has_been_made">Záloha byla vytvořena</string>
+    <string name="AppSettingsActivity_db_has_been_restored">Záloha byla obnovena</string>
+    <string name="AppSettingsActivity_db_has_been_clear">Databáze byla smazána</string>
+    <string name="AppSettingsActivity_active_user">Aktivní uživatel</string>
+    <string name="AppSettingsActivity_go_premium">Přepněte na prémiový účet</string>
+    <string name="AppSettingsActivity_database_mode">Režim databáze produktů</string>
+    <string name="AppSettingsActivity_qr_code_size_big">Velký</string>
+    <string name="AppSettingsActivity_qr_code_size_small">Malý</string>
+    <string name="AppSettingsActivity_import_db">Import databáze z telefonu do cloudu</string>
+    <string name="AppSettingsActivity_import_db_statement">Importujte databázi produktů ze zařízení do cloudu (na internetový účet). AKTUÁLNĚ ULOŽENÁ DATA V CLOUDU BUDOU SMAŽENA A NAHRAZENA TELEFONNÍMI PRODUKTY.</string>
+    <string-array name="AppSettingsActivity_camera_to_scan">
+        <item>Zadní kamera</item>
+        <item>Přední kamera</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_darkmode_selector">
+        <item>Automatický</item>
+        <item>Den</item>
+        <item>Noc</item>
+    </string-array>
+    <string-array name="AppSettingsActivity_database_mode">
+        <item>Místní (v telefonu)</item>
+        <item>Online</item>
+    </string-array>
+    <!--ErrorActivity-->
+    <string name="ErrorActivity_title">Titul</string>
+    <string name="ErrorActivity_date">Datum</string>
+    <string name="ErrorActivity_content">Obsah</string>
+    <!--Notifications-->
+    <string name="Notifications_title">[Moje spíž] Datum expirace produktů se blíží</string>
+    <string name="Notifications_statement">%PRODUCT_NAME% je po termínu. Máte méně než %DAYS% dní na to, abyste to do tohoto data stihli.</string>
+    <!--Error-->
+    <string name="Error_error">Chyba</string>
+    <string name="Error_wrong_data">Nesprávné údaje</string>
+    <string name="Error_permission_is_needed_to_save_the_file">K vytvoření souboru je vyžadováno oprávnění</string>
+    <string name="Error_category_not_selected">Kategorie nebyla vybrána</string>
+    <string name="Error_product_name_is_required">Název produktu je povinný</string>
+    <string name="Error_char_counter">Nesprávná hodnota</string>
+    <string name="Error_for_premium_users_only">Funkce pouze pro prémiové uživatele</string>
+    <string name="Error_billing_client_not_ready">Funkce platby momentálně není k dispozici</string>
+    <string name="Error_incorrect_barcode_value">Neplatný čárový kód</string>
+    <!--Author-->
+    <string name="Author_contact_with_author">Kontakt s autorem</string>
+</resources>

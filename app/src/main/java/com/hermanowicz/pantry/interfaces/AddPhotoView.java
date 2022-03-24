@@ -28,10 +28,6 @@ public interface AddPhotoView {
 
     void showPhoto(Product product, Bitmap photo);
 
-    void onPhotoAddSuccess();
-
-    void onPhotoAddError();
-
     void onTakePhoto(File photoFile);
 
     void onSavePhoto();

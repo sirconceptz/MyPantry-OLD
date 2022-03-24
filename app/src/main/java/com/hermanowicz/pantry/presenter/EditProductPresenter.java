@@ -35,6 +35,7 @@ import com.hermanowicz.pantry.model.ProductDataModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -151,11 +152,11 @@ public class EditProductPresenter {
         return premiumAccess.isPremium();
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(ArrayList<Product> productList) {
         model.setProductList(productList);
     }
 
-    public void setAllProductList(List<Product> allProductList) {
+    public void setAllProductList(ArrayList<Product> allProductList) {
         model.setAllProductList(allProductList);
     }
 

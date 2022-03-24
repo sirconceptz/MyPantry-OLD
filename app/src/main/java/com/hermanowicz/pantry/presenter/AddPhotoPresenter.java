@@ -34,6 +34,7 @@ import com.hermanowicz.pantry.model.PhotoModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,13 +63,15 @@ public class AddPhotoPresenter{
         this.premiumAccess = premiumAccess;
     }
 
-    public void setProductList(@Nullable List<Product> productList){
+    public void setProductList(@Nullable ArrayList<Product> productList){
         if(productList != null) {
             model.setProductList(productList);
             Product singleProduct = productList.get(0);
             if(!(singleProduct.getPhotoDescription() == null)) {
-                model.setPhotoFile(singleProduct.getPhotoName());
-                view.showPhoto(singleProduct, model.getPhotoBitmap());
+                String photoName = singleProduct.getPhotoName();
+                Bitmap photoBitmap = model.getPhotoBitmap();
+                model.setPhotoFile(photoName, dbMode);
+                view.showPhoto(singleProduct, photoBitmap);
             }
         }
     }
@@ -104,7 +107,10 @@ public class AddPhotoPresenter{
     }
 
     public void addPhotoToDb(@Nullable Bitmap bitmap, @NonNull String photoDescription) {
-        model.addPhotoToDb(bitmap, photoDescription);
+        if(isOfflineDb())
+            model.addPhotoToOfflineDb(bitmap, photoDescription);
+        else
+            model.addPhotoToOnlineDb(bitmap, photoDescription);
     }
 
     public File getPhotoFile() {
@@ -115,8 +121,9 @@ public class AddPhotoPresenter{
         return premiumAccess.isPremium();
     }
 
-    public void setPhotoList(@Nullable List<Photo> photoList) {
+    public void setPhotoList(@Nullable ArrayList<Photo> photoList) {
         model.setPhotoList(photoList);
+        showPhoto();
     }
 
     public boolean isOfflineDb() {
@@ -127,7 +134,21 @@ public class AddPhotoPresenter{
         model.setIsNewPhoto(isNewPhoto);
     }
 
-    public void setAllProductList(List<Product> productList) {
-        model.setAllProductList(productList);
+    public void setAllProductList(ArrayList<Product> productList) {
+        if(isOfflineDb())
+            model.setOfflineAllProductList();
+        else
+            model.setAllProductList(productList);
+    }
+
+    public void showPhoto() {
+        List<Product> productList = model.getProductList();
+        Product product = productList.get(0);
+        String photoName = product.getPhotoName();
+        if(!photoName.equals("")) {
+            model.setPhotoFile(photoName, dbMode);
+            Bitmap bitmap = model.getPhotoBitmap();
+            view.showPhoto(product, bitmap);
+        }
     }
 }

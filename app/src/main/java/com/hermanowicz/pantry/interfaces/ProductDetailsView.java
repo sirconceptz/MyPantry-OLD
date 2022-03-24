@@ -23,6 +23,7 @@ import com.hermanowicz.pantry.db.photo.Photo;
 import com.hermanowicz.pantry.db.product.Product;
 import com.hermanowicz.pantry.model.GroupProducts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ProductDetailsView {
@@ -37,13 +38,13 @@ public interface ProductDetailsView {
 
     void showDialogOnDeleteProduct();
 
-    void navigateToPrintQRCodeActivity(List<Product> productList, List<Product> allProductList);
+    void navigateToPrintQRCodeActivity(ArrayList<Product> productList, ArrayList<Product> allProductList);
 
     void navigateToEditProductActivity(int productId, List<Product> productList, List<Product> allProductList);
 
     void navigateToMyPantryActivity();
 
-    void navigateToAddPhotoActivity(List<Product> productList, List<Photo> photoList);
+    void navigateToAddPhotoActivity(ArrayList<Product> productList);
 
-    void navigateToScanProductActivity(List<Product> productList);
+    void navigateToScanProductActivity(ArrayList<Product> productList);
 }

@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -158,6 +159,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         adView = binding.adview;
 
         setSupportActionBar(toolbar);
+        toolbar.setTitle("");
 
         presenter = new ProductDetailsPresenter(this, this);
         presenter.setPremiumAccess(new PremiumAccess(context));
@@ -169,8 +171,8 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         }
 
         Intent intent = getIntent();
-        List<Product> productList = (List<Product>) intent.getSerializableExtra("product_list");
-        List<Product> allProductList = (List<Product>) intent.getSerializableExtra("all_product_list");
+        ArrayList<Product> productList = intent.getParcelableArrayListExtra("product_list");
+        ArrayList<Product> allProductList = intent.getParcelableArrayListExtra("all_product_list");
 
         presenter.setAllProductList(allProductList);
         presenter.setProductList(productList);
@@ -224,7 +226,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    List<Photo> list = new ArrayList<>();
+                    ArrayList<Photo> list = new ArrayList<>();
                     Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
 
                     for (DataSnapshot dataSnapshot : snapshotIterable) {
@@ -305,7 +307,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void navigateToPrintQRCodeActivity(@NonNull List<Product> productList, List<Product> allProductList) {
+    public void navigateToPrintQRCodeActivity(@NonNull ArrayList<Product> productList, ArrayList<Product> allProductList) {
         Intent intent = new Intent(context, PrintQRCodesActivity.class)
                 .putExtra("product_list", (Serializable) productList)
                 .putExtra("all_product_list", (Serializable) allProductList);
@@ -331,17 +333,17 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
     }
 
     @Override
-    public void navigateToAddPhotoActivity(List<Product> productList, List<Photo> photoList) {
+    public void navigateToAddPhotoActivity(ArrayList<Product> productList) {
         Intent intent = new Intent(context, AddPhotoActivity.class)
-                .putExtra("product_list", (Serializable) productList);
+                .putParcelableArrayListExtra("product_list", productList);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
 
     @Override
-    public void navigateToScanProductActivity(List<Product> productList) {
+    public void navigateToScanProductActivity(ArrayList<Product> productList) {
         Intent intent = new Intent(context, ScanProductActivity.class)
-                .putExtra("product_list_to_add_barcode", (Serializable) productList);
+                .putParcelableArrayListExtra("product_list_to_add_barcode", productList);
         startActivity(intent);
         CustomIntent.customType(this, "fadein-to-fadeout");
     }
@@ -392,7 +394,7 @@ public class ProductDetailsActivity extends AppCompatActivity implements Product
         super.onDestroy();
     }
 
-    public void onPhotoResponse(List<Photo> photoList) {
+    public void onPhotoResponse(ArrayList<Photo> photoList) {
         presenter.setPhotoList(photoList);
         presenter.showProductDetails();
     }

@@ -183,8 +183,8 @@ public class EditProductActivity extends AppCompatActivity implements EditProduc
 
         Intent intent = getIntent();
         int productId = intent.getIntExtra("product_id", 1);
-        List<Product> productList = (List<Product>) intent.getSerializableExtra("product_list");
-        List<Product> allProductList = (List<Product>) intent.getSerializableExtra("all_product_list");
+        ArrayList<Product> productList = intent.getParcelableArrayListExtra("product_list");
+        ArrayList<Product> allProductList = intent.getParcelableArrayListExtra("all_product_list");
 
         presenter.setAllProductList(allProductList);
         presenter.setProductList(productList);

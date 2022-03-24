@@ -24,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.widget.Button;
 
 import androidx.test.espresso.intent.rule.IntentsTestRule;
@@ -55,8 +56,6 @@ public class PrintQRCodesActivityTest {
 
     private Button printQrCodes, sendPdfByEmail, skip;
     private UiDevice uiDevice;
-    private final Product product1 = ProductTestModel.getTestProduct1();
-    private final Product product2 = ProductTestModel.getTestProduct2();
 
     @Rule
     public GrantPermissionRule readPermissionRule =
@@ -74,6 +73,9 @@ public class PrintQRCodesActivityTest {
         protected Intent getActivityIntent() {
             Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
             List<Product> productList = new ArrayList<>();
+            Resources resources = activity.getResources();
+            Product product1 = ProductTestModel.getTestProduct1(resources);
+            Product product2 = ProductTestModel.getTestProduct2(resources);
             productList.add(product1);
             productList.add(product2);
 

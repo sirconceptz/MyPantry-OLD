@@ -17,15 +17,21 @@
 
 package models;
 
+import android.content.res.Resources;
+
+import com.hermanowicz.pantry.R;
 import com.hermanowicz.pantry.db.product.Product;
 
 public class ProductTestModel {
 
-    public static Product getTestProduct1(){
+    public static Product getTestProduct1(Resources resources){
+        String[] productType = resources.getStringArray(R.array.Product_type_of_product_array);
+        String[] productCategory = resources.getStringArray(R.array.Product_fruits_array);
+
         Product product = new Product();
         product.setName("Raspberry juice");
-        product.setTypeOfProduct("Fruits");
-        product.setProductFeatures("Juice");
+        product.setTypeOfProduct(productType[5]);;
+        product.setProductFeatures(productCategory[3]);
         product.setExpirationDate("2020-01-01");
         product.setProductionDate("2019-12-31");
         product.setComposition("Raspberries");
@@ -42,11 +48,14 @@ public class ProductTestModel {
         return product;
     }
 
-    public static Product getTestProduct2(){
+    public static Product getTestProduct2(Resources resources){
+        String[] productType = resources.getStringArray(R.array.Product_type_of_product_array);
+        String[] productCategory = resources.getStringArray(R.array.Product_fruits_array);
+
         Product product = new Product();
         product.setName("Pizza");
-        product.setTypeOfProduct("Ready meals");
-        product.setProductFeatures("Ready meals");
+        product.setTypeOfProduct(productType[1]);
+        product.setProductFeatures(productCategory[1]);
         product.setExpirationDate("2022-02-17");
         product.setProductionDate("2018-11-28");
         product.setComposition("");
@@ -63,11 +72,14 @@ public class ProductTestModel {
         return product;
     }
 
-    public static Product getTestProduct3(){
+    public static Product getTestProduct3(Resources resources){
+        String[] productType = resources.getStringArray(R.array.Product_type_of_product_array);
+        String[] productCategory = resources.getStringArray(R.array.Product_fruits_array);
+
         Product product = new Product();
         product.setName("Tomato");
-        product.setTypeOfProduct("Vegetables");
-        product.setProductFeatures("Fresh");
+        product.setTypeOfProduct(productType[4]);
+        product.setProductFeatures(productCategory[5]);
         product.setExpirationDate("2021-07-12");
         product.setProductionDate("2018-12-10");
         product.setComposition("");

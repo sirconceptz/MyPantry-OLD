@@ -21,6 +21,7 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 
 import android.Manifest;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import androidx.cardview.widget.CardView;
@@ -81,8 +82,9 @@ public class ScanProductActivityTest {
         ProductDb productDb = Room.inMemoryDatabaseBuilder(activity.getApplicationContext(),
                 ProductDb.class).allowMainThreadQueries().build();
         List<Product> productList = new ArrayList<>();
+        Resources resources = activity.getResources();
 
-        productList.add(ProductTestModel.getTestProduct1());
+        productList.add(ProductTestModel.getTestProduct1(resources));
         productDb.productsDao().addProducts(productList);
         productList = productDb.productsDao().getAllProductsList();
 

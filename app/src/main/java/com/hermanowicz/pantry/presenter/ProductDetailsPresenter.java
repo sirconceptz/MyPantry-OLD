@@ -31,6 +31,7 @@ import com.hermanowicz.pantry.model.PhotoModel;
 import com.hermanowicz.pantry.model.ProductDataModel;
 import com.hermanowicz.pantry.util.PremiumAccess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,13 +48,12 @@ public class ProductDetailsPresenter {
     private final DatabaseMode dbMode = new DatabaseMode();
     private final PhotoModel photoModel;
     private PremiumAccess premiumAccess;
-    private final AppSettingsModel appSettingsModel;
 
     public ProductDetailsPresenter(@NonNull ProductDetailsView view, @NonNull AppCompatActivity activity) {
         this.view = view;
         this.model = new ProductDataModel(activity.getApplicationContext());
         this.photoModel = new PhotoModel(activity);
-        this.appSettingsModel = new AppSettingsModel(PreferenceManager.
+        AppSettingsModel appSettingsModel = new AppSettingsModel(PreferenceManager.
                 getDefaultSharedPreferences(activity.getApplicationContext()));
         dbMode.setDatabaseMode(appSettingsModel.getDatabaseMode());
     }
@@ -78,7 +78,8 @@ public class ProductDetailsPresenter {
             if (groupProducts.getProduct().getPhotoName() != null)
                 photo = groupProducts.getProduct().getPhotoName();
             if (!photo.equals("")) {
-                photoModel.setPhotoFile(String.valueOf(groupProducts.getProduct().getPhotoName()));
+                String photoName = groupProducts.getProduct().getPhotoName();
+                photoModel.setPhotoFile(photoName, dbMode);
                 view.showPhoto(photoModel.getPhotoBitmap());
             }
         }
@@ -93,8 +94,8 @@ public class ProductDetailsPresenter {
     }
 
     public void onClickPrintQRCodes() {
-        List<Product> productList = model.getProductList();
-        List<Product> allProductList = model.getAllProductList();
+        ArrayList<Product> productList = model.getProductList();
+        ArrayList<Product> allProductList = model.getAllProductList();
         view.navigateToPrintQRCodeActivity(productList, allProductList);
     }
 
@@ -106,9 +107,8 @@ public class ProductDetailsPresenter {
     }
 
     public void onClickTakePhoto() {
-        List<Product> productList = model.getProductList();
-        List<Photo> photoList = photoModel.getPhotoList();
-        view.navigateToAddPhotoActivity(productList, photoList);
+        ArrayList<Product> productList = model.getProductList();
+        view.navigateToAddPhotoActivity(productList);
     }
 
     public void navigateToMyPantryActivity() {
@@ -119,15 +119,15 @@ public class ProductDetailsPresenter {
         return premiumAccess.isPremium();
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(ArrayList<Product> productList) {
         model.setProductList(productList);
     }
 
-    public void setAllProductList(List<Product> allProductList) {
+    public void setAllProductList(ArrayList<Product> allProductList) {
         model.setAllProductList(allProductList);
     }
 
-    public void setPhotoList(List<Photo> photoList) {
+    public void setPhotoList(ArrayList<Photo> photoList) {
         photoModel.setPhotoList(photoList);
     }
 
@@ -154,7 +154,7 @@ public class ProductDetailsPresenter {
     }
 
     public void onClickAddBarcode() {
-        List<Product> productList = model.getProductList();
+        ArrayList<Product> productList = model.getProductList();
         view.navigateToScanProductActivity(productList);
     }
 

@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,13 +56,12 @@ public class PhotoModel {
 
     private final ProductDb productDb;
     private final AppCompatActivity activity;
-    private List<Product> productList;
-    private List<Product> allProductList;
+    private ArrayList<Product> productList;
+    private ArrayList<Product> allProductList;
     private File photoFile;
     private final String filePath;
     private String fileName;
-    private String databaseMode;
-    private List<Photo> photoList;
+    private ArrayList<Photo> photoList = new ArrayList<>();
     private Bitmap photoBitmap;
     private boolean isNewPhoto = false;
 
@@ -72,21 +72,13 @@ public class PhotoModel {
                 + File.separator + "MyPantry").getPath();
     }
 
-    public void setProductList(@NonNull List<Product> productList) {
+    public void setProductList(@NonNull ArrayList<Product> productList) {
         this.productList = productList;
     }
 
-    public void addPhotoToDb(@Nullable Bitmap bitmap, @NonNull String photoDescription) {
-        if(databaseMode.equals("local")) {
-            if(bitmap != null)
-                galleryOfflineAddPic(bitmap);
-            addPhotoToOfflineDb(photoDescription);
-        }
-        else
-            addPhotoToOnlineDb(bitmap, photoDescription);
-    }
-
-    public void addPhotoToOfflineDb(@NonNull String photoDescription) {
+    public void addPhotoToOfflineDb(Bitmap bitmap, @NonNull String photoDescription) {
+        if(bitmap != null)
+            galleryOfflineAddPic(bitmap);
         for(Product product : productList) {
             product.setPhotoName(fileName);
             product.setPhotoDescription(photoDescription);
@@ -239,14 +231,7 @@ public class PhotoModel {
         return photoFile;
     }
 
-    public void setPhotoFile(@NonNull String photoName) {
-        if(databaseMode.equals("local"))
-            setPhotoFileOffline(photoName);
-        else
-            setPhotoFileOnline(photoName);
-    }
-
-    private void setPhotoFileOnline(@NonNull String photoName) {
+    public void setPhotoFileOnline(@NonNull String photoName) {
         if(photoList != null) {
             for (Photo photo : photoList) {
                 if (photo.getName().equals(photoName)) {
@@ -257,7 +242,7 @@ public class PhotoModel {
         }
     }
 
-    private void setPhotoFileOffline(@NonNull String photoName) {
+    public void setPhotoFileOffline(@NonNull String photoName) {
         String external;
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             external = Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator + Environment.DIRECTORY_PICTURES + File.separator + "MyPantry";
@@ -267,19 +252,11 @@ public class PhotoModel {
         photoBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
     }
 
-    public String getDatabaseMode() {
-        return databaseMode;
-    }
-
-    public void setDatabaseMode(String databaseMode) {
-        this.databaseMode = databaseMode;
-    }
-
-    public void setPhotoList(List<Photo> photoList) {
+    public void setPhotoList(ArrayList<Photo> photoList) {
         this.photoList = photoList;
     }
 
-    public List<Photo> getPhotoList() {
+    public ArrayList<Photo> getPhotoList() {
         return photoList;
     }
 
@@ -303,10 +280,20 @@ public class PhotoModel {
         this.isNewPhoto = isNewPhoto;
     }
 
-    public void setAllProductList(List<Product> productList) {
-        if(databaseMode.equals("local"))
-            allProductList = productDb.productsDao().getAllProductsList();
-        else
+    public void setAllProductList(ArrayList<Product> productList) {
             this.allProductList = productList;
+    }
+
+    public void setOfflineAllProductList() {
+        List<Product> productList = productDb.productsDao().getAllProductsList();
+        this.allProductList = new ArrayList<>(productList.size());
+        this.allProductList.addAll(productList);
+    }
+
+    public void setPhotoFile(String photoName, DatabaseMode dbMode) {
+        if(dbMode.getDatabaseMode() == DatabaseMode.Mode.ONLINE)
+            setPhotoFileOnline(photoName);
+        else
+            setPhotoFileOffline(photoName);
     }
 }

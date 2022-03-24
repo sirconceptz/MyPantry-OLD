@@ -17,6 +17,7 @@
 
 package com.hermanowicz.pantry.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -88,8 +89,8 @@ import maes.tech.intentanim.CustomIntent;
 
 public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView {
 
-    private final String TAG = "PhotosRxJava";
     private static final int REQUEST_IMAGE_CAPTURE_CODE = 42;
+    private final String TAG = "PhotosRxJava";
 
     private Context context;
     private AddPhotoPresenter presenter;
@@ -125,9 +126,10 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         savePhoto = binding.buttonSavePhoto;
         deletePhoto = binding.buttonDeletePhoto;
 
-        List<Product> productList = (List<Product>) getIntent().getSerializableExtra("product_list");
+        ArrayList<Product> productList = getIntent().getParcelableArrayListExtra("product_list");
         presenter.setProductList(productList);
         presenter.setAllProductList(productList);
+        presenter.showPhoto();
         presenter.setPremiumAccess(new PremiumAccess(context));
 
         if(!presenter.isPremium()) {
@@ -159,6 +161,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
             }
         });
     }
+
 
     private void setPhotoListObserver() {
         if (!presenter.isOfflineDb()) {
@@ -193,7 +196,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    List<Photo> list = new ArrayList<>();
+                    ArrayList<Photo> list = new ArrayList<>();
                     Iterable<DataSnapshot> snapshotIterable = snapshot.getChildren();
 
                     for (DataSnapshot dataSnapshot : snapshotIterable) {
@@ -254,16 +257,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
     }
 
     @Override
-    public void onPhotoAddSuccess() {
-        Toast.makeText(context, getText(R.string.AddPhotoActivity_add_photo_successful), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPhotoAddError() {
-        Toast.makeText(context, getText(R.string.AddPhotoActivity_add_photo_not_successful), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onTakePhoto(@NonNull File photoFile) {
         takePictureIntent(photoFile);
     }
@@ -277,6 +270,8 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         }
         String photoDescription = description.getText().toString();
         presenter.addPhotoToDb(bitmap, photoDescription);
+        Toast.makeText(context, getText(R.string.AddPhotoActivity_add_photo_successful), Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
@@ -295,6 +290,7 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -321,13 +317,13 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoView 
         }
     }
 
+    public void onPhotoResponse(ArrayList<Photo> photoList) {
+        presenter.setPhotoList(photoList);
+    }
+
     @Override
     public void finish() {
         super.finish();
         CustomIntent.customType(this, "fadein-to-fadeout");
-    }
-
-    public void onPhotoResponse(List<Photo> photoList) {
-        presenter.setPhotoList(photoList);
     }
 }

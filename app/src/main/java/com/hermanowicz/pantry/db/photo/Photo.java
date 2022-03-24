@@ -17,16 +17,47 @@
 
 package com.hermanowicz.pantry.db.photo;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Keep;
+import androidx.room.Entity;
 
 import java.io.Serializable;
 
 @Keep
-public class Photo implements Serializable {
+@Entity(tableName = "photos")
+public class Photo implements Parcelable {
 
     private int id;
     private String name;
     private String content;
+
+    public Photo(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        content = in.readString();
+    }
+
+    public Photo(int id, String name, String content) {
+        this.id = id;
+        this.name = name;
+        this.content = content;
+    }
+
+    public Photo() {}
+
+    public static final Creator<Photo> CREATOR = new Creator<Photo>() {
+        @Override
+        public Photo createFromParcel(Parcel in) {
+            return new Photo(in);
+        }
+
+        @Override
+        public Photo[] newArray(int size) {
+            return new Photo[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -50,5 +81,17 @@ public class Photo implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeString(content);
     }
 }

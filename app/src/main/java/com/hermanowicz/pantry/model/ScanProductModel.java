@@ -38,7 +38,6 @@ public class ScanProductModel {
     private final ProductDb productDb;
     private String scanResult;
     private List<Product> productList;
-    private String databaseMode;
     private List<Product> productListToAddBarcode;
 
     public ScanProductModel(@NonNull ProductDb productDb){
@@ -85,14 +84,6 @@ public class ScanProductModel {
         return scanResult;
     }
 
-    public void setDatabaseMode(String databaseMode) {
-        this.databaseMode = databaseMode;
-    }
-
-    public String getDatabaseMode() {
-        return databaseMode;
-    }
-
     public void setProductList(List<Product> productList) {
         this.productList = productList;
     }
@@ -119,8 +110,8 @@ public class ScanProductModel {
         }
     }
 
-    public void updateProductListWithBarcode() {
-        if (databaseMode.equals("local")) {
+    public void updateProductListWithBarcode(DatabaseMode dbMode) {
+        if (dbMode.getDatabaseMode() == DatabaseMode.Mode.LOCAL) {
             updateLocalDb();
         } else {
             updateOnlineDb();

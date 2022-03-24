@@ -280,7 +280,7 @@
     <string name="AppSettingsActivity_category_db">Category database</string>
     <string name="AppSettingsActivity_storage_location_db">Storage Location database</string>
     <string name="AppSettingsActivity_import_statement">Do you want to import databases from an external file? This will result in the loss of the products currently added to the application.</string>
-    <string name="AppSettingsActivity_export_statement">Do you want to export databases from an external file? This will result in the loss of the products currently added to the application.</string>
+    <string name="AppSettingsActivity_export_statement">Do you want to export databases to an external file?</string>
     <string name="AppSettingsActivity_db_backup_has_been_made">The backup has been created</string>
     <string name="AppSettingsActivity_db_has_been_restored">The backup has been restored</string>
     <string name="AppSettingsActivity_db_has_been_clear">The database has been cleared</string>
@@ -309,7 +309,7 @@
     <string name="ErrorActivity_date">Date</string>
     <string name="ErrorActivity_content">Content</string>
     <!--Notifications-->
-    <string name="Notifications_title">[My Pantry] Products expiration date is approaching.</string>
+    <string name="Notifications_title">[My Pantry] Products expiration date is approaching</string>
     <string name="Notifications_statement">%PRODUCT_NAME% is overdue. You have less than %DAYS% days to make it before this date.</string>
     <!--Error-->
     <string name="Error_error">Error</string>

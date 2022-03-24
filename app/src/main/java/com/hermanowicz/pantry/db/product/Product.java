@@ -17,12 +17,14 @@
 
 package com.hermanowicz.pantry.db.product;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +37,7 @@ import java.util.List;
 
 @Keep
 @Entity(tableName = "products")
-public class Product implements Serializable {
+public class Product implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -59,6 +61,44 @@ public class Product implements Serializable {
     private String photoName = "";
     private String photoDescription = "";
     private String barcode = "";
+
+    public Product(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        hashCode = in.readString();
+        typeOfProduct = in.readString();
+        productFeatures = in.readString();
+        storageLocation = in.readString();
+        expirationDate = in.readString();
+        productionDate = in.readString();
+        composition = in.readString();
+        healingProperties = in.readString();
+        dosage = in.readString();
+        volume = in.readInt();
+        weight = in.readInt();
+        hasSugar = in.readByte() != 0;
+        hasSalt = in.readByte() != 0;
+        isVege = in.readByte() != 0;
+        isBio = in.readByte() != 0;
+        taste = in.readString();
+        photoName = in.readString();
+        photoDescription = in.readString();
+        barcode = in.readString();
+    }
+
+    public Product() {}
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -234,8 +274,8 @@ public class Product implements Serializable {
         this.barcode = barcode;
     }
 
-    public static List<Product> getSimilarProductsList(@NonNull Product testedProduct, @NonNull List<Product> productList){
-        List<Product> similarProductList = new ArrayList<>();
+    public static ArrayList<Product> getSimilarProductsList(@NonNull Product testedProduct, @NonNull List<Product> productList){
+        ArrayList<Product> similarProductList = new ArrayList<>();
         for(Product singleProduct : productList){
             if(singleProduct.getName().equals(testedProduct.getName())
                     && singleProduct.getTypeOfProduct().equals(testedProduct.getTypeOfProduct())
@@ -257,5 +297,35 @@ public class Product implements Serializable {
                 similarProductList.add(singleProduct);
         }
         return similarProductList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(name);
+        parcel.writeString(hashCode);
+        parcel.writeString(typeOfProduct);
+        parcel.writeString(productFeatures);
+        parcel.writeString(storageLocation);
+        parcel.writeString(expirationDate);
+        parcel.writeString(productionDate);
+        parcel.writeString(composition);
+        parcel.writeString(healingProperties);
+        parcel.writeString(dosage);
+        parcel.writeInt(volume);
+        parcel.writeInt(weight);
+        parcel.writeByte((byte) (hasSugar ? 1 : 0));
+        parcel.writeByte((byte) (hasSalt ? 1 : 0));
+        parcel.writeByte((byte) (isVege ? 1 : 0));
+        parcel.writeByte((byte) (isBio ? 1 : 0));
+        parcel.writeString(taste);
+        parcel.writeString(photoName);
+        parcel.writeString(photoDescription);
+        parcel.writeString(barcode);
     }
 }

@@ -281,7 +281,7 @@
     <string name="AppSettingsActivity_category_db">Kategoriedatenbank</string>
     <string name="AppSettingsActivity_storage_location_db">Speicherortdatenbank</string>
     <string name="AppSettingsActivity_import_statement">Möchten Sie Datenbanken aus einer externen Datei importieren? Dies führt zum Verlust der Produkte, die derzeit zur Anwendung hinzugefügt werden.</string>
-    <string name="AppSettingsActivity_export_statement">Möchten Sie Datenbanken aus einer externen Datei exportieren? Dies führt zum Verlust der Produkte, die derzeit zur Anwendung hinzugefügt werden.</string>
+    <string name="AppSettingsActivity_export_statement">Möchten Sie Datenbanken in eine externe Datei exportieren?</string>
     <string name="AppSettingsActivity_db_backup_has_been_made">Das Backup wurde erstellt</string>
     <string name="AppSettingsActivity_db_has_been_restored">Die Sicherung wurde wiederhergestellt</string>
     <string name="AppSettingsActivity_db_has_been_clear">Die Datenbank wurde gelöscht</string>
@@ -310,7 +310,7 @@
     <string name="ErrorActivity_date">Datum</string>
     <string name="ErrorActivity_content">Inhalt</string>
     <!--Notifications-->
-    <string name="Notifications_title">[Meine Speisekammer] Das Produkt wird bald verfallen.</string>
+    <string name="Notifications_title">[Meine Speisekammer] Das Produkt wird bald verfallen</string>
     <string name="Notifications_statement">%PRODUCT_NAME% läuft bald ab. Sie haben noch %DAYS% Tage bis zu diesem Datum.</string>
     <!--Error-->
     <string name="Error_error">Error</string>

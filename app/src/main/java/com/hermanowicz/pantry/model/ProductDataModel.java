@@ -50,9 +50,9 @@ public class ProductDataModel {
     private String taste;
     private String productionDate = "-";
     private String expirationDate = "-";
-    private List<Product> productList = new ArrayList<>();
+    private ArrayList<Product> productList = new ArrayList<>();
     private int oldProductsQuantity;
-    private List<Product> allProductList;
+    private ArrayList<Product> allProductList;
     private List<Category> categoryList = new ArrayList<>();
     private List<StorageLocation> storageLocationList = new ArrayList<>();
 
@@ -98,7 +98,7 @@ public class ProductDataModel {
         return year + "-" + month + "-" + day;
     }
 
-    public List<Product> getProductList(){
+    public ArrayList<Product> getProductList(){
         return productList;
     }
 
@@ -382,15 +382,15 @@ public class ProductDataModel {
         productList.add(product);
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(ArrayList<Product> productList) {
         this.productList = productList;
     }
 
-    public List<Product> getAllProductList() {
+    public ArrayList<Product> getAllProductList() {
         return allProductList;
     }
 
-    public void setAllProductList(List<Product> allProductList) {
+    public void setAllProductList(ArrayList<Product> allProductList) {
         this.allProductList = allProductList;
     }
 
